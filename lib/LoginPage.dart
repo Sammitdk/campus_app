@@ -12,7 +12,7 @@ class LoginPage extends StatelessWidget {
       body: Column(
         children: [
           Expanded(
-            child: Image.asset("assets/logo.jpg",color: Colors.brown[600],),
+            child: Image.asset("assets/logo.jpg",color: Colors.brown[599],),
           ),
         ],
       ),
