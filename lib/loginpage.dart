@@ -10,7 +10,7 @@ class login extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.blue[50],
       body: Column(
           children: [
             Row(
@@ -28,24 +28,27 @@ class login extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
-                  child: Image.network("assets/icons/student_login.gif",height: 300,),
+                  child: Card(
+                    child: Column(
+                      children: [
+                        Image.network("assets/icons/student_login.gif",),
+                        Text("Student login")
+                      ],
+                    ),
+                  ),
                 ),
                 Expanded(
-                  child: Image.network("assets/icons/teacher_login.gif",height: 300,),
-                )
+                  child: Card(
+                    child:  Column(
+                      children: [
+                        Image.network("assets/icons/teacher_login.gif",),
+                        Text("Faculty Login")
+                      ],
+                    ),
+                  ),
+                ),
               ],
             ),
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //   children: const [
-            //     Expanded(
-            //       child: Text("Student Login"),
-            //     ),
-            //     Expanded(
-            //       child: Text("Faculty Login"),
-            //     )
-            //   ],
-            // )
           ],
       ),
     );
