@@ -42,7 +42,10 @@ class login extends StatelessWidget {
                     child:  Column(
                       children: [
                         Image.network("assets/icons/teacher_login.gif",),
-                        Text("Faculty Login")
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text("Faculty Login"),
+                        )
                       ],
                     ),
                   ),
