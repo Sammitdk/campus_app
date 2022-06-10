@@ -1,12 +1,14 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 void main() => runApp(const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: LoginPage(),
+      home: LoadingPage(),
     ));
 
-class LoginPage extends StatelessWidget {
-  const LoginPage({Key? key}) : super(key: key);
+class LoadingPage extends StatelessWidget {
+  const LoadingPage({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 void main() {
   runApp(const MaterialApp(
     debugShowCheckedModeBanner: false,
-    home: login(),
+    home: Login(),
   ));
 }
 
 
-class login extends StatelessWidget {
-  const login({Key? key}) : super(key: key);
+class Login extends StatelessWidget {
+  const Login({Key? key}) : super(key: key);
 
   static String faculty = "faculty";
   static int a=1;
@@ -17,8 +17,8 @@ class login extends StatelessWidget {
 
   Widget studentLogin() => Column(
     children: [
-      Padding(
-        padding: const EdgeInsets.fromLTRB(30,20,30,20),
+      const Padding(
+        padding: EdgeInsets.fromLTRB(30,20,30,20),
         child: TextField(
           decoration: InputDecoration(
             icon: Icon(Icons.numbers),
@@ -27,8 +27,8 @@ class login extends StatelessWidget {
           ),
         ),
       ),
-      Padding(
-        padding: const EdgeInsets.fromLTRB(30,20,30,20),
+      const Padding(
+        padding: EdgeInsets.fromLTRB(30,20,30,20),
         child: TextField(
           decoration: InputDecoration(
             icon: Icon(Icons.password),
@@ -37,7 +37,8 @@ class login extends StatelessWidget {
           ),
         ),
       ),
-      Container(child: FloatingActionButton(onPressed: (){}, child: Text("Sign In")))
+      FloatingActionButton(onPressed: (){},
+        child: Text("Sign In"),backgroundColor: Colors.blue[400],hoverColor: Colors.green,shape:  RoundedRectangleBorder(borderRadius: BorderRadius.circular(20),),),
     ],
   );
 
@@ -50,70 +51,52 @@ class login extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Row(
+
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Expanded(
-                child: Card(
-                  margin: EdgeInsets.all(10),
-                  child: Column(
-                    children: [
-                      Image.network(
-                        "assets/icons/student_login.gif",
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Text(
-                          "Student login",
-                          style: TextStyle(
-                            fontFamily: 'BubblegumSans',
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-              Expanded(
-                child: Container(
-                  width: 100,
-                  // height: 100,
+              Container(
+                width: 200,
+                height: 230,
+                child: InkWell(
+                  onTap: ()
+                  {
+                    print("ok");
+                  },
                   child: Card(
-                    margin: EdgeInsets.all(10),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    margin: const EdgeInsets.all(10),
                     child: Column(
                       children: [
                         Image.network(
-                          "assets/icons/teacher_login.gif",
-                          repeat: ImageRepeat.repeat,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: Text("Faculty Login"),
-                        )
+                            "assets/icons/student_login.gif",
+                          ),
+                          Text("Student")
                       ],
                     ),
                   ),
                 ),
-<<<<<<< HEAD
-                Expanded(
-                  child: Card(
-                    child:  Column(
-                      children: [
-                        Image.network("assets/icons/teacher_login.gif",),
-                        Text("Faculty Login ")
-                      ],
-                    ),
+              ),
+              Container(
+                height: 230,
+                width: 200,
+                child: Card(
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  margin: const EdgeInsets.all(10),
+                  child: Column(
+                    children: [
+                      Image.network(
+                        "assets/icons/teacher_login.gif",
+                        repeat: ImageRepeat.repeat,
+                      ),
+                      Text("Faculty")
+                    ],
                   ),
                 ),
-              ],
-            ),
-          ],
-=======
               ),
             ],
           ),
           studentLogin(),
         ],
->>>>>>> 8fe0d189722a823ed3a1ac600c427edf6f8fef3f
       ),
     );
   }
