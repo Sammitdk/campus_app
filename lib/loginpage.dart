@@ -1,12 +1,6 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
-
-void main() {
-  runApp(const MaterialApp(
-    debugShowCheckedModeBanner: false,
-    home: Login(),
-  ));
-}
-
 
 class Login extends StatelessWidget {
   const Login({Key? key}) : super(key: key);
@@ -48,43 +42,38 @@ class Login extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.blue[50],
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children:
+        [
 
-            mainAxisAlignment: MainAxisAlignment.center,
+          SizedBox(height: 450,),
+          Row(
             children: [
               Container(
-                width: 200,
+                width: 195,
                 height: 230,
-                child: InkWell(
-                  onTap: ()
-                  {
-                    print("ok");
-                  },
-                  child: Card(
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                    margin: const EdgeInsets.all(10),
-                    child: Column(
-                      children: [
-                        Image.network(
-                            "assets/icons/student_login.gif",
-                          ),
-                          Text("Student")
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              Container(
-                height: 230,
-                width: 200,
                 child: Card(
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   margin: const EdgeInsets.all(10),
                   child: Column(
                     children: [
-                      Image.network(
+                      Image.asset(
+                        "assets/icons/student_login.gif",
+                      ),
+                      Text("Student")
+                    ],
+                  ),
+                ),
+              ),
+              Container(
+                width: 195,
+                height: 230,
+                child: Card(
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  margin: const EdgeInsets.all(10),
+                  child: Column(
+                    children: [
+                      Image.asset(
                         "assets/icons/teacher_login.gif",
                         repeat: ImageRepeat.repeat,
                       ),
@@ -94,8 +83,7 @@ class Login extends StatelessWidget {
                 ),
               ),
             ],
-          ),
-          studentLogin(),
+          )
         ],
       ),
     );
