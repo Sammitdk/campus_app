@@ -13,28 +13,35 @@ class _MessageState extends State<Message> {
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: Form(
+        key: formkey,
         child: Row(
           children: [
-            Padding(padding: EdgeInsets.all(10),
-              child: TextFormField(
-                validator: (text){
-                  if(text == null || text.isEmpty){
-                    return 'Messege is Empty.';
-                  }
-                },
-                decoration: InputDecoration(
-                  border: OutlineInputBorder()
+            Expanded(
+              flex: 5,
+              child: Padding(padding: EdgeInsets.only(left: 10,bottom: 10),
+                child: TextFormField(
+                  validator: (text){
+                    if(text == null || text.isEmpty){
+                      return 'Messege is Empty.';
+                    }
+                  },
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder()
+                  ),
                 ),
               ),
             ),
-            Padding(padding: EdgeInsets.all(10),
-              child: FloatingActionButton(
-                child: Icon(Icons.send),
-                onPressed: (){
-                  if(formkey.currentState!.validate()){
-                    print("Ok");
-                  }
-                },
+            Expanded(
+              flex: 1,
+              child: Padding(padding: EdgeInsets.all(15),
+                child: FloatingActionButton(
+                  child: Icon(Icons.send),
+                  onPressed: (){
+                    if(formkey.currentState!.validate()){
+                      print("Ok");
+                    }
+                  },
+                ),
               ),
             )
           ],
