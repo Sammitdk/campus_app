@@ -1,4 +1,4 @@
-import 'package:campus_subsystem/loadingpage.dart';
+import 'package:campus_subsystem/loading_page.dart';
 import 'package:flutter/material.dart';
 
 class Wrapper extends StatelessWidget {

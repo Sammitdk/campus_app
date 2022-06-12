@@ -1,11 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'loginpage.dart';
+import 'login_page.dart';
 
-void main() => runApp(const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: LoadingPage(),
-    ));
 
 class LoadingPage extends StatefulWidget
 {

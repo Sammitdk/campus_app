@@ -1,4 +1,4 @@
-
+import 'package:campus_subsystem/faculty_login.dart';
 import 'package:campus_subsystem/student_login.dart';
 import 'package:flutter/material.dart';
 
@@ -8,7 +8,7 @@ class Login extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 100,
+        toolbarHeight: 140,
         backgroundColor: Colors.white,
         title: Container(
           child: Image.asset("assets/images/welcome.gif"),
@@ -22,7 +22,7 @@ class Login extends StatelessWidget {
         [
           Container(
             width: double.infinity,
-            height: 400,
+            height: 380,
             child: Image.asset("assets/images/logo.jpg",color: Colors.brown[500],),
           ),
           Row(
@@ -55,7 +55,7 @@ class Login extends StatelessWidget {
                 child: InkWell(
                   onTap: ()
                   {
-                  //  Navigator.push(context, MaterialPageRoute(builder: (context) => const SecondRoute()),)
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => const FacultyLogin()),);
                   },
                   child: Card(
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),

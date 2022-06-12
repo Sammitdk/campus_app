@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 
-class StudentLogin extends StatefulWidget {
-  const StudentLogin({Key? key}) : super(key: key);
+class FacultyLogin extends StatefulWidget {
+  const FacultyLogin({Key? key}) : super(key: key);
   @override
-  State<StudentLogin> createState() => _StudentLoginState();
+  State<FacultyLogin> createState() => _FacultyLoginState();
 }
 
-class _StudentLoginState extends State<StudentLogin> {
+class _FacultyLoginState extends State<FacultyLogin> {
+  static String faculty = "faculty";
+  static int a = 1;
   static const String _title = 'Log In';
   final nameController = TextEditingController();
   final passwordController = TextEditingController();
@@ -18,7 +20,7 @@ class _StudentLoginState extends State<StudentLogin> {
       home: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-          centerTitle: true,
+            centerTitle: true,
             title: const Text(_title)
         ),
         body: Padding(
@@ -31,7 +33,7 @@ class _StudentLoginState extends State<StudentLogin> {
                   child: Column(
                     children: [
                       Image.asset(
-                        "assets/icons/student_login.gif",
+                        "assets/icons/teacher_login.gif",
                       ),
                     ],
                   ),
@@ -40,7 +42,7 @@ class _StudentLoginState extends State<StudentLogin> {
                     alignment: Alignment.center,
                     padding: const EdgeInsets.all(10),
                     child: const Text(
-                      'Student',
+                      'Faculty',
                       style: TextStyle(fontSize: 20),
                     )),
                 Container(
@@ -49,7 +51,7 @@ class _StudentLoginState extends State<StudentLogin> {
                     controller: nameController,
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
-                      labelText: 'PRN NO',
+                      labelText: 'ID ',
                     ),
                   ),
                 ),
