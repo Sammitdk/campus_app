@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:campus_subsystem/firebase/messege/message.dart';
+import 'package:campus_subsystem/message.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(const MaterialApp(
