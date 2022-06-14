@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:campus_subsystem/message.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(const MaterialApp(
@@ -8,25 +7,8 @@ void main() => runApp(const MaterialApp(
       home: LoadingPage(),
     ));
 
-class LoadingPage extends StatefulWidget {
+class LoadingPage extends StatelessWidget {
   const LoadingPage({Key? key}) : super(key: key);
-
-  @override
-  State<LoadingPage> createState() => _LoadingPageState();
-}
-
-class _LoadingPageState extends State<LoadingPage> {
-
-  void navToHome() async{
-    await Future.delayed(Duration(seconds: 5));
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Message()));
-  }
-
-  void initState(){
-    super.initState();
-    navToHome();
-    
-  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
