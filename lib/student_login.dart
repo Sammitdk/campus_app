@@ -22,7 +22,7 @@ class _StudentLoginState extends State<StudentLogin> {
           centerTitle: true,
             title: const Text(_title,
             style: TextStyle(
-                fontSize: 25,
+                fontSize: 28,
                 fontFamily: 'Custom'
             ),),
         ),
@@ -46,7 +46,7 @@ class _StudentLoginState extends State<StudentLogin> {
                     padding: const EdgeInsets.all(10),
                     child: const Text(
                       'Student',
-                      style: TextStyle(fontSize: 20,fontFamily: 'Custom'),
+                      style: TextStyle(fontSize: 20),
                     )),
                 Form(
                   key: formkey,

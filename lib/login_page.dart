@@ -12,7 +12,7 @@ class Login extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         children:
         [
-          const SizedBox(height: 100,),
+         // const SizedBox(height: 50,),
           Expanded(
             flex: 2,
             child: Container(
