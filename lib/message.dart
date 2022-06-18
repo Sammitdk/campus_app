@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 class Message extends StatelessWidget {
   static final formkey = GlobalKey<FormState>();
+  const Message({Key? key}) : super(key: key);
   static Widget sendField() => Form(
     key: formkey,
     child: Row(
@@ -16,7 +17,7 @@ class Message extends StatelessWidget {
                   return 'Messege is Empty.';
                 }
               },
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                   border: OutlineInputBorder()
               ),
             ),
@@ -24,9 +25,9 @@ class Message extends StatelessWidget {
         ),
         Expanded(
           flex: 1,
-          child: Padding(padding: EdgeInsets.all(15),
+          child: Padding(padding: const EdgeInsets.all(15),
             child: FloatingActionButton(
-              child: Icon(Icons.send),
+              child: const Icon(Icons.send),
               onPressed: (){
                 if(formkey.currentState!.validate()){
                   print("Ok");

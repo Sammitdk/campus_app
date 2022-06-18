@@ -2,7 +2,7 @@ import 'package:campus_subsystem/firebase/wrapper.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(
-  Main()
+  const Main()
 );
 
 class Main extends StatelessWidget {
@@ -10,7 +10,8 @@ class Main extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Wrapper(),
     );
   }

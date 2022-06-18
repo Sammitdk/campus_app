@@ -12,6 +12,7 @@ class _FacultyLoginState extends State<FacultyLogin> {
   static const String _title = 'Log In';
   final nameController = TextEditingController();
   final passwordController = TextEditingController();
+  final formkey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -21,7 +22,10 @@ class _FacultyLoginState extends State<FacultyLogin> {
         backgroundColor: Colors.white,
         appBar: AppBar(
             centerTitle: true,
-            title: const Text(_title)
+            title: const Text(_title,style: TextStyle(
+              fontSize: 25,
+              fontFamily: 'Custom'
+            ),)
         ),
         body: Padding(
             padding: const EdgeInsets.all(10),
@@ -43,39 +47,64 @@ class _FacultyLoginState extends State<FacultyLogin> {
                     padding: const EdgeInsets.all(10),
                     child: const Text(
                       'Faculty',
-                      style: TextStyle(fontSize: 20),
+                      style: TextStyle(fontSize: 20,fontFamily: 'Custom'),
                     )),
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  child: TextField(
-                    controller: nameController,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'ID ',
-                    ),
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                  child: TextField(
-                    obscureText: true,
-                    controller: passwordController,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Password',
-                    ),
-                  ),
-                ),
-                SizedBox(height: 30,),
-                Container(
-                    height: 50,
-                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                    child: ElevatedButton(
-                      child: const Text('Login'),
-                      onPressed: () {
+                Form(
+                  key: formkey,
+                  child: Column(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(10),
+                        child: TextFormField(
+                          controller: nameController,
+                          validator: (name) {
+                            if(name == null || name.isEmpty){
+                              return 'Enter ID';
+                            }
+                          },
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: 'ID',
+                          ),
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                        child: TextFormField(
+                          obscureText: true,
+                          validator: (pswd){
+                            if(pswd == null || pswd.isEmpty){
+                              return 'Enter Password';
+                            }
+                          },
+                          controller: passwordController,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: 'Password',
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 30,),
+                      Container(
+                          height: 50,
+                          padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                          child: ElevatedButton(
+                            child: const Text('Login'),
+                            onPressed: () {
+                              if(formkey.currentState!.validate()){
+                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Logging In')));
+                                print("${passwordController.text} = ${nameController.text}  ");
+                              }
+                              setState(
+                                      (){
 
-                      },
-                    )
+                                  }
+                              );
+                            },
+                          )
+                      ),
+                    ],
+                  ),
                 ),
               ],
             )),

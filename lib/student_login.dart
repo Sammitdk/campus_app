@@ -20,7 +20,11 @@ class _StudentLoginState extends State<StudentLogin> {
         backgroundColor: Colors.white,
         appBar: AppBar(
           centerTitle: true,
-            title: const Text(_title)
+            title: const Text(_title,
+            style: TextStyle(
+                fontSize: 25,
+                fontFamily: 'Custom'
+            ),),
         ),
         body: Padding(
             padding: const EdgeInsets.all(10),
@@ -42,7 +46,7 @@ class _StudentLoginState extends State<StudentLogin> {
                     padding: const EdgeInsets.all(10),
                     child: const Text(
                       'Student',
-                      style: TextStyle(fontSize: 20),
+                      style: TextStyle(fontSize: 20,fontFamily: 'Custom'),
                     )),
                 Form(
                   key: formkey,
