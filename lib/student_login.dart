@@ -8,6 +8,7 @@ class StudentLogin extends StatefulWidget {
 
 class _StudentLoginState extends State<StudentLogin> {
   static const String _title = 'Log In';
+  final formkey = GlobalKey<FormState>();
   final nameController = TextEditingController();
   final passwordController = TextEditingController();
   @override
@@ -43,6 +44,7 @@ class _StudentLoginState extends State<StudentLogin> {
                       'Student',
                       style: TextStyle(fontSize: 20,fontFamily: 'Custom'),
                     )),
+<<<<<<< HEAD
                 Container(
                   padding: const EdgeInsets.all(10),
                   child: TextField(
@@ -71,9 +73,64 @@ class _StudentLoginState extends State<StudentLogin> {
                     child: ElevatedButton(
                       child: const Text('Login'),
                       onPressed: () {
+=======
+                Form(
+                  key: formkey,
+                  child: Column(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(10),
+                        child: TextFormField(
+                          controller: nameController,
+                          validator: (name) {
+                            if(name == null || name.isEmpty){
+                              return 'Enter PRN';
+                            }
+                          },
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: 'PRN NO',
+                          ),
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                        child: TextFormField(
+                          obscureText: true,
+                          validator: (pswd){
+                            if(pswd == null || pswd.isEmpty){
+                              return 'Enter Password';
+                            }
+                          },
+                          controller: passwordController,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: 'Password',
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 30,),
+                      Container(
+                          height: 50,
+                          padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                          child: ElevatedButton(
+                            child: const Text('Login'),
+                            onPressed: () {
+                              if(formkey.currentState!.validate()){
+                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Logging In')));
+                                print("${passwordController.text} = ${nameController.text}  ");
+                              }
+                              setState(
+                                  (){
+>>>>>>> main
 
-                      },
-                    )
+                                  }
+                              );
+                            },
+                          )
+                      ),
+                    ],
+                  ),
                 ),
               ],
             )),

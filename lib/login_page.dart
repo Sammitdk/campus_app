@@ -20,59 +20,67 @@ class Login extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         children:
         [
-          Container(
-            width: double.infinity,
-            height: 380,
-            child: Image.asset("assets/images/logo.jpg",color: Colors.brown[500],),
+          Expanded(
+            child: Container(
+              width: double.infinity,
+              height: 380,
+              child: Image.asset("assets/images/logo.jpg",color: Colors.brown[500],),
+            ),
           ),
-          Row(
-            children: [
-              Container(
-                width: 195,
-                height: 230,
-                child: InkWell(
-                  onTap: ()
-                  {
-                    Navigator.push(context,  MaterialPageRoute(builder: (context) => const StudentLogin()));
-                  },
-                  child: Card(
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                    margin: const EdgeInsets.all(10),
-                    child: Column(
-                      children: [
-                        Image.asset(
-                          "assets/icons/student_login.gif",
+          Expanded(
+            child: Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    width: 195,
+                    // height: 230,
+                    child: InkWell(
+                      onTap: ()
+                      {
+                        Navigator.push(context,  MaterialPageRoute(builder: (context) => const StudentLogin()));
+                      },
+                      child: Card(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        margin: const EdgeInsets.all(10),
+                        child: Column(
+                          children: [
+                            Image.asset(
+                              "assets/icons/student_login.gif",
+                            ),
+                            Text("Student")
+                          ],
                         ),
-                        Text("Student")
-                      ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              Container(
-                width: 195,
-                height: 230,
-                child: InkWell(
-                  onTap: ()
-                  {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => const FacultyLogin()),);
-                  },
-                  child: Card(
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                    margin: const EdgeInsets.all(10),
-                    child: Column(
-                      children: [
-                        Image.asset(
-                          "assets/icons/teacher_login.gif",
-                          repeat: ImageRepeat.repeat,
+                Expanded(
+                  child: Container(
+                    width: 195,
+                    // height: 230,
+                    child: InkWell(
+                      onTap: ()
+                      {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => const FacultyLogin()),);
+                      },
+                      child: Card(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        margin: const EdgeInsets.all(10),
+                        child: Column(
+                          children: [
+                            Image.asset(
+                              "assets/icons/teacher_login.gif",
+                              repeat: ImageRepeat.repeat,
+                            ),
+                            Text("Faculty")
+                          ],
                         ),
-                        Text("Faculty")
-                      ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           )
         ],
       ),
