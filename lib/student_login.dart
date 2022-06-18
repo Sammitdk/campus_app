@@ -41,7 +41,7 @@ class _StudentLoginState extends State<StudentLogin> {
                     padding: const EdgeInsets.all(10),
                     child: const Text(
                       'Student',
-                      style: TextStyle(fontSize: 20),
+                      style: TextStyle(fontSize: 20,fontFamily: 'Custom'),
                     )),
                 Container(
                   padding: const EdgeInsets.all(10),
@@ -49,7 +49,7 @@ class _StudentLoginState extends State<StudentLogin> {
                     controller: nameController,
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
-                      labelText: 'PRN NO',
+                      labelText: 'Enrollment Number',
                     ),
                   ),
                 ),

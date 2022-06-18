@@ -43,7 +43,7 @@ class _FacultyLoginState extends State<FacultyLogin> {
                     padding: const EdgeInsets.all(10),
                     child: const Text(
                       'Faculty',
-                      style: TextStyle(fontSize: 20),
+                      style: TextStyle(fontSize: 20,fontFamily: 'Custom'),
                     )),
                 Container(
                   padding: const EdgeInsets.all(10),
