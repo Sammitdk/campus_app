@@ -21,52 +21,47 @@ class _FacultyLoginState extends State<FacultyLogin> {
       ),
       body: Padding(
           padding: const EdgeInsets.all(10),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(
-                width: 300,
-                // height: 200,
-                child: Card(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  margin: const EdgeInsets.all(10),
-                  child: Column(
-                    children: [
-                      Image.asset(
-                        "assets/icons/teacher_login.gif",
-                      ),
-                      const Text(
-                        'Faculty',
-                        style: TextStyle(fontSize: 20),
-                      )
-                    ],
-                  ),
+          child: ListView(
+            children: <Widget>[
+              Card(
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                margin: const EdgeInsets.all(10),
+                child: Column(
+                  children: [
+                    Image.asset(
+                      "assets/icons/teacher_login.gif",
+                    ),
+                  ],
                 ),
               ),
+              Container(
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.all(10),
+                  child: const Text(
+                    'Faculty',
+                    style: TextStyle(fontSize: 20),
+                  )),
               Form(
                 key: formkey,
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
-                      // padding: const EdgeInsets.all(10),
-                      margin: EdgeInsets.fromLTRB(70,20,70,10),
+                      padding: const EdgeInsets.only(left: 40,right: 40,bottom: 20),
                       child: TextFormField(
                         controller: nameController,
                         validator: (name) {
                           if(name == null || name.isEmpty){
-                            return 'Enter Mobile Number';
+                            return 'Enter ID';
                           }
                         },
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),
-                          labelText: 'Mobile No.',
+                          labelText: 'Enter ID',
                         ),
                       ),
                     ),
                     Container(
-                      // padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-                      margin: EdgeInsets.fromLTRB(70,20,70,20),
+                      padding: const EdgeInsets.only(left: 40,right: 40,bottom: 20),
                       child: TextFormField(
                         obscureText: true,
                         validator: (pswd){
@@ -81,19 +76,16 @@ class _FacultyLoginState extends State<FacultyLogin> {
                         ),
                       ),
                     ),
-                    // SizedBox(height: 30,),
-                    SizedBox(
+                    Container(
                         height: 50,
-                        width: 150,
-                        // padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                        padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                         child: ElevatedButton(
                           style: ButtonStyle(
-                            shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(30))),
-                          ),
+                            shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(30))),),
                           child: const Text('Sign In',style: TextStyle(fontSize: 20),),
                           onPressed: () {
                             if(formkey.currentState!.validate()){
-                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Logging In')));
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Logging In')));
                               print("${passwordController.text} = ${nameController.text}  ");
                             }
                             setState(
