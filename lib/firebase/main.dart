@@ -3,6 +3,7 @@ import 'package:campus_subsystem/firebase/wrapper.dart';
 import 'package:campus_subsystem/login_page.dart';
 import 'package:campus_subsystem/student_login.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
 import '../loading_page.dart';
 
@@ -23,9 +24,8 @@ class Main extends StatelessWidget {
         '/' :(context) => const Wrapper(),
         'loading_page':(context) => const LoadingPage(),
         'login_page': (context) => const Login(),
-        't_login_form': (context) => const FacultyLogin(),
-        's_login_form': (context) => const StudentLogin(),
-
+        't_login_form': (context) => const KeyboardVisibilityProvider(child: FacultyLogin()),
+        's_login_form': (context) => const KeyboardVisibilityProvider(child: StudentLogin()),
       },
     );
   }

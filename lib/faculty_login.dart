@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
 class FacultyLogin extends StatefulWidget {
   const FacultyLogin({Key? key}) : super(key: key);
@@ -13,7 +14,9 @@ class _FacultyLoginState extends State<FacultyLogin> {
   final passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    final bool isKeyboardVisible = KeyboardVisibilityProvider.isKeyboardVisible(context);
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
       appBar: AppBar(
           centerTitle: true,
@@ -21,9 +24,9 @@ class _FacultyLoginState extends State<FacultyLogin> {
       ),
       body: Padding(
           padding: const EdgeInsets.all(10),
-          child: ListView(
+          child: Column(
             children: <Widget>[
-              Card(
+              isKeyboardVisible ? const SizedBox(height: 100,) : Card(
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 margin: const EdgeInsets.all(10),
                 child: Column(
@@ -36,10 +39,10 @@ class _FacultyLoginState extends State<FacultyLogin> {
               ),
               Container(
                   alignment: Alignment.center,
-                  padding: const EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(20),
                   child: const Text(
                     'Faculty',
-                    style: TextStyle(fontSize: 20),
+                    style: TextStyle(fontSize: 30,fontFamily: 'Custom'),
                   )),
               Form(
                 key: formkey,
