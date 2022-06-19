@@ -11,6 +11,8 @@ class LoadingPage extends StatefulWidget
 }
 
 class _LoadingPageState extends State<LoadingPage> {
+  double screenheight = 0;
+  double screenwidth = 0;
   @override
   void initState()
   {
@@ -22,10 +24,12 @@ class _LoadingPageState extends State<LoadingPage> {
   }
   @override
   Widget build(BuildContext context) {
+    screenheight = MediaQuery.of(context).size.height;
+    screenwidth = MediaQuery.of(context).size.width;
     return Scaffold(
       body: Container(
-        height: double.infinity,
-        width: double.infinity,
+        height: screenheight,
+        width: screenwidth,
         color: Colors.white,
         child: Stack(
           children: [

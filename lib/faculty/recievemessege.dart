@@ -16,7 +16,7 @@ class FacultyMessage extends StatefulWidget {
 }
 
 class _FacultyMessageState extends State<FacultyMessage> {
-  // Firebase messege = FirebaseMessaging.instance;
+  // Firebase message = FirebaseMessaging.instance;
 
   @override
   Widget build(BuildContext context) {
