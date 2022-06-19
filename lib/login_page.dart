@@ -1,5 +1,3 @@
-import 'package:campus_subsystem/faculty_login.dart';
-import 'package:campus_subsystem/student_login.dart';
 import 'package:flutter/material.dart';
 
 class Login extends StatelessWidget {
@@ -37,7 +35,7 @@ class Login extends StatelessWidget {
                     child: InkWell(
                       onTap: ()
                       {
-                        Navigator.push(context,  MaterialPageRoute(builder: (context) => const StudentLogin()));
+                        Navigator.pushNamed(context, 's_login_form');
                       },
                       child: Card(
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -61,7 +59,7 @@ class Login extends StatelessWidget {
                     child: InkWell(
                       onTap: ()
                       {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => const FacultyLogin()),);
+                        Navigator.pushNamed(context, 't_login_form');
                       },
                       child: Card(
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),

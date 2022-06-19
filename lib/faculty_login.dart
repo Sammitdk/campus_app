@@ -7,27 +7,27 @@ class FacultyLogin extends StatefulWidget {
 }
 
 class _FacultyLoginState extends State<FacultyLogin> {
-  static String faculty = "faculty";
-  static int a = 1;
   static const String _title = 'Log In';
+  final formkey = GlobalKey<FormState>();
   final nameController = TextEditingController();
   final passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: _title,
-      home: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-            centerTitle: true,
-            title: const Text(_title)
-        ),
-        body: Padding(
-            padding: const EdgeInsets.all(10),
-            child: ListView(
-              children: <Widget>[
-                Card(
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+          centerTitle: true,
+          title: const Text(_title)
+      ),
+      body: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                width: 300,
+                // height: 200,
+                child: Card(
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   margin: const EdgeInsets.all(10),
                   child: Column(
@@ -35,52 +35,80 @@ class _FacultyLoginState extends State<FacultyLogin> {
                       Image.asset(
                         "assets/icons/teacher_login.gif",
                       ),
+                      const Text(
+                        'Faculty',
+                        style: TextStyle(fontSize: 20),
+                      )
                     ],
                   ),
                 ),
-                Container(
-                    alignment: Alignment.center,
-                    padding: const EdgeInsets.all(10),
-                    child: const Text(
-                      'Faculty',
-                      style: TextStyle(fontSize: 20),
-                    )),
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  child: TextField(
-                    controller: nameController,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'ID ',
+              ),
+              Form(
+                key: formkey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      // padding: const EdgeInsets.all(10),
+                      margin: EdgeInsets.fromLTRB(70,20,70,10),
+                      child: TextFormField(
+                        controller: nameController,
+                        validator: (name) {
+                          if(name == null || name.isEmpty){
+                            return 'Enter Mobile Number';
+                          }
+                        },
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Mobile No.',
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                  child: TextField(
-                    obscureText: true,
-                    controller: passwordController,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Password',
+                    Container(
+                      // padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                      margin: EdgeInsets.fromLTRB(70,20,70,20),
+                      child: TextFormField(
+                        obscureText: true,
+                        validator: (pswd){
+                          if(pswd == null || pswd.isEmpty){
+                            return 'Enter Password';
+                          }
+                        },
+                        controller: passwordController,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Password',
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-                SizedBox(height: 30,),
-                Container(
-                    height: 50,
-                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                    child: ElevatedButton(
-                      child: const Text('Login'),
-                      onPressed: () {
+                    // SizedBox(height: 30,),
+                    SizedBox(
+                        height: 50,
+                        width: 150,
+                        // padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                        child: ElevatedButton(
+                          style: ButtonStyle(
+                            shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(30))),
+                          ),
+                          child: const Text('Sign In',style: TextStyle(fontSize: 20),),
+                          onPressed: () {
+                            if(formkey.currentState!.validate()){
+                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Logging In')));
+                              print("${passwordController.text} = ${nameController.text}  ");
+                            }
+                            setState(
+                                    (){
 
-                      },
-                    )
+                                }
+                            );
+                          },
+                        )
+                    ),
+                  ],
                 ),
-              ],
-            )),
-      ),
-
+              ),
+            ],
+          )),
     );
   }
 }
