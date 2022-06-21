@@ -1,5 +1,4 @@
-import 'package:campus_subsystem/firebase/test.dart';
-import 'package:campus_subsystem/loading_page.dart';
+import 'package:campus_subsystem/firebase/signIn.dart';
 import 'package:flutter/material.dart';
 
 class Wrapper extends StatelessWidget {
@@ -7,6 +6,11 @@ class Wrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LoadingPage();
+    print(Auth.signIn(
+      username: '2019087344',
+      password: 'RAJV25012002'
+    ));
+    // return LoadingPage();
+    return Text('data');
   }
 }
