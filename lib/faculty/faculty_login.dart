@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
-class StudentLogin extends StatefulWidget {
-  const StudentLogin({Key? key}) : super(key: key);
+class FacultyLogin extends StatefulWidget {
+  const FacultyLogin({Key? key}) : super(key: key);
   @override
-  State<StudentLogin> createState() => _StudentLoginState();
+  State<FacultyLogin> createState() => _FacultyLoginState();
 }
 
-class _StudentLoginState extends State<StudentLogin> {
+class _FacultyLoginState extends State<FacultyLogin> {
   static const String _title = 'Log In';
   final formkey = GlobalKey<FormState>();
   final nameController = TextEditingController();
@@ -19,6 +19,7 @@ class _StudentLoginState extends State<StudentLogin> {
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: Colors.teal,
           centerTitle: true,
           title: const Text(_title)
       ),
@@ -32,7 +33,7 @@ class _StudentLoginState extends State<StudentLogin> {
                 child: Column(
                   children: [
                     Image.asset(
-                      "assets/icons/student_login.gif",
+                      "assets/icons/teacher_login.gif",
                     ),
                   ],
                 ),
@@ -41,7 +42,7 @@ class _StudentLoginState extends State<StudentLogin> {
                   alignment: Alignment.center,
                   padding: const EdgeInsets.all(20),
                   child: const Text(
-                    'Student',
+                    'Faculty',
                     style: TextStyle(fontSize: 30,fontFamily: 'Custom'),
                   )),
               Form(
@@ -54,12 +55,12 @@ class _StudentLoginState extends State<StudentLogin> {
                         controller: nameController,
                         validator: (name) {
                           if(name == null || name.isEmpty){
-                            return 'Enter Prn';
+                            return 'Enter ID';
                           }
                         },
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),
-                          labelText: 'PRN NO',
+                          labelText: 'Enter ID',
                         ),
                       ),
                     ),
@@ -84,8 +85,8 @@ class _StudentLoginState extends State<StudentLogin> {
                         padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                         child: ElevatedButton(
                           style: ButtonStyle(
-                            shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(30))),),
-                          child: const Text('Sign In',style: TextStyle(fontSize: 20),),
+                            shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))),),
+                          child: const Text('Sign In',style: TextStyle(fontSize: 17),),
                           onPressed: () {
                             if(formkey.currentState!.validate()){
                               ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Logging In')));
