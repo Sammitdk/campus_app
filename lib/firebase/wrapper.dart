@@ -1,4 +1,5 @@
-import 'package:campus_subsystem/loadingpage.dart';
+import 'package:campus_subsystem/firebase/test.dart';
+import 'package:campus_subsystem/loading_page.dart';
 import 'package:flutter/material.dart';
 
 class Wrapper extends StatelessWidget {
@@ -6,8 +7,6 @@ class Wrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: LoadingPage(),
-    );
+    return LoadingPage();
   }
 }
