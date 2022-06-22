@@ -1,3 +1,4 @@
+
 import 'package:campus_subsystem/faculty/faculty_login.dart';
 import 'package:campus_subsystem/firebase/wrapper.dart';
 import 'package:campus_subsystem/login_page.dart';
@@ -18,6 +19,23 @@ void main()
   runApp(
       const Main()
   );
+import 'package:campus_subsystem/faculty_login.dart';
+import 'package:campus_subsystem/firebase/wrapper.dart';
+import 'package:campus_subsystem/firebase_options.dart';
+import 'package:campus_subsystem/login_page.dart';
+import 'package:campus_subsystem/student_login.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
+
+import 'loading_page.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform
+  );
+  runApp(const Main());
 }
 
 class Main extends StatelessWidget {
@@ -27,7 +45,11 @@ class Main extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       // home: Wrapper(),
+
       initialRoute: 'loading_page',
+
+      initialRoute: '/',
+
       routes: {
         '/' :(context) => const Wrapper(),
         'loading_page':(context) => const LoadingPage(),
@@ -35,6 +57,7 @@ class Main extends StatelessWidget {
         't_login_form': (context) => const KeyboardVisibilityProvider(child: FacultyLogin()),
         's_login_form': (context) => const KeyboardVisibilityProvider(child: StudentLogin()),
         'student_dashboard' : (context) => const StudentDashboard(),
+
       },
     );
   }

@@ -5,16 +5,24 @@ class Login extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        toolbarHeight: 140,
+        backgroundColor: Colors.white,
+        title: Container(
+          child: Image.asset("assets/images/welcome.gif"),
+        ),
+        centerTitle: true,
+      ),
       backgroundColor: Colors.white,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children:
         [
           Expanded(
-            flex: 2,
             child: Container(
               width: double.infinity,
-              child: Image.asset("assets/images/welcome.gif",),
+              height: 380,
+              child: Image.asset("assets/images/logo.jpg",color: Colors.brown[500],),
             ),
           ),
           Expanded(
@@ -71,7 +79,7 @@ class Login extends StatelessWidget {
                 ),
               ],
             ),
-          ),
+          )
         ],
       ),
     );
