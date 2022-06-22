@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
+
 class StudentDashboard extends StatelessWidget {
   const StudentDashboard({Key? key}) : super(key: key);
+
 
   @override
   Widget build(BuildContext context) {
@@ -9,12 +11,13 @@ class StudentDashboard extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text("Dashboard",),
+        actions: [
+        ],
       ),
       drawer: const Drawer(
-
       ),
       body: Padding(
-        padding: const EdgeInsetsDirectional.only(top: 5,start: 10,end: 10),
+        padding: const EdgeInsetsDirectional.all(20),
         child: Column(
           children: [
             Row(
@@ -26,7 +29,7 @@ class StudentDashboard extends StatelessWidget {
                           elevation: 5,
                           child: Image.asset("assets/images/timetable.gif")
                       ),
-                      const Text("Events",style: TextStyle(fontFamily: 'Custom',fontSize: 20),),
+                      const Text("Time Table",style: TextStyle(fontFamily: 'Custom',fontSize: 20),),
                     ],
                   ),
 
