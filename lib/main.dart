@@ -1,37 +1,21 @@
-
+import 'package:flutter/material.dart';
 import 'package:campus_subsystem/faculty/faculty_login.dart';
 import 'package:campus_subsystem/firebase/wrapper.dart';
 import 'package:campus_subsystem/login_page.dart';
 import 'package:campus_subsystem/student/student_dashboard.dart';
 import 'package:campus_subsystem/student/student_login.dart';
-import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter/services.dart';
+import 'firebase_options.dart';
+import 'loading_page.dart';
 
-import '../loading_page.dart';
 
-void main()
-{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [
     SystemUiOverlay.bottom, //This line is used for showing the bottom bar
   ]);
-  runApp(
-      const Main()
-  );
-import 'package:campus_subsystem/faculty_login.dart';
-import 'package:campus_subsystem/firebase/wrapper.dart';
-import 'package:campus_subsystem/firebase_options.dart';
-import 'package:campus_subsystem/login_page.dart';
-import 'package:campus_subsystem/student_login.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
-
-import 'loading_page.dart';
-
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform
   );
@@ -45,10 +29,7 @@ class Main extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       // home: Wrapper(),
-
       initialRoute: 'loading_page',
-
-      initialRoute: '/',
 
       routes: {
         '/' :(context) => const Wrapper(),
@@ -56,7 +37,8 @@ class Main extends StatelessWidget {
         'login_page': (context) => const Login(),
         't_login_form': (context) => const KeyboardVisibilityProvider(child: FacultyLogin()),
         's_login_form': (context) => const KeyboardVisibilityProvider(child: StudentLogin()),
-        'student_dashboard' : (context) => const StudentDashboard(),
+        's_dashboard' : (context) => const StudentDashboard(),
+        // 's_profile' : (context) => const StudentProfile(prn: prn)
 
       },
     );
