@@ -1,5 +1,8 @@
+import 'package:campus_subsystem/student/student_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
+
+import '../firebase/signIn.dart';
 
 class StudentLogin extends StatefulWidget {
   const StudentLogin({Key? key}) : super(key: key);
@@ -92,20 +95,22 @@ class _StudentLoginState extends State<StudentLogin> {
                                   onPressed: () {
                                     if(formkey.currentState!.validate())
                                     {
-                                      print("${passwordController.text} = ${nameController.text}  ");
-                                      if(nameController.text =='2019087340' && passwordController.text =="Sammit@123")
-                                      {
-                                          Navigator.pushNamed(context,'student_dashboard');
+                                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Logging In'),));
+
+                                      // Delay not working :
+                                      // process has to wait before going to next page
+                                      // for authenticate user
+
+                                      if(Auth.signIn(username: nameController.text,password: passwordController.text) != null){
+                                        Future.delayed(Duration(seconds: 3));
+                                        Navigator.of(this.context).pushReplacement(MaterialPageRoute(builder: (_) => StudentProfile(prn: nameController.text)));
                                       }
-                                      else
-                                      {
-                                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Wrong ID and Password'),));
+                                      else{
+                                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Incorrect PRN or Password'),));
                                       }
+                                    }else{
+                                      setState(() {});
                                     }
-                                    setState(
-                                            (){
-                                        }
-                                    );
                                   },
                                 )
                             ),

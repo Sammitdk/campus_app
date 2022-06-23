@@ -36,16 +36,16 @@ class StudentDashboard extends StatelessWidget {
                 ),
                 const SizedBox(width: 20,),
                 Expanded(
-                  child: Column(
-                    children: [
-                      Card(
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                        elevation: 5,
-                        child: Image.asset("assets/images/notes.gif",),
-                      ),
+                  child: Card(
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    elevation: 5,
+                    child: Column(
+                      children: [
+                      Image.asset("assets/images/notes.gif",),
                       const Text("Notes",style: TextStyle(fontFamily: 'Custom',fontSize: 20),),
-                    ],
-                  ),
+                      ],
+                    ),
+                  )
                 ),
               ],
             ),
