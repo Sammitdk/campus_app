@@ -1,8 +1,8 @@
-import 'package:campus_subsystem/firebase/signIn.dart';
-import 'package:campus_subsystem/firebase/test.dart';
+import 'package:campus_subsystem/login_page.dart';
 import 'package:campus_subsystem/student/student_dashboard.dart';
-import 'package:campus_subsystem/student/student_profile.dart';
-import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
 
 class Wrapper extends StatelessWidget {
   const Wrapper({Key? key}) : super(key: key);
@@ -10,7 +10,15 @@ class Wrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context)
   {
-    dynamic user = Auth.signIn(username: '2019087344',password: 'RAJ25012002');
-    return const StudentDashboard();
+    final user = Provider.of<User?>(context);
+
+    if(user == null)
+      {
+        return const Login();
+      }
+    else
+      {
+        return StudentDashboard();
+      }
   }
 }

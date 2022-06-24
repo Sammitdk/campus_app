@@ -16,6 +16,7 @@ class _StudentLoginState extends State<StudentLogin> {
   final formkey = GlobalKey<FormState>();
   final nameController = TextEditingController();
   final passwordController = TextEditingController();
+  final Auth auth = Auth();
   @override
   Widget build(BuildContext context) {
     final scrrenheight = MediaQuery.of(context).size.height;
@@ -93,25 +94,23 @@ class _StudentLoginState extends State<StudentLogin> {
                                   style: ButtonStyle(
                                     shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))),),
                                   child: const Text('Sign In',style: TextStyle(fontSize: 17),),
-                                  onPressed: () {
+                                  onPressed: () async {
                                     if(formkey.currentState!.validate())
                                     {
-                                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Logging In'),));
+                                      // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Logging In'),));
 
-                                      // Delay not working :
-                                      // process has to wait before going to next page
-                                      // for authenticate user
-
-                                      if(Auth.signIn(username: nameController.text,password: passwordController.text) != null)
+                                      if(await auth.signIn(username: nameController.text,password: passwordController.text) != null)
                                       {
                                         // Future.delayed(const Duration(seconds: 3));
-                                        Navigator.of(this.context).pushReplacement(MaterialPageRoute(builder: (_) => const StudentDashboard()));
+                                        Navigator.of(this.context).pushReplacement(MaterialPageRoute(builder: (_) => StudentDashboard()));
                                       }
                                       else
                                       {
-                                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Incorrect PRN or Password'),));
+                                        // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Incorrect PRN or Password'),));
                                       }
-                                    }else{
+                                    }
+                                    else
+                                    {
                                       setState(() {});
                                     }
                                   },

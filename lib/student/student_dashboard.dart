@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
+import '../firebase/signIn.dart';
+
 
 class StudentDashboard extends StatelessWidget {
-  const StudentDashboard({Key? key}) : super(key: key);
-
+  StudentDashboard({Key? key}) : super(key: key);
+  final Auth auth = Auth();
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +51,6 @@ class StudentDashboard extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 30,),
             Row(
               children: [
                 Expanded(
@@ -78,7 +79,6 @@ class StudentDashboard extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 20,),
             Row(
               children: [
                 Expanded(
@@ -107,26 +107,41 @@ class StudentDashboard extends StatelessWidget {
                 ),
               ],
             ),
+            Padding(
+              padding: const EdgeInsetsDirectional.only(top: 20),
+              child: SizedBox(
+                height: 50,
+                width: 100,
+                child: ElevatedButton(
+                    style: ButtonStyle(
+                      shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))),),
+                    child: const Text('Sign Out',style: TextStyle(fontFamily: 'Custom',),textAlign: TextAlign.center,),
+                    onPressed: () async {
+                      await auth.signOut();
+                    }),
+              ),
+            ),
           ],
         ),
       ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsetsDirectional.fromSTEB(40, 0, 40, 10),
-        child: Container(
-          height: 70,
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.all(Radius.circular(40),),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black26,
-                blurRadius:10,
-                offset: Offset(2, 2),
-              )
-            ]
-          ),
-        ),
-      ),
+      // bottomNavigationBar: Padding(
+      //   padding: const EdgeInsetsDirectional.fromSTEB(40, 0, 40, 10),
+      //   child: Container(
+      //     height: 70,
+      //     decoration: const BoxDecoration(
+      //       color: Colors.white,
+      //       borderRadius: BorderRadius.all(Radius.circular(40),),
+      //       boxShadow: [
+      //         BoxShadow(
+      //           color: Colors.black26,
+      //           blurRadius:10,
+      //           offset: Offset(2, 2),
+      //         )
+      //       ]
+      //     ),
+      //     child: const Text("Sign Out",style: TextStyle(fontFamily: 'Custom',fontSize: 30),textAlign: TextAlign.center,),
+      //   ),
+      // ),
     );
   }
 }
