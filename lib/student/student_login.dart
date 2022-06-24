@@ -1,3 +1,4 @@
+import 'package:campus_subsystem/student/student_dashboard.dart';
 import 'package:campus_subsystem/student/student_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -101,11 +102,13 @@ class _StudentLoginState extends State<StudentLogin> {
                                       // process has to wait before going to next page
                                       // for authenticate user
 
-                                      if(Auth.signIn(username: nameController.text,password: passwordController.text) != null){
-                                        Future.delayed(Duration(seconds: 3));
-                                        Navigator.of(this.context).pushReplacement(MaterialPageRoute(builder: (_) => StudentProfile(prn: nameController.text)));
+                                      if(Auth.signIn(username: nameController.text,password: passwordController.text) != null)
+                                      {
+                                        // Future.delayed(const Duration(seconds: 3));
+                                        Navigator.of(this.context).pushReplacement(MaterialPageRoute(builder: (_) => const StudentDashboard()));
                                       }
-                                      else{
+                                      else
+                                      {
                                         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Incorrect PRN or Password'),));
                                       }
                                     }else{
