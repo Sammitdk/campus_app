@@ -7,106 +7,120 @@ class StudentDashboard extends StatelessWidget {
   StudentDashboard({Key? key}) : super(key: key);
   final Auth auth = Auth();
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text("Dashboard",),
+        elevation: 0,
         actions: [
+          const Text("Profile",style: TextStyle(height: 2,fontFamily:'Custom',fontSize: 20),),
+          IconButton(
+            icon: const Icon(Icons.account_circle_rounded,size: 35,),
+            onPressed: ()
+            {
+              Navigator.pushNamed(context, 's_profile');
+            },
+          )
         ],
-      ),
-      drawer: const Drawer(
+        title: const Text("Dashboard",style: TextStyle(fontSize: 23),),
       ),
       body: Padding(
         padding: const EdgeInsetsDirectional.all(20),
         child: Column(
           children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    children: [
-                      Card(
-                          elevation: 5,
-                          child: Image.asset("assets/images/timetable.gif")
+            Expanded(
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Card(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      elevation: 5,
+                      child: Column(
+                        children: [
+                          Image.asset("assets/images/timetable.gif",),
+                          const Text("Time Table",style: TextStyle(fontFamily: 'Custom',fontSize: 20),),
+                        ],
                       ),
-                      const Text("Time Table",style: TextStyle(fontFamily: 'Custom',fontSize: 20),),
-                    ],
+                    )
                   ),
-
-                ),
-                const SizedBox(width: 20,),
-                Expanded(
-                  child: Card(
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                    elevation: 5,
-                    child: Column(
-                      children: [
-                      Image.asset("assets/images/notes.gif",),
-                      const Text("Notes",style: TextStyle(fontFamily: 'Custom',fontSize: 20),),
-                      ],
+                  Expanded(
+                    child: Card(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      elevation: 5,
+                      child: Column(
+                        children: [
+                        Image.asset("assets/images/notes.gif",),
+                        const Text("Notes",style: TextStyle(fontFamily: 'Custom',fontSize: 20),),
+                        ],
+                      ),
+                    )
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: Row(
+                children: [
+                  Expanded(
+                    child:Card(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      elevation: 5,
+                      child: Column(
+                        children: [
+                          Image.asset("assets/images/attendance.gif",),
+                          const Text("Attendance",style: TextStyle(fontFamily: 'Custom',fontSize: 20),),
+                        ],
+                      ),
                     ),
-                  )
-                ),
-              ],
+                  ),
+                  Expanded(
+                    child: Card(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      elevation: 5,
+                      child: Column(
+                        children: [
+                          Image.asset("assets/images/events.gif",),
+                          const Text("Events",style: TextStyle(fontFamily: 'Custom',fontSize: 20),),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-            Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    children: [
-                      Card(
-                          elevation: 5,
-                          child: Image.asset("assets/images/attendance.gif")
+            Expanded(
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Card(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      elevation: 5,
+                      child: Column(
+                        children: [
+                          Image.asset("assets/images/message.gif",),
+                          const Text("Message",style: TextStyle(fontFamily: 'Custom',fontSize: 20),),
+                        ],
                       ),
-                      const Text("Attendance",style: TextStyle(fontFamily: 'Custom',fontSize: 20),),
-                    ],
+                    )
                   ),
-                ),
-                const SizedBox(width: 30,),
-                Expanded(
-                  child: Column(
-                    children: [
-                      Card(
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                        elevation: 5,
-                        child: Image.asset("assets/images/events.gif",),
+                  Expanded(
+                    child: Card(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      elevation: 5,
+                      child: Column(
+                        children: [
+                          Image.asset("assets/images/result.gif",),
+                          const Text("Result",style: TextStyle(fontFamily: 'Custom',fontSize: 20),),
+                        ],
                       ),
-                      const Text("Events",style: TextStyle(fontFamily: 'Custom',fontSize: 20),),
-                    ],
+                    )
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-            Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    children: [
-                      Card(
-                          elevation: 5,
-                          child: Image.asset("assets/images/message.gif")
-                      ),
-                      const Text("Message",style: TextStyle(fontFamily: 'Custom',fontSize: 20),),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 20,),
-                Expanded(
-                  child: Column(
-                    children: [
-                      Card(
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                        elevation: 5,
-                        child: Image.asset("assets/images/result.gif",),
-                      ),
-                      const Text("Result",style: TextStyle(fontFamily: 'Custom',fontSize: 20),),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+
             Padding(
               padding: const EdgeInsetsDirectional.only(top: 20),
               child: SizedBox(
@@ -145,3 +159,4 @@ class StudentDashboard extends StatelessWidget {
     );
   }
 }
+

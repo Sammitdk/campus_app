@@ -1,3 +1,4 @@
+import 'package:campus_subsystem/student/profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:campus_subsystem/faculty/faculty_login.dart';
@@ -44,7 +45,7 @@ class Main extends StatelessWidget {
           't_login_form': (context) => const KeyboardVisibilityProvider(child: FacultyLogin()),
           's_login_form': (context) => const KeyboardVisibilityProvider(child: StudentLogin()),
           's_dashboard' : (context) => StudentDashboard(),
-          // 's_profile' : (context) => const StudentProfile(prn: prn)
+          's_profile' : (context) => const Profile(),
 
         },
       ),

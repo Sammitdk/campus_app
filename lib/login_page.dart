@@ -12,7 +12,7 @@ class Login extends StatelessWidget {
         [
           Expanded(
             flex: 2,
-            child: Container(
+            child: SizedBox(
               width: double.infinity,
               child: Image.asset("assets/images/welcome.gif",),
             ),
