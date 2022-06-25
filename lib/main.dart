@@ -44,7 +44,6 @@ class Main extends StatelessWidget {
           'login_page': (context) => const Login(),
           't_login_form': (context) => const KeyboardVisibilityProvider(child: FacultyLogin()),
           's_login_form': (context) => const KeyboardVisibilityProvider(child: StudentLogin()),
-          's_dashboard' : (context) => StudentDashboard(),
           's_profile' : (context) => const Profile(),
 
         },
