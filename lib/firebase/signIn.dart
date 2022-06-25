@@ -7,15 +7,13 @@ class Auth
 
 
   User? _userFromCredUser(User? user) {
-    return user != null ? user : null;
+    return user;
   }
 
   Stream<User?> get user {
-    return auth.authStateChanges().map((User? user) =>
-        _userFromCredUser(user));
+    return auth.authStateChanges().map(_userFromCredUser);
   }
 
-  //sign in Anonymously
   Future signIn({required String username, required String password}) async
   {
     const domain = '@dyp.com';
