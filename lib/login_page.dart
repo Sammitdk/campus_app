@@ -37,7 +37,7 @@ class Login extends StatelessWidget {
                             Image.asset(
                               "assets/icons/student_login.gif",
                             ),
-                            Text("Student")
+                            const Text("Student")
                           ],
                         ),
                       ),
@@ -62,7 +62,7 @@ class Login extends StatelessWidget {
                               "assets/icons/teacher_login.gif",
                               repeat: ImageRepeat.repeat,
                             ),
-                            Text("Faculty")
+                            const Text("Faculty")
                           ],
                         ),
                       ),

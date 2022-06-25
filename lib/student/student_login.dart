@@ -28,7 +28,7 @@ class _StudentLoginState extends State<StudentLogin> {
       appBar: AppBar(
           centerTitle: true,
           title: const Text(_title),
-        backgroundColor: Colors.teal,
+        backgroundColor: Colors.blueAccent,
       ),
       body: SingleChildScrollView(
         child: Padding(
