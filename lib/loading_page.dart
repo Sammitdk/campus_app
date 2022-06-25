@@ -18,8 +18,8 @@ class _LoadingPageState extends State<LoadingPage> {
   {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_)  async {
-      Future.delayed(const Duration(seconds: 3));
-      await Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const Wrapper()));
+      await Future.delayed(const Duration(seconds: 3));
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const Wrapper()));
     });
   }
   @override

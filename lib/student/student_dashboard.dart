@@ -14,29 +14,6 @@ class StudentDashboard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      // appBar: AppBar(
-      //   elevation: 0,
-      //   actions: [
-      //     // const Text("SignOut",style: TextStyle(height: 2,fontFamily:'Custom',fontSize: 15),),
-      //     // IconButton(
-      //     //   icon: const Icon(Icons.account_circle_rounded,size: 35,),
-      //     //   onPressed: () async {
-      //     //     await auth.signOut();
-      //     //   },
-      //     // ),
-      //     TextButton.icon(
-      //         onPressed: () async {
-      //           await auth.signOut();
-      //         },
-      //         label: Text(prn),
-      //         icon: const Icon(Icons.precision_manufacturing_outlined),
-      //       style: ButtonStyle(
-      //         backgroundColor: MaterialStateProperty.all<Color>(Colors.yellow),
-      //       )
-      //     )
-      //   ],
-      //   title: const Text("Dashboard",style: TextStyle(fontSize: 23),),
-      // ),
       body: Padding(
         padding: const EdgeInsetsDirectional.all(20),
         child: Column(
@@ -162,7 +139,6 @@ class StudentDashboard extends StatelessWidget {
                         },
                       child: const Icon(
                           Icons.home_filled
-
                       )
                     ),
                   ),
@@ -172,7 +148,6 @@ class StudentDashboard extends StatelessWidget {
                         foregroundColor: Colors.black,
                         backgroundColor: Colors.white,
                         onPressed: () {
-                          Navigator.pushNamed(context, 'routeName');
                         },
                         child: const Icon(
                             Icons.message
@@ -184,8 +159,8 @@ class StudentDashboard extends StatelessWidget {
                     child: FloatingActionButton(
                         foregroundColor: Colors.black,
                         backgroundColor: Colors.white,
-                        onPressed: () {
-                          Navigator.pushNamed(context, 'routeName');
+                        onPressed: () async {
+                          await auth.signOut();
                         },
                         child: const Icon(
                             Icons.logout
@@ -202,31 +177,3 @@ class StudentDashboard extends StatelessWidget {
     );
   }
 }
-
-// {
-// Row(
-// children: [
-// Expanded(
-// child: FloatingActionButton(
-// onPressed: () {
-// Navigator.pushNamed(context, 'routeName');
-// }
-// ),
-// ),
-// Expanded(
-// child: FloatingActionButton(
-// onPressed: () {
-// Navigator.pushNamed(context, 'routeName');
-// }
-// ),
-// ),
-// Expanded(
-// child: FloatingActionButton(
-// onPressed: () {
-// Navigator.pushNamed(context, 'routeName');
-// }
-// ),
-// ),
-// ],
-// ),
-// }

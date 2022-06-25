@@ -37,7 +37,6 @@ class Main extends StatelessWidget {
         // home: Wrapper(),
         initialRoute: 'loading_page',
 
-
         routes: {
           '/' :(context) =>  const Wrapper(),
           'loading_page':(context) => const LoadingPage(),
@@ -45,7 +44,6 @@ class Main extends StatelessWidget {
           't_login_form': (context) => const KeyboardVisibilityProvider(child: FacultyLogin()),
           's_login_form': (context) => const KeyboardVisibilityProvider(child: StudentLogin()),
           's_profile' : (context) => const Profile(),
-
         },
       ),
     );
