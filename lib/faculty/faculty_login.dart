@@ -19,92 +19,94 @@ class _FacultyLoginState extends State<FacultyLogin> {
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.teal,
+        backgroundColor: Colors.blueAccent,
           centerTitle: true,
           title: const Text(_title)
       ),
-      body: Padding(
-          padding: const EdgeInsets.all(10),
-          child: Column(
-            children: <Widget>[
-              isKeyboardVisible ? const SizedBox(height: 100,) : Card(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                margin: const EdgeInsets.all(10),
-                child: Column(
-                  children: [
-                    Image.asset(
-                      "assets/icons/teacher_login.gif",
-                    ),
-                  ],
+      body: SingleChildScrollView(
+        child: Padding(
+            padding: const EdgeInsets.all(10),
+            child: Column(
+              children: <Widget>[
+                isKeyboardVisible ? const SizedBox(height: 100,) : Container(
+                  // shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                   margin: const EdgeInsets.all(10),
+                  child: Column(
+                    children: [
+                      Image.asset(
+                        "assets/icons/teacher_login.gif",
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              Container(
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.all(20),
-                  child: const Text(
-                    'Faculty',
-                    style: TextStyle(fontSize: 30,fontFamily: 'Custom'),
-                  )),
-              Form(
-                key: formkey,
-                child: Column(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.only(left: 40,right: 40,bottom: 20),
-                      child: TextFormField(
-                        controller: nameController,
-                        validator: (name) {
-                          if(name == null || name.isEmpty){
-                            return 'Enter ID';
-                          }
-                        },
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'Enter ID',
-                        ),
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.only(left: 40,right: 40,bottom: 20),
-                      child: TextFormField(
-                        obscureText: true,
-                        validator: (pswd){
-                          if(pswd == null || pswd.isEmpty){
-                            return 'Enter Password';
-                          }
-                        },
-                        controller: passwordController,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'Password',
-                        ),
-                      ),
-                    ),
-                    Container(
-                        height: 50,
-                        padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                        child: ElevatedButton(
-                          style: ButtonStyle(
-                            shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))),),
-                          child: const Text('Sign In',style: TextStyle(fontSize: 17),),
-                          onPressed: () {
-                            if(formkey.currentState!.validate()){
-                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Logging In')));
-                              print("${passwordController.text} = ${nameController.text}  ");
+                Container(
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.all(20),
+                    child: const Text(
+                      'Faculty',
+                      style: TextStyle(fontSize: 30,fontFamily: 'Custom'),
+                    )),
+                Form(
+                  key: formkey,
+                  child: Column(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.only(left: 40,right: 40,bottom: 20),
+                        child: TextFormField(
+                          controller: nameController,
+                          validator: (name) {
+                            if(name == null || name.isEmpty){
+                              return 'Enter ID';
                             }
-                            setState(
-                                    (){
-
-                                }
-                            );
                           },
-                        )
-                    ),
-                  ],
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: 'Enter ID',
+                          ),
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.only(left: 40,right: 40,bottom: 20),
+                        child: TextFormField(
+                          obscureText: true,
+                          validator: (pswd){
+                            if(pswd == null || pswd.isEmpty){
+                              return 'Enter Password';
+                            }
+                          },
+                          controller: passwordController,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: 'Password',
+                          ),
+                        ),
+                      ),
+                      Container(
+                          height: 50,
+                          padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                          child: ElevatedButton(
+                            style: ButtonStyle(
+                              shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))),),
+                            child: const Text('Sign In',style: TextStyle(fontSize: 17),),
+                            onPressed: () {
+                              if(formkey.currentState!.validate()){
+                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Logging In')));
+                                print("${passwordController.text} = ${nameController.text}  ");
+                              }
+                              setState(
+                                      (){
+
+                                  }
+                              );
+                            },
+                          )
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          )),
+              ],
+            )),
+      ),
     );
   }
 }
