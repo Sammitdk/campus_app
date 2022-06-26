@@ -4,8 +4,8 @@ import '../firebase/signIn.dart';
 
 
 class StudentDashboard extends StatelessWidget {
-  final String prn;
-  StudentDashboard({Key? key,required this.prn}) : super(key: key);
+  final Map<String,dynamic> info;
+  StudentDashboard({Key? key,required this.info}) : super(key: key);
   final Auth auth = Auth();
 
 
@@ -27,7 +27,7 @@ class StudentDashboard extends StatelessWidget {
               onPressed: () async {
                 await auth.signOut();
               },
-              label: Text(prn),
+              label: Text('prn'),
               icon: const Icon(Icons.precision_manufacturing_outlined),
             style: ButtonStyle(
               backgroundColor: MaterialStateProperty.all<Color>(Colors.yellow),

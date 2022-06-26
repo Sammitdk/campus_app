@@ -1,5 +1,6 @@
 import 'package:campus_subsystem/login_page.dart';
 import 'package:campus_subsystem/student/student_dashboard.dart';
+import 'package:campus_subsystem/student/student_loading_page.dart';
 import 'package:campus_subsystem/student/student_profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,7 +14,7 @@ class Wrapper extends StatelessWidget {
   {
     // StudentProfile stu = StudentProfile(prn: '2019087340',);
     print('Wrapper');
-    return StudentProfile(prn: '2019087340');
+    // return StudentProfile(prn: '2019087340');
     final user = Provider.of<User?>(context);
 
     if(user == null){
@@ -23,7 +24,7 @@ class Wrapper extends StatelessWidget {
         final email = user.email;
         if(email != null){
           print(email.replaceAll('@dyp.com', ''));
-          return StudentDashboard(
+          return StudentLoading(
             prn: email.replaceAll('@dyp.com', ''),
           );
         }
