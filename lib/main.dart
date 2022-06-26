@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:campus_subsystem/faculty/faculty_login.dart';
 import 'package:campus_subsystem/firebase/wrapper.dart';
 import 'package:campus_subsystem/login_page.dart';
-import 'package:campus_subsystem/student/student_dashboard.dart';
 import 'package:campus_subsystem/student/student_login.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -45,7 +44,6 @@ class Main extends StatelessWidget {
           't_login_form': (context) => const KeyboardVisibilityProvider(child: FacultyLogin()),
           's_login_form': (context) => const KeyboardVisibilityProvider(child: StudentLogin()),
           's_profile' : (context) => const Profile(),
-
         },
       ),
     );
