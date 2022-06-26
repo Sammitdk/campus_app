@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-
 import '../firebase/signIn.dart';
 
 
 class StudentDashboard extends StatelessWidget {
-  final String prn;
-  StudentDashboard({Key? key,required this.prn}) : super(key: key);
+  final Map<String,dynamic> info;
+  StudentDashboard({Key? key,required this.info}) : super(key: key);
   final Auth auth = Auth();
 
 
@@ -18,44 +16,44 @@ class StudentDashboard extends StatelessWidget {
         padding: const EdgeInsetsDirectional.all(20),
         child: Column(
           children: [
-             Expanded(
+            Expanded(
               flex: 1,
-                child: Center(
-                    child:
-                    Row(
-                      children: const [
-                      Text("   Hey Sammit",style: TextStyle(fontSize: 30,fontFamily: 'Custom'),)
-                      ]
+              child: Center(
+                child:
+                Row(
+                    children: [
+                      Text("  Hey ${info['Name']['First']}",style: const TextStyle(fontSize: 30,fontFamily: 'Custom'),)
+                    ]
                 ),
-        ),
+              ),
             ),
             Expanded(
               flex: 2,
               child: Row(
                 children: [
                   Expanded(
-                    child: Card(
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                      elevation: 5,
-                      child: Column(
-                        children: [
-                          Expanded(flex: 4,child: Image.asset("assets/images/timetable.gif",)),
-                          const Expanded(flex: 1,child: Text(textAlign: TextAlign.center,"Time Table",style: TextStyle(fontFamily: 'Custom',fontSize: 20),)),
-                        ],
-                      ),
-                    )
+                      child: Card(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        elevation: 5,
+                        child: Column(
+                          children: [
+                            Expanded(flex: 4,child: Image.asset("assets/images/timetable.gif",)),
+                            const Expanded(flex: 1,child: Text(textAlign: TextAlign.center,"Time Table",style: TextStyle(fontFamily: 'Custom',fontSize: 20),)),
+                          ],
+                        ),
+                      )
                   ),
                   Expanded(
-                    child: Card(
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                      elevation: 5,
-                      child: Column(
-                        children: [
-                        Expanded(flex: 4,child: Image.asset("assets/images/notes.gif",),),
-                        const Expanded(flex: 1,child: Text("Notes",style: TextStyle(fontFamily: 'Custom',fontSize: 20),)),
-                        ],
-                      ),
-                    )
+                      child: Card(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        elevation: 5,
+                        child: Column(
+                          children: [
+                            Expanded(flex: 4,child: Image.asset("assets/images/notes.gif",),),
+                            const Expanded(flex: 1,child: Text("Notes",style: TextStyle(fontFamily: 'Custom',fontSize: 20),)),
+                          ],
+                        ),
+                      )
                   ),
                 ],
               ),
@@ -96,28 +94,28 @@ class StudentDashboard extends StatelessWidget {
               child: Row(
                 children: [
                   Expanded(
-                    child: Card(
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                      elevation: 5,
-                      child: Column(
-                        children: [
-                          Expanded(flex: 4,child: Image.asset("assets/images/message.gif",)),
-                          const Expanded(flex: 1,child: Text("Message",style: TextStyle(fontFamily: 'Custom',fontSize: 20),)),
-                        ],
-                      ),
-                    )
+                      child: Card(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        elevation: 5,
+                        child: Column(
+                          children: [
+                            Expanded(flex: 4,child: Image.asset("assets/images/message.gif",)),
+                            const Expanded(flex: 1,child: Text("Message",style: TextStyle(fontFamily: 'Custom',fontSize: 20),)),
+                          ],
+                        ),
+                      )
                   ),
                   Expanded(
-                    child: Card(
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                      elevation: 5,
-                      child: Column(
-                        children: [
-                          Expanded(flex: 4,child: Image.asset("assets/images/result.gif",)),
-                          const Expanded(flex: 1,child: Text("Result",style: TextStyle(fontFamily: 'Custom',fontSize: 20),)),
-                        ],
-                      ),
-                    )
+                      child: Card(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        elevation: 5,
+                        child: Column(
+                          children: [
+                            Expanded(flex: 4,child: Image.asset("assets/images/result.gif",)),
+                            const Expanded(flex: 1,child: Text("Result",style: TextStyle(fontFamily: 'Custom',fontSize: 20),)),
+                          ],
+                        ),
+                      )
                   ),
                 ],
               ),
@@ -131,20 +129,20 @@ class StudentDashboard extends StatelessWidget {
                     child: Text(""),),
                   Expanded(
                     flex: 2,
-                    child: FloatingActionButton(
-                      foregroundColor: Colors.black,
+                    child: FloatingActionButton(heroTag: null,
+                        foregroundColor: Colors.black,
                         backgroundColor: Colors.white,
                         onPressed: () {
 
                         },
-                      child: const Icon(
-                          Icons.home_filled
-                      )
+                        child: const Icon(
+                            Icons.home_filled
+                        )
                     ),
                   ),
                   Expanded(
                     flex: 2,
-                    child: FloatingActionButton(
+                    child: FloatingActionButton(heroTag: null,
                         foregroundColor: Colors.black,
                         backgroundColor: Colors.white,
                         onPressed: () {
@@ -156,7 +154,7 @@ class StudentDashboard extends StatelessWidget {
                   ),
                   Expanded(
                     flex: 2,
-                    child: FloatingActionButton(
+                    child: FloatingActionButton(heroTag: null,
                         foregroundColor: Colors.black,
                         backgroundColor: Colors.white,
                         onPressed: () async {
