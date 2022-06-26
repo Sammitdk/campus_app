@@ -1,6 +1,5 @@
 import 'package:campus_subsystem/student/student_dashboard.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 
@@ -27,14 +26,16 @@ class _StudentLoadingState extends State<StudentLoading> {
   @override
   void initState(){
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       await getData(widget.prn);
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => StudentDashboard(info: info)));
     });
-    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => StudentDashboard(info: info)));
   }
 
   @override
   Widget build(BuildContext context) {
-    return Text('data');
+    return Scaffold(
+      body: Text('Image.network(,repeat: ImageRepeat.repeat,alignment: Alignment.center),')
+    );
   }
 }
