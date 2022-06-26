@@ -1,3 +1,6 @@
+
+import 'dart:async';
+
 import 'package:campus_subsystem/student/profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +11,7 @@ import 'package:campus_subsystem/student/student_login.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter/services.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:provider/provider.dart';
 import 'firebase/signIn.dart';
 import 'firebase_options.dart';
@@ -22,11 +26,13 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform
   );
-  runApp(const Main());
+  runApp(Main());
 }
 
-class Main extends StatelessWidget {
-  const Main({Key? key}) : super(key: key);
+class Main extends StatelessWidget
+{
+
+  Main({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return StreamProvider<User?>.value(

@@ -2,6 +2,7 @@ import 'package:campus_subsystem/firebase/wrapper.dart';
 import 'package:campus_subsystem/student/student_dashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
+import 'package:lottie/lottie.dart';
 
 import '../firebase/signIn.dart';
 
@@ -35,7 +36,9 @@ class _StudentLoginState extends State<StudentLogin> {
           padding: const EdgeInsets.all(10),
           child: Column(
             children: <Widget>[
-              isKeyboardVisible ? const SizedBox(height: 100,) : Container(
+              isKeyboardVisible ?  SizedBox(
+                child: Lottie.network("https://assets1.lottiefiles.com/temp/lf20_vKPgdY.json"),
+              ) : Container(
                 //shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 margin: const EdgeInsets.all(10),
                 child: Column(
