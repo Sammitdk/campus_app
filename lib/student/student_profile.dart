@@ -5,30 +5,24 @@ import 'package:provider/provider.dart';
 
 class StudentProfile extends StatelessWidget
 {
-  // final String uid;
+  final Map<String,dynamic> info ;
+  const StudentProfile({Key? key,required this.info}) : super(key: key);
 
-  // StudentProfile({required this.uid});
 
+  // Map<String,dynamic> info = {};
   // final CollectionReference cr = FirebaseFirestore.instance.collection('Student_Detail');
-  // Stream<QuerySnapshot> get prn
-  // {
-  //   print(cr);
-  //   return cr.snapshots();
+  // final String prn;
+  // //
+  // //
+  // //
+  // StudentProfile({required this.prn}){
+  //   getData(prn);
   // }
-  Map<String,dynamic> info = {};
-  final CollectionReference cr = FirebaseFirestore.instance.collection('Student_Detail');
-  final String prn;
-  //
-  //
-  //
-  StudentProfile({required this.prn}){
-    getData(prn);
-  }
-  Future<void> getData(String prn) async
-  {
-    DocumentSnapshot qs = await cr.doc(prn).get();
-    info = qs.data() as Map<String,dynamic>;
-  }
+  // Future<void> getData(String prn) async
+  // {
+  //   DocumentSnapshot qs = await cr.doc(prn).get();
+  //   info = qs.data() as Map<String,dynamic>;
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +32,6 @@ class StudentProfile extends StatelessWidget
         Text(info['Name']['Last']),
         Text(info['Name']['Middle']),
         // Text(info['Mobile'][0]),
-
       ],
     );
   }
