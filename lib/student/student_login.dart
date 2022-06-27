@@ -1,9 +1,7 @@
 import 'package:campus_subsystem/firebase/wrapper.dart';
-import 'package:campus_subsystem/student/student_dashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:lottie/lottie.dart';
-
 import '../firebase/signIn.dart';
 
 class StudentLogin extends StatefulWidget {
@@ -15,9 +13,11 @@ class StudentLogin extends StatefulWidget {
 class _StudentLoginState extends State<StudentLogin> {
   static const String _title = 'Log In';
   final formkey = GlobalKey<FormState>();
-  final nameController = TextEditingController();
+  final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final Auth auth = Auth();
+  bool isVisible = false;
+
   @override
   Widget build(BuildContext context) {
     final bool isKeyboardVisible = KeyboardVisibilityProvider.isKeyboardVisible(context);
@@ -53,7 +53,8 @@ class _StudentLoginState extends State<StudentLogin> {
                   child: const Text(
                     'Student',
                     style: TextStyle(fontSize: 30,fontFamily: 'Custom'),
-                  )),
+                  )
+              ),
               Form(
                 key: formkey,
                 child: Column(
@@ -61,34 +62,39 @@ class _StudentLoginState extends State<StudentLogin> {
                     Container(
                       padding: const EdgeInsets.only(left: 40,right: 40,bottom: 20),
                       child: TextFormField(
-                        controller: nameController,
+                        controller: emailController,
                         validator: (name) {
                           if(name == null || name.isEmpty){
-                            return 'Enter Prn';
+                            return 'Enter Email Address';
                           }
                         },
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),
-                          labelText: 'Prn No',
+                          labelText: 'Email',
                         ),
                       ),
-                    ),
+                    ),  //Email TextField
                     Container(
                       padding: const EdgeInsets.only(left: 40,right: 40,bottom: 20),
                       child: TextFormField(
-                        obscureText: true,
+                        obscureText: isVisible,
                         validator: (pswd){
                           if(pswd == null || pswd.isEmpty){
                             return 'Enter Password';
                           }
                         },
                         controller: passwordController,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
+                        decoration: InputDecoration(
+                          border: const OutlineInputBorder(),
                           labelText: 'Password',
+                          suffixIcon: IconButton(onPressed: () {
+                            setState(() {
+                              isVisible = !isVisible;
+                            });
+                          }, icon: const Icon(Icons.remove_red_eye))
                         ),
                       ),
-                    ),
+                    ),  //Password TextField
                     Container(
                         height: 50,
                         padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
@@ -99,10 +105,7 @@ class _StudentLoginState extends State<StudentLogin> {
                           onPressed: () async {
                             if(formkey.currentState!.validate())
                             {
-                              // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Logging In'),));
-
-                              // await auth.signIn(username: nameController.text,password: passwordController.text);
-                              if(await auth.signIn(username: nameController.text,password: passwordController.text) != null)
+                              if(await auth.signIn(username: emailController.text,password: passwordController.text) != null)
                               {
                                 Navigator.of(this.context).pushReplacement(MaterialPageRoute(builder: (_) => const Wrapper()));
                               }

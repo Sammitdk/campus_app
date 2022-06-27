@@ -3,9 +3,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class StudentLoading extends StatefulWidget {
-  final String prn;
+  final String email;
 
-  const StudentLoading({Key? key,required this.prn}) : super(key: key);
+  const StudentLoading({Key? key,required this.email}) : super(key: key);
 
   @override
   State<StudentLoading> createState() => _StudentLoadingState();
@@ -13,19 +13,20 @@ class StudentLoading extends StatefulWidget {
 
 class _StudentLoadingState extends State<StudentLoading> {
   Map<String,dynamic> info = {};
-  final CollectionReference cr = FirebaseFirestore.instance.collection('Student_Detail');
-  // final String prn;
+  final CollectionReference cr = FirebaseFirestore.instance.collection('Emails');
 
-  Future<void> getData(String prn) async
+  Future<void> getData(String email) async
   {
-    DocumentSnapshot qs = await cr.doc(prn).get();
+    DocumentSnapshot qs = await cr.doc(email).get();
+    info = qs.data() as Map<String,dynamic>;
+    qs = await info["PRN"].get();
     info = qs.data() as Map<String,dynamic>;
   }
   @override
   void initState(){
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await getData(widget.prn);
+      await getData(widget.email);
       Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => StudentDashboard(info: info)));
     });
   }
@@ -44,6 +45,11 @@ class _StudentLoadingState extends State<StudentLoading> {
               child: Image.asset("assets/images/load.gif")),
         ],
       )
+      
+    //change here
+    return const Scaffold(
+      backgroundColor: Colors.transparent,
+      body: Text('Image.network(,repeat: ImageRepeat.repeat,alignment: Alignment.center),')
     );
   }
 }
