@@ -36,17 +36,19 @@ class _StudentDashboardState extends State<StudentDashboard> {
       // const Icon(Icons.logout,size: 30,),
     ];
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: screen[index],
-      bottomNavigationBar: CurvedNavigationBar(
-        key: navigationkey,
-        backgroundColor: Colors.transparent,
-        height: 60,
+        backgroundColor: Colors.white,
+        body: screen[index],
+        bottomNavigationBar: CurvedNavigationBar(
+          key: navigationkey,
+          backgroundColor: Colors.transparent,
+          height: 60,
           items: items,
           index: index,
           onTap: (index) => setState(() { this.index = index;}),
       )
 
+          onTap: (index) => setState(() { this.index = index;print(index);}),
+        )
     );
   }
 }
