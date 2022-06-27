@@ -46,9 +46,6 @@ class _StudentDashboardState extends State<StudentDashboard> {
           index: index,
           onTap: (index) => setState(() { this.index = index;}),
       )
-
-          onTap: (index) => setState(() { this.index = index;print(index);}),
-        )
     );
   }
 }
