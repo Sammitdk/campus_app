@@ -1,12 +1,10 @@
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-class StudentProfile extends StatelessWidget
-{
-  final Map<String,dynamic> info ;
-  const StudentProfile({Key? key,required this.info}) : super(key: key);
+class StudentProfile extends StatelessWidget {
+  final Map<String, dynamic> info;
+
+  const StudentProfile({Key? key, required this.info}) : super(key: key);
 
 
   // Map<String,dynamic> info = {};
@@ -26,17 +24,25 @@ class StudentProfile extends StatelessWidget
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return ListView(
       children: [
-        Text(info['Name']['First']),
-        Text(info['Name']['Last']),
-        Text(info['Name']['Middle']),
-        // Text(info['Mobile'][0]),
+        Column(
+          children: [
+            Text(info['Name']['First']),
+            Text(info['Name']['Last']),
+            Text(info['Name']['Middle']),
+          ],
+        )
       ],
     );
   }
-
 }
-
-
-
+//
+// Column(
+// children: [
+// Text(info['Name']['First']),
+// Text(info['Name']['Last']),
+// Text(info['Name']['Middle']),
+// // Text(info['Mobile'][0]),
+// ],
+// ),

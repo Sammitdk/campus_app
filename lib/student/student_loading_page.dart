@@ -1,8 +1,6 @@
 import 'package:campus_subsystem/student/student_dashboard.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
-
 
 class StudentLoading extends StatefulWidget {
   final String prn;
@@ -35,15 +33,15 @@ class _StudentLoadingState extends State<StudentLoading> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.transparent,
+      backgroundColor: Colors.white,
       body: Column(
         children: [
           Expanded(
-            flex: 2,
-              child: Lottie.network("https://assets8.lottiefiles.com/packages/lf20_i9mtrven.json")),
+            flex: 3,
+              child: Image.asset("assets/images/load_student.gif")),
           Expanded(
             flex: 1,
-              child: Lottie.network("https://assets6.lottiefiles.com/packages/lf20_pr1wd00z.json")),
+              child: Image.asset("assets/images/load.gif")),
         ],
       )
     );
