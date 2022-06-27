@@ -20,8 +20,6 @@ class _StudentLoginState extends State<StudentLogin> {
   final Auth auth = Auth();
   @override
   Widget build(BuildContext context) {
-    // final scrrenheight = MediaQuery.of(context).size.height;
-    // final scrrenwidth = MediaQuery.of(context).size.width;
     final bool isKeyboardVisible = KeyboardVisibilityProvider.isKeyboardVisible(context);
     return Scaffold(
       resizeToAvoidBottomInset: false,
