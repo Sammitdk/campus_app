@@ -41,13 +41,11 @@ class _StudentLoadingState extends State<StudentLoading> {
         body: Column(
           children: [
             Expanded(
-                flex: 2,
-                child: Lottie.network(
-                    "https://assets8.lottiefiles.com/packages/lf20_i9mtrven.json")),
+                flex: 3,
+                child: Image.asset("assets/images/load_student.gif")),
             Expanded(
                 flex: 1,
-                child: Lottie.network(
-                    "https://assets6.lottiefiles.com/packages/lf20_pr1wd00z.json")),
+                child: Image.asset("assets/images/load.gif")),
           ],
         ));
   }
