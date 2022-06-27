@@ -6,15 +6,18 @@ class StudentMessage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Expanded(
-          flex: 2,
-            child:  Text("  Hey ${info['Name']['First']}",style: const TextStyle(fontSize: 30,fontFamily: 'Custom'),)),
-        const Expanded(
-          flex: 4,
-            child: Text(""))
-      ],
+    return Padding(
+      padding: const EdgeInsetsDirectional.all(20),
+      child: Column(
+        children: [
+          Expanded(
+            flex: 3,
+              child:  Text("  Hey ${info['Name']['First']}",style: const TextStyle(fontSize: 30,fontFamily: 'Custom'),)),
+          const Expanded(
+            flex: 4,
+              child: Text(""))
+        ],
+      ),
     );
   }
 }
