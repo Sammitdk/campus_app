@@ -34,7 +34,9 @@ class _StudentLoadingState extends State<StudentLoading> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    //change here
+    return const Scaffold(
+      backgroundColor: Colors.transparent,
       body: Text('Image.network(,repeat: ImageRepeat.repeat,alignment: Alignment.center),')
     );
   }
