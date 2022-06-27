@@ -16,10 +16,10 @@ class Auth
 
   Future signIn({required String username, required String password}) async
   {
-    const domain = '@dyp.com';
+    // const domain = '@dyp.com';
     try
     {
-      final UserCredential result = await FirebaseAuth.instance.signInWithEmailAndPassword(email: username+domain, password: password);
+      final UserCredential result = await FirebaseAuth.instance.signInWithEmailAndPassword(email: username, password: password);
       //we got user
       User? user = result.user;
 
