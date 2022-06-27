@@ -45,11 +45,6 @@ class _StudentLoadingState extends State<StudentLoading> {
               child: Image.asset("assets/images/load.gif")),
         ],
       )
-      
-    //change here
-    return const Scaffold(
-      backgroundColor: Colors.transparent,
-      body: Text('Image.network(,repeat: ImageRepeat.repeat,alignment: Alignment.center),')
     );
   }
 }

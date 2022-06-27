@@ -38,7 +38,6 @@ class Main extends StatelessWidget
         debugShowCheckedModeBanner: false,
         // home: Wrapper(),
         initialRoute: 'loading_page',
-
         routes: {
           '/' :(context) =>  const Wrapper(),
           'loading_page':(context) => const LoadingPage(),
