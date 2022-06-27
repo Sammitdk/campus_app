@@ -1,7 +1,6 @@
 import 'package:campus_subsystem/student/student_dashboard.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
 
 class StudentLoading extends StatefulWidget {
   final String email;
@@ -37,7 +36,7 @@ class _StudentLoadingState extends State<StudentLoading> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.white,
         body: Column(
           children: [
             Expanded(

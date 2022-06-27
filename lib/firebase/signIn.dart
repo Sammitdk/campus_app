@@ -1,4 +1,3 @@
-import 'package:campus_subsystem/student/student_profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class Auth

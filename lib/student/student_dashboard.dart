@@ -26,7 +26,6 @@ class _StudentDashboardState extends State<StudentDashboard> {
       StudentHome(info: widget.info),
       StudentMessage(info: widget.info),
       StudentProfile(info: widget.info),
-
     ];
     final items = <Widget>
     [
