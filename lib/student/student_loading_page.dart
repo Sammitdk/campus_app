@@ -46,6 +46,10 @@ class _StudentLoadingState extends State<StudentLoading> {
               child: Lottie.network("https://assets6.lottiefiles.com/packages/lf20_pr1wd00z.json")),
         ],
       )
+    //change here
+    return const Scaffold(
+      backgroundColor: Colors.transparent,
+      body: Text('Image.network(,repeat: ImageRepeat.repeat,alignment: Alignment.center),')
     );
   }
 }
