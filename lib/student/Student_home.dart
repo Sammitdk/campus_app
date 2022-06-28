@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 // import 'package:url_launcher/url_launcher.dart';
 // import 'package:url_launcher/url_launcher_string.dart';
 
@@ -111,11 +112,11 @@ class _StudentHomeState extends State<StudentHome> {
                     child: InkWell(
                       onTap: () async {
                         const url ='http://www.unishivaji.ac.in/exam/Online-Results';
-                        // if(await canLaunchUrlString(url)){
-                        //   await launchUrlString(url);
-                        // }else {
-                        //   throw 'Could not launch $url';
-                        // }
+                        if(await canLaunchUrlString(url)){
+                          await launchUrlString(url);
+                        }else {
+                          throw 'Could not launch $url';
+                        }
                     },
                       child: Card(
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
