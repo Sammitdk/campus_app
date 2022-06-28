@@ -111,7 +111,6 @@ class StudentProfile extends StatelessWidget {
                           children: [
                             Text("${info['Name']['First']}", style: const TextStyle(fontSize: 30,fontFamily:'Narrow',),),
                             Text("${info['Name']['First']} ${info['Name']['Middle']} ${info['Name']['Last']}", style: const TextStyle(fontSize: 15,fontFamily:'Narrow',),),
-                            // Text("${info['Email']}",style: const TextStyle(fontSize: 15,fontFamily:'Narrow',)),
                           ],
                         ),
                       )
@@ -122,9 +121,21 @@ class StudentProfile extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("${Icons.mail} : ${info['Email']}",style: const TextStyle(fontSize: 20,fontFamily:'Narrow',)),
-                        Text("${Icons.cake} : ${info['DOB']}",style: const TextStyle(fontSize: 20,fontFamily:'Narrow',)),
-                        Text("${Icons.call} : ${info['Mobile'][0]}",style: const TextStyle(fontSize: 20,fontFamily:'Narrow',)),
+                        Row(
+                          children: [
+                            const Icon(Icons.mail),Text(" : ${info['Email']}",style: const TextStyle(fontSize: 20,fontFamily:'Narrow',)),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            const Icon(Icons.cake),Text(" : ${info['DOB']}",style: const TextStyle(fontSize: 20,fontFamily:'Narrow',)),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            const Icon(Icons.call),Text(" : ${info['Mobile'][0]}",style: const TextStyle(fontSize: 20,fontFamily:'Narrow',)),
+                          ],
+                        ),
                       ],
                     ),
                   ),
