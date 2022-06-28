@@ -26,6 +26,7 @@ dependencies:
   curved_navigation_bar: ^1.0.3
   url_launcher: ^6.1.4
 
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
