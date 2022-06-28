@@ -1,3 +1,6 @@
+import 'package:campus_subsystem/student/student_attendance.dart';
+import 'package:campus_subsystem/student/student_loading_page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 // import 'package:url_launcher/url_launcher.dart';
@@ -29,7 +32,7 @@ class _StudentHomeState extends State<StudentHome> {
                   ]
               ),
             ),
-          ),
+          ),  //Name Tag
           Expanded(
             flex: 2,
             child: Row(
@@ -60,20 +63,25 @@ class _StudentHomeState extends State<StudentHome> {
                 ),
               ],
             ),
-          ),
+          ),  //TimeTable-Syllabus
           Expanded(
             flex: 2,
             child: Row(
               children: [
                 Expanded(
-                  child:Card(
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                    elevation: 5,
-                    child: Column(
-                      children: [
-                        Expanded(flex: 4,child: Image.asset("assets/images/attendance.gif",)),
-                        const Expanded(flex: 1,child: Text("Attendance",style: TextStyle(fontFamily: 'Custom',fontSize: 20),)),
-                      ],
+                  child:InkWell(
+                    onTap: () async {
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const StudentLoadingtoAttendance()));
+                    },
+                    child: Card(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      elevation: 5,
+                      child: Column(
+                        children: [
+                          Expanded(flex: 4,child: Image.asset("assets/images/attendance.gif",)),
+                          const Expanded(flex: 1,child: Text("Attendance",style: TextStyle(fontFamily: 'Custom',fontSize: 20),)),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -91,7 +99,7 @@ class _StudentHomeState extends State<StudentHome> {
                 ),
               ],
             ),
-          ),
+          ),  //Attendance-Notes
           Expanded(
             flex: 2,
             child: Row(
@@ -132,7 +140,7 @@ class _StudentHomeState extends State<StudentHome> {
                 ),
               ],
             ),
-          ),
+          ),  //Events-Result
         ],
       ),
     );

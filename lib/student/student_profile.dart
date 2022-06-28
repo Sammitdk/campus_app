@@ -8,81 +8,6 @@ class StudentProfile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // return Padding(
-    //   padding: const EdgeInsetsDirectional.all(30),
-    //   child: Column(
-    //         children: [
-    //           Expanded(
-    //             flex: 3,
-    //               child: Image.asset("assets/images/profile.gif")),
-    //           Expanded(
-    //             flex: 1,
-    //             child: Column(
-    //               children: const [
-    //                 Text("My Profile",style: TextStyle(fontSize: 40,fontFamily: 'Bold',),),
-    //             ]
-    //             ),
-    //           ),
-    //           Expanded(
-    //             flex: 4,
-    //             child: Column(
-    //               children: [
-    //                 Expanded(
-    //                   child: Row(
-    //                     children:  [
-    //                       Text("${info['Name']['First']} ${info['Name']['Middle']} ${info['Name']['Middle']}", style: const TextStyle(fontSize: 30,fontFamily:'Narrow',),),
-    //                     ],
-    //                   ),
-    //                 ),
-    //                 Expanded(
-    //                   child: Row(
-    //                     children: [
-    //                       Text(info['Branch'],style: const TextStyle(fontSize: 30,fontFamily:'Narrow',),),
-    //                     ],
-    //                   ),
-    //                 ),
-    //                 Expanded(
-    //                   child: Row(
-    //                     children: [
-    //                       Text(info['DOB'],style: const TextStyle(fontSize: 30,fontFamily:'Narrow',),),
-    //                     ],
-    //                   ),
-    //                 ),
-    //                 Expanded(
-    //                   child: Row(
-    //                     children: [
-    //                       Text(info['Mobile'][0],style: const TextStyle(fontSize: 30,fontFamily:'Narrow',),),
-    //                     ],
-    //                   ),
-    //                 ),
-    //                 Expanded(
-    //                   flex: 2,
-    //                   child: Column(
-    //                     children: [
-    //                       Container(
-    //                         alignment: Alignment.bottomRight,
-    //                         child: FloatingActionButton(
-    //                           backgroundColor: Colors.white,
-    //                           onPressed: () async {
-    //                             await auth.signOut();
-    //                           },
-    //                           child:
-    //                           const Icon(Icons.logout,size: 30,color: Colors.black,),
-    //                         ),
-    //                       ),
-    //                       Container(
-    //                         alignment: Alignment.bottomRight,
-    //                           padding: const EdgeInsetsDirectional.only(top: 10),
-    //                           child: const Text("Log Out",style: TextStyle(fontSize: 30,fontFamily:'Bold',))),
-    //                     ],
-    //                   ),
-    //                 ),
-    //               ],
-    //             ),
-    //           ),
-    //         ],
-    //       ),
-    // );
     return Scaffold(
       backgroundColor: Colors.white,
       body: Column(
@@ -95,57 +20,55 @@ class StudentProfile extends StatelessWidget {
           Expanded(child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Card(
-              child: Container(
-                decoration: const BoxDecoration(
-                  color: Colors.lightGreenAccent,
-                  borderRadius: BorderRadiusDirectional.only(topStart: Radius.circular(50),topEnd: Radius.circular(50)),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        const Expanded(
-                          flex: 2,
-                          child: Icon(Icons.person),
+              color: Colors.lightBlueAccent[200],
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      const Expanded(
+                        flex: 2,
+                        child: Icon(Icons.person),
+                      ),
+                      Expanded(
+                        flex: 6,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("${info['Name']['First']}", style: const TextStyle(fontSize: 30,fontFamily:'Narrow',),),
+                            Text("${info['Name']['First']} ${info['Name']['Middle']} ${info['Name']['Last']}", style: const TextStyle(fontSize: 20,fontFamily:'Narrow',),),
+                          ],
                         ),
-                        Expanded(
-                          flex: 6,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text("${info['Name']['First']}", style: const TextStyle(fontSize: 30,fontFamily:'Narrow',),),
-                              Text("${info['Name']['First']} ${info['Name']['Middle']} ${info['Name']['Last']}", style: const TextStyle(fontSize: 20,fontFamily:'Narrow',),),
-                            ],
-                          ),
-                        )
+                      )
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 25.0,top: 10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            const Icon(Icons.mail),Text(" : ${info['Email']}",style: const TextStyle(fontSize: 20,fontFamily:'Narrow',)),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            const Icon(Icons.cake),Text(" : ${info['DOB']}",style: const TextStyle(fontSize: 20,fontFamily:'Narrow',)),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            const Icon(Icons.call),Text(" : ${info['Mobile'][0]}",style: const TextStyle(fontSize: 20,fontFamily:'Narrow',)),
+                          ],
+                        ),
                       ],
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 25.0,top: 10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              const Icon(Icons.mail),Text(" : ${info['Email']}",style: const TextStyle(fontSize: 20,fontFamily:'Narrow',)),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              const Icon(Icons.cake),Text(" : ${info['DOB']}",style: const TextStyle(fontSize: 20,fontFamily:'Narrow',)),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              const Icon(Icons.call),Text(" : ${info['Mobile'][0]}",style: const TextStyle(fontSize: 20,fontFamily:'Narrow',)),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ))
