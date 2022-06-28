@@ -8,15 +8,14 @@ class StudentMessage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsetsDirectional.all(20),
-      child: Column(
+      child: ListView(
         children: [
-          Expanded(
-            flex: 3,
-              child:  Text("  Hey ${info['Name']['First']}",style: const TextStyle(fontSize: 30,fontFamily: 'Custom'),)),
-          const Expanded(
-            flex: 4,
-              child: Text(""))
-        ],
+          Column(
+            children: [
+              Text("Welcome ${info['Name']['First']}",style: const TextStyle(fontSize: 40,fontFamily: 'Custom'),),
+            ]
+          ),
+        ]
       ),
     );
   }
