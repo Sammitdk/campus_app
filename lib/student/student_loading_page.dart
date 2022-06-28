@@ -19,6 +19,7 @@ class _StudentLoadingState extends State<StudentLoading> {
   Future<void> getData(String email) async {
     DocumentSnapshot qs = await cr.doc(email).get();
     info = qs.data() as Map<String, dynamic>;
+    // QuerySnapshot qss =
     qs = await info["PRN"].get();
     info = qs.data() as Map<String, dynamic>;
   }
