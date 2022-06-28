@@ -2,9 +2,9 @@ import 'package:campus_subsystem/student/student_message.dart';
 import 'package:campus_subsystem/student/student_profile.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
+// import 'package:url_launcher/url_launcher.dart';
 import '../firebase/signIn.dart';
-import 'Student_home.dart';
+import 'student_home.dart';
 
 
 class StudentDashboard extends StatefulWidget {

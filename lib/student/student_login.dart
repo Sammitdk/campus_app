@@ -77,7 +77,7 @@ class _StudentLoginState extends State<StudentLogin> {
                     Container(
                       padding: const EdgeInsets.only(left: 40,right: 40,bottom: 20),
                       child: TextFormField(
-                        obscureText: isVisible,
+                        obscureText: !isVisible,
                         validator: (pswd){
                           if(pswd == null || pswd.isEmpty){
                             return 'Enter Password';
