@@ -2,6 +2,7 @@ import 'package:campus_subsystem/student/student_message.dart';
 import 'package:campus_subsystem/student/student_profile.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../firebase/signIn.dart';
 import 'Student_home.dart';
 
@@ -19,6 +20,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
   final navigationkey = GlobalKey<CurvedNavigationBarState>();
   final Auth auth = Auth();
   int index = 0;
+
 
   @override
   Widget build(BuildContext context) {

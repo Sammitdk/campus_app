@@ -1,4 +1,3 @@
-import 'package:campus_subsystem/student/profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:campus_subsystem/faculty/faculty_login.dart';
@@ -27,7 +26,6 @@ void main() async {
 
 class Main extends StatelessWidget
 {
-
   Main({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -44,7 +42,6 @@ class Main extends StatelessWidget
           'login_page': (context) => const Login(),
           't_login_form': (context) => const KeyboardVisibilityProvider(child: FacultyLogin()),
           's_login_form': (context) => const KeyboardVisibilityProvider(child: StudentLogin()),
-          's_profile' : (context) => const Profile(),
         },
       ),
     );

@@ -29,73 +29,69 @@ class StudentProfile extends StatelessWidget {
       child: Column(
             children: [
               Expanded(
+                flex: 3,
+                  child: Image.asset("assets/images/profile.gif")),
+              Expanded(
                 flex: 1,
                 child: Column(
-                  children: [
-                    Container(
-                        padding :const EdgeInsetsDirectional.only(start: 30),
-                        child: const Text("My Profile",style: TextStyle(fontSize: 40,fontFamily: 'Custom',),)
-                    ),
-                    Row(
-                      children : [
-                        Container(
-                          padding :const EdgeInsetsDirectional.only(start: 10,top: 30),
-                          child: CircleAvatar(
-                            backgroundColor: Colors.white,
-                            radius: 60,
-                            child: Image.asset("assets/images/logo.jpg",color: Colors.brown,),
-                          ),
-                        ),
-                    ],
-                    ),
+                  children: const [
+                    Text("My Profile",style: TextStyle(fontSize: 40,fontFamily: 'Bold',),),
                 ]
                 ),
               ),
               Expanded(
-                flex: 2,
+                flex: 4,
                 child: Column(
                   children: [
-                    Row(
-                      children: [
-                        Text(info['Name']['First'], style: const TextStyle(fontSize: 30,fontFamily: 'Custom',),),
-                      ],
+                    Expanded(
+                      child: Row(
+                        children:  [
+                          Text("${info['Name']['First']} ${info['Name']['Middle']} ${info['Name']['Middle']}", style: const TextStyle(fontSize: 30,fontFamily:'Narrow',),),
+                        ],
+                      ),
                     ),
-                    Row(
-                      children: [
-                        Text(info['Name']['Middle'],style: const TextStyle(fontSize: 30,fontFamily: 'Custom',),),
-                      ],
+                    Expanded(
+                      child: Row(
+                        children: [
+                          Text(info['Branch'],style: const TextStyle(fontSize: 30,fontFamily:'Narrow',),),
+                        ],
+                      ),
                     ),
-                    Row(
-                      children: [
-                        Text(info['Name']['Last'],style: const TextStyle(fontSize: 30,fontFamily: 'Custom',),),
-                      ],
+                    Expanded(
+                      child: Row(
+                        children: [
+                          Text(info['DOB'],style: const TextStyle(fontSize: 30,fontFamily:'Narrow',),),
+                        ],
+                      ),
                     ),
-                    Row(
-                      children: [
-                        Text(info['Branch'],style: const TextStyle(fontSize: 30,fontFamily: 'Custom',),),
-                      ],
+                    Expanded(
+                      child: Row(
+                        children: [
+                          Text(info['Mobile'][0],style: const TextStyle(fontSize: 30,fontFamily:'Narrow',),),
+                        ],
+                      ),
                     ),
-                    Row(
-                      children: [
-                        Text(info['DOB'],style: const TextStyle(fontSize: 30,fontFamily: 'Custom',),),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Text(info['Mobile'][0],style: const TextStyle(fontSize: 30,fontFamily: 'Custom',),),
-                      ],
-                    ),
-                    Container(
-                      alignment: Alignment.bottomRight,
-                      child: FloatingActionButton(
-
-                        backgroundColor: Colors.white,
-                          onPressed: () {
-                          auth.signOut();
-                         },
-                        child:
-                        const Icon(Icons.logout,size: 30,color: Colors.black,),
-                         ),
+                    Expanded(
+                      flex: 2,
+                      child: Column(
+                        children: [
+                          Container(
+                            alignment: Alignment.bottomRight,
+                            child: FloatingActionButton(
+                              backgroundColor: Colors.white,
+                              onPressed: () async {
+                                await auth.signOut();
+                              },
+                              child:
+                              const Icon(Icons.logout,size: 30,color: Colors.black,),
+                            ),
+                          ),
+                          Container(
+                            alignment: Alignment.bottomRight,
+                              padding: const EdgeInsetsDirectional.only(top: 10),
+                              child: const Text("Log Out",style: TextStyle(fontSize: 30,fontFamily:'Bold',))),
+                        ],
+                      ),
                     ),
                   ],
                 ),
