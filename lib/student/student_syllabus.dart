@@ -1,9 +1,27 @@
+import 'dart:html';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class StudentSyllabus extends StatelessWidget {
-  const StudentSyllabus({Key? key, required this.info}) : super(key: key);
-  final Map<String,dynamic> info;
+class StudentSyllabus extends StatefulWidget {
+  @override
+  State<StudentSyllabus> createState() => _StudentSyllabusState();
+}
 
+class _StudentSyllabusState extends State<StudentSyllabus> {
+  DocumentReference subjects = FirebaseFirestore.instance.doc('/College/CSE/TY/Subjects');
+  late  Map<String,dynamic> subject = {};
+  @override
+  void initState()
+  {
+    super.initState();
+    getSyllabus();
+  }
+  Future<void> getSyllabus()async {
+    DocumentSnapshot syllabusSnapshot = await subjects.get();
+    subject = syllabusSnapshot.data() as Map<String,dynamic>;
+    print(subject);
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,7 +59,7 @@ class StudentSyllabus extends StatelessWidget {
                               bottomStart: Radius.circular(50)),
                           color: Colors.limeAccent
                       ),
-                      child: const Text("Database ",style: TextStyle(fontFamily: 'Bold', fontSize: 30),),
+                      child: Text("${subject["6"]["ML"]}",style: const TextStyle(fontFamily: 'Bold', fontSize: 30),),
                     ),
                   )
                 ],
