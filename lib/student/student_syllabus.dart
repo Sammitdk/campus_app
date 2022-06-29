@@ -1,8 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class StudentSyllabus extends StatelessWidget {
-  const StudentSyllabus({Key? key}) : super(key: key);
+  const StudentSyllabus({Key? key, required this.info}) : super(key: key);
+  final Map<String,dynamic> info;
 
   @override
   Widget build(BuildContext context) {

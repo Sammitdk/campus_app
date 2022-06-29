@@ -43,7 +43,7 @@ class Main extends StatelessWidget
           'login_page': (context) => const Login(),
           't_login_form': (context) => const KeyboardVisibilityProvider(child: FacultyLogin()),
           's_login_form': (context) => const KeyboardVisibilityProvider(child: StudentLogin()),
-          's_syllabus' : (context) => const StudentSyllabus(),
+          's_syllabus' : (context) => const StudentSyllabus(info: {},),
         },
       ),
     );
