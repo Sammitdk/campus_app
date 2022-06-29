@@ -45,8 +45,7 @@ class _StudentLoadingState extends State<StudentLoading> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await getData(widget.email);
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => StudentDashboard(info: info)));
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => StudentDashboard(info: info)));
     });
   }
 
@@ -55,6 +54,9 @@ class _StudentLoadingState extends State<StudentLoading> {
     return loading();
   }
 }
+
+
+// StudentLoadingtoAttendance
 
 
 class StudentLoadingtoAttendance extends StatefulWidget {
@@ -67,7 +69,7 @@ class StudentLoadingtoAttendance extends StatefulWidget {
 class _StudentLoadingtoAttendanceState extends State<StudentLoadingtoAttendance> {
 
 
-  final Map<String,dynamic> attendance = {};
+  Map<String,dynamic> attendance = {};
   late DocumentReference subjects;
   late CollectionReference studentdetail;
   late DocumentSnapshot sub;
@@ -81,13 +83,13 @@ class _StudentLoadingtoAttendanceState extends State<StudentLoadingtoAttendance>
       sub = await studentdetail.doc(key).get();
       Map<String,dynamic> list = sub.data() as Map<String,dynamic>;
       attendance[value] = list;
-      print(attendance);
+      // print(attendance);
     });
   }
 
-  void initState(){
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async{
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) async{
       await fillAttendance();
       Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => StudentAttendance(attendance: attendance)));
     });

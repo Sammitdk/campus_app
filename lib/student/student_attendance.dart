@@ -12,6 +12,13 @@ class StudentAttendance extends StatefulWidget {
 class _StudentAttendanceState extends State<StudentAttendance> {
   @override
   Widget build(BuildContext context) {
-    return Text('${widget.attendance}');
+    print(widget.attendance);
+    // return ListView.builder(
+    //   itemCount: widget.attendance.length,
+    //   itemBuilder: (BuildContext context,int index) {
+    //
+    //   },
+    // );
+    return Container();
   }
 }
