@@ -70,7 +70,7 @@ class StudentLoadingtoAttendance extends StatefulWidget {
 class _StudentLoadingtoAttendanceState extends State<StudentLoadingtoAttendance> {
 
 
-  static Map<String,dynamic> attendance = {};
+  Map<String,dynamic> attendance = {};
   final DocumentReference subjects = FirebaseFirestore.instance.doc('/College/CSE/TY/Subjects');
   // late DocumentSnapshot sub;
 
@@ -78,7 +78,7 @@ class _StudentLoadingtoAttendanceState extends State<StudentLoadingtoAttendance>
     DocumentSnapshot subjectsnapshot = await subjects.get();
     Map<String,dynamic> subject = subjectsnapshot.data() as Map<String,dynamic>;
     final CollectionReference studentdetail = FirebaseFirestore.instance.collection('/Student_Detail/${widget.prn}/Attendance');
-    await subject['6'].forEach((key,value) async{
+    subject['6'].forEach((key,value) async{
       DocumentSnapshot sub = await studentdetail.doc(key).get();
       Map<String,dynamic> list = sub.data() as Map<String,dynamic>;
       // print('$list aaaaaaaaaaaaaaa');
@@ -86,20 +86,27 @@ class _StudentLoadingtoAttendanceState extends State<StudentLoadingtoAttendance>
       // print(attendance);
     });
   }
-
   @override
   void initState() {
-    // print('$attendance ssssssssssssssssss');
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async{
-      getAttendance().then((_) {
-        // print('$attendance ssssssssssssssssss');
-
-        Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (_) => StudentAttendance(attendance: attendance)));
-      });
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await getAttendance();
+      print(attendance.isEmpty);
+      await Future.delayed(Duration(seconds: 1));
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => StudentAttendance(attendance: attendance,)));
     });
   }
+  // @override
+  // void initState() {
+  //   // print('$attendance ssssssssssssssssss');
+  //   super.initState();
+  //   WidgetsBinding.instance.addPostFrameCallback((_) async{
+  //     await getAttendance();
+  //     Navigator.of(context).pushReplacement(MaterialPageRoute(
+  //         builder: (_) => StudentAttendance(attendance: attendance)));
+  //   });
+  //   print('$attendance wwwwwwwwwwwwww');
+  // }
   @override
   Widget build(BuildContext context) {
     return loading();

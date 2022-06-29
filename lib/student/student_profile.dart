@@ -23,6 +23,7 @@ class StudentProfile extends StatelessWidget {
               color: Colors.lightBlueAccent[200],
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(30),
+                side: const BorderSide(width: 3)
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

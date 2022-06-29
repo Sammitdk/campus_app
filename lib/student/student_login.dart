@@ -109,10 +109,10 @@ class _StudentLoginState extends State<StudentLogin> {
                               {
                                 Navigator.of(this.context).pushReplacement(MaterialPageRoute(builder: (_) => const Wrapper()));
                               }
-                              // else
-                              // {
-                              //   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Incorrect PRN or Password'),));
-                              // }
+                              else
+                              {
+                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Incorrect PRN or Password'),));
+                              }
                             }
                             else
                             {
