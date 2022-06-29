@@ -1,3 +1,4 @@
+import 'package:campus_subsystem/student/student_syllabus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:campus_subsystem/faculty/faculty_login.dart';
@@ -42,6 +43,7 @@ class Main extends StatelessWidget
           'login_page': (context) => const Login(),
           't_login_form': (context) => const KeyboardVisibilityProvider(child: FacultyLogin()),
           's_login_form': (context) => const KeyboardVisibilityProvider(child: StudentLogin()),
+          's_syllabus' : (context) => StudentSyllabus(),
         },
       ),
     );
