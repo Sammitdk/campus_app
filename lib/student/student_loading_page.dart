@@ -60,7 +60,8 @@ class _StudentLoadingState extends State<StudentLoading> {
 
 
 class StudentLoadingtoAttendance extends StatefulWidget {
-  const StudentLoadingtoAttendance({Key? key}) : super(key: key);
+  final String prn;
+  const StudentLoadingtoAttendance({Key? key,required this.prn}) : super(key: key);
 
   @override
   State<StudentLoadingtoAttendance> createState() => _StudentLoadingtoAttendanceState();
@@ -69,19 +70,18 @@ class StudentLoadingtoAttendance extends StatefulWidget {
 class _StudentLoadingtoAttendanceState extends State<StudentLoadingtoAttendance> {
 
 
-  Map<String,dynamic> attendance = {};
-  late DocumentReference subjects;
-  late CollectionReference studentdetail;
-  late DocumentSnapshot sub;
+  static Map<String,dynamic> attendance = {};
+  final DocumentReference subjects = FirebaseFirestore.instance.doc('/College/CSE/TY/Subjects');
+  // late DocumentSnapshot sub;
 
-  Future<void> fillAttendance() async{
-    subjects = FirebaseFirestore.instance.doc('/College/CSE/TY/Subjects');
-    studentdetail = FirebaseFirestore.instance.collection('/Student_Detail/2019087340/Attendance');
-    DocumentSnapshot subsnapshot = await subjects.get();
-    final subject = subsnapshot.data() as Map<String,dynamic>;
+  Future<void> getAttendance() async{
+    DocumentSnapshot subjectsnapshot = await subjects.get();
+    Map<String,dynamic> subject = subjectsnapshot.data() as Map<String,dynamic>;
+    final CollectionReference studentdetail = FirebaseFirestore.instance.collection('/Student_Detail/${widget.prn}/Attendance');
     await subject['6'].forEach((key,value) async{
-      sub = await studentdetail.doc(key).get();
+      DocumentSnapshot sub = await studentdetail.doc(key).get();
       Map<String,dynamic> list = sub.data() as Map<String,dynamic>;
+      // print('$list aaaaaaaaaaaaaaa');
       attendance[value] = list;
       // print(attendance);
     });
@@ -89,9 +89,15 @@ class _StudentLoadingtoAttendanceState extends State<StudentLoadingtoAttendance>
 
   @override
   void initState() {
+    // print('$attendance ssssssssssssssssss');
+    super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async{
-      await fillAttendance();
-      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => StudentAttendance(attendance: attendance)));
+      getAttendance().then((_) {
+        // print('$attendance ssssssssssssssssss');
+
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+            builder: (_) => StudentAttendance(attendance: attendance)));
+      });
     });
   }
   @override

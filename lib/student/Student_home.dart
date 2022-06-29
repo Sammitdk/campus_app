@@ -1,6 +1,4 @@
-import 'package:campus_subsystem/student/student_attendance.dart';
 import 'package:campus_subsystem/student/student_loading_page.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -94,9 +92,9 @@ class _StudentHomeState extends State<StudentHome> {
               children: [
                 Expanded(
                   child: InkWell(
-                    onTap: () async {
+                    onTap: (){
                       Navigator.of(context).pushReplacement(MaterialPageRoute(
-                          builder: (_) => const StudentLoadingtoAttendance()));
+                          builder: (_) => StudentLoadingtoAttendance(prn: widget.info['PRN'])));
                     },
                     child: Card(
                       shape: RoundedRectangleBorder(

@@ -12,13 +12,20 @@ class StudentAttendance extends StatefulWidget {
 class _StudentAttendanceState extends State<StudentAttendance> {
   @override
   Widget build(BuildContext context) {
-    print(widget.attendance);
-    // return ListView.builder(
-    //   itemCount: widget.attendance.length,
-    //   itemBuilder: (BuildContext context,int index) {
-    //
-    //   },
-    // );
-    return Container();
+    print('${widget.attendance} asasaassasa');
+    return ListView.builder(
+      itemCount: widget.attendance.length,
+      itemBuilder: (BuildContext context,int index) {
+        String key = widget.attendance.keys.elementAt(index);
+        return Column(
+          children: [
+            Card(
+              child: Text(key),
+            )
+          ],
+        );
+      },
+    );
+    // return Container();
   }
 }
