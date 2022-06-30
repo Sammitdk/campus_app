@@ -17,7 +17,8 @@ Widget loading() => Scaffold(
             flex: 1,
             child: Image.asset("assets/images/load.gif")),
       ],
-    ));
+    )
+);
 
 
 class StudentLoading extends StatefulWidget {
@@ -88,7 +89,6 @@ class _StudentLoadingtoAttendanceState extends State<StudentLoadingtoAttendance>
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await getAttendance();
-      print(attendance.isEmpty);
       await Future.delayed(Duration(seconds: 1));
       Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => StudentAttendance(attendance: attendance,)));
     });
@@ -124,7 +124,6 @@ class _StudentLoadingToSyllabusState extends State<StudentLoadingToSyllabus> {
     DocumentReference subjects = FirebaseFirestore.instance.doc('/College/${widget.info['Branch']}/${widget.info['Year']}/Subjects');
     DocumentSnapshot syllabusSnapshot = await subjects.get();
     subject = syllabusSnapshot.data() as Map<String, dynamic>;
-    print(subject);
   }
   @override
   Widget build(BuildContext context) {
@@ -157,7 +156,6 @@ class _StudentLoadingtoTimetableState extends State<StudentLoadingtoTimetable> {
     DocumentReference subjects = FirebaseFirestore.instance.doc('/College/${widget.info['Branch']}/${widget.info['Year']}/Timetable');
     DocumentSnapshot timetableSnapshot = await subjects.get();
     timetable = timetableSnapshot.data() as Map<String, dynamic>;
-    print(timetable);
   }
   @override
   Widget build(BuildContext context) {
