@@ -51,7 +51,7 @@ class _StudentTimeTableState extends State<StudentTimeTable> {
                         child: Row(
                           children: [
                             Expanded(flex: 4,child: Text(key,style: const TextStyle(fontSize: 20,fontFamily: 'Custom'),textAlign: TextAlign.center)),
-                            Expanded(child: Text(widget.timetable[DateFormat('EEEE').format(DateTime.now())][key]))
+                            Expanded(child: Text(widget.timetable[DateFormat('EEEE').format(DateTime.now())][DateFormat('hh-mm').parse(key)]))
                           ],
                         ),
                       ),

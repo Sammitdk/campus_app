@@ -127,26 +127,31 @@ class _StudentHomeState extends State<StudentHome> {
                   ),
                 ),
                 Expanded(
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12)),
-                    elevation: 5,
-                    child: Column(
-                      children: [
-                        Expanded(
-                          flex: 4,
-                          child: Image.asset(
-                            "assets/images/notes.gif",
+                  child: InkWell(
+                    onTap: (){
+
+                    },
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
+                      elevation: 5,
+                      child: Column(
+                        children: [
+                          Expanded(
+                            flex: 4,
+                            child: Image.asset(
+                              "assets/images/notes.gif",
+                            ),
                           ),
-                        ),
-                        const Expanded(
-                            flex: 1,
-                            child: Text(
-                              "Notes",
-                              style:
-                                  TextStyle(fontFamily: 'Custom', fontSize: 20),
-                            )),
-                      ],
+                          const Expanded(
+                              flex: 1,
+                              child: Text(
+                                "Notes",
+                                style:
+                                    TextStyle(fontFamily: 'Custom', fontSize: 20),
+                              )),
+                        ],
+                      ),
                     ),
                   ),
                 ),

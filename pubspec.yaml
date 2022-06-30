@@ -27,6 +27,7 @@ dependencies:
   url_launcher: ^6.1.4
   pdf_viewer_plugin: ^2.0.1
   intl: ^0.17.0
+  firebase_storage: ^10.2.18
 
 
 dev_dependencies:
