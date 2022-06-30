@@ -28,6 +28,7 @@ void main() async {
 class Main extends StatelessWidget
 {
   Main({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return StreamProvider<User?>.value(
@@ -43,7 +44,6 @@ class Main extends StatelessWidget
           'login_page': (context) => const Login(),
           't_login_form': (context) => const KeyboardVisibilityProvider(child: FacultyLogin()),
           's_login_form': (context) => const KeyboardVisibilityProvider(child: StudentLogin()),
-          's_syllabus' : (context) => StudentSyllabus(),
         },
       ),
     );

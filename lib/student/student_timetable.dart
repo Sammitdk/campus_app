@@ -1,26 +1,27 @@
 import 'package:flutter/material.dart';
 
-class StudentAttendance extends StatefulWidget {
-   Map<String,dynamic> attendance;
+class StudentTimeTable extends StatefulWidget {
+  Map<String,dynamic> timetable;
 
-  StudentAttendance({Key? key,required this.attendance}) : super(key: key);
+  StudentTimeTable({Key? key,required this.timetable}) : super(key: key);
 
   @override
-  State<StudentAttendance> createState() => _StudentAttendanceState();
+  State<StudentTimeTable> createState() => _StudentTimeTableState();
 }
 
-class _StudentAttendanceState extends State<StudentAttendance> {
+class _StudentTimeTableState extends State<StudentTimeTable> {
   @override
   Widget build(BuildContext context) {
-    print('${widget.attendance} asasaassasa');
+    print(widget.timetable);
+    print('${widget.timetable} asasaassasa');
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blueAccent,
       ),
       body: ListView.builder(
-        itemCount: widget.attendance.length,
+        itemCount: widget.timetable['Friday'].length,
         itemBuilder: (BuildContext context,int index) {
-          String key = widget.attendance.keys.elementAt(index);
+          String key = widget.timetable['Friday'].keys.elementAt(index);
           return Column(
             children: [
               Row(
@@ -51,7 +52,7 @@ class _StudentAttendanceState extends State<StudentAttendance> {
                         child: Row(
                           children: [
                             Expanded(flex: 4,child: Text(key,style: const TextStyle(fontSize: 20,fontFamily: 'Custom'),textAlign: TextAlign.center)),
-                            Expanded(child: Text(widget.attendance[key].entries.where((e) => e.value == true).toList().length.toString(),))
+                            Expanded(child: Text(widget.timetable['Friday'][key]))
                           ],
                         ),
                       ),

@@ -1,10 +1,12 @@
 import 'package:campus_subsystem/student/student_loading_page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class StudentHome extends StatefulWidget {
   final Map<String, dynamic> info;
   const StudentHome({Key? key, required this.info}) : super(key: key);
+
 
   @override
   State<StudentHome> createState() => _StudentHomeState();
@@ -33,34 +35,39 @@ class _StudentHomeState extends State<StudentHome> {
             child: Row(
               children: [
                 Expanded(
-                    child: Card(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
-                  elevation: 5,
-                  child: Column(
-                    children: [
-                      Expanded(
-                          flex: 4,
-                          child: Image.asset(
-                            "assets/images/timetable.gif",
-                          )),
-                      const Expanded(
-                          flex: 1,
-                          child: Text(
-                            textAlign: TextAlign.center,
-                            "Time Table",
-                            style:
-                                TextStyle(fontFamily: 'Custom', fontSize: 20),
-                          )),
-                    ],
+                    child: InkWell(
+                      onTap: (){
+                        Navigator.of(context).push(MaterialPageRoute(builder: (_) => StudentLoadingtoTimetable(info: widget.info)));
+                      },
+                      child: Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
+                      elevation: 5,
+                      child: Column(
+                      children: [
+                        Expanded(
+                            flex: 4,
+                            child: Image.asset(
+                              "assets/images/timetable.gif",
+                            )),
+                        const Expanded(
+                            flex: 1,
+                            child: Text(
+                              textAlign: TextAlign.center,
+                              "Time Table",
+                              style:
+                                  TextStyle(fontFamily: 'Custom', fontSize: 20),
+                            )),
+                      ],
                   ),
-                )),
+                ),
+                    )),
                 Expanded(
                     child: InkWell(
-                  onTap: () {
-                    Navigator.pushNamed(context, 's_syllabus');
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(builder: (_) => StudentLoadingToSyllabus(info: widget.info)));
                   },
-                  child: Card(
+                    child: Card(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12)),
                     elevation: 5,
@@ -93,8 +100,8 @@ class _StudentHomeState extends State<StudentHome> {
                 Expanded(
                   child: InkWell(
                     onTap: (){
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(
-                          builder: (_) => StudentLoadingtoAttendance(prn: widget.info['PRN'])));
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (_) => StudentLoadingtoAttendance(info: widget.info)));
                     },
                     child: Card(
                       shape: RoundedRectangleBorder(
@@ -154,8 +161,8 @@ class _StudentHomeState extends State<StudentHome> {
                     child: Card(
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12)),
-                  elevation: 5,
-                  child: Column(
+                    elevation: 5,
+                    child: Column(
                     children: [
                       Expanded(
                           flex: 4,
@@ -175,7 +182,7 @@ class _StudentHomeState extends State<StudentHome> {
                 Expanded(
                     child: InkWell(
                   onTap: () async {
-                    const url = 'https://14.139.121.222/studentresult/';
+                    const url = 'http://14.139.121.222/studentresult/';
                     if (!await canLaunchUrlString(url)) {
                       await launchUrlString(
                         url,
