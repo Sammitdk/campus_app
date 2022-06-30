@@ -1,45 +1,34 @@
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class StudentSyllabus extends StatefulWidget {
+  Map<String,dynamic> subject;
+  StudentSyllabus({Key? key,required this.subject}) : super(key: key);
   @override
   State<StudentSyllabus> createState() => _StudentSyllabusState();
 }
 
 class _StudentSyllabusState extends State<StudentSyllabus> {
-  DocumentReference subjects = FirebaseFirestore.instance.doc('/College/CSE/TY/Subjects');
-  late  Map<String,dynamic> subject = {};
-  @override
-  void initState()
-  {
-    super.initState();
-    getSyllabus();
-  }
-  Future<void> getSyllabus()async {
-    DocumentSnapshot syllabusSnapshot = await subjects.get();
-    subject = syllabusSnapshot.data() as Map<String,dynamic>;
-    print(subject);
-  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+
+        title: const Text("SYLLABUS",style: TextStyle(fontFamily: 'Sticky', fontSize: 40),textAlign: TextAlign.center,),
+      ),
       backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsetsDirectional.all(20),
         child: Column(
           children: [
             Expanded(
-              flex: 1,
-                child: Container(
-                  padding: const EdgeInsetsDirectional.only(top: 10),
-                    child: const Text("SYLLABUS",style: TextStyle(fontFamily: 'Sticky', fontSize: 50)))),
-            Expanded(
               flex: 2,
               child: Row(
                 children: [
                   const Expanded(
                     child: Icon(
-                        Icons.subject_sharp,
+                      Icons.subject_sharp,
                       size: 40,
                     ),
                   ),
@@ -57,7 +46,7 @@ class _StudentSyllabusState extends State<StudentSyllabus> {
                               bottomStart: Radius.circular(50)),
                           color: Colors.limeAccent
                       ),
-                      child: Text("${subject["6"]["ML"]}",style: const TextStyle(fontFamily: 'Bold', fontSize: 30),),
+                      child: Text("${widget.subject["6"]["ML"]}",style: const TextStyle(fontFamily: 'Bold', fontSize: 30),),
                     ),
                   )
                 ],
@@ -87,7 +76,7 @@ class _StudentSyllabusState extends State<StudentSyllabus> {
                               bottomStart: Radius.circular(50)),
                           color: Colors.limeAccent
                       ),
-                      child: const Text("Machine Learning ",style: TextStyle(fontFamily: 'Bold', fontSize: 30),),
+                      child: Text("${widget.subject["6"]["CC"]}",style: TextStyle(fontFamily: 'Bold', fontSize: 30),),
                     ),
                   )
                 ],
@@ -117,7 +106,7 @@ class _StudentSyllabusState extends State<StudentSyllabus> {
                               bottomStart: Radius.circular(50)),
                           color: Colors.limeAccent
                       ),
-                      child: const Text("Operating System 2 ",style: TextStyle(fontFamily: 'Bold', fontSize: 30),),
+                      child: Text("${widget.subject["6"]["OS2"]}",style: TextStyle(fontFamily: 'Bold', fontSize: 30),),
                     ),
                   )
                 ],
@@ -147,7 +136,7 @@ class _StudentSyllabusState extends State<StudentSyllabus> {
                               bottomStart: Radius.circular(50)),
                           color: Colors.limeAccent
                       ),
-                      child: const Text("Compile Construction ",style: TextStyle(fontFamily: 'Bold', fontSize: 30),),
+                      child: Text("${widget.subject["6"]["DBMS"]}",style: TextStyle(fontFamily: 'Bold', fontSize: 30),),
                     ),
                   )
                 ],
@@ -177,7 +166,7 @@ class _StudentSyllabusState extends State<StudentSyllabus> {
                               bottomStart: Radius.circular(50)),
                           color: Colors.limeAccent
                       ),
-                      child: const Text("Cyber Security ",style: TextStyle(fontFamily: 'Bold', fontSize: 30),),
+                      child: Text("${widget.subject["6"]["CS"]}",style: TextStyle(fontFamily: 'Bold', fontSize: 30),),
                     ),
                   )
                 ],
@@ -185,7 +174,7 @@ class _StudentSyllabusState extends State<StudentSyllabus> {
             ),
           ],
         ),
-      ),
-    );
+      )
+      );
   }
 }
