@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class StudentTimeTable extends StatefulWidget {
   Map<String,dynamic> timetable;
@@ -12,16 +13,14 @@ class StudentTimeTable extends StatefulWidget {
 class _StudentTimeTableState extends State<StudentTimeTable> {
   @override
   Widget build(BuildContext context) {
-    print(widget.timetable);
-    print('${widget.timetable} asasaassasa');
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blueAccent,
       ),
-      body: ListView.builder(
-        itemCount: widget.timetable['Friday'].length,
+      body: widget.timetable[DateFormat('EEEE').format(DateTime.now())] == null? Image.asset('assets/images/holiday.gif') : ListView.builder(
+        itemCount: widget.timetable[DateFormat('EEEE').format(DateTime.now())].length,
         itemBuilder: (BuildContext context,int index) {
-          String key = widget.timetable['Friday'].keys.elementAt(index);
+          String key = widget.timetable[DateFormat('EEEE').format(DateTime.now())].keys.elementAt(index);
           return Column(
             children: [
               Row(
@@ -52,7 +51,7 @@ class _StudentTimeTableState extends State<StudentTimeTable> {
                         child: Row(
                           children: [
                             Expanded(flex: 4,child: Text(key,style: const TextStyle(fontSize: 20,fontFamily: 'Custom'),textAlign: TextAlign.center)),
-                            Expanded(child: Text(widget.timetable['Friday'][key]))
+                            Expanded(child: Text(widget.timetable[DateFormat('EEEE').format(DateTime.now())][key]))
                           ],
                         ),
                       ),
