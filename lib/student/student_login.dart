@@ -101,7 +101,7 @@ class _StudentLoginState extends State<StudentLogin> {
                         child: ElevatedButton(
                           style: ButtonStyle(
                             shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))),),
-                          child: const Text('Sign In',style: TextStyle(fontSize: 17),),
+                          child: const Text('Log In',style: TextStyle(fontSize: 17),),
                           onPressed: () async {
                             if(formkey.currentState!.validate())
                             {
