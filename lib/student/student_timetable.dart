@@ -32,51 +32,56 @@ class _StudentTimeTableState extends State<StudentTimeTable> {
               // return Text(timetable.data.toString());
               return Scaffold(
                 appBar: AppBar(
-                  backgroundColor: Colors.blueAccent,
+                  centerTitle: true,
+                  title: const Text("Time Table",style: TextStyle(fontFamily: 'Narrow', fontSize: 30),textAlign: TextAlign.center,),
+                  backgroundColor: Colors.indigo[300],
                 ),
                 body: timetable.data[DateFormat('EEEE').format(DateTime.now())] == null? Image.asset('assets/images/holiday.gif') : ListView.builder(
                   itemCount: timetable.data[DateFormat('EEEE').format(DateTime.now())].length,
                   itemBuilder: (BuildContext context,int index) {
                     String key = timetable.data[DateFormat('EEEE').format(DateTime.now())].keys.elementAt(index);
-                    return Column(
-                      children: [
-                        Row(
-                          children: [
-                            const Expanded(
-                              flex: 1,
-                              child: Icon(
-                                Icons.subject_sharp,
-                                size: 40,
+                    return Padding(
+                      padding: const EdgeInsetsDirectional.all(20),
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              const Expanded(
+                                flex: 1,
+                                child: Icon(
+                                  Icons.subject_sharp,
+                                  size: 40,
+                                ),
                               ),
-                            ),
-                            Expanded(
-                              flex: 5,
-                              child: Padding(
-                                padding: const EdgeInsets.only(top: 15.0),
-                                child: Container(
-                                  // alignment: Alignment.center,
-                                  height: 100,
-                                  // width: 300,
-                                  decoration: const BoxDecoration(
-                                      borderRadius: BorderRadiusDirectional.only(
-                                          topStart: Radius.circular(50),
-                                          topEnd: Radius.circular(50),
-                                          bottomEnd: Radius.circular(50),
-                                          bottomStart: Radius.circular(50)),
-                                      color: Colors.limeAccent
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Expanded(flex: 4,child: Text(timetable.data[DateFormat('EEEE').format(DateTime.now())][key].toString(),style: const TextStyle(fontSize: 20,fontFamily: 'Custom'),textAlign: TextAlign.center)),
-                                      Expanded(child: Text(DateFormat.Hm().format(DateFormat('hh-mm').parse(key)).toString()))//Text(timetable.data[DateFormat('EEEE').format(DateTime.now())][]))
-                                    ],
+                              Expanded(
+                                flex: 5,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(top: 15.0),
+                                  child: Container(
+                                    // alignment: Alignment.center,
+                                    height: 100,
+                                    // width: 300,
+                                    decoration:  BoxDecoration(
+                                        borderRadius: const BorderRadiusDirectional.only(
+                                            topStart: Radius.circular(50),
+                                            topEnd: Radius.circular(50),
+                                            bottomEnd: Radius.circular(50),
+                                            bottomStart: Radius.circular(50)),
+                                        color: Colors.blue[100],
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Expanded(flex: 4,child: Text(timetable.data[DateFormat('EEEE').format(DateTime.now())][key].toString(),style: const TextStyle(fontSize: 20,fontFamily: 'Custom'),textAlign: TextAlign.center)),
+                                        Expanded(child: Text(DateFormat.Hm().format(DateFormat('hh-mm').parse(key)).toString()))//Text(timetable.data[DateFormat('EEEE').format(DateTime.now())][]))
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ],
-                        )
-                      ],
+                            ],
+                          )
+                        ],
+                      ),
                     );
                   },
                 ),
