@@ -1,5 +1,4 @@
 import 'package:campus_subsystem/faculty/faculty_dashboard.dart';
-import 'package:campus_subsystem/firebase/wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:lottie/lottie.dart';
@@ -28,7 +27,7 @@ class _FacultyLoginState extends State<FacultyLogin> {
       appBar: AppBar(
         centerTitle: true,
         title: const Text(_title),
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: Colors.indigo[300],
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -101,6 +100,8 @@ class _FacultyLoginState extends State<FacultyLogin> {
                         padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                         child: ElevatedButton(
                           style: ButtonStyle(
+                            backgroundColor: MaterialStateColor.resolveWith((states) => Colors.white),
+                            foregroundColor: MaterialStateColor.resolveWith((states) => Colors.black),
                             shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))),),
                           child: const Text('Log In',style: TextStyle(fontSize: 17),),
                           onPressed: () async {
@@ -121,6 +122,20 @@ class _FacultyLoginState extends State<FacultyLogin> {
                             //   setState(() {});
                             // }
                           },
+                        )
+                    ),
+                    Container(
+                        height: 50,
+                        padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                        child: ElevatedButton(
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateColor.resolveWith((states) => Colors.white),
+                              foregroundColor: MaterialStateColor.resolveWith((states) => Colors.black),
+                              shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))),),
+                            child: const Text('Forgot Pass',style: TextStyle(fontSize: 17,color: Colors.black),),
+                            onPressed: () async {
+
+                            }
                         )
                     ),
                   ],

@@ -33,7 +33,7 @@ class _StudentSyllabusState extends State<StudentSyllabus> {
                 appBar: AppBar(
                   backgroundColor: Colors.indigo[300],
                   centerTitle: true,
-                  title: const Text("SYLLABUS",style: TextStyle(fontFamily: 'Narrow', fontSize: 30),textAlign: TextAlign.center,),
+                  title: const Text("SYLLABUS",style: TextStyle(fontFamily: 'Bold', fontSize: 30),textAlign: TextAlign.center,),
                 ),
                 backgroundColor: Colors.white,
                 body: Padding(

@@ -27,7 +27,7 @@ class _StudentLoginState extends State<StudentLogin> {
       appBar: AppBar(
           centerTitle: true,
           title: const Text(_title),
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: Colors.indigo[300],
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -100,6 +100,8 @@ class _StudentLoginState extends State<StudentLogin> {
                         padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                         child: ElevatedButton(
                           style: ButtonStyle(
+                            backgroundColor: MaterialStateColor.resolveWith((states) => Colors.white),
+                            foregroundColor: MaterialStateColor.resolveWith((states) => Colors.black),
                             shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))),),
                           child: const Text('Log In',style: TextStyle(fontSize: 17),),
                           onPressed: () async {
@@ -119,6 +121,20 @@ class _StudentLoginState extends State<StudentLogin> {
                               setState(() {});
                             }
                           },
+                        )
+                    ),
+                    Container(
+                        height: 50,
+                        padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                        child: ElevatedButton(
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateColor.resolveWith((states) => Colors.white),
+                            foregroundColor: MaterialStateColor.resolveWith((states) => Colors.black),
+                            shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))),),
+                          child: const Text('Forgot Pass',style: TextStyle(fontSize: 17,color: Colors.black),),
+                          onPressed: () async {
+
+                          }
                         )
                     ),
                   ],
