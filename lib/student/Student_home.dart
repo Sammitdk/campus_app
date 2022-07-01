@@ -1,5 +1,7 @@
-import 'package:campus_subsystem/student/student_loading_page.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:campus_subsystem/student/student_attendance.dart';
+import 'package:campus_subsystem/student/student_notes.dart';
+import 'package:campus_subsystem/student/student_syllabus.dart';
+import 'package:campus_subsystem/student/student_timetable.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -37,7 +39,7 @@ class _StudentHomeState extends State<StudentHome> {
                 Expanded(
                     child: InkWell(
                       onTap: (){
-                        Navigator.of(context).push(MaterialPageRoute(builder: (_) => StudentLoadingtoTimetable(info: widget.info)));
+                        Navigator.of(context).push(MaterialPageRoute(builder: (_) => StudentTimeTable(info: widget.info)));
                       },
                       child: Card(
                       shape: RoundedRectangleBorder(
@@ -65,7 +67,7 @@ class _StudentHomeState extends State<StudentHome> {
                 Expanded(
                     child: InkWell(
                     onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(builder: (_) => StudentLoadingToSyllabus(info: widget.info)));
+                      Navigator.of(context).push(MaterialPageRoute(builder: (_) => StudentSyllabus(info: widget.info)));
                   },
                     child: Card(
                     shape: RoundedRectangleBorder(
@@ -101,7 +103,7 @@ class _StudentHomeState extends State<StudentHome> {
                   child: InkWell(
                     onTap: (){
                       Navigator.of(context).push(MaterialPageRoute(
-                          builder: (_) => StudentLoadingtoAttendance(info: widget.info)));
+                          builder: (_) => StudentAttendance(info: widget.info)));
                     },
                     child: Card(
                       shape: RoundedRectangleBorder(
@@ -129,7 +131,7 @@ class _StudentHomeState extends State<StudentHome> {
                 Expanded(
                   child: InkWell(
                     onTap: (){
-
+                      Navigator.push(context, MaterialPageRoute(builder: (_) => StudentNotes()));
                     },
                     child: Card(
                       shape: RoundedRectangleBorder(
