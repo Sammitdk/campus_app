@@ -47,33 +47,29 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyAiljTZEEuu8vWrT9MaH4SRH8GWFU--A9o',
-    appId: '1:978017050610:web:ec1c7077a1c4217562d56b',
-    messagingSenderId: '978017050610',
-    projectId: 'campes-app1',
-    authDomain: 'campes-app1.firebaseapp.com',
-    databaseURL: 'https://campes-app1-default-rtdb.asia-southeast1.firebasedatabase.app',
-    storageBucket: 'campes-app1.appspot.com',
-    measurementId: 'G-JV5SEH4N01',
+    apiKey: 'AIzaSyDP73N0K9IyLQ1sw1X3PTeIWbccepoSCCQ',
+    appId: '1:219929547423:web:762cdc833265149e2288aa',
+    messagingSenderId: '219929547423',
+    projectId: 'campus-subsystem',
+    authDomain: 'campus-subsystem.firebaseapp.com',
+    storageBucket: 'campus-subsystem.appspot.com',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDUUH2OEVK7dTs0E4gdOCo2rlD_2N1vh8s',
-    appId: '1:978017050610:android:03e8567d6dd204d462d56b',
-    messagingSenderId: '978017050610',
-    projectId: 'campes-app1',
-    databaseURL: 'https://campes-app1-default-rtdb.asia-southeast1.firebasedatabase.app',
-    storageBucket: 'campes-app1.appspot.com',
+    apiKey: 'AIzaSyCIjmYPd-FrcYocrtx8V3P7YK68sP_JLqo',
+    appId: '1:219929547423:android:bd56b6fddb093b522288aa',
+    messagingSenderId: '219929547423',
+    projectId: 'campus-subsystem',
+    storageBucket: 'campus-subsystem.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDkP6I36tvFW4uS9mQUxlZGyKZ1Bnrg16M',
-    appId: '1:978017050610:ios:eecd3c5690a669a762d56b',
-    messagingSenderId: '978017050610',
-    projectId: 'campes-app1',
-    databaseURL: 'https://campes-app1-default-rtdb.asia-southeast1.firebasedatabase.app',
-    storageBucket: 'campes-app1.appspot.com',
-    iosClientId: '978017050610-87615f6f3l178u8jna654ri9irms5si0.apps.googleusercontent.com',
+    apiKey: 'AIzaSyAtyEhQu4Dmpd-KjXgRjY8sJCmv1qzdFZo',
+    appId: '1:219929547423:ios:d7a4b09682df56ce2288aa',
+    messagingSenderId: '219929547423',
+    projectId: 'campus-subsystem',
+    storageBucket: 'campus-subsystem.appspot.com',
+    iosClientId: '219929547423-7l24hv3ihvsve6ha993qgjpn29jvs8cd.apps.googleusercontent.com',
     iosBundleId: 'com.example.campusSubsystem',
   );
 }
