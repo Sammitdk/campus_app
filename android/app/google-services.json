@@ -1,42 +1,34 @@
 {
   "project_info": {
-    "project_number": "978017050610",
-    "firebase_url": "https://campes-app1-default-rtdb.asia-southeast1.firebasedatabase.app",
-    "project_id": "campes-app1",
-    "storage_bucket": "campes-app1.appspot.com"
+    "project_number": "219929547423",
+    "project_id": "campus-subsystem",
+    "storage_bucket": "campus-subsystem.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:978017050610:android:03e8567d6dd204d462d56b",
+        "mobilesdk_app_id": "1:219929547423:android:bd56b6fddb093b522288aa",
         "android_client_info": {
           "package_name": "com.example.campus_subsystem"
         }
       },
       "oauth_client": [
         {
-          "client_id": "978017050610-09fql8ttco3f266gmqdnb3t3vjibaboa.apps.googleusercontent.com",
+          "client_id": "219929547423-4pvrh7k8at6s99f49316ucusvji0eo4b.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDUUH2OEVK7dTs0E4gdOCo2rlD_2N1vh8s"
+          "current_key": "AIzaSyCIjmYPd-FrcYocrtx8V3P7YK68sP_JLqo"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "978017050610-09fql8ttco3f266gmqdnb3t3vjibaboa.apps.googleusercontent.com",
+              "client_id": "219929547423-4pvrh7k8at6s99f49316ucusvji0eo4b.apps.googleusercontent.com",
               "client_type": 3
-            },
-            {
-              "client_id": "978017050610-87615f6f3l178u8jna654ri9irms5si0.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.example.campusSubsystem"
-              }
             }
           ]
         }
