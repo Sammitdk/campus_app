@@ -30,7 +30,7 @@ class StudentLoading extends StatefulWidget {
 class _StudentLoadingState extends State<StudentLoading> {
   Map<String, dynamic> info = {};
   final CollectionReference cr =
-  FirebaseFirestore.instance.collection('Emails');
+  FirebaseFirestore.instance.collection('Email');
 
   Future<void> getData(String email) async {
     DocumentSnapshot qs = await cr.doc(email).get();

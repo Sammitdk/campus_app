@@ -1,11 +1,13 @@
 import 'dart:io';
 import 'package:campus_subsystem/login_page.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:lottie/lottie.dart';
+import 'package:path_provider/path_provider.dart';
 import '../firebase/signIn.dart';
+import 'package:path/path.dart';
 
 class StudentProfile extends StatefulWidget {
   final Map<String, dynamic> info;
@@ -17,17 +19,28 @@ class StudentProfile extends StatefulWidget {
 
 class _StudentProfileState extends State<StudentProfile> {
   final Auth auth = Auth();
+
   File? image;
   Future pickImage() async {
     try {
       final image = await ImagePicker().pickImage(source: ImageSource.gallery);
       if(image == null) return;
-      final imageTemp = File(image.path);
-      setState(() => this.image = imageTemp);
+      // final imageTemp = File(image.path);
+      final imagePermanent = await saveFilePermanently(image.path);
+
+      setState(() => this.image = imagePermanent);
     } on PlatformException catch(e) {
       print('Failed to pick image: $e');
     }
   }
+
+  Future<File> saveFilePermanently(String imagePath) async{
+    final directory = await getApplicationDocumentsDirectory();
+    final name = basename(imagePath);
+    final image = File('${directory.path}/$name');
+    return File(imagePath).copy(image.path);
+  }
+
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
@@ -44,18 +57,25 @@ class _StudentProfileState extends State<StudentProfile> {
               )),
            Positioned(
             top: height/10,
-            left: width/1.8,
-            child: CircleAvatar(
-              radius: 90,
-              child: image != null ? Image.file(image!) : Image.network(
-                  "https://thumbs.dreamstime.com/b/male-graduate-student-profile-icon-gown-cap-flat-style-vector-eps-male-graduate-student-profile-icon-gown-cap-155031056.jpg"),
-          ),
+            left: width/2.5,
+            child: Center(
+              child: Container(
+                  height: 200,
+                  width: 300,
+                  child: ClipOval(
+                      clipBehavior: Clip.antiAlias,
+                      clipper: MyClipper(),
+                      child: image != null ? Image.file(image!) : Lottie.network("https://assets5.lottiefiles.com/packages/lf20_lyp6fz8l.json"),
+                  )
+              )
+            ),
            ),
           Positioned(
-            top: height/4,
+            top: height/3.5,
               width: width/0.55,
               child: FloatingActionButton(
-              backgroundColor: Colors.white,
+                elevation: 0,
+                backgroundColor: Colors.transparent,
                 foregroundColor: Colors.black,
                 onPressed: (){
                   pickImage();
@@ -214,6 +234,19 @@ class _StudentProfileState extends State<StudentProfile> {
       ),
     );
   }
+}
+
+class MyClipper extends CustomClipper<Rect>{
+  @override
+  Rect getClip(Size size) {
+    return Rect.fromLTWH(0, 0, 300, 180);
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper<Rect> oldClipper) {
+    return false;
+  }
+  
 }
 
 class CurvePainter extends CustomPainter {

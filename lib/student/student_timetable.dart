@@ -1,11 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 
 class StudentTimeTable extends StatefulWidget {
-  Map<String,dynamic> info;
+  final Map<String,dynamic> info;
 
-  StudentTimeTable({Key? key,required this.info}) : super(key: key);
+  const StudentTimeTable({Key? key,required this.info}) : super(key: key);
 
   @override
   State<StudentTimeTable> createState() => _StudentTimeTableState();
@@ -20,7 +21,6 @@ class _StudentTimeTableState extends State<StudentTimeTable> {
   }
   @override
   Widget build(BuildContext context) {
-    print(DateFormat('EEEE').format(DateTime.now()));
     return FutureBuilder<Map<String,dynamic>>(
         future: getTimetable(),
         builder: (context,AsyncSnapshot timetable) {
@@ -36,7 +36,7 @@ class _StudentTimeTableState extends State<StudentTimeTable> {
                   title: const Text("Time Table",style: TextStyle(fontFamily: 'Narrow', fontSize: 30),textAlign: TextAlign.center,),
                   backgroundColor: Colors.indigo[300],
                 ),
-                body: timetable.data[DateFormat('EEEE').format(DateTime.now())] == null? Image.asset('assets/images/holiday.gif') : ListView.builder(
+                body: timetable.data[DateFormat('EEEE').format(DateTime.now())] == null? Lottie.network("https://assets4.lottiefiles.com/private_files/lf30_vdqgavca.json") : ListView.builder(
                   itemCount: timetable.data[DateFormat('EEEE').format(DateTime.now())].length,
                   itemBuilder: (BuildContext context,int index) {
                     String key = timetable.data[DateFormat('EEEE').format(DateTime.now())].keys.elementAt(index);
