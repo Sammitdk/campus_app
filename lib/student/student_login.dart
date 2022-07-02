@@ -1,4 +1,5 @@
 import 'package:campus_subsystem/firebase/wrapper.dart';
+import 'package:campus_subsystem/student/student_reset.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:lottie/lottie.dart';
@@ -82,6 +83,7 @@ class _StudentLoginState extends State<StudentLogin> {
                           if(pswd == null || pswd.isEmpty){
                             return 'Enter Password';
                           }
+                          return null;
                         },
                         controller: passwordController,
                         decoration: InputDecoration(
@@ -113,7 +115,7 @@ class _StudentLoginState extends State<StudentLogin> {
                               }
                               else
                               {
-                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Incorrect PRN or Password'),));
+                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Incorrect Email Address or Password'),));
                               }
                             }
                             else
@@ -131,9 +133,9 @@ class _StudentLoginState extends State<StudentLogin> {
                             backgroundColor: MaterialStateColor.resolveWith((states) => Colors.white),
                             foregroundColor: MaterialStateColor.resolveWith((states) => Colors.black),
                             shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))),),
-                          child: const Text('Forgot Pass',style: TextStyle(fontSize: 17,color: Colors.black),),
+                          child: const Text('Reset Password',style: TextStyle(fontSize: 17,color: Colors.black),),
                           onPressed: () async {
-
+                            Navigator.push(context, MaterialPageRoute(builder: (_) => ResetPassword()));
                           }
                         )
                     ),
