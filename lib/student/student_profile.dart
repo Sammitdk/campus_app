@@ -1,11 +1,33 @@
+import 'dart:io';
+import 'package:campus_subsystem/login_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:image_picker/image_picker.dart';
+import '../firebase/signIn.dart';
 
-class StudentProfile extends StatelessWidget {
+class StudentProfile extends StatefulWidget {
   final Map<String, dynamic> info;
-  final FirebaseAuth auth = FirebaseAuth.instance;
-  StudentProfile({Key? key, required this.info}) : super(key: key);
+  const StudentProfile({Key? key, required this.info}) : super(key: key);
 
+  @override
+  State<StudentProfile> createState() => _StudentProfileState();
+}
+
+class _StudentProfileState extends State<StudentProfile> {
+  final Auth auth = Auth();
+  File? image;
+  Future pickImage() async {
+    try {
+      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+      if(image == null) return;
+      final imageTemp = File(image.path);
+      setState(() => this.image = imageTemp);
+    } on PlatformException catch(e) {
+      print('Failed to pick image: $e');
+    }
+  }
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
@@ -23,26 +45,37 @@ class StudentProfile extends StatelessWidget {
            Positioned(
             top: height/10,
             left: width/1.8,
-            child: const CircleAvatar(
-              backgroundImage: NetworkImage("https://campussubsytem1.blob.core.windows.net/sammit/shanks.jpg"),
-              foregroundColor: Colors.transparent,
-              radius: 70,
+            child: CircleAvatar(
+              radius: 90,
+              child: image != null ? Image.file(image!) : Image.network(
+                  "https://thumbs.dreamstime.com/b/male-graduate-student-profile-icon-gown-cap-flat-style-vector-eps-male-graduate-student-profile-icon-gown-cap-155031056.jpg"),
           ),
-          ),
+           ),
+          Positioned(
+            top: height/4,
+              width: width/0.55,
+              child: FloatingActionButton(
+              backgroundColor: Colors.white,
+                foregroundColor: Colors.black,
+                onPressed: (){
+                  pickImage();
+                },
+                child: const Icon(Icons.add_photo_alternate_outlined),
+              )),
           Positioned(
             top: 30,
             left: 15,
-            child: Text("${info['Name']['First']} ${info['Name']['Last']}", style: const TextStyle(fontSize: 40,color: Colors.white,fontFamily:'Bold',),),
+            child: Text("${widget.info['Name']['First']} ${widget.info['Name']['Last']}", style: const TextStyle(fontSize: 40,color: Colors.white,fontFamily:'Bold',),),
           ),
           Positioned(
             top: 83,
             left: 20,
-            child: Text("${info['Email']}",style: const TextStyle(fontSize: 20,color: Colors.white,fontFamily:'Narrow',)),
+            child: Text("${widget.info['Email']}",style: const TextStyle(fontSize: 20,color: Colors.white,fontFamily:'Narrow',)),
           ),
           Positioned(
             top: 120,
             left: 20,
-            child: Text("${info['Mobile']}",style: const TextStyle(fontSize: 20,color: Colors.white,fontFamily:'Narrow',)),
+            child: Text("${widget.info['Mobile']}",style: const TextStyle(fontSize: 20,color: Colors.white,fontFamily:'Narrow',)),
           ),
           Container(
             padding: EdgeInsetsDirectional.only(top: height/2.2,start: 40),
@@ -67,7 +100,7 @@ class StudentProfile extends StatelessWidget {
                               child: Column(
                                 children: [
                                   const Text("Address",style: TextStyle(fontSize: 15,color: Colors.black,fontFamily:'Narrow',),),
-                                  Text("${info['Address']}",style: const TextStyle(fontSize: 25,color: Colors.black,fontFamily:'Narrow',)),
+                                  Text("${widget.info['Address']}",style: const TextStyle(fontSize: 25,color: Colors.black,fontFamily:'Narrow',)),
                                 ],
                               ),
                             )
@@ -91,7 +124,7 @@ class StudentProfile extends StatelessWidget {
                             child: Column(
                               children: [
                                 const Text("Trade",style: TextStyle(fontSize: 15,color: Colors.black,fontFamily:'Narrow',),),
-                                Text("${info['Branch']}",style: const TextStyle(fontSize: 25,color: Colors.black,fontFamily:'Narrow',)),
+                                Text("${widget.info['Branch']}",style: const TextStyle(fontSize: 25,color: Colors.black,fontFamily:'Narrow',)),
                               ],
                             ),
                           )
@@ -115,7 +148,7 @@ class StudentProfile extends StatelessWidget {
                             child: Column(
                               children: [
                                 const Text("Birth Date",style: TextStyle(fontSize: 15,color: Colors.black,fontFamily:'Narrow',),),
-                                Text("${info['DOB']}",style: const TextStyle(fontSize: 25,color: Colors.black,fontFamily:'Narrow',)),
+                                Text("${widget.info['DOB']}",style: const TextStyle(fontSize: 25,color: Colors.black,fontFamily:'Narrow',)),
                               ],
                             ),
                           )
@@ -139,7 +172,7 @@ class StudentProfile extends StatelessWidget {
                             child: Column(
                               children: [
                                 const Text("PRN",style: TextStyle(fontSize: 15,color: Colors.black,fontFamily:'Narrow',),),
-                                Text("${info['PRN']}",style: const TextStyle(fontSize: 25,color: Colors.black,fontFamily:'Narrow',)),
+                                Text("${widget.info['PRN']}",style: const TextStyle(fontSize: 25,color: Colors.black,fontFamily:'Narrow',)),
                               ],
                             ),
                           )
@@ -149,18 +182,35 @@ class StudentProfile extends StatelessWidget {
                   ],
                 ),
               ),
-          Container(
-            padding: const EdgeInsetsDirectional.only(top: 30,end: 30,bottom: 40),
-            alignment: Alignment.bottomRight,
-            child: FloatingActionButton(onPressed: () async {
-              await auth.signOut();
-            },
-              backgroundColor: Colors.white,
-              foregroundColor: Colors.black,
-              child: const Icon(Icons.logout),
-            ),
-          )
           ]
+      ),
+      floatingActionButton: SpeedDial(
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+        animatedIcon: AnimatedIcons.menu_close,
+        children: [
+          SpeedDialChild(
+            label: 'Forget Pass',
+            onTap: () async {
+              //logout pass changed
+              await auth.signOut();
+              // forget pass
+            },
+            backgroundColor: Colors.white,
+            foregroundColor: Colors.black,
+            child: const Icon(Icons.password),
+          ),
+          SpeedDialChild(
+            label: 'Log Out',
+            onTap: () async {
+              await auth.signOut();
+              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => const Login()));
+            },
+            backgroundColor: Colors.white,
+            foregroundColor: Colors.black,
+            child: const Icon(Icons.logout),
+          ),
+        ],
       ),
     );
   }
@@ -190,3 +240,4 @@ class CurvePainter extends CustomPainter {
     return true;
   }
 }
+
