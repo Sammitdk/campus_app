@@ -30,6 +30,11 @@ class _ResetPasswordState extends State<ResetPassword> {
                   border: OutlineInputBorder(),
                   labelText: 'Email',
                 ),
+                validator: (email){
+                  if(email == null || email.isEmpty){
+                    return 'Enter Email';
+                  }
+                },
               ),
             ),
             Container(
