@@ -1,9 +1,12 @@
 import 'dart:io';
 import 'package:campus_subsystem/login_page.dart';
+import 'package:campus_subsystem/student/student_reset.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart';
 import 'package:lottie/lottie.dart';
 import 'package:path_provider/path_provider.dart';
 import '../firebase/signIn.dart';
@@ -33,14 +36,12 @@ class _StudentProfileState extends State<StudentProfile> {
       print('Failed to pick image: $e');
     }
   }
-
   Future<File> saveFilePermanently(String imagePath) async{
     final directory = await getApplicationDocumentsDirectory();
     final name = basename(imagePath);
     final image = File('${directory.path}/$name');
     return File(imagePath).copy(image.path);
   }
-
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
@@ -210,11 +211,9 @@ class _StudentProfileState extends State<StudentProfile> {
         animatedIcon: AnimatedIcons.menu_close,
         children: [
           SpeedDialChild(
-            label: 'Forget Pass',
+            label: 'Forget Password',
             onTap: () async {
-              //logout pass changed
-              await auth.signOut();
-              // forget pass
+              Navigator.of(context).push(MaterialPageRoute(builder: (_) => ResetPassword()));
             },
             backgroundColor: Colors.white,
             foregroundColor: Colors.black,

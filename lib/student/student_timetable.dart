@@ -21,6 +21,8 @@ class _StudentTimeTableState extends State<StudentTimeTable> {
   }
   @override
   Widget build(BuildContext context) {
+
+    // print(DateFormat('EEEE').format(DateTime.now()));
     return FutureBuilder<Map<String,dynamic>>(
         future: getTimetable(),
         builder: (context,AsyncSnapshot timetable) {
@@ -36,10 +38,15 @@ class _StudentTimeTableState extends State<StudentTimeTable> {
                   title: const Text("Time Table",style: TextStyle(fontFamily: 'Narrow', fontSize: 30),textAlign: TextAlign.center,),
                   backgroundColor: Colors.indigo[300],
                 ),
+
+                body: timetable.data[widget.info['Sem']][DateFormat('EEEE').format(DateTime.now())] == null? Image.asset('assets/images/holiday.gif') : ListView.builder(
+                  itemCount: timetable.data[widget.info['Sem']][DateFormat('EEEE').format(DateTime.now())].length,
+
                 body: timetable.data[DateFormat('EEEE').format(DateTime.now())] == null? Lottie.network("https://assets4.lottiefiles.com/private_files/lf30_vdqgavca.json") : ListView.builder(
                   itemCount: timetable.data[DateFormat('EEEE').format(DateTime.now())].length,
+
                   itemBuilder: (BuildContext context,int index) {
-                    String key = timetable.data[DateFormat('EEEE').format(DateTime.now())].keys.elementAt(index);
+                    String key = timetable.data[widget.info['Sem']][DateFormat('EEEE').format(DateTime.now())].keys.elementAt(index);
                     return Padding(
                       padding: const EdgeInsetsDirectional.all(20),
                       child: Column(
@@ -71,8 +78,8 @@ class _StudentTimeTableState extends State<StudentTimeTable> {
                                     ),
                                     child: Row(
                                       children: [
-                                        Expanded(flex: 4,child: Text(timetable.data[DateFormat('EEEE').format(DateTime.now())][key].toString(),style: const TextStyle(fontSize: 20,fontFamily: 'Custom'),textAlign: TextAlign.center)),
-                                        Expanded(child: Text(DateFormat.Hm().format(DateFormat('hh-mm').parse(key)).toString()))//Text(timetable.data[DateFormat('EEEE').format(DateTime.now())][]))
+                                        Expanded(flex: 4,child: Text(timetable.data[widget.info['Sem']][DateFormat('EEEE').format(DateTime.now())][key].toString(),style: const TextStyle(fontSize: 20,fontFamily: 'Custom'),textAlign: TextAlign.center)),
+                                        Expanded(child: Text(DateFormat.Hm().format(DateFormat('hh-mm').parse(key)).toString()))//Text(timetable.data[widget.info['Sem']][DateFormat('EEEE').format(DateTime.now())][]))
                                       ],
                                     ),
                                   ),
