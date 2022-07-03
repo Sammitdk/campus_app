@@ -36,7 +36,7 @@ class _StudentSyllabusState extends State<StudentSyllabus> {
                   },
                   child: Expanded(
                     child: Padding(
-                      padding:  const EdgeInsetsDirectional.all(10),
+                      padding:  const EdgeInsetsDirectional.all(20),
                       child: Container(
                         alignment: Alignment.center,
                         height: 80,
@@ -50,7 +50,7 @@ class _StudentSyllabusState extends State<StudentSyllabus> {
                                 bottomStart:
                                 Radius.circular(50)),
                             color: Colors.blue[100]),
-                        child: Text((x["num"]),textAlign: TextAlign.center,style: const TextStyle(fontFamily: "Bold",fontSize: 30),),
+                        child: Text((x["num"]),textAlign: TextAlign.center,style: const TextStyle(fontSize: 25),),
                     ),
                   ),
                   ),

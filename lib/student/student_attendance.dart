@@ -85,39 +85,48 @@ class _StudentAttendanceState extends State<StudentAttendance> {
                                         // print('${widget.info['PRN']}/Attendance/${subject[widget.info['Sem']].keys.elementAt(index)}');
                                         Navigator.of(context).push(MaterialPageRoute(builder: (_) => StudentSubAttendance(sub: '/Student_Detail/${widget.info['PRN']}/Attendance/${subject[widget.info['Sem']].keys.elementAt(index)}')));
                                       },
-                                      child: Container(
-                                        // alignment: Alignment.center,
-                                        height: 100,
-                                        // width: 300,
-                                        decoration:  BoxDecoration(
-                                            borderRadius:
-                                            const BorderRadiusDirectional.only(
-                                                topStart: Radius.circular(50),
-                                                topEnd: Radius.circular(50),
-                                                bottomEnd: Radius.circular(50),
-                                                bottomStart:
-                                                Radius.circular(50)),
-                                            color: Colors.blue[100]),
-                                        child: Row(
-                                          children: [
-                                            Expanded(
-                                                flex: 4,
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                              flex: 4,
+                                              child: Container(
+                                                alignment: Alignment.center,
+                                                height: 80,
+                                                decoration:  BoxDecoration(
+                                                    borderRadius:
+                                                    const BorderRadiusDirectional.only(
+                                                        topStart: Radius.circular(50),
+                                                        topEnd: Radius.circular(50),
+                                                        bottomStart: Radius.circular(50)),
+                                                    color: Colors.blue[100]),
                                                 child: Text(key,
                                                     style: const TextStyle(
-                                                        fontSize: 20,
-                                                        fontFamily: 'Custom'),
-                                                    textAlign: TextAlign.center)),
-                                            Expanded(
-                                                flex: 1,
+                                                        fontSize: 20),
+                                                    textAlign: TextAlign.center),
+                                              )),
+                                          SizedBox(width: 20,),
+                                          Expanded(
+                                              flex: 1,
+                                              child: Container(
+                                                alignment: Alignment.center,
+                                                height: 80,
+                                                decoration:  BoxDecoration(
+                                                    borderRadius:
+                                                    const BorderRadiusDirectional.only(
+                                                        topStart: Radius.circular(50),
+                                                        topEnd: Radius.circular(50),
+                                                        bottomEnd: Radius.circular(50),),
+                                                    color: Colors.blue[100]),
                                                 child: Text(
                                                   attendance.data[key].entries
                                                       .where((e) => e.value == true)
                                                       .toList()
                                                       .length
                                                       .toString(),
-                                                ))
-                                          ],
-                                        ),
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              ))
+                                        ],
                                       ),
                                     ),
                                   ),

@@ -43,7 +43,7 @@ class _StudentNotesState extends State<StudentNotes> {
                                     bottomStart:
                                     Radius.circular(50)),
                                 color: Colors.blue[100]),
-                            child: Text((x["num"]),textAlign: TextAlign.center,style: const TextStyle(fontFamily: "Bold",fontSize: 30),),
+                            child: Text((x["num"]),textAlign: TextAlign.center,style: const TextStyle(fontSize: 30),),
                           ),
                         ),
                       ),
