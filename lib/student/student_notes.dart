@@ -1,10 +1,11 @@
-import 'dart:io';
-import 'package:firebase_storage/firebase_storage.dart';
+import 'package:campus_subsystem/student/student_syllabus.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
 
 class StudentNotes extends StatefulWidget {
-  const StudentNotes({Key? key}) : super(key: key);
+  StudentNotes({Key? key,required info}) : super(key: key);
+  Map<String,dynamic> info = {};
+
 
   @override
   State<StudentNotes> createState() => _StudentNotesState();
@@ -13,56 +14,49 @@ class StudentNotes extends StatefulWidget {
 class _StudentNotesState extends State<StudentNotes> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      // body: Center(
-      //   child: IconButton(
-      //     icon: const Icon(Icons.download_rounded),
-      //     onPressed: ()async{
-      //       final islandRef = storageiref.child("images/island.jpg");
-      //
-      //       final appDocDir = await getApplicationDocumentsDirectory();
-      //       final filePath = "${appDocDir.absolute}/images/island.jpg";
-      //       final file = File(filePath);
-      //
-      //       final downloadTask = islandRef.writeToFile(file);
-      //       downloadTask.snapshotEvents.listen((taskSnapshot) {
-      //         switch (taskSnapshot.state) {
-      //           case TaskState.running:
-      //             break;
-      //           case TaskState.paused:
-      //             break;
-      //           case TaskState.success:
-      //
-      //             break;
-      //           case TaskState.canceled:
-      //             break;
-      //           case TaskState.error:
-      //             break;
-      //         }
-      //       });
-      //     },
-      //   ),
-      // ),
+    return Scaffold(
+      body: StreamBuilder(
+          stream: FirebaseFirestore.instance.collection("notes").snapshots(),
+          builder: (context ,AsyncSnapshot<QuerySnapshot> snapshot) {
+            if(snapshot.hasData){
+              return ListView.builder(
+                  itemCount: snapshot.data!.docs.length,
+                  itemBuilder: (context,i){
+                    QueryDocumentSnapshot x = snapshot.data!.docs[i];
+                    return InkWell(
+                      onTap: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (_) => LoadFirebasePdf(url: x['url'],)));
+                      },
+                      child: Expanded(
+                        child: Padding(
+                          padding:  const EdgeInsetsDirectional.all(10),
+                          child: Container(
+                            alignment: Alignment.center,
+                            height: 80,
+                            // width: 300,
+                            decoration:  BoxDecoration(
+                                borderRadius:
+                                const BorderRadiusDirectional.only(
+                                    topStart: Radius.circular(50),
+                                    topEnd: Radius.circular(50),
+                                    bottomEnd: Radius.circular(50),
+                                    bottomStart:
+                                    Radius.circular(50)),
+                                color: Colors.blue[100]),
+                            child: Text((x["num"]),textAlign: TextAlign.center,style: const TextStyle(fontFamily: "Bold",fontSize: 30),),
+                          ),
+                        ),
+                      ),
+                    );
+                  });
+            }
+            return const Center(
+                child: CircularProgressIndicator());
+          }
+      ),
     );
   }
 
 }
-  // Reference storageiref = FirebaseStorage.instance.ref();
-  // var storagefile;
-  // Future getList() async{
-  //   var temp = storageref.ref().child('images');
-  //   storagefile = await temp.listAll();
-  // }
-  // @override
-  // void initState(){
-  //   WidgetsBinding.instance.addPostFrameCallback((_)async{
-  //     await getList();
-  //     await Future.delayed(Duration(seconds: 1));
-  //     for(var file in storagefile.prefixes){
-  //       print(file);
-  //     }
-  //   });
-  // }
-
 
 
