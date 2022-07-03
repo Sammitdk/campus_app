@@ -38,10 +38,6 @@ class _StudentTimeTableState extends State<StudentTimeTable> {
                   title: const Text("Time Table",style: TextStyle(fontFamily: 'Narrow', fontSize: 30),textAlign: TextAlign.center,),
                   backgroundColor: Colors.indigo[300],
                 ),
-
-                body: timetable.data[widget.info['Sem']][DateFormat('EEEE').format(DateTime.now())] == null? Image.asset('assets/images/holiday.gif') : ListView.builder(
-                  itemCount: timetable.data[widget.info['Sem']][DateFormat('EEEE').format(DateTime.now())].length,
-
                 body: timetable.data[DateFormat('EEEE').format(DateTime.now())] == null? Lottie.network("https://assets4.lottiefiles.com/private_files/lf30_vdqgavca.json") : ListView.builder(
                   itemCount: timetable.data[DateFormat('EEEE').format(DateTime.now())].length,
 
