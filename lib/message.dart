@@ -1,4 +1,3 @@
-import 'package:campus_subsystem/faculty/recievemessege.dart';
 import 'package:flutter/material.dart';
 
 class Message extends StatelessWidget {

@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:campus_subsystem/login_page.dart';
+import 'package:campus_subsystem/firebase/wrapper.dart';
 import 'package:campus_subsystem/student/student_reset.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -22,15 +22,14 @@ class StudentProfile extends StatefulWidget {
 
 class _StudentProfileState extends State<StudentProfile> {
   final Auth auth = Auth();
-
   File? image;
+
   Future pickImage() async {
     try {
       final image = await ImagePicker().pickImage(source: ImageSource.gallery);
       if(image == null) return;
-      final imageTemp = File(image.path);
+      // final imageTemp = File(image.path);
       final imagePermanent = await saveFilePermanently(image.path);
-
       setState(() => this.image = imagePermanent);
     } on PlatformException catch(e) {
       print('Failed to pick image: $e');
@@ -78,8 +77,8 @@ class _StudentProfileState extends State<StudentProfile> {
                   elevation: 0,
                   backgroundColor: Colors.transparent,
                   foregroundColor: Colors.black,
-                  onPressed: (){
-                    pickImage();
+                  onPressed: () async {
+                    await pickImage();
                   },
                   child: const Icon(Icons.add_photo_alternate_outlined),
                 )),
@@ -223,7 +222,7 @@ class _StudentProfileState extends State<StudentProfile> {
             label: 'Log Out',
             onTap: () async {
               await auth.signOut();
-              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => const Login()));
+              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => const Wrapper()));
             },
             backgroundColor: Colors.white,
             foregroundColor: Colors.black,

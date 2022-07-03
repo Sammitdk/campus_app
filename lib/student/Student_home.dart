@@ -9,7 +9,6 @@ class StudentHome extends StatefulWidget {
   final Map<String, dynamic> info;
   const StudentHome({Key? key, required this.info}) : super(key: key);
 
-
   @override
   State<StudentHome> createState() => _StudentHomeState();
 }
@@ -67,7 +66,7 @@ class _StudentHomeState extends State<StudentHome> {
                 Expanded(
                     child: InkWell(
                     onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(builder: (_) => StudentSyllabus(info: widget.info)));
+                      Navigator.of(context).push(MaterialPageRoute(builder: (_) => StudentSyllabus(info: widget.info,)));
                   },
                     child: Card(
                     shape: RoundedRectangleBorder(

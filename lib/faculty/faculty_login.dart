@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:lottie/lottie.dart';
 import '../firebase/signIn.dart';
+import '../firebase/wrapper.dart';
+import '../student/student_reset.dart';
 
 class FacultyLogin extends StatefulWidget {
   const FacultyLogin({Key? key}) : super(key: key);
@@ -105,22 +107,22 @@ class _FacultyLoginState extends State<FacultyLogin> {
                             shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))),),
                           child: const Text('Log In',style: TextStyle(fontSize: 17),),
                           onPressed: () async {
-                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const FacultyDashboard()));
-                            // if(formkey.currentState!.validate())
-                            // {
-                            //   if(await auth.signIn(username: emailController.text,password: passwordController.text) != null)
-                            //   {
-                            //     Navigator.of(this.context).pushReplacement(MaterialPageRoute(builder: (_) => const Wrapper()));
-                            //   }
-                            //   else
-                            //   {
-                            //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Incorrect PRN or Password'),));
-                            //   }
-                            // }
-                            // else
-                            // {
-                            //   setState(() {});
-                            // }
+                            // Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const FacultyDashboard()));
+                            if(formkey.currentState!.validate())
+                            {
+                              if(await auth.signIn(username: emailController.text,password: passwordController.text) != null)
+                              {
+                                 Navigator.of(this.context).pushReplacement(MaterialPageRoute(builder: (_) => const FacultyDashboard()));
+                              }
+                              else
+                              {
+                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Incorrect PRN or Password'),));
+                              }
+                            }
+                            else
+                            {
+                              setState(() {});
+                            }
                           },
                         )
                     ),
@@ -133,11 +135,10 @@ class _FacultyLoginState extends State<FacultyLogin> {
                               foregroundColor: MaterialStateColor.resolveWith((states) => Colors.black),
                               shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))),),
                             child: const Text('Forgot Pass',style: TextStyle(fontSize: 17,color: Colors.black),),
-                            onPressed: () async {
-
-                            }
-                        )
-                    ),
+                            onPressed: () async{ Navigator.push(context,MaterialPageRoute(builder: (_) => ResetPassword()));
+                          },
+                        ),
+                        ),
                   ],
                 ),
               ),

@@ -21,13 +21,14 @@ class _StudentLoginState extends State<StudentLogin> {
 
   @override
   Widget build(BuildContext context) {
-    final bool isKeyboardVisible = KeyboardVisibilityProvider.isKeyboardVisible(context);
+    final bool isKeyboardVisible =
+        KeyboardVisibilityProvider.isKeyboardVisible(context);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
       appBar: AppBar(
-          centerTitle: true,
-          title: const Text(_title),
+        centerTitle: true,
+        title: const Text(_title),
         backgroundColor: Colors.indigo[300],
       ),
       body: SingleChildScrollView(
@@ -35,37 +36,40 @@ class _StudentLoginState extends State<StudentLogin> {
           padding: const EdgeInsets.all(10),
           child: Column(
             children: <Widget>[
-              isKeyboardVisible ?  SizedBox(
-                child: Lottie.network("https://assets1.lottiefiles.com/temp/lf20_vKPgdY.json"),
-              ) : Container(
-                //shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                margin: const EdgeInsets.all(10),
-                child: Column(
-                  children: [
-                    Image.asset(
-                      "assets/icons/student_login.gif",
+              isKeyboardVisible
+                  ? SizedBox(
+                      child: Lottie.network(
+                          "https://assets1.lottiefiles.com/temp/lf20_vKPgdY.json"),
+                    )
+                  : Container(
+                      //shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      margin: const EdgeInsets.all(10),
+                      child: Column(
+                        children: [
+                          Image.asset(
+                            "assets/icons/student_login.gif",
+                          ),
+                        ],
+                      ),
                     ),
-                  ],
-                ),
-              ),
               Container(
                   alignment: Alignment.center,
                   padding: const EdgeInsets.all(20),
                   child: const Text(
                     'Student',
-                    style: TextStyle(fontSize: 30,fontFamily: 'Custom'),
-                  )
-              ),
+                    style: TextStyle(fontSize: 30, fontFamily: 'Custom'),
+                  )),
               Form(
                 key: formkey,
                 child: Column(
                   children: [
                     Container(
-                      padding: const EdgeInsets.only(left: 40,right: 40,bottom: 20),
+                      padding: const EdgeInsets.only(
+                          left: 40, right: 40, bottom: 20),
                       child: TextFormField(
                         controller: emailController,
                         validator: (name) {
-                          if(name == null || name.isEmpty){
+                          if (name == null || name.isEmpty) {
                             return 'Enter Email Address';
                           }
                         },
@@ -74,71 +78,93 @@ class _StudentLoginState extends State<StudentLogin> {
                           labelText: 'Email',
                         ),
                       ),
-                    ),  //Email TextField
+                    ), //Email TextField
                     Container(
-                      padding: const EdgeInsets.only(left: 40,right: 40,bottom: 20),
+                      padding: const EdgeInsets.only(
+                          left: 40, right: 40, bottom: 20),
                       child: TextFormField(
                         obscureText: !isVisible,
-                        validator: (pswd){
-                          if(pswd == null || pswd.isEmpty){
+                        validator: (pswd) {
+                          if (pswd == null || pswd.isEmpty) {
                             return 'Enter Password';
                           }
                           return null;
                         },
                         controller: passwordController,
                         decoration: InputDecoration(
-                          border: const OutlineInputBorder(),
-                          labelText: 'Password',
-                          suffixIcon: IconButton(onPressed: () {
-                            setState(() {
-                              isVisible = !isVisible;
-                            });
-                          }, icon: const Icon(Icons.remove_red_eye))
-                        ),
+                            border: const OutlineInputBorder(),
+                            labelText: 'Password',
+                            suffixIcon: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    isVisible = !isVisible;
+                                  });
+                                },
+                                icon: const Icon(Icons.remove_red_eye))),
                       ),
-                    ),  //Password TextField
+                    ), //Password TextField
                     Container(
                         height: 50,
                         padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                         child: ElevatedButton(
                           style: ButtonStyle(
-                            backgroundColor: MaterialStateColor.resolveWith((states) => Colors.white),
-                            foregroundColor: MaterialStateColor.resolveWith((states) => Colors.black),
-                            shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))),),
-                          child: const Text('Log In',style: TextStyle(fontSize: 17),),
+                            backgroundColor: MaterialStateColor.resolveWith(
+                                (states) => Colors.white),
+                            foregroundColor: MaterialStateColor.resolveWith(
+                                (states) => Colors.black),
+                            shape: MaterialStateProperty.all(
+                                RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15))),
+                          ),
+                          child: const Text(
+                            'Log In',
+                            style: TextStyle(fontSize: 17),
+                          ),
                           onPressed: () async {
-                            if(formkey.currentState!.validate())
-                            {
-                              if(await auth.signIn(username: emailController.text,password: passwordController.text) != null)
-                              {
-                                Navigator.of(this.context).pushReplacement(MaterialPageRoute(builder: (_) => const Wrapper()));
+                            if (formkey.currentState!.validate()) {
+                              if (await auth.signIn(
+                                      username: emailController.text,
+                                      password: passwordController.text) !=
+                                  null) {
+                                Navigator.of(this.context).pushReplacement(
+                                    MaterialPageRoute(
+                                        builder: (_) => const Wrapper()));
+                              } else {
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(const SnackBar(
+                                  content: Text(
+                                      'Incorrect Email Address or Password'),
+                                ));
                               }
-                              else
-                              {
-                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Incorrect Email Address or Password'),));
-                              }
-                            }
-                            else
-                            {
+                            } else {
                               setState(() {});
                             }
                           },
-                        )
-                    ),
+                        )),
                     Container(
                         height: 50,
                         padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
                         child: ElevatedButton(
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateColor.resolveWith((states) => Colors.white),
-                            foregroundColor: MaterialStateColor.resolveWith((states) => Colors.black),
-                            shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))),),
-                          child: const Text('Reset Password',style: TextStyle(fontSize: 17,color: Colors.black),),
-                          onPressed: () async {
-                            Navigator.push(context, MaterialPageRoute(builder: (_) => ResetPassword()));
-                          }
-                        )
-                    ),
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateColor.resolveWith(
+                                  (states) => Colors.white),
+                              foregroundColor: MaterialStateColor.resolveWith(
+                                  (states) => Colors.black),
+                              shape: MaterialStateProperty.all(
+                                  RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15))),
+                            ),
+                            child: const Text(
+                              'Reset Password',
+                              style:
+                                  TextStyle(fontSize: 17, color: Colors.black),
+                            ),
+                            onPressed: () async {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (_) => ResetPassword()));
+                            })),
                   ],
                 ),
               ),

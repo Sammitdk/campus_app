@@ -1,3 +1,4 @@
+import 'package:campus_subsystem/faculty/faculty_attendance.dart';
 import 'package:flutter/material.dart';
 
 class FacultyHome extends StatefulWidget {
@@ -88,6 +89,8 @@ class _FacultyHomeState extends State<FacultyHome> {
               children: [
                 Expanded(
                   child: InkWell(
+                    onTap: (){ Navigator.push(context,MaterialPageRoute(builder: (_) => const FacultyAttendance()));
+                    },
                     child: Card(
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12)),

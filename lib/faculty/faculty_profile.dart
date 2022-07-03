@@ -24,7 +24,6 @@ class FacultyProfile extends StatelessWidget {
               top: height/10,
               left: width/1.8,
               child: const CircleAvatar(
-                backgroundImage: NetworkImage("https://campussubsytem1.blob.core.windows.net/sammit/shanks.jpg"),
                 foregroundColor: Colors.transparent,
                 radius: 70,
               ),
