@@ -98,10 +98,13 @@ class _StudentSubAttendanceState extends State<StudentSubAttendance> {
                                                       fontFamily: 'Custom'),
                                                   textAlign: TextAlign.center)),
                                           Expanded(
-                                              flex: 1,
+                                              flex: 2,
                                               child: Text(attendance.data[key]
                                                   ? 'Present'
-                                                  : 'Absent')
+                                                  : 'Absent',
+                                                  style: const TextStyle(
+                                                    fontSize: 18,)
+                                              ),
                                           )
                                         ],
                                       ),

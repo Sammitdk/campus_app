@@ -23,7 +23,7 @@ class _ResetPasswordState extends State<ResetPassword> {
         child: Column(
           children: [
             Container(
-              padding: const EdgeInsets.only(left: 40,right: 40,bottom: 20),
+              padding: const EdgeInsets.only(left: 40,right: 40,top: 200,bottom: 30),
               child: TextFormField(
                 controller: emailcontrol,
                 decoration: const InputDecoration(
