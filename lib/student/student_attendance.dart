@@ -34,7 +34,7 @@ class _StudentAttendanceState extends State<StudentAttendance> {
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
-      onRefresh:() => Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => StudentAttendance(info: widget.info))),
+      onRefresh:() => Future(() { setState(() {}); }),
       child: FutureBuilder<Map<String, dynamic>>(
         future: getAttendance(),
         builder: (context, AsyncSnapshot attendance) {
