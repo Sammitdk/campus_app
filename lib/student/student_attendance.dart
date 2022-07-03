@@ -1,3 +1,4 @@
+import 'package:campus_subsystem/student/student_sub_attendance.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -12,13 +13,13 @@ class StudentAttendance extends StatefulWidget {
 
 class _StudentAttendanceState extends State<StudentAttendance> {
   Map<String, dynamic> attendance = {};
+  Map<String, dynamic> subject = {};
 
   Future<Map<String, dynamic>> getAttendance() async {
     final DocumentReference subjects = FirebaseFirestore.instance.doc(
         '/College/${widget.info['Branch']}/${widget.info['Year']}/Subjects');
     DocumentSnapshot subjectsnapshot = await subjects.get();
-    Map<String, dynamic> subject =
-        subjectsnapshot.data() as Map<String, dynamic>;
+    subject = subjectsnapshot.data() as Map<String, dynamic>;
     final CollectionReference studentdetail = FirebaseFirestore.instance
         .collection('/Student_Detail/${widget.info['PRN']}/Attendance');
 
@@ -79,38 +80,44 @@ class _StudentAttendanceState extends State<StudentAttendance> {
                                   flex: 7,
                                   child: Padding(
                                     padding: const EdgeInsets.only(top: 15.0),
-                                    child: Container(
-                                      // alignment: Alignment.center,
-                                      height: 100,
-                                      // width: 300,
-                                      decoration:  BoxDecoration(
-                                          borderRadius:
-                                          const BorderRadiusDirectional.only(
-                                              topStart: Radius.circular(50),
-                                              topEnd: Radius.circular(50),
-                                              bottomEnd: Radius.circular(50),
-                                              bottomStart:
-                                              Radius.circular(50)),
-                                          color: Colors.blue[100]),
-                                      child: Row(
-                                        children: [
-                                          Expanded(
-                                              flex: 4,
-                                              child: Text(key,
-                                                  style: const TextStyle(
-                                                      fontSize: 20,
-                                                      fontFamily: 'Custom'),
-                                                  textAlign: TextAlign.center)),
-                                          Expanded(
-                                              flex: 1,
-                                              child: Text(
-                                                attendance.data[key].entries
-                                                    .where((e) => e.value == true)
-                                                    .toList()
-                                                    .length
-                                                    .toString(),
-                                              ))
-                                        ],
+                                    child: InkWell(
+                                      onTap: (){
+                                        // print('${widget.info['PRN']}/Attendance/${subject[widget.info['Sem']].keys.elementAt(index)}');
+                                        Navigator.of(context).push(MaterialPageRoute(builder: (_) => StudentSubAttendance(sub: '/Student_Detail/${widget.info['PRN']}/Attendance/${subject[widget.info['Sem']].keys.elementAt(index)}')));
+                                      },
+                                      child: Container(
+                                        // alignment: Alignment.center,
+                                        height: 100,
+                                        // width: 300,
+                                        decoration:  BoxDecoration(
+                                            borderRadius:
+                                            const BorderRadiusDirectional.only(
+                                                topStart: Radius.circular(50),
+                                                topEnd: Radius.circular(50),
+                                                bottomEnd: Radius.circular(50),
+                                                bottomStart:
+                                                Radius.circular(50)),
+                                            color: Colors.blue[100]),
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                                flex: 4,
+                                                child: Text(key,
+                                                    style: const TextStyle(
+                                                        fontSize: 20,
+                                                        fontFamily: 'Custom'),
+                                                    textAlign: TextAlign.center)),
+                                            Expanded(
+                                                flex: 1,
+                                                child: Text(
+                                                  attendance.data[key].entries
+                                                      .where((e) => e.value == true)
+                                                      .toList()
+                                                      .length
+                                                      .toString(),
+                                                ))
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
