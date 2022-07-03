@@ -33,30 +33,30 @@ class _StudentAttendanceState extends State<StudentAttendance> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Map<String, dynamic>>(
-      future: getAttendance(),
-      builder: (context, AsyncSnapshot attendance) {
-        if (attendance.connectionState == ConnectionState.waiting) {
-          return const Scaffold(
-              backgroundColor: Colors.white,
-              body: Center(
-                  child: CircularProgressIndicator(
-                value: 3,
-              )));
-        } else {
-          if (attendance.hasError) {
-            return Text(attendance.error.toString());
+    return RefreshIndicator(
+      onRefresh:() => Future(() { setState(() {}); }),
+      child: FutureBuilder<Map<String, dynamic>>(
+        future: getAttendance(),
+        builder: (context, AsyncSnapshot attendance) {
+          if (attendance.connectionState == ConnectionState.waiting) {
+            return const Scaffold(
+                backgroundColor: Colors.white,
+                body: Center(
+                    child: CircularProgressIndicator(
+                  value: 3,
+                )));
           } else {
-            // print(attendance.data.toString());
-            return Scaffold(
-              appBar: AppBar(
-                centerTitle: true,
-                title: const Text("Attendance",style: TextStyle(fontFamily: 'Narrow', fontSize: 30),textAlign: TextAlign.center,),
-                backgroundColor: Colors.indigo[300],
-              ),
-              body: RefreshIndicator(
-                onRefresh: getAttendance,
-                child: Padding(
+            if (attendance.hasError) {
+              return Text(attendance.error.toString());
+            } else {
+              // print(attendance.data.toString());
+              return Scaffold(
+                appBar: AppBar(
+                  centerTitle: true,
+                  title: const Text("Attendance",style: TextStyle(fontFamily: 'Narrow', fontSize: 30),textAlign: TextAlign.center,),
+                  backgroundColor: Colors.indigo[300],
+                ),
+                body: Padding(
                   padding: const EdgeInsetsDirectional.all(20),
                   child: ListView.builder(
                     itemCount: attendance.data.length,
@@ -85,12 +85,12 @@ class _StudentAttendanceState extends State<StudentAttendance> {
                                       // width: 300,
                                       decoration:  BoxDecoration(
                                           borderRadius:
-                                              const BorderRadiusDirectional.only(
-                                                  topStart: Radius.circular(50),
-                                                  topEnd: Radius.circular(50),
-                                                  bottomEnd: Radius.circular(50),
-                                                  bottomStart:
-                                                      Radius.circular(50)),
+                                          const BorderRadiusDirectional.only(
+                                              topStart: Radius.circular(50),
+                                              topEnd: Radius.circular(50),
+                                              bottomEnd: Radius.circular(50),
+                                              bottomStart:
+                                              Radius.circular(50)),
                                           color: Colors.blue[100]),
                                       child: Row(
                                         children: [
@@ -123,11 +123,11 @@ class _StudentAttendanceState extends State<StudentAttendance> {
                     },
                   ),
                 ),
-              ),
-            );
+              );
+            }
           }
-        }
-      },
+        },
+      ),
     );
     // return Container();
   }
