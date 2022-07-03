@@ -54,71 +54,74 @@ class _StudentAttendanceState extends State<StudentAttendance> {
                 title: const Text("Attendance",style: TextStyle(fontFamily: 'Narrow', fontSize: 30),textAlign: TextAlign.center,),
                 backgroundColor: Colors.indigo[300],
               ),
-              body: Padding(
-                padding: const EdgeInsetsDirectional.all(20),
-                child: ListView.builder(
-                  itemCount: attendance.data.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    String key = attendance.data.keys.elementAt(index);
-                    return Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsetsDirectional.only(bottom: 10),
-                          child: Row(
-                            children: [
-                              const Expanded(
-                                flex: 1,
-                                child: Icon(
-                                  Icons.subject_sharp,
-                                  size: 40,
+              body: RefreshIndicator(
+                onRefresh: getAttendance,
+                child: Padding(
+                  padding: const EdgeInsetsDirectional.all(20),
+                  child: ListView.builder(
+                    itemCount: attendance.data.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      String key = attendance.data.keys.elementAt(index);
+                      return Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsetsDirectional.only(bottom: 10),
+                            child: Row(
+                              children: [
+                                const Expanded(
+                                  flex: 1,
+                                  child: Icon(
+                                    Icons.subject_sharp,
+                                    size: 40,
+                                  ),
                                 ),
-                              ),
-                              Expanded(
-                                flex: 7,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(top: 15.0),
-                                  child: Container(
-                                    // alignment: Alignment.center,
-                                    height: 100,
-                                    // width: 300,
-                                    decoration:  BoxDecoration(
-                                        borderRadius:
-                                            const BorderRadiusDirectional.only(
-                                                topStart: Radius.circular(50),
-                                                topEnd: Radius.circular(50),
-                                                bottomEnd: Radius.circular(50),
-                                                bottomStart:
-                                                    Radius.circular(50)),
-                                        color: Colors.blue[100]),
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                            flex: 4,
-                                            child: Text(key,
-                                                style: const TextStyle(
-                                                    fontSize: 20,
-                                                    fontFamily: 'Custom'),
-                                                textAlign: TextAlign.center)),
-                                        Expanded(
-                                            flex: 1,
-                                            child: Text(
-                                              attendance.data[key].entries
-                                                  .where((e) => e.value == true)
-                                                  .toList()
-                                                  .length
-                                                  .toString(),
-                                            ))
-                                      ],
+                                Expanded(
+                                  flex: 7,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(top: 15.0),
+                                    child: Container(
+                                      // alignment: Alignment.center,
+                                      height: 100,
+                                      // width: 300,
+                                      decoration:  BoxDecoration(
+                                          borderRadius:
+                                              const BorderRadiusDirectional.only(
+                                                  topStart: Radius.circular(50),
+                                                  topEnd: Radius.circular(50),
+                                                  bottomEnd: Radius.circular(50),
+                                                  bottomStart:
+                                                      Radius.circular(50)),
+                                          color: Colors.blue[100]),
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                              flex: 4,
+                                              child: Text(key,
+                                                  style: const TextStyle(
+                                                      fontSize: 20,
+                                                      fontFamily: 'Custom'),
+                                                  textAlign: TextAlign.center)),
+                                          Expanded(
+                                              flex: 1,
+                                              child: Text(
+                                                attendance.data[key].entries
+                                                    .where((e) => e.value == true)
+                                                    .toList()
+                                                    .length
+                                                    .toString(),
+                                              ))
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
-                    );
-                  },
+                              ],
+                            ),
+                          )
+                        ],
+                      );
+                    },
+                  ),
                 ),
               ),
             );

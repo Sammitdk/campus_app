@@ -12,7 +12,7 @@ class _FacultyAttendanceState extends State<FacultyAttendance> {
   final DocumentReference roll = FirebaseFirestore.instance.doc('College/CSE/TY/Roll_No');
   Map<String,dynamic> rolls = {};
   Map<String,bool> rollattend = {};
-  Future markAttendance()async{
+  Future markAttendance() async {
 
   }
   Future<Map<String,dynamic>> getStudentList()async{
