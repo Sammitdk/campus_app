@@ -2,6 +2,8 @@ import 'package:campus_subsystem/faculty/faculty_attendance.dart';
 import 'package:campus_subsystem/faculty/faculty_notes.dart';
 import 'package:flutter/material.dart';
 
+import 'faculty_attendance_option.dart';
+
 class FacultyHome extends StatefulWidget {
   const FacultyHome({Key? key}) : super(key: key);
 
@@ -90,7 +92,7 @@ class _FacultyHomeState extends State<FacultyHome> {
               children: [
                 Expanded(
                   child: InkWell(
-                    onTap: (){ Navigator.push(context,MaterialPageRoute(builder: (_) => const FacultyAttendance()));
+                    onTap: (){ Navigator.push(context,MaterialPageRoute(builder: (_) => const FacultyAttendanceOption()));
                     },
                     child: Card(
                       shape: RoundedRectangleBorder(

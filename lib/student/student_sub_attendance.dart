@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class StudentSubAttendance extends StatefulWidget {
   final String sub;
@@ -11,11 +12,6 @@ class StudentSubAttendance extends StatefulWidget {
 }
 
 class _StudentSubAttendanceState extends State<StudentSubAttendance> {
-  Future<Map<String, dynamic>> allattend() async {
-    DocumentReference dr = FirebaseFirestore.instance.doc(widget.sub);
-    DocumentSnapshot ds = await dr.get();
-    return ds.data() as Map<String, dynamic>;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,8 +19,8 @@ class _StudentSubAttendanceState extends State<StudentSubAttendance> {
       onRefresh: () => Future(() {
         setState(() {});
       }),
-      child: FutureBuilder<Map<String, dynamic>>(
-        future: allattend(),
+      child: StreamBuilder(
+        stream: FirebaseFirestore.instance.doc(widget.sub).snapshots(),
         builder: (context, AsyncSnapshot attendance) {
           if (attendance.connectionState == ConnectionState.waiting) {
             return const Scaffold(
@@ -92,7 +88,7 @@ class _StudentSubAttendanceState extends State<StudentSubAttendance> {
                                         children: [
                                           Expanded(
                                               flex: 4,
-                                              child: Text(key,
+                                              child: Text('${key.substring(0,9)} ${DateFormat.Hm().format(DateFormat('hh-mm').parse(key.substring(10)))}',
                                                   style: const TextStyle(
                                                       fontSize: 20,
                                                       fontFamily: 'Custom'),
