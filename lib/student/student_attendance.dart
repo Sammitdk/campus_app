@@ -50,7 +50,6 @@ class _StudentAttendanceState extends State<StudentAttendance> {
             if (attendance.hasError) {
               return Text(attendance.error.toString());
             } else {
-              // print(attendance.data.toString());
               return Scaffold(
                 appBar: AppBar(
                   centerTitle: true,
@@ -82,7 +81,6 @@ class _StudentAttendanceState extends State<StudentAttendance> {
                                     padding: const EdgeInsets.only(top: 15.0),
                                     child: InkWell(
                                       onTap: (){
-                                        // print('${widget.info['PRN']}/Attendance/${subject[widget.info['Sem']].keys.elementAt(index)}');
                                         Navigator.of(context).push(MaterialPageRoute(builder: (_) => StudentSubAttendance(sub: '/Student_Detail/${widget.info['PRN']}/Attendance/${subject[widget.info['Sem']].keys.elementAt(index)}')));
                                       },
                                       child: Row(
@@ -118,6 +116,13 @@ class _StudentAttendanceState extends State<StudentAttendance> {
                                                         bottomEnd: Radius.circular(50),),
                                                     color: Colors.blue[100]),
                                                 child: Text(
+
+                                                  '${attendance.data[key].entries.where((e) => e.value == true).toList().length.toString()}/${attendance.data[key].length}',
+                                                )
+                                            )
+                                          ],
+                                        ),
+
                                                   attendance.data[key].entries
                                                       .where((e) => e.value == true)
                                                       .toList()

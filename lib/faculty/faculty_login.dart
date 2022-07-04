@@ -107,22 +107,22 @@ class _FacultyLoginState extends State<FacultyLogin> {
                             shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))),),
                           child: const Text('Log In',style: TextStyle(fontSize: 17),),
                           onPressed: () async {
-                            // Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const FacultyDashboard()));
-                            if(formkey.currentState!.validate())
-                            {
-                              if(await auth.signIn(username: emailController.text,password: passwordController.text) != null)
-                              {
-                                 Navigator.of(this.context).pushReplacement(MaterialPageRoute(builder: (_) => const FacultyDashboard()));
-                              }
-                              else
-                              {
-                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Incorrect PRN or Password'),));
-                              }
-                            }
-                            else
-                            {
-                              setState(() {});
-                            }
+                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const FacultyDashboard()));
+                            // if(formkey.currentState!.validate())
+                            // {
+                            //   if(await auth.signIn(username: emailController.text,password: passwordController.text) != null)
+                            //   {
+                            //      Navigator.of(this.context).pushReplacement(MaterialPageRoute(builder: (_) => const FacultyDashboard()));
+                            //   }
+                            //   else
+                            //   {
+                            //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Incorrect PRN or Password'),));
+                            //   }
+                            // }
+                            // else
+                            // {
+                            //   setState(() {});
+                            // }
                           },
                         )
                     ),
