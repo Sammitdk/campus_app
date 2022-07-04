@@ -35,6 +35,9 @@ class Main extends StatelessWidget
       value: Auth().user,
       initialData: null,
       child: MaterialApp(
+        theme: ThemeData(
+          fontFamily: "Muli"
+        ),
         color: Colors.transparent,
         debugShowCheckedModeBanner: false,
         // home: Wrapper(),

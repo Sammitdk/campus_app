@@ -98,7 +98,7 @@ class _StudentProfileState extends State<StudentProfile> {
               child: Text("${widget.info['Mobile']}",style: const TextStyle(fontSize: 20,color: Colors.white,fontFamily:'Narrow',)),
             ),
             Container(
-              padding: EdgeInsetsDirectional.only(top: height/2.2,start: 40),
+              padding: EdgeInsetsDirectional.only(top: height/2.4,start: 40),
               height: height,
               width: width/1.2,
               child: Column(
@@ -193,6 +193,30 @@ class _StudentProfileState extends State<StudentProfile> {
                             children: [
                               const Text("PRN",style: TextStyle(fontSize: 15,color: Colors.black,fontFamily:'Narrow',),),
                               Text("${widget.info['PRN']}",style: const TextStyle(fontSize: 25,color: Colors.black,fontFamily:'Narrow',)),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsetsDirectional.only(bottom: 20),
+                    child: Row(
+                      children: [
+                        const Expanded(
+                          flex : 1,
+                          child: Icon(
+                            Icons.book_outlined,
+                            size: 50,
+                            color: Colors.blue,
+                          ),
+                        ),
+                        Expanded(
+                          flex: 2,
+                          child: Column(
+                            children: [
+                              const Text("Semester",style: TextStyle(fontSize: 15,color: Colors.black,fontFamily:'Narrow',),),
+                              Text("${widget.info['Sem']}",style: const TextStyle(fontSize: 25,color: Colors.black,fontFamily:'Narrow',)),
                             ],
                           ),
                         )

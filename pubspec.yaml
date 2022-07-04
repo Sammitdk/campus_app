@@ -63,3 +63,6 @@ flutter:
        fonts:
          - asset: assets/fonts/PTSansNarrow-Bold.ttf
 
+     - family: Muli
+       fonts:
+         - asset: assets/fonts/Muli.ttf

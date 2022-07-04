@@ -29,6 +29,7 @@ class _StudentSyllabusState extends State<StudentSyllabus> {
               return ListView.builder(
                   itemCount: snapshot.data!.docs.length,
                   itemBuilder: (context,i){
+
                     QueryDocumentSnapshot x = snapshot.data!.docs[i];
                     return InkWell(
                       onTap: (){
@@ -57,6 +58,34 @@ class _StudentSyllabusState extends State<StudentSyllabus> {
                     );
                   });
             }
+               QueryDocumentSnapshot x = snapshot.data!.docs[i];
+                return InkWell(
+                  onTap: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => LoadFirebasePdf(url: x["url"],)));
+                  },
+                  child: Expanded(
+                    child: Padding(
+                      padding:  const EdgeInsetsDirectional.all(20),
+                      child: Container(
+                        alignment: Alignment.center,
+                        height: 80,
+                        // width: 300,
+                        decoration:  BoxDecoration(
+                            borderRadius:
+                            const BorderRadiusDirectional.only(
+                                topStart: Radius.circular(50),
+                                topEnd: Radius.circular(50),
+                                bottomEnd: Radius.circular(50),
+                                bottomStart:
+                                Radius.circular(50)),
+                            color: Colors.blue[100]),
+                        child: Text((x["num"]),textAlign: TextAlign.center,style: const TextStyle(fontSize: 25),),
+                    ),
+                  ),
+                  ),
+                );
+            });
+          }
             return const Center(
                 child: CircularProgressIndicator());
           }
