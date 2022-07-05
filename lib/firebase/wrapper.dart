@@ -13,17 +13,17 @@ class Wrapper extends StatelessWidget {
     final user = Provider.of<User?>(context);
 
     if(user == null){
-        return const Login();
+      return const Login();
     }
     else{
-        final email = user.email;
-        if(email != null)
-        {
-          return StudentLoading(email: email);
-        }
-        else{
-          return const Login();
-        }
+      final email = user.email;
+      if(email != null)
+      {
+        return StudentLoading(email: email);
+      }
+      else{
+        return const Login();
+      }
     }
   }
 }

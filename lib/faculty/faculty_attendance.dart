@@ -8,7 +8,7 @@ class FacultyAttendance extends StatefulWidget {
 
   final String year;
 
-  const FacultyAttendance({Key? key,required this.year,required this.sem,required this.branch}) : super(key: key);
+  FacultyAttendance({Key? key,required this.year,required this.sem,required this.branch}) : super(key: key);
 
   @override
   State<FacultyAttendance> createState() => _FacultyAttendanceState();
@@ -43,15 +43,11 @@ class _FacultyAttendanceState extends State<FacultyAttendance> {
     DocumentSnapshot rolllist = await roll.get();
     rolls = rolllist.data() as Map<String,dynamic>;
     rolls.forEach((key, value) async {
-      print(value);
-      print(key);
       DocumentSnapshot studentname = await value.get();
       Map<String,dynamic> info = studentname.data() as Map<String,dynamic>;
       rollattend[key] = false;
-      // print(rollattend);
     });
     await Future.delayed(const Duration(milliseconds: 500));
-    // print(rollattend);
     return rollattend;
   }
 
@@ -70,28 +66,31 @@ class _FacultyAttendanceState extends State<FacultyAttendance> {
               )
           );
         }else{
-          // rollattend.data.forEach((key,value){
-          //   ispresent[key] = false;
-          // });
           return Scaffold(
             body: ListView.builder(
             itemCount: rollattend.data.length,
             itemBuilder: (BuildContext context,int index){
-              return CheckboxListTile(
-              title: Text(rollattend.data.keys.elementAt(index)),
-              checkColor: Colors.black,
-              value: rollattend.data.values.elementAt(index), onChanged: (_){
-                rollattend.data[rollattend.data.keys.elementAt(index)] = !rollattend.data[rollattend.data.keys.elementAt(index)];
-                print(rollattend);
-              });
-            }),
+              return Center(
+                child: StatefulBuilder(
+                  builder: (BuildContext context,setState) => CheckboxListTile(
+                        title: Text(rollattend.data.keys.elementAt(index)),
+                        checkColor: Colors.black,
+                        value: rollattend.data[rollattend.data.keys.elementAt(index)],
+                        secondary: const Icon(Icons.check),
+                        onChanged:(_){
+                          setState(() => rollattend.data[rollattend.data.keys.elementAt(index)] = !rollattend.data[rollattend.data.keys.elementAt(index)]);
+                  },
+                ),
+              ),
+              );
+            },
+            ),
             floatingActionButton: FloatingActionButton(
               onPressed: ()async{
                 await markAttendance();
                 await perStudentAttendance();
-                print(rollattend.data.toString());
               },
-              child: Text("OK"),
+              child: const Text("OK"),
             ),
           );
         }

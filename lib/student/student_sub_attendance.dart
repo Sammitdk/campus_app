@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class StudentSubAttendance extends StatefulWidget {
   final String sub;
@@ -12,6 +11,11 @@ class StudentSubAttendance extends StatefulWidget {
 }
 
 class _StudentSubAttendanceState extends State<StudentSubAttendance> {
+  Future<Map<String, dynamic>> allattend() async {
+    DocumentReference dr = FirebaseFirestore.instance.doc(widget.sub);
+    DocumentSnapshot ds = await dr.get();
+    return ds.data() as Map<String, dynamic>;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,16 +23,16 @@ class _StudentSubAttendanceState extends State<StudentSubAttendance> {
       onRefresh: () => Future(() {
         setState(() {});
       }),
-      child: StreamBuilder(
-        stream: FirebaseFirestore.instance.doc(widget.sub).snapshots(),
+      child: FutureBuilder<Map<String, dynamic>>(
+        future: allattend(),
         builder: (context, AsyncSnapshot attendance) {
           if (attendance.connectionState == ConnectionState.waiting) {
             return const Scaffold(
                 backgroundColor: Colors.white,
                 body: Center(
                     child: CircularProgressIndicator(
-                  value: 3,
-                )));
+                      value: 3,
+                    )));
           } else {
             if (attendance.hasError) {
               return Text(attendance.error.toString());
@@ -55,7 +59,7 @@ class _StudentSubAttendanceState extends State<StudentSubAttendance> {
                         children: [
                           Padding(
                             padding:
-                                const EdgeInsetsDirectional.only(bottom: 10),
+                            const EdgeInsetsDirectional.only(bottom: 10),
                             child: Row(
                               children: [
                                 const Expanded(
@@ -75,32 +79,32 @@ class _StudentSubAttendanceState extends State<StudentSubAttendance> {
                                       // width: 300,
                                       decoration: BoxDecoration(
                                           borderRadius:
-                                              const BorderRadiusDirectional
-                                                      .only(
-                                                  topStart: Radius.circular(50),
-                                                  topEnd: Radius.circular(50),
-                                                  bottomEnd:
-                                                      Radius.circular(50),
-                                                  bottomStart:
-                                                      Radius.circular(50)),
+                                          const BorderRadiusDirectional
+                                              .only(
+                                              topStart: Radius.circular(50),
+                                              topEnd: Radius.circular(50),
+                                              bottomEnd:
+                                              Radius.circular(50),
+                                              bottomStart:
+                                              Radius.circular(50)),
                                           color: Colors.blue[100]),
                                       child: Row(
                                         children: [
                                           Expanded(
                                               flex: 4,
-                                              child: Text('${key.substring(0,9)} ${DateFormat.Hm().format(DateFormat('hh-mm').parse(key.substring(10)))}',
+                                              child: Text(key,
                                                   style: const TextStyle(
                                                       fontSize: 20,
                                                       fontFamily: 'Custom'),
                                                   textAlign: TextAlign.center)),
                                           Expanded(
-                                              flex: 2,
-                                              child: Text(attendance.data[key]
-                                                  ? 'Present'
-                                                  : 'Absent',
-                                                  style: const TextStyle(
-                                                    fontSize: 18,)
-                                              ),
+                                            flex: 2,
+                                            child: Text(attendance.data[key]
+                                                ? 'Present'
+                                                : 'Absent',
+                                                style: const TextStyle(
+                                                  fontSize: 18,)
+                                            ),
                                           )
                                         ],
                                       ),

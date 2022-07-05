@@ -66,3 +66,7 @@ flutter:
      - family: Muli
        fonts:
          - asset: assets/fonts/Muli.ttf
+
+     - family: MuliBold
+       fonts:
+         - asset: assets/fonts/Muli-Bold.ttf
