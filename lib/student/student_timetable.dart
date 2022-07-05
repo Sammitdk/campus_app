@@ -17,32 +17,35 @@ class _StudentTimeTableState extends State<StudentTimeTable> {
   Future<Map<String,dynamic>> getTimetable()async {
     DocumentReference timetables = FirebaseFirestore.instance.doc('/College/${widget.info['Branch']}/${widget.info['Year']}/Timetable');
     DocumentSnapshot timetableSnapshot = await timetables.get();
-    return timetableSnapshot.data() as Map<String, dynamic>;
+    Map temp = timetableSnapshot.data() as Map<String, dynamic>;
+    List l = temp[widget.info['Sem']][DateFormat('EEEE').format(DateTime.now())].keys.toList()..sort();
+    l.forEach((element) {
+      timetable[element] = temp[widget.info['Sem']][DateFormat('EEEE').format(DateTime.now())][element];
+    });
+    await Future.delayed(const Duration(milliseconds: 350));
+    return timetable;
   }
   @override
   Widget build(BuildContext context) {
-
-    // print(DateFormat('EEEE').format(DateTime.now()));
     return FutureBuilder<Map<String,dynamic>>(
         future: getTimetable(),
         builder: (context,AsyncSnapshot timetable) {
           if(timetable.connectionState == ConnectionState.waiting){
-            return const Center(child: CircularProgressIndicator(value: 1,backgroundColor: Colors.transparent,));
-          }else{
-            if(timetable.hasError){return Text(timetable.error.toString());}
+            return const Scaffold(
+             backgroundColor: Colors.white,
+                body: Center(child: CircularProgressIndicator(value: 1)));
+          }
             else{
-              // return Text(timetable.data.toString());
               return Scaffold(
                 appBar: AppBar(
                   centerTitle: true,
                   title: const Text("Time Table",style: TextStyle(fontFamily: 'Narrow', fontSize: 30),textAlign: TextAlign.center,),
                   backgroundColor: Colors.indigo[300],
                 ),
-                body: timetable.data[DateFormat('EEEE').format(DateTime.now())] == null? Lottie.network("https://assets4.lottiefiles.com/private_files/lf30_vdqgavca.json") : ListView.builder(
-                  itemCount: timetable.data[DateFormat('EEEE').format(DateTime.now())].length,
-
+                body: timetable.data == null? Expanded(child: Lottie.network("https://assets4.lottiefiles.com/private_files/lf30_vdqgavca.json")) : ListView.builder(
+                  itemCount: timetable.data.length,
                   itemBuilder: (BuildContext context,int index) {
-                    String key = timetable.data[widget.info['Sem']][DateFormat('EEEE').format(DateTime.now())].keys.elementAt(index);
+                    String key = timetable.data.keys.elementAt(index);
                     return Padding(
                       padding: const EdgeInsetsDirectional.all(20),
                       child: Column(
@@ -60,24 +63,37 @@ class _StudentTimeTableState extends State<StudentTimeTable> {
                                 flex: 5,
                                 child: Padding(
                                   padding: const EdgeInsets.only(top: 15.0),
-                                  child: Container(
-                                    // alignment: Alignment.center,
-                                    height: 100,
-                                    // width: 300,
-                                    decoration:  BoxDecoration(
-                                        borderRadius: const BorderRadiusDirectional.only(
-                                            topStart: Radius.circular(50),
-                                            topEnd: Radius.circular(50),
-                                            bottomEnd: Radius.circular(50),
-                                            bottomStart: Radius.circular(50)),
-                                        color: Colors.blue[100],
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        Expanded(flex: 4,child: Text(timetable.data[widget.info['Sem']][DateFormat('EEEE').format(DateTime.now())][key].toString(),style: const TextStyle(fontSize: 20,fontFamily: 'Custom'),textAlign: TextAlign.center)),
-                                        Expanded(child: Text(DateFormat.Hm().format(DateFormat('hh-mm').parse(key)).toString()))//Text(timetable.data[widget.info['Sem']][DateFormat('EEEE').format(DateTime.now())][]))
-                                      ],
-                                    ),
+                                  child:  Row(
+                                    children: [
+                                      Expanded(flex: 4,
+                                          child: Container(
+                                              alignment: Alignment.center,
+                                              height: 100,
+                                              // width: 300,
+                                              decoration:  BoxDecoration(
+                                                borderRadius: const BorderRadiusDirectional.only(
+                                                    topStart: Radius.circular(50),
+                                                    topEnd: Radius.circular(50),
+                                                    bottomStart: Radius.circular(50)),
+                                                color: Colors.blue[100],
+                                              ),
+                                              child: Text(timetable.data[key].toString(),style: const TextStyle(fontSize: 20,fontFamily: 'Custom'),textAlign: TextAlign.center))),
+                                      const SizedBox(width: 10,),
+                                      Expanded(
+                                        flex: 1,
+                                          child: Container(
+                                            alignment: Alignment.center,
+                                              height: 100,
+                                              // width: 300,
+                                              decoration:  BoxDecoration(
+                                                borderRadius: const BorderRadiusDirectional.only(
+                                                    topStart: Radius.circular(50),
+                                                    topEnd: Radius.circular(50),
+                                                    bottomEnd: Radius.circular(50),),
+                                                color: Colors.blue[100],
+                                              ),
+                                              child: Text(DateFormat.Hm().format(DateFormat('HH-mm').parse(key)).toString()))),
+                                    ],
                                   ),
                                 ),
                               ),
@@ -91,7 +107,6 @@ class _StudentTimeTableState extends State<StudentTimeTable> {
               );
             }
           }
-        }
     );
     // return Container();
   }

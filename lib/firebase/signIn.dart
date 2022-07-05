@@ -32,17 +32,17 @@ class Auth
     }
   }
 
-  Future signOut() async
+  Future<Stream?> signOut() async
   {
    try
    {
-     return await auth.signOut();
+      await auth.signOut();
    }
    catch(e)
    {
-     print(e.toString());
      return null;
    }
+   return null;
   }
   Future resetPassword(email) async{
     return auth.sendPasswordResetEmail(email: email);

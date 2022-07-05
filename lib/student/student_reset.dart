@@ -51,7 +51,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                     {
                       if(await auth.resetPassword(emailcontrol.text))
                       {
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const Wrapper()));
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) =>  Wrapper()));
                       }
                       else
                       {

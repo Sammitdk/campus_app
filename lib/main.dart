@@ -43,7 +43,7 @@ class Main extends StatelessWidget
         // home: Wrapper(),
         initialRoute: 'loading_page',
         routes: {
-          '/' :(context) =>  const Wrapper(),
+          '/' :(context) =>   Wrapper(),
           'loading_page':(context) => const LoadingPage(),
           'login_page': (context) => const Login(),
           't_login_form': (context) => const KeyboardVisibilityProvider(child: FacultyLogin()),

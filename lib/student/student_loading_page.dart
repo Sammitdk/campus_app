@@ -19,7 +19,7 @@ Widget loading() => Scaffold(
 
 
 class StudentLoading extends StatefulWidget {
-  final String email;
+  final String? email;
 
   const StudentLoading({Key? key, required this.email}) : super(key: key);
 
@@ -32,7 +32,7 @@ class _StudentLoadingState extends State<StudentLoading> {
   final CollectionReference cr =
   FirebaseFirestore.instance.collection('Email');
 
-  Future<void> getData(String email) async {
+  Future<void> getData(String? email) async {
     DocumentSnapshot qs = await cr.doc(email).get();
     info = qs.data() as Map<String, dynamic>;
     qs = await info["PRN"].get();

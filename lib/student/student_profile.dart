@@ -85,17 +85,17 @@ class _StudentProfileState extends State<StudentProfile> {
             Positioned(
               top: 30,
               left: 15,
-              child: Text("${widget.info['Name']['First']} ${widget.info['Name']['Last']}", style: const TextStyle(fontSize: 40,color: Colors.white,fontFamily:'Bold',),),
+              child: Text("${widget.info['Name']['First']} ${widget.info['Name']['Last']}", style: const TextStyle(fontSize: 40,color: Colors.white,fontFamily:'MuliBold',),),
             ),
             Positioned(
               top: 83,
               left: 20,
-              child: Text("${widget.info['Email']}",style: const TextStyle(fontSize: 20,color: Colors.white,fontFamily:'Narrow',)),
+              child: Text("${widget.info['Email']}",style: const TextStyle(fontSize: 20,color: Colors.white)),
             ),
             Positioned(
               top: 120,
               left: 20,
-              child: Text("${widget.info['Mobile']}",style: const TextStyle(fontSize: 20,color: Colors.white,fontFamily:'Narrow',)),
+              child: Text("${widget.info['Mobile']}",style: const TextStyle(fontSize: 20,color: Colors.white)),
             ),
             Container(
               padding: EdgeInsetsDirectional.only(top: height/2.4,start: 40),
@@ -119,8 +119,8 @@ class _StudentProfileState extends State<StudentProfile> {
                           flex: 2,
                           child: Column(
                             children: [
-                              const Text("Address",style: TextStyle(fontSize: 15,color: Colors.black,fontFamily:'Narrow',),),
-                              Text("${widget.info['Address']}",style: const TextStyle(fontSize: 25,color: Colors.black,fontFamily:'Narrow',)),
+                              const Text("Address",style: TextStyle(fontSize: 15,color: Colors.black),),
+                              Text("${widget.info['Address']}",style: const TextStyle(fontSize: 25,color: Colors.black)),
                             ],
                           ),
                         )
@@ -143,8 +143,8 @@ class _StudentProfileState extends State<StudentProfile> {
                           flex: 2,
                           child: Column(
                             children: [
-                              const Text("Trade",style: TextStyle(fontSize: 15,color: Colors.black,fontFamily:'Narrow',),),
-                              Text("${widget.info['Branch']}",style: const TextStyle(fontSize: 25,color: Colors.black,fontFamily:'Narrow',)),
+                              const Text("Trade",style: TextStyle(fontSize: 15,color: Colors.black),),
+                              Text("${widget.info['Branch']}",style: const TextStyle(fontSize: 25,color: Colors.black)),
                             ],
                           ),
                         )
@@ -167,8 +167,8 @@ class _StudentProfileState extends State<StudentProfile> {
                           flex: 2,
                           child: Column(
                             children: [
-                              const Text("Birth Date",style: TextStyle(fontSize: 15,color: Colors.black,fontFamily:'Narrow',),),
-                              Text("${widget.info['DOB']}",style: const TextStyle(fontSize: 25,color: Colors.black,fontFamily:'Narrow',)),
+                              const Text("Birth Date",style: TextStyle(fontSize: 15,color: Colors.black),),
+                              Text("${widget.info['DOB']}",style: const TextStyle(fontSize: 25,color: Colors.black)),
                             ],
                           ),
                         )
@@ -191,8 +191,8 @@ class _StudentProfileState extends State<StudentProfile> {
                           flex: 2,
                           child: Column(
                             children: [
-                              const Text("PRN",style: TextStyle(fontSize: 15,color: Colors.black,fontFamily:'Narrow',),),
-                              Text("${widget.info['PRN']}",style: const TextStyle(fontSize: 25,color: Colors.black,fontFamily:'Narrow',)),
+                              const Text("PRN",style: TextStyle(fontSize: 15,color: Colors.black),),
+                              Text("${widget.info['PRN']}",style: const TextStyle(fontSize: 25,color: Colors.black)),
                             ],
                           ),
                         )
@@ -215,8 +215,8 @@ class _StudentProfileState extends State<StudentProfile> {
                           flex: 2,
                           child: Column(
                             children: [
-                              const Text("Semester",style: TextStyle(fontSize: 15,color: Colors.black,fontFamily:'Narrow',),),
-                              Text("${widget.info['Sem']}",style: const TextStyle(fontSize: 25,color: Colors.black,fontFamily:'Narrow',)),
+                              const Text("Semester",style: TextStyle(fontSize: 15,color: Colors.black),),
+                              Text("${widget.info['Sem']}",style: const TextStyle(fontSize: 25,color: Colors.black)),
                             ],
                           ),
                         )
@@ -246,7 +246,7 @@ class _StudentProfileState extends State<StudentProfile> {
             label: 'Log Out',
             onTap: () async {
               await auth.signOut();
-              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => const Wrapper()));
+              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) =>  Wrapper()));
             },
             backgroundColor: Colors.white,
             foregroundColor: Colors.black,

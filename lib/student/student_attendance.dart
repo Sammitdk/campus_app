@@ -89,7 +89,7 @@ class _StudentAttendanceState extends State<StudentAttendance> {
                                               flex: 4,
                                               child: Container(
                                                 alignment: Alignment.center,
-                                                height: 80,
+                                                height: 100,
                                                 decoration:  BoxDecoration(
                                                     borderRadius:
                                                     const BorderRadiusDirectional.only(
@@ -102,12 +102,12 @@ class _StudentAttendanceState extends State<StudentAttendance> {
                                                         fontSize: 20),
                                                     textAlign: TextAlign.center),
                                               )),
-                                          SizedBox(width: 20,),
+                                          const SizedBox(width: 20,),
                                           Expanded(
                                               flex: 1,
                                               child: Container(
                                                 alignment: Alignment.center,
-                                                height: 80,
+                                                height: 100,
                                                 decoration:  BoxDecoration(
                                                     borderRadius:
                                                     const BorderRadiusDirectional.only(
@@ -116,21 +116,10 @@ class _StudentAttendanceState extends State<StudentAttendance> {
                                                         bottomEnd: Radius.circular(50),),
                                                     color: Colors.blue[100]),
                                                 child: Text(
-
                                                   '${attendance.data[key].entries.where((e) => e.value == true).toList().length.toString()}/${attendance.data[key].length}',
                                                 )
                                             )
-                                          ],
                                         ),
-
-                                                  attendance.data[key].entries
-                                                      .where((e) => e.value == true)
-                                                      .toList()
-                                                      .length
-                                                      .toString(),
-                                                  textAlign: TextAlign.center,
-                                                ),
-                                              ))
                                         ],
                                       ),
                                     ),
