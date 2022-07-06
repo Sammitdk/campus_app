@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 class FacultyProfile extends StatelessWidget {
-  const FacultyProfile({Key? key}) : super(key: key);
+
+  Map<String, dynamic> info = {};
+
+  FacultyProfile({Key? key,required this.info}) : super(key: key);
 
 
   @override

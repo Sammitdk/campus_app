@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'faculty_home.dart';
@@ -5,7 +6,9 @@ import 'faculty_profile.dart';
 
 
 class FacultyDashboard extends StatefulWidget {
-  const FacultyDashboard({Key? key}) : super(key: key);
+  final Map<String,dynamic> info;
+
+  const FacultyDashboard({required this.info});
   @override
   State<FacultyDashboard> createState() => _FacultyDashboardState();
 }
@@ -14,12 +17,11 @@ class _FacultyDashboardState extends State<FacultyDashboard> {
   final navigationkey = GlobalKey<CurvedNavigationBarState>();
   int index = 0;
 
-
   @override
   Widget build(BuildContext context) {
     final screen = [
-      const FacultyHome(),
-      const FacultyProfile(),
+      FacultyHome(info: widget.info),
+      FacultyProfile(info: widget.info),
     ];
     final items = <Widget>
     [

@@ -45,6 +45,13 @@ class Auth
    return null;
   }
   Future resetPassword(email) async{
-    return auth.sendPasswordResetEmail(email: email);
+    try{
+      await auth.sendPasswordResetEmail(email: email);
+      print('sssssssssssssssssssssssss');
+      return true;
+    }on FirebaseException catch(e){
+      print('${e.toString()} sjansdnasjdnasdnad');
+      return false;
+    }
   }
 }

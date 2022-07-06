@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 import 'faculty_attendance_option.dart';
 
 class FacultyHome extends StatefulWidget {
-  const FacultyHome({Key? key}) : super(key: key);
+  Map<String,dynamic> info = {};
+  FacultyHome({Key? key, required this.info}) : super(key: key);
 
   @override
   State<FacultyHome> createState() => _FacultyHomeState();
@@ -14,6 +15,7 @@ class FacultyHome extends StatefulWidget {
 class _FacultyHomeState extends State<FacultyHome> {
   @override
   Widget build(BuildContext context) {
+    print(widget.info);
     return Padding(
       padding: const EdgeInsetsDirectional.all(20),
       child: Column(
@@ -21,9 +23,8 @@ class _FacultyHomeState extends State<FacultyHome> {
           Expanded(
             flex: 1,
             child: Center(
-              child: Row(children: const [
-                Text("Hey Faculty",
-                  // "  Hey ${widget.info['Name']['First']}",
+              child: Row(children: [
+                Text("  Hey ${widget.info['Name']['First']}. ${widget.info['Name']['Middle']}. ${widget.info['Name']['Last']}",
                   style: TextStyle(fontSize: 30, fontFamily: 'Custom'),
                 )
               ]),
