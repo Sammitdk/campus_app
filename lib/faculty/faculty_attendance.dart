@@ -8,7 +8,7 @@ class FacultyAttendance extends StatefulWidget {
 
   final String year;
 
-  FacultyAttendance({Key? key,required this.year,required this.sem,required this.branch}) : super(key: key);
+  const FacultyAttendance({Key? key,required this.year,required this.sem,required this.branch}) : super(key: key);
 
   @override
   State<FacultyAttendance> createState() => _FacultyAttendanceState();
@@ -47,7 +47,7 @@ class _FacultyAttendanceState extends State<FacultyAttendance> {
       Map<String,dynamic> info = studentname.data() as Map<String,dynamic>;
       rollattend[key] = false;
     });
-    await Future.delayed(const Duration(milliseconds: 500));
+    await Future.delayed(const Duration(milliseconds: 350));
     return rollattend;
   }
 
@@ -67,30 +67,52 @@ class _FacultyAttendanceState extends State<FacultyAttendance> {
           );
         }else{
           return Scaffold(
+            appBar: AppBar(
+              elevation: 0,
+              centerTitle: true,
+              title: const Text("Attendance",style: TextStyle(fontFamily: 'MuliBold'),),
+              backgroundColor: Colors.indigo[300],
+            ),
             body: ListView.builder(
             itemCount: rollattend.data.length,
             itemBuilder: (BuildContext context,int index){
-              return Center(
-                child: StatefulBuilder(
-                  builder: (BuildContext context,setState) => CheckboxListTile(
-                        title: Text(rollattend.data.keys.elementAt(index)),
-                        checkColor: Colors.black,
-                        value: rollattend.data[rollattend.data.keys.elementAt(index)],
-                        secondary: const Icon(Icons.check),
-                        onChanged:(_){
-                          setState(() => rollattend.data[rollattend.data.keys.elementAt(index)] = !rollattend.data[rollattend.data.keys.elementAt(index)]);
-                  },
+              return Container(
+                margin: const EdgeInsetsDirectional.only(start: 15,top: 20,end: 15),
+                alignment: Alignment.center,
+                height: 70,
+                decoration:  BoxDecoration(
+                    borderRadius:
+                    const BorderRadiusDirectional.only(
+                        topStart: Radius.circular(50),
+                        topEnd: Radius.circular(50),
+                        bottomStart: Radius.circular(50)),
+                    color: Colors.blue[50]),
+                child: Center(
+                  child: StatefulBuilder(
+                    builder: (BuildContext context,setState) => CheckboxListTile(
+                      activeColor: Colors.transparent,
+                      checkColor: Colors.black,
+                          title: Text(rollattend.data.keys.elementAt(index)),
+                          value: rollattend.data[rollattend.data.keys.elementAt(index)],
+                          secondary: const Icon(Icons.checklist_rtl_outlined),
+                          onChanged:(_){
+                            setState(() => rollattend.data[rollattend.data.keys.elementAt(index)] = !rollattend.data[rollattend.data.keys.elementAt(index)]);
+                    },
+                  ),
                 ),
-              ),
+                ),
               );
             },
             ),
             floatingActionButton: FloatingActionButton(
-              onPressed: ()async{
+              elevation: 1,
+              backgroundColor: Colors.indigo[200],
+              foregroundColor: Colors.black,
+              onPressed: () async{
                 await markAttendance();
                 await perStudentAttendance();
               },
-              child: const Text("OK"),
+              child: const Text("Submit",style: TextStyle(fontFamily: 'MuliBold'),),
             ),
           );
         }
@@ -98,3 +120,4 @@ class _FacultyAttendanceState extends State<FacultyAttendance> {
     );
   }
 }
+
