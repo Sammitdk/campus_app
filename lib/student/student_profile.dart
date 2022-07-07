@@ -1,45 +1,43 @@
 import 'dart:io';
 import 'package:campus_subsystem/firebase/wrapper.dart';
 import 'package:campus_subsystem/student/student_reset.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:path/path.dart';
 import 'package:lottie/lottie.dart';
-import 'package:path_provider/path_provider.dart';
 import '../firebase/signIn.dart';
-import 'package:path/path.dart';
 
 class StudentProfile extends StatefulWidget {
-  final Map<String, dynamic> info;
+  final Map<String,dynamic> info;
   const StudentProfile({Key? key, required this.info}) : super(key: key);
-
   @override
   State<StudentProfile> createState() => _StudentProfileState();
 }
 
 class _StudentProfileState extends State<StudentProfile> {
-  final Auth auth = Auth();
-  File? image;
 
-  Future pickImage() async {
-    try {
-      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
-      if(image == null) return;
-      // final imageTemp = File(image.path);
-      final imagePermanent = await saveFilePermanently(image.path);
-      setState(() => this.image = imagePermanent);
-    } on PlatformException catch(e) {
-      print('Failed to pick image: $e');
-    }
+
+  final Auth auth = Auth();
+  File? file;
+  Future selectFiles() async{
+    final result = await ImagePicker.platform.pickImage(source: ImageSource.gallery);
+    if(result == null) return;
+   final path = result.path;
+    setState(() => file = File(path));
   }
-  Future<File> saveFilePermanently(String imagePath) async{
-    final directory = await getApplicationDocumentsDirectory();
-    final name = basename(imagePath);
-    final image = File('${directory.path}/$name');
-    return File(imagePath).copy(image.path);
+  Future uploadFile() async {
+    if(file == null) return;
+    final destination = 'Images/${widget.info['PRN']}';
+    final ref = FirebaseStorage.instance.ref(destination);
+    await ref.putFile(file!);
+    String url = await ref.getDownloadURL();
+    await FirebaseFirestore.instance.collection("Student_Detail").doc("${widget.info['PRN']}").update({'url':url});
+  }
+  void refresh(){
+    setState(() {});
   }
   @override
   Widget build(BuildContext context) {
@@ -56,46 +54,45 @@ class _StudentProfileState extends State<StudentProfile> {
                   painter: CurvePainter(),
                 )),
             Positioned(
-              top: height/10,
-              left: width/2.5,
-              child: Center(
-                  child: Container(
-                      height: 200,
-                      width: 300,
-                      child: ClipOval(
-                        clipBehavior: Clip.antiAlias,
-                        clipper: MyClipper(),
-                        child: image != null ? Image.file(image!) : Lottie.network("https://assets5.lottiefiles.com/packages/lf20_lyp6fz8l.json"),
-                      )
-                  )
-              ),
+              top: height/9,
+              left: width/2,
+              child: CircleAvatar(
+                backgroundColor: Colors.transparent,
+                maxRadius: 110,
+                child: ClipOval(
+                  clipBehavior: Clip.antiAlias,
+                  //clipper: MyClipper(),
+                  child: widget.info['url']!=null ? Image.network(widget.info['url']) : Lottie.network("https://assets5.lottiefiles.com/packages/lf20_lyp6fz8l.json"),
+                ),
+              )
             ),
             Positioned(
-                top: height/3.5,
+                top: height/3.0,
                 width: width/0.55,
                 child: FloatingActionButton(
                   elevation: 0,
                   backgroundColor: Colors.transparent,
                   foregroundColor: Colors.black,
                   onPressed: () async {
-                    await pickImage();
+                    await selectFiles();
+                    await uploadFile();
                   },
                   child: const Icon(Icons.add_photo_alternate_outlined),
                 )),
             Positioned(
-              top: 30,
-              left: 15,
+              top: 8,
+              left: 20,
               child: Text("${widget.info['Name']['First']} ${widget.info['Name']['Last']}", style: const TextStyle(fontSize: 40,color: Colors.white,fontFamily:'MuliBold',),),
             ),
             Positioned(
-              top: 83,
+              top: 65,
               left: 20,
               child: Text("${widget.info['Email']}",style: const TextStyle(fontSize: 20,color: Colors.white)),
             ),
             Positioned(
-              top: 120,
+              top: 100,
               left: 20,
-              child: Text("${widget.info['Mobile']}",style: const TextStyle(fontSize: 20,color: Colors.white)),
+              child: Text("${widget.info['Mobile'][0]}",style: const TextStyle(fontSize: 20,color: Colors.white)),
             ),
             Container(
               padding: EdgeInsetsDirectional.only(top: height/2.4,start: 40),
@@ -261,7 +258,7 @@ class _StudentProfileState extends State<StudentProfile> {
 class MyClipper extends CustomClipper<Rect>{
   @override
   Rect getClip(Size size) {
-    return Rect.fromLTWH(0, 0, 300, 180);
+    return Rect.fromLTWH(0, 0, 150, 150);
   }
 
   @override
