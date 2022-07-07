@@ -19,7 +19,6 @@ Widget loading() => Scaffold(
 );
 
 
-
 class DataLoading extends StatefulWidget {
   final String email;
 
@@ -44,30 +43,9 @@ class _DataLoadingState extends State<DataLoading> {
         value = await info["PRN"].get();
         return value.data() as Map<String, dynamic>;
       }else{
-          return await FirebaseFirestore.instance.doc('Faculty_Detail/$email').get().then((value) => value.data() as Map<String, dynamic>);
+        return await FirebaseFirestore.instance.doc('Faculty_Detail/$email').get().then((value) => value.data() as Map<String, dynamic>);
       }
     });
-}
-class StudentLoading extends StatefulWidget {
-  final String? email;
-
-  const StudentLoading({Key? key, required this.email}) : super(key: key);
-
-  @override
-  State<StudentLoading> createState() => _StudentLoadingState();
-}
-
-class _StudentLoadingState extends State<StudentLoading> {
-
-  Map<String, dynamic> info = {};
-  final CollectionReference cr =
-  FirebaseFirestore.instance.collection('Email');
-
-  Future<void> getData(String? email) async {
-    DocumentSnapshot qs = await cr.doc(email).get();
-    info = qs.data() as Map<String, dynamic>;
-    qs = await info["PRN"].get();
-    info = qs.data() as Map<String, dynamic>;
   }
 
   @override
@@ -82,7 +60,6 @@ class _StudentLoadingState extends State<StudentLoading> {
         // print('object $exist');
         Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => FacultyDashboard(info: info)));
       }
-      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => StudentDashboard(info: info)));
     });
   }
 
