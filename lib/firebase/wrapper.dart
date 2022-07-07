@@ -1,5 +1,5 @@
 import 'package:campus_subsystem/login_page.dart';
-import 'package:campus_subsystem/student/student_loading_page.dart';
+import 'package:campus_subsystem/data_loading_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
