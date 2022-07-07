@@ -1,5 +1,6 @@
 import 'package:campus_subsystem/firebase/wrapper.dart';
 import 'package:campus_subsystem/student/student_reset.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:lottie/lottie.dart';
@@ -122,18 +123,24 @@ class _StudentLoginState extends State<StudentLogin> {
                           ),
                           onPressed: () async {
                             if (formkey.currentState!.validate()) {
-                              if (await auth.signIn(
-                                      username: emailController.text,
-                                      password: passwordController.text) !=
-                                  null) {
-                                Navigator.of(this.context).pushReplacement(
-                                    MaterialPageRoute(
-                                        builder: (_) => Wrapper()));
+                              if (await FirebaseFirestore.instance.doc('Email/${emailController.text}').get().then((value) => value.exists)) {
+                                if(await auth.signIn(
+                                    username: emailController.text,
+                                    password: passwordController.text) !=
+                                    null) {
+                                  Navigator.of(this.context).pushReplacement(
+                                      MaterialPageRoute(
+                                          builder: (_) => const Wrapper()));
+                                }else{
+                                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                    content: Text(
+                                        'Incorrect Email Address or Password'),
+                                  ));
+                                }
                               } else {
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(const SnackBar(
+                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                                   content: Text(
-                                      'Incorrect Email Address or Password'),
+                                      'Incorrect Email Address'),
                                 ));
                               }
                             } else {

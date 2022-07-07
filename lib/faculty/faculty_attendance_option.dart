@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 
 class FacultyAttendanceOption extends StatefulWidget {
-  const FacultyAttendanceOption({Key? key}) : super(key: key);
+  Map<DropdownMenuItem<String>,dynamic> info = {};
+  FacultyAttendanceOption({Key? key,required this.info}) : super(key: key);
 
   @override
   State<FacultyAttendanceOption> createState() => _FacultyAttendanceOptionState();
@@ -17,8 +18,24 @@ class _FacultyAttendanceOptionState extends State<FacultyAttendanceOption> {
   String selectedsem = '6';
   String selectedyear = 'TY';
 
+  TimeOfDay time = const TimeOfDay(hour: 9, minute: 0);
+  DateTime date = DateUtils.dateOnly(DateTime.now());
+
+  void timePicker() async{
+    print(time);
+    final DateTime? selecteddate = await showDatePicker(context: context,initialDate: date, lastDate: DateTime(2030), firstDate: DateTime(2010));
+    // final TimeOfDay? selectedtime = await showTimePicker(context: context,initialTime: time);
+    if(selecteddate != null){
+      // time = selectedtime;
+      date = selecteddate;
+    }
+    print(time);
+    print(date);
+  }
+  
   @override
   Widget build(BuildContext context) {
+    final List<DropdownMenuItem<String>> subjects = widget.info.keys.toList();
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -35,52 +52,62 @@ class _FacultyAttendanceOptionState extends State<FacultyAttendanceOption> {
               height: 80,
               child: DropdownButtonFormField<String>(
                 alignment: AlignmentDirectional.center,
-                value: selctedbranch,
-                items: branch.map<DropdownMenuItem<String>>((String br) =>
-                    DropdownMenuItem<String>(value: br, child: Text(br)))
-                    .toList(),
+                value: null,
+                items: subjects,
                 onChanged: (newvalue) {
                   selctedbranch = newvalue!;
                 },
               ),
             ),
-            Container(
-              margin: const EdgeInsetsDirectional.only(
-                  start: 15, top: 30, end: 15),
-              alignment: Alignment.center,
-              height: 80,
-              child: DropdownButtonFormField<String>(
-                alignment: AlignmentDirectional.center,
-                value: selectedyear,
-                items: year.map<DropdownMenuItem<String>>((String br) =>
-                    DropdownMenuItem<String>(value: br, child: Text(br)))
-                    .toList(),
-                onChanged: (newvalue) {
-                  selectedyear = newvalue!;
-                },
-              ),
-            ),
-            Container(
-              margin: const EdgeInsetsDirectional.only(
-                  start: 15, top: 30, end: 15, bottom: 40),
-              alignment: Alignment.center,
-              height: 80,
-              child: DropdownButtonFormField<String>(
-                alignment: AlignmentDirectional.center,
-                value: selectedsem,
-                items: sem.map<DropdownMenuItem<String>>((String br) =>
-                    DropdownMenuItem<String>(value: br, child: Text(br)))
-                    .toList(),
-                onChanged: (newvalue) {
-                  selectedsem = newvalue!;
-                },
-              ),
-            ),
+            // Container(
+            //   margin: const EdgeInsetsDirectional.only(
+            //       start: 15, top: 30, end: 15),
+            //   alignment: Alignment.center,
+            //   height: 80,
+            //   child: DropdownButtonFormField<String>(
+            //     alignment: AlignmentDirectional.center,
+            //     value: selectedyear,
+            //     items: year.map<DropdownMenuItem<String>>((String br) =>
+            //         DropdownMenuItem<String>(value: br, child: Text(br)))
+            //         .toList(),
+            //     onChanged: (newvalue) {
+            //       selectedyear = newvalue!;
+            //     },
+            //   ),
+            // ),
+            // Container(
+            //   margin: const EdgeInsetsDirectional.only(
+            //       start: 15, top: 30, end: 15, bottom: 40),
+            //   alignment: Alignment.center,
+            //   height: 80,
+            //   child: DropdownButtonFormField<String>(
+            //     alignment: AlignmentDirectional.center,
+            //     value: selectedsem,
+            //     items: sem.map<DropdownMenuItem<String>>((String br) =>
+            //         DropdownMenuItem<String>(value: br, child: Text(br)))
+            //         .toList(),
+            //     onChanged: (newvalue) {
+            //       selectedsem = newvalue!;
+            //     },
+            //   ),
+            // ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 textStyle: const TextStyle(
-                  fontFamily: 'MiliBold',
-                  fontSize: 18
+                    fontFamily: 'MiliBold',
+                    fontSize: 18
+                ),
+                onPrimary: Colors.black,
+                primary: Colors.white,
+                padding: const EdgeInsets.only(top: 12,bottom: 12,left: 15,right: 15),
+              ),
+              onPressed: timePicker,
+              child: const Text('Date'),),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                textStyle: const TextStyle(
+                    fontFamily: 'MiliBold',
+                    fontSize: 18
                 ),
                 onPrimary: Colors.black,
                 primary: Colors.white,

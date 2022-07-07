@@ -19,7 +19,7 @@ class Wrapper extends StatelessWidget {
       final email = user.email;
       if(email != null)
       {
-        return StudentLoading(email: email);
+        return DataLoading(email: email);
       }
       else{
         return const Login();
