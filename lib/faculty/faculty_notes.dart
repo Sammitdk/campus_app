@@ -36,7 +36,6 @@ class _FacultyNotesState extends State<FacultyNotes> {
         'num': fileName,
       }
     );
-    
   }
 
   @override

@@ -28,6 +28,7 @@ class StudentLoading extends StatefulWidget {
 }
 
 class _StudentLoadingState extends State<StudentLoading> {
+
   Map<String, dynamic> info = {};
   final CollectionReference cr =
   FirebaseFirestore.instance.collection('Email');
