@@ -2,13 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class FacultyAttendance extends StatefulWidget {
-  final String branch;
+  final List<dynamic> subject;
 
-  final String sem;
-
-  final String year;
-
-  const FacultyAttendance({Key? key,required this.year,required this.sem,required this.branch}) : super(key: key);
+  const FacultyAttendance({Key? key,required this.subject}) : super(key: key);
 
   @override
   State<FacultyAttendance> createState() => _FacultyAttendanceState();
@@ -18,11 +14,11 @@ class _FacultyAttendanceState extends State<FacultyAttendance> {
   Map<String,dynamic> rolls = {};
   Map<String,bool> rollattend = {};
   Future markAttendance() async {
-    DocumentReference college = FirebaseFirestore.instance.doc('/College/${widget.branch}/${widget.year}/Attendance/Subjects/CC');
-    DocumentSnapshot col = await college.get();
+    // DocumentReference college = FirebaseFirestore.instance.doc('/College/${widget.branch}/${widget.year}/Attendance/Subjects/CC');
+    DocumentSnapshot col = await widget.subject[0].get();
     Map<String,dynamic> previous = col.data() as Map<String,dynamic>;
     previous['05-07-2022-09-00'] = rollattend;
-    college.update(previous);
+    widget.subject[0].update(previous);
   }
   Future perStudentAttendance()async{
     rollattend.forEach((key, value) async {
@@ -30,7 +26,7 @@ class _FacultyAttendanceState extends State<FacultyAttendance> {
       Map<String,dynamic> info = ds.data() as Map<String,dynamic>;
       String PRN = info['PRN'];
       print(PRN);
-      DocumentReference student = FirebaseFirestore.instance.doc('Student_Detail/${PRN}/Attendance/CC');
+      DocumentReference student = FirebaseFirestore.instance.doc('Student_Detail/${PRN}/${widget.subject[2]}');
       DocumentSnapshot stu = await student.get();
       Map<String,dynamic> previous = stu.data() as Map<String,dynamic>;
       print(previous);
@@ -39,8 +35,8 @@ class _FacultyAttendanceState extends State<FacultyAttendance> {
     });
   }
   Future<Map<String,dynamic>> getStudentList()async{
-    final DocumentReference roll = FirebaseFirestore.instance.doc('College/${widget.branch}/${widget.year}/Roll_No');
-    DocumentSnapshot rolllist = await roll.get();
+    // final DocumentReference roll = FirebaseFirestore.instance.doc('College/${widget.branch}/${widget.year}/Roll_No');
+    DocumentSnapshot rolllist = await widget.subject[1].get();
     rolls = rolllist.data() as Map<String,dynamic>;
     rolls.forEach((key, value) async {
       DocumentSnapshot studentname = await value.get();
@@ -53,6 +49,8 @@ class _FacultyAttendanceState extends State<FacultyAttendance> {
 
   @override
   Widget build(BuildContext context) {
+    print(widget.subject);
+    // return Container();
     return FutureBuilder(
       future: getStudentList(),
       builder: (context,AsyncSnapshot rollattend){
