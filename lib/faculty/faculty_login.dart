@@ -132,17 +132,17 @@ class _FacultyLoginState extends State<FacultyLogin> {
                         )
                     ),
                     Container(
-                        height: 50,
-                        padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                        child: ElevatedButton(
-                            style: ButtonStyle(
-                              backgroundColor: MaterialStateColor.resolveWith((states) => Colors.white),
-                              foregroundColor: MaterialStateColor.resolveWith((states) => Colors.black),
-                              shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))),),
-                            child: const Text('Forgot Password',style: TextStyle(fontSize: 17,color: Colors.black),),
-                            onPressed: () async{ Navigator.push(context,MaterialPageRoute(builder: (_) => ResetPassword()));
-                          },
-                        ),
+                      height: 50,
+                      padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                      child: ElevatedButton(
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateColor.resolveWith((states) => Colors.white),
+                          foregroundColor: MaterialStateColor.resolveWith((states) => Colors.black),
+                          shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))),),
+                        child: const Text('Forgot Password',style: TextStyle(fontSize: 17,color: Colors.black),),
+                        onPressed: () async{ Navigator.push(context,MaterialPageRoute(builder: (_) => ResetPassword()));
+                        },
+                      ),
                     ),
                   ],
                 ),

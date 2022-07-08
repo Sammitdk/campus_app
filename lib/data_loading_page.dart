@@ -35,7 +35,6 @@ class _DataLoadingState extends State<DataLoading> {
   Future<void> getData(String? email) async {
     final DocumentReference studentref =
     FirebaseFirestore.instance.doc('Email/$email');
-    print('$email ddddddddddddddd');
     info = await studentref.get().then((value) async {
       exist = value.exists;
       if(value.exists) {
