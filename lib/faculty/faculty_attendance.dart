@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 
 class FacultyAttendance extends StatefulWidget {
   final List<dynamic> subject;
+  final String date;
 
-  const FacultyAttendance({Key? key,required this.subject}) : super(key: key);
+  const FacultyAttendance({Key? key,required this.subject, required this.date}) : super(key: key);
 
   @override
   State<FacultyAttendance> createState() => _FacultyAttendanceState();
@@ -17,7 +18,7 @@ class _FacultyAttendanceState extends State<FacultyAttendance> {
     // DocumentReference college = FirebaseFirestore.instance.doc('/College/${widget.branch}/${widget.year}/Attendance/Subjects/CC');
     DocumentSnapshot col = await widget.subject[0].get();
     Map<String,dynamic> previous = col.data() as Map<String,dynamic>;
-    previous['06-07-2022-09-00'] = rollattend;
+    previous[widget.date] = rollattend;
     widget.subject[0].update(previous);
   }
   Future perStudentAttendance()async{
@@ -30,7 +31,7 @@ class _FacultyAttendanceState extends State<FacultyAttendance> {
       DocumentSnapshot stu = await student.get();
       Map<String,dynamic> previous = stu.data() as Map<String,dynamic>;
       print(previous);
-      previous['05-07-2022-09-00'] = value;
+      previous[widget.date] = value;
       student.update(previous);
     });
   }
@@ -39,8 +40,6 @@ class _FacultyAttendanceState extends State<FacultyAttendance> {
     DocumentSnapshot rolllist = await widget.subject[1].get();
     rolls = rolllist.data() as Map<String,dynamic>;
     rolls.forEach((key, value) async {
-      DocumentSnapshot studentname = await value.get();
-      Map<String,dynamic> info = studentname.data() as Map<String,dynamic>;
       rollattend[key] = false;
     });
     await Future.delayed(const Duration(milliseconds: 350));

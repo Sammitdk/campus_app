@@ -13,7 +13,7 @@ class FacultyAttendanceOption extends StatefulWidget {
 
 class _FacultyAttendanceOptionState extends State<FacultyAttendanceOption> {
   String selectedsub = '';
-
+  String date = '';
 
   void timePicker() async {
     TimeOfDay time = const TimeOfDay(hour: 9, minute: 0);
@@ -30,11 +30,14 @@ class _FacultyAttendanceOptionState extends State<FacultyAttendanceOption> {
       time = selectedtime;
       date = selecteddate;
     }
+
+    this.date = "${DateFormat('dd-MM-yyyy').format(date)}-${DateFormat('HH-mm').format(DateFormat('H:mm a').parse(time.format(context)))}";
     // String str = time.format(context);
-    print(DateTime(time.hour,time.minute));
+    // print(DateTime(date.day,date.month,date.year,time.hour,time.minute));
     // print(DateFormat.Hm().format(DateTime(time.hour,time.minute)));
-    print(('aaaaaaaaaaaaaaaaaaaaa${DateFormat('dd-MM-yyyy').format(date)}-${time.hour}-${time.minute}'));
-    print(time);
+    // print(('aaaaaaaaaaaaaaaaaaaaa${DateFormat('dd-MM-yyyy').format(date)}-${time.hour}-${time.minute}'));
+    // print(time);
+    setState((){});
   }
 
   @override
@@ -123,7 +126,7 @@ class _FacultyAttendanceOptionState extends State<FacultyAttendanceOption> {
                         top: 12, bottom: 12, left: 15, right: 15),
                   ),
                   onPressed: timePicker,
-                  child: const Text('Date'),
+                  child: Text(date.isEmpty?'Select Date':DateFormat('dd/MM/yyyy HH:mm').format(DateFormat('dd-MM-yyyy-HH-mm').parse(date))),
                 ),
                 const SizedBox(width: 30,),
                 ElevatedButton(
@@ -138,6 +141,7 @@ class _FacultyAttendanceOptionState extends State<FacultyAttendanceOption> {
                   onPressed: () => Navigator.of(context).push(MaterialPageRoute(
                       builder: (_) => FacultyAttendance(
                         subject: widget.info['Subjects'][selectedsub],
+                        date: date,
                       ))),
                   child: const Text('Next'),
                 )
