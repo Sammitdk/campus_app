@@ -1,5 +1,6 @@
 import 'package:campus_subsystem/faculty/faculty_attendance.dart';
 import 'package:campus_subsystem/faculty/faculty_notes.dart';
+import 'package:campus_subsystem/faculty/faculty_subject.dart';
 import 'package:flutter/material.dart';
 
 import 'faculty_attendance_option.dart';
@@ -25,7 +26,7 @@ class _FacultyHomeState extends State<FacultyHome> {
             child: Center(
               child: Row(children: [
                 Text("  Hey ${widget.info['Name']['First']}. ${widget.info['Name']['Middle']}. ${widget.info['Name']['Last']}",
-                  style: TextStyle(fontSize: 30, fontFamily: 'Custom'),
+                  style: const TextStyle(fontSize: 30, fontFamily: 'Custom'),
                 )
               ]),
             ),
@@ -61,6 +62,8 @@ class _FacultyHomeState extends State<FacultyHome> {
                     )),
                 Expanded(
                     child: InkWell(
+                      onTap: (){ Navigator.push(context, MaterialPageRoute(builder: (_) => FacultySyllabus(info: widget.info)));
+                      },
                       child: Card(
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12)),

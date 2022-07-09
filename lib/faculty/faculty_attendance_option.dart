@@ -1,6 +1,5 @@
 import 'package:campus_subsystem/faculty/faculty_attendance.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
 
 class FacultyAttendanceOption extends StatefulWidget {
   Map<String, dynamic> info = {};
@@ -36,10 +35,10 @@ class _FacultyAttendanceOptionState extends State<FacultyAttendanceOption> {
 
   @override
   Widget build(BuildContext context) {
-    // print('${widget.info} sssssssssssssssssssssssssssssssssssss');
     List subjects = widget.info['Subjects'].keys.toList();
     // return Container();
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         centerTitle: true,
         title: const Text(
@@ -52,9 +51,10 @@ class _FacultyAttendanceOptionState extends State<FacultyAttendanceOption> {
       body: Form(
         child: Column(
           children: [
+
             Container(
               margin:
-                  const EdgeInsetsDirectional.only(start: 15, top: 70, end: 15),
+                  const EdgeInsetsDirectional.only(start: 20, top: 70, end: 20,bottom: 40),
               alignment: Alignment.center,
               height: 80,
               child: DropdownButtonFormField<String>(
@@ -105,32 +105,43 @@ class _FacultyAttendanceOptionState extends State<FacultyAttendanceOption> {
             //     },
             //   ),
             // ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                textStyle:
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    textStyle:
                     const TextStyle(fontFamily: 'MiliBold', fontSize: 18),
-                onPrimary: Colors.black,
-                primary: Colors.white,
-                padding: const EdgeInsets.only(
-                    top: 12, bottom: 12, left: 15, right: 15),
-              ),
-              onPressed: timePicker,
-              child: const Text('Date'),
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                textStyle:
+                    onPrimary: Colors.black,
+                    primary: Colors.white,
+                    padding: const EdgeInsets.only(
+                        top: 12, bottom: 12, left: 15, right: 15),
+                  ),
+                  onPressed: timePicker,
+                  child: const Text('Date'),
+                ),
+                const SizedBox(width: 30,),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    textStyle:
                     const TextStyle(fontFamily: 'MiliBold', fontSize: 18),
-                onPrimary: Colors.black,
-                primary: Colors.white,
-                padding: const EdgeInsets.only(
-                    top: 12, bottom: 12, left: 15, right: 15),
-              ),
-              onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-                  builder: (_) => FacultyAttendance(
+                    onPrimary: Colors.black,
+                    primary: Colors.white,
+                    padding: const EdgeInsets.only(
+                        top: 12, bottom: 12, left: 15, right: 15),
+                  ),
+                  onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+                      builder: (_) => FacultyAttendance(
                         subject: widget.info['Subjects'][selectedsub],
                       ))),
-              child: const Text('Next'),
+                  child: const Text('Next'),
+                )
+              ],
+            ),
+            Expanded(
+                child: Card(
+                  color: Colors.white,
+                    child: Image.asset("assets/images/attendance.gif")),
             )
           ],
         ),
