@@ -43,7 +43,8 @@ class _FacultyNotesState extends State<FacultyNotes> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text("Notes"),
+        title: const Text("Notes",style: TextStyle(fontFamily: 'Narrow', fontSize: 30),textAlign: TextAlign.center,),
+        backgroundColor: Colors.indigo[300],
       ),
       floatingActionButton: FloatingActionButton(
         foregroundColor: Colors.black,
