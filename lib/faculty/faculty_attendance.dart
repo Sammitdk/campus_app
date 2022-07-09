@@ -17,7 +17,7 @@ class _FacultyAttendanceState extends State<FacultyAttendance> {
     // DocumentReference college = FirebaseFirestore.instance.doc('/College/${widget.branch}/${widget.year}/Attendance/Subjects/CC');
     DocumentSnapshot col = await widget.subject[0].get();
     Map<String,dynamic> previous = col.data() as Map<String,dynamic>;
-    previous['05-07-2022-09-00'] = rollattend;
+    previous['06-07-2022-09-00'] = rollattend;
     widget.subject[0].update(previous);
   }
   Future perStudentAttendance()async{
