@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'faculty_home.dart';
@@ -28,6 +29,7 @@ class _FacultyDashboardState extends State<FacultyDashboard> {
       const Icon(Icons.person_outline_outlined,size: 30,),
       // const Icon(Icons.logout,size: 30,),
     ];
+    print('aaaaaaaaaaaaaaa');
     return Scaffold(
         backgroundColor: Colors.white,
         body: screen[index],

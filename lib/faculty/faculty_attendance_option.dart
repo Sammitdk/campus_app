@@ -1,5 +1,6 @@
 import 'package:campus_subsystem/faculty/faculty_attendance.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class FacultyAttendanceOption extends StatefulWidget {
   Map<String, dynamic> info = {};
@@ -13,10 +14,10 @@ class FacultyAttendanceOption extends StatefulWidget {
 class _FacultyAttendanceOptionState extends State<FacultyAttendanceOption> {
   String selectedsub = '';
 
-  TimeOfDay time = const TimeOfDay(hour: 9, minute: 0);
-  DateTime date = DateUtils.dateOnly(DateTime.now());
 
   void timePicker() async {
+    TimeOfDay time = const TimeOfDay(hour: 9, minute: 0);
+    DateTime date = DateUtils.dateOnly(DateTime.now());
     print(time);
     final DateTime? selecteddate = await showDatePicker(
         context: context,
@@ -24,13 +25,16 @@ class _FacultyAttendanceOptionState extends State<FacultyAttendanceOption> {
         lastDate: DateTime(2030),
         firstDate: DateTime(2010)
     );
-    // final TimeOfDay? selectedtime = await showTimePicker(context: context,initialTime: time);
-    if (selecteddate != null) {
-      // time = selectedtime;
+    final TimeOfDay? selectedtime = await showTimePicker(context: context,initialTime: time);
+    if (selecteddate != null && selectedtime!=null) {
+      time = selectedtime;
       date = selecteddate;
     }
+    // String str = time.format(context);
+    print(DateTime(time.hour,time.minute));
+    // print(DateFormat.Hm().format(DateTime(time.hour,time.minute)));
+    print(('aaaaaaaaaaaaaaaaaaaaa${DateFormat('dd-MM-yyyy').format(date)}-${time.hour}-${time.minute}'));
     print(time);
-    print(date);
   }
 
   @override
@@ -110,6 +114,7 @@ class _FacultyAttendanceOptionState extends State<FacultyAttendanceOption> {
               children: [
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
+                    shape: new RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
                     textStyle:
                     const TextStyle(fontFamily: 'MiliBold', fontSize: 18),
                     onPrimary: Colors.black,
