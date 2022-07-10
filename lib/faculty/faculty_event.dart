@@ -1,43 +1,76 @@
-import 'dart:io';
-
+import 'package:campus_subsystem/faculty/faculty_sub_event.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:file_picker/file_picker.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
-class FacultyEvents extends StatefulWidget {
-  const FacultyEvents({Key? key}) : super(key: key);
+import 'faculty_event_show.dart';
+
+class FacultyEvent extends StatefulWidget {
+  FacultyEvent({Key? key,required this.info}) : super(key: key);
+  Map<String,dynamic> info = {};
 
   @override
-  State<FacultyEvents> createState() => _FacultyEventsState();
+  State<FacultyEvent> createState() => _FacultyEventState();
 }
 
-class _FacultyEventsState extends State<FacultyEvents> {
-  String url = "";
-  late String num ;
-  uploadDataToFirebase() async{
-    FilePickerResult? result = await FilePicker.platform.pickFiles();
-    File pick = File(result!.files.single.path.toString());
-    var file = pick.readAsBytesSync();
-    String fileName = pick.path.split('/').last;
+class _FacultyEventState extends State<FacultyEvent> {
 
-    //uploading
-    var pdfFile = FirebaseStorage.instance.ref().child("Events").child(fileName);
-    UploadTask task = pdfFile.putData(file);
-    TaskSnapshot snapshot = await task;
-    url = await snapshot.ref.getDownloadURL();
-
-    //  to cloud firebase
-
-    await FirebaseFirestore.instance.collection("notes").doc().set(
-        {
-          'url':url,
-          'num': fileName,
+  Widget Event(){
+    return StreamBuilder(
+        stream: FirebaseFirestore.instance.collection("Events").snapshots(),
+        builder: (context, AsyncSnapshot<QuerySnapshot>snapshot){
+          if(snapshot.hasData){
+            return ListView.builder(
+                itemCount: snapshot.data!.docs.length,
+                itemBuilder: (context,i){
+                  QueryDocumentSnapshot x = snapshot.data!.docs[i];
+                  return InkWell(
+                    onTap: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (_) => ShowEvent(x: x,)));
+                    },
+                    child: Padding(
+                      padding:  const EdgeInsetsDirectional.all(18),
+                      child: Container(
+                        alignment: Alignment.center,
+                        height: 80,
+                        // width: 300,
+                        decoration:  BoxDecoration(
+                            borderRadius:
+                            const BorderRadiusDirectional.only(
+                                topStart: Radius.circular(50),
+                                topEnd: Radius.circular(50),
+                                bottomEnd: Radius.circular(50),
+                                bottomStart: Radius.circular(50)),
+                            color: Colors.blue[100]),
+                        child: Text((x['Title']),textAlign: TextAlign.center,style: const TextStyle(fontFamily: "Bold",fontSize: 30),),
+                      ),
+                    ),
+                  );
+                });
+          }
+          return const Center(
+            child: CircularProgressIndicator(
+            ),
+          );
         }
     );
-  }
+}
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        title: const Text("Event",style: TextStyle(fontFamily: 'Narrow', fontSize: 30),textAlign: TextAlign.center,),
+        backgroundColor: Colors.indigo[300],
+    ),
+      floatingActionButton: FloatingActionButton(
+          foregroundColor: Colors.black,
+          backgroundColor: Colors.white,
+          child: const Icon(Icons.add),
+          onPressed: (){Navigator.push(context, MaterialPageRoute(builder: (_) => FacultySubEvent(info: widget.info)));
+      }
+    ),
+      body: Event(),
+    );
   }
 }

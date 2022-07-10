@@ -4,16 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 
-class FacultySyllabus extends StatefulWidget {
-  FacultySyllabus({Key? key,required this.info}) : super(key: key);
+class FacultySubject extends StatefulWidget {
+  FacultySubject({Key? key,required this.info}) : super(key: key);
   Map<String,dynamic> info ;
 
-
   @override
-  State<FacultySyllabus> createState() => _FacultySyllabusState();
+  State<FacultySubject> createState() => _FacultySubjectState();
 }
 
-class _FacultySyllabusState extends State<FacultySyllabus> {
+class _FacultySubjectState extends State<FacultySubject> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

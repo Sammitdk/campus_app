@@ -77,10 +77,9 @@ class _FacultyProfileState extends State<FacultyProfile> {
                   maxRadius: 110,
                   child: ClipOval(
                     clipBehavior: Clip.antiAlias,
-                    //clipper: MyClipper(),
                     child: widget.info['urlPicture']!=null ? Image.network(widget.info['urlPicture']) : Lottie.network("https://assets5.lottiefiles.com/packages/lf20_lyp6fz8l.json"),
                   ),
-                )
+                ),
             ),
             Positioned(
                 top: height/3.0,

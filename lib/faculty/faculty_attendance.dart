@@ -48,8 +48,6 @@ class _FacultyAttendanceState extends State<FacultyAttendance> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.subject);
-    // return Container();
     return FutureBuilder(
       future: getStudentList(),
       builder: (context,AsyncSnapshot rollattend){

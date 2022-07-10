@@ -124,23 +124,13 @@ class _StudentLoginState extends State<StudentLogin> {
                           onPressed: () async {
                             if (formkey.currentState!.validate()) {
                               if (await FirebaseFirestore.instance.doc('Email/${emailController.text}').get().then((value) => value.exists)) {
-                                if(await auth.signIn(
-                                    username: emailController.text,
-                                    password: passwordController.text) !=
-                                    null) {
-                                  Navigator.of(this.context).pushReplacement(
-                                      MaterialPageRoute(
-                                          builder: (_) => const Wrapper()));
+                                if(await auth.signIn(username: emailController.text, password: passwordController.text) != null) {
+                                  Navigator.of(this.context).pushReplacement(MaterialPageRoute(builder: (_) => const Wrapper()));
                                 }else{
-                                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                    content: Text(
-                                        'Incorrect Email Address or Password'),
-                                  ));
+                                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Incorrect Email Address or Password'),));
                                 }
                               } else {
-                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                  content: Text(
-                                      'Incorrect Email Address'),
+                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Incorrect Email Address'),
                                 ));
                               }
                             } else {

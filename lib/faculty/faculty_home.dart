@@ -1,9 +1,9 @@
-import 'package:campus_subsystem/faculty/faculty_attendance.dart';
 import 'package:campus_subsystem/faculty/faculty_notes.dart';
 import 'package:campus_subsystem/faculty/faculty_subject.dart';
 import 'package:flutter/material.dart';
 
 import 'faculty_attendance_option.dart';
+import 'faculty_event.dart';
 
 class FacultyHome extends StatefulWidget {
   Map<String,dynamic> info = {};
@@ -62,7 +62,7 @@ class _FacultyHomeState extends State<FacultyHome> {
                     )),
                 Expanded(
                     child: InkWell(
-                      onTap: (){ Navigator.push(context, MaterialPageRoute(builder: (_) => FacultySyllabus(info: widget.info)));
+                      onTap: (){ Navigator.push(context, MaterialPageRoute(builder: (_) => FacultySubject(info: widget.info)));
                       },
                       child: Card(
                         shape: RoundedRectangleBorder(
@@ -158,25 +158,30 @@ class _FacultyHomeState extends State<FacultyHome> {
             child: Row(
               children: [
                 Expanded(
-                    child: Card(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12)),
-                      elevation: 5,
-                      child: Column(
-                        children: [
-                          Expanded(
-                              flex: 4,
-                              child: Image.asset(
-                                "assets/images/events.gif",
-                              )),
-                          const Expanded(
-                              flex: 1,
-                              child: Text(
-                                "Events",
-                                style:
-                                TextStyle(fontFamily: 'Custom', fontSize: 20),
-                              )),
-                        ],
+                    child: InkWell(
+                      onTap: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (_) => FacultyEvent(info: widget.info,)));
+                    },
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
+                        elevation: 5,
+                        child: Column(
+                          children: [
+                            Expanded(
+                                flex: 4,
+                                child: Image.asset(
+                                  "assets/images/events.gif",
+                                )),
+                            const Expanded(
+                                flex: 1,
+                                child: Text(
+                                  "Events",
+                                  style:
+                                  TextStyle(fontFamily: 'Custom', fontSize: 20),
+                                )),
+                          ],
+                        ),
                       ),
                     )),
               ],

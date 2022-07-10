@@ -58,7 +58,6 @@ class _FacultyAttendanceOptionState extends State<FacultyAttendanceOption> {
       body: Form(
         child: Column(
           children: [
-
             Container(
               margin:
                   const EdgeInsetsDirectional.only(start: 20, top: 70, end: 20,bottom: 40),
