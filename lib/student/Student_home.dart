@@ -1,4 +1,5 @@
 import 'package:campus_subsystem/student/student_attendance.dart';
+import 'package:campus_subsystem/student/student_event.dart';
 import 'package:campus_subsystem/student/student_notes.dart';
 import 'package:campus_subsystem/student/student_syllabus.dart';
 import 'package:campus_subsystem/student/student_timetable.dart';
@@ -37,14 +38,15 @@ class _StudentHomeState extends State<StudentHome> {
               children: [
                 Expanded(
                     child: InkWell(
-                      onTap: (){
-                        Navigator.of(context).push(MaterialPageRoute(builder: (_) => StudentTimeTable(info: widget.info)));
-                      },
-                      child: Card(
-                      shape: RoundedRectangleBorder(
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (_) => StudentTimeTable(info: widget.info)));
+                  },
+                  child: Card(
+                    shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12)),
-                      elevation: 5,
-                      child: Column(
+                    elevation: 5,
+                    child: Column(
                       children: [
                         Expanded(
                             flex: 4,
@@ -60,15 +62,18 @@ class _StudentHomeState extends State<StudentHome> {
                                   TextStyle(fontFamily: 'Custom', fontSize: 20),
                             )),
                       ],
+                    ),
                   ),
-                ),
-                    )),
+                )),
                 Expanded(
                     child: InkWell(
-                    onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(builder: (_) => StudentSyllabus(info: widget.info,)));
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (_) => StudentSyllabus(
+                              info: widget.info,
+                            )));
                   },
-                    child: Card(
+                  child: Card(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12)),
                     elevation: 5,
@@ -100,9 +105,10 @@ class _StudentHomeState extends State<StudentHome> {
               children: [
                 Expanded(
                   child: InkWell(
-                    onTap: (){
+                    onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
-                          builder: (_) => StudentAttendance(info: widget.info)));
+                          builder: (_) =>
+                              StudentAttendance(info: widget.info)));
                     },
                     child: Card(
                       shape: RoundedRectangleBorder(
@@ -129,8 +135,13 @@ class _StudentHomeState extends State<StudentHome> {
                 ),
                 Expanded(
                   child: InkWell(
-                    onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (_) => StudentNotes(info: widget.info,)));
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => StudentNotes(
+                                    info: widget.info,
+                                  )));
                     },
                     child: Card(
                       shape: RoundedRectangleBorder(
@@ -148,8 +159,8 @@ class _StudentHomeState extends State<StudentHome> {
                               flex: 1,
                               child: Text(
                                 "Notes",
-                                style:
-                                    TextStyle(fontFamily: 'Custom', fontSize: 20),
+                                style: TextStyle(
+                                    fontFamily: 'Custom', fontSize: 20),
                               )),
                         ],
                       ),
@@ -164,41 +175,42 @@ class _StudentHomeState extends State<StudentHome> {
             child: Row(
               children: [
                 Expanded(
-                    child: Card(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
+                    child: InkWell(
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (_) => StudentEvent()));
+                  },
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
                     elevation: 5,
                     child: Column(
-                    children: [
-                      Expanded(
-                          flex: 4,
-                          child: Image.asset(
-                            "assets/images/events.gif",
-                          )),
-                      const Expanded(
-                          flex: 1,
-                          child: Text(
-                            "Events",
-                            style:
-                                TextStyle(fontFamily: 'Custom', fontSize: 20),
-                          )),
-                    ],
+                      children: [
+                        Expanded(
+                            flex: 4,
+                            child: Image.asset(
+                              "assets/images/events.gif",
+                            )),
+                        const Expanded(
+                            flex: 1,
+                            child: Text(
+                              "Events",
+                              style:
+                                  TextStyle(fontFamily: 'Custom', fontSize: 20),
+                            )),
+                      ],
+                    ),
                   ),
                 )),
                 Expanded(
                     child: InkWell(
                   onTap: () async {
                     const url = 'http://14.139.121.222/studentresult/';
-                    if (!await canLaunchUrlString(url)) {
-                      await launchUrlString(
-                        url,
-                        mode: LaunchMode.externalNonBrowserApplication,
-                        webViewConfiguration: const WebViewConfiguration(
-                          enableDomStorage: true,
-                          enableJavaScript: true,
-                        ),
-                      );
-                    } else {
+                    try {
+                      await launchUrlString(url,
+                          webViewConfiguration: const WebViewConfiguration(
+                              enableJavaScript: true));
+                    } catch (e) {
                       throw 'Could not launch $url';
                     }
                   },
