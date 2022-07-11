@@ -32,6 +32,7 @@ dependencies:
   syncfusion_flutter_pdf: ^20.2.36
   file_picker: ^3.0.4
   syncfusion_flutter_pdfviewer: ^20.2.36-beta
+  loading_animation_widget: ^1.2.0+2
 
 dev_dependencies:
   flutter_test:

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:lottie/lottie.dart';
 
 class StudentTimeTable extends StatefulWidget {
@@ -14,13 +15,15 @@ class StudentTimeTable extends StatefulWidget {
 
 class _StudentTimeTableState extends State<StudentTimeTable> {
   Map<String,dynamic> timetable = {};
+  List weekdays = DateFormat('EEEE').dateSymbols.STANDALONEWEEKDAYS;
+   String selectedday =   DateFormat('EEEE').format(DateTime.now());
   Future<Map<String,dynamic>> getTimetable()async {
     DocumentReference timetables = FirebaseFirestore.instance.doc('/College/${widget.info['Branch']}/${widget.info['Year']}/Timetable');
     DocumentSnapshot timetableSnapshot = await timetables.get();
     Map temp = timetableSnapshot.data() as Map<String, dynamic>;
-    List l = temp[widget.info['Sem']][DateFormat('EEEE').format(DateTime.now())].keys.toList()..sort();
+    List l = temp[widget.info['Sem']][selectedday].keys.toList()..sort();
     l.forEach((element) {
-      timetable[element] = temp[widget.info['Sem']][DateFormat('EEEE').format(DateTime.now())][element];
+      timetable[element] = temp[widget.info['Sem']][selectedday][element];
     });
     await Future.delayed(const Duration(milliseconds: 350));
     return timetable;
@@ -31,9 +34,9 @@ class _StudentTimeTableState extends State<StudentTimeTable> {
         future: getTimetable(),
         builder: (context,AsyncSnapshot timetable) {
           if(timetable.connectionState == ConnectionState.waiting){
-            return const Scaffold(
+            return Scaffold(
              backgroundColor: Colors.white,
-                body: Center(child: CircularProgressIndicator(value: 1)));
+                body: Center(child: LoadingAnimationWidget.staggeredDotsWave(size: 50, color: Colors.red)));
           }
             else{
               return Scaffold(
@@ -42,67 +45,93 @@ class _StudentTimeTableState extends State<StudentTimeTable> {
                   title: const Text("Time Table",style: TextStyle(fontFamily: 'Narrow', fontSize: 30),textAlign: TextAlign.center,),
                   backgroundColor: Colors.indigo[300],
                 ),
-                body: timetable.data == null? Expanded(child: Lottie.network("https://assets4.lottiefiles.com/private_files/lf30_vdqgavca.json")) : ListView.builder(
-                  itemCount: timetable.data.length,
-                  itemBuilder: (BuildContext context,int index) {
-                    String key = timetable.data.keys.elementAt(index);
-                    return Padding(
-                      padding: const EdgeInsetsDirectional.all(20),
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              const Expanded(
-                                flex: 1,
-                                child: Icon(
-                                  Icons.subject_sharp,
-                                  size: 40,
-                                ),
-                              ),
-                              Expanded(
-                                flex: 5,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(top: 15.0),
-                                  child:  Row(
-                                    children: [
-                                      Expanded(flex: 4,
-                                          child: Container(
-                                              alignment: Alignment.center,
-                                              height: 100,
-                                              // width: 300,
-                                              decoration:  BoxDecoration(
-                                                borderRadius: const BorderRadiusDirectional.only(
-                                                    topStart: Radius.circular(50),
-                                                    topEnd: Radius.circular(50),
-                                                    bottomStart: Radius.circular(50)),
-                                                color: Colors.blue[100],
-                                              ),
-                                              child: Text(timetable.data[key].toString(),style: const TextStyle(fontSize: 20,fontFamily: 'Custom'),textAlign: TextAlign.center))),
-                                      const SizedBox(width: 10,),
-                                      Expanded(
-                                        flex: 1,
-                                          child: Container(
-                                            alignment: Alignment.center,
-                                              height: 100,
-                                              // width: 300,
-                                              decoration:  BoxDecoration(
-                                                borderRadius: const BorderRadiusDirectional.only(
-                                                    topStart: Radius.circular(50),
-                                                    topEnd: Radius.circular(50),
-                                                    bottomEnd: Radius.circular(50),),
-                                                color: Colors.blue[100],
-                                              ),
-                                              child: Text(DateFormat.Hm().format(DateFormat('HH-mm').parse(key)).toString()))),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          )
-                        ],
+                body: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: DropdownButtonFormField<String>(
+                        alignment: AlignmentDirectional.center,
+                        value: selectedday,
+                        items: weekdays
+                            .map<DropdownMenuItem<String>>(
+                                (value) => DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            ))
+                            .toList(),
+                        onChanged: (newvalue) {
+                          selectedday = newvalue!;
+                          setState((){});
+                          // print(widget.info['Subjects'][selectedsub]);
+                        },
                       ),
-                    );
-                  },
+                    ),
+                    Expanded(
+                      child: timetable.data == null? Center(child: Lottie.network("https://assets4.lottiefiles.com/private_files/lf30_vdqgavca.json")) : ListView.builder(
+                        itemCount: timetable.data.length,
+                        scrollDirection: Axis.vertical,
+                        itemBuilder: (BuildContext context,int index) {
+                          String key = timetable.data.keys.elementAt(index);
+                          return Padding(
+                            padding: const EdgeInsetsDirectional.all(20),
+                            child: Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    const Expanded(
+                                      flex: 1,
+                                      child: Icon(
+                                        Icons.subject_sharp,
+                                        size: 40,
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 5,
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(top: 15.0),
+                                        child:  Row(
+                                          children: [
+                                            Expanded(flex: 4,
+                                                child: Container(
+                                                    alignment: Alignment.center,
+                                                    height: 100,
+                                                    // width: 300,
+                                                    decoration:  BoxDecoration(
+                                                      borderRadius: const BorderRadiusDirectional.only(
+                                                          topStart: Radius.circular(50),
+                                                          topEnd: Radius.circular(50),
+                                                          bottomStart: Radius.circular(50)),
+                                                      color: Colors.blue[100],
+                                                    ),
+                                                    child: Text(timetable.data[key].toString(),style: const TextStyle(fontSize: 20,fontFamily: 'Custom'),textAlign: TextAlign.center))),
+                                            const SizedBox(width: 10,),
+                                            Expanded(
+                                              flex: 1,
+                                                child: Container(
+                                                  alignment: Alignment.center,
+                                                    height: 100,
+                                                    // width: 300,
+                                                    decoration:  BoxDecoration(
+                                                      borderRadius: const BorderRadiusDirectional.only(
+                                                          topStart: Radius.circular(50),
+                                                          topEnd: Radius.circular(50),
+                                                          bottomEnd: Radius.circular(50),),
+                                                      color: Colors.blue[100],
+                                                    ),
+                                                    child: Text(DateFormat.Hm().format(DateFormat('HH-mm').parse(key)).toString()))),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
                 ),
               );
             }
