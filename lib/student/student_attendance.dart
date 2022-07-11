@@ -1,6 +1,7 @@
 import 'package:campus_subsystem/student/student_sub_attendance.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class StudentAttendance extends StatefulWidget {
   Map<String, dynamic> info;
@@ -125,7 +126,7 @@ class _StudentAttendanceState extends State<StudentAttendance> {
           );
           // return Container();
         }else{
-          return CircularProgressIndicator();
+          return Center(child: LoadingAnimationWidget.staggeredDotsWave(size: 50, color: Colors.red));
         }
       }
     );

@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class FacultyNotes extends StatefulWidget {
   const FacultyNotes({Key? key}) : super(key: key);
@@ -87,9 +88,8 @@ class _FacultyNotesState extends State<FacultyNotes> {
                 );
               });
           }
-          return const Center(
-            child: CircularProgressIndicator(
-            ),
+          return Center(
+            child: LoadingAnimationWidget.staggeredDotsWave(size: 50, color: Colors.red),
           );
         }
       ),

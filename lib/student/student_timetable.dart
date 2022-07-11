@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:lottie/lottie.dart';
 
 class StudentTimeTable extends StatefulWidget {
@@ -33,9 +34,9 @@ class _StudentTimeTableState extends State<StudentTimeTable> {
         future: getTimetable(),
         builder: (context,AsyncSnapshot timetable) {
           if(timetable.connectionState == ConnectionState.waiting){
-            return const Scaffold(
+            return Scaffold(
              backgroundColor: Colors.white,
-                body: Center(child: CircularProgressIndicator(value: 1)));
+                body: Center(child: LoadingAnimationWidget.staggeredDotsWave(size: 50, color: Colors.red)));
           }
             else{
               return Scaffold(

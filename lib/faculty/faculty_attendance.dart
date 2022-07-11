@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class FacultyAttendance extends StatefulWidget {
   final List<dynamic> subject;
@@ -52,12 +53,10 @@ class _FacultyAttendanceState extends State<FacultyAttendance> {
       future: getStudentList(),
       builder: (context,AsyncSnapshot rollattend){
         if(rollattend.connectionState == ConnectionState.waiting){
-          return const Scaffold(
+          return Scaffold(
               backgroundColor: Colors.white,
               body: Center(
-                  child: CircularProgressIndicator(
-                    value: 3,
-                  )
+                  child: LoadingAnimationWidget.staggeredDotsWave(size: 50, color: Colors.red)
               )
           );
         }else{

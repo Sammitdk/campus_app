@@ -2,6 +2,7 @@ import 'package:campus_subsystem/faculty/faculty_sub_event.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import 'faculty_event_show.dart';
 
@@ -48,9 +49,8 @@ class _FacultyEventState extends State<FacultyEvent> {
                   );
                 });
           }
-          return const Center(
-            child: CircularProgressIndicator(
-            ),
+          return Center(
+            child: LoadingAnimationWidget.staggeredDotsWave(size: 50, color: Colors.red),
           );
         }
     );

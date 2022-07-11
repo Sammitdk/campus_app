@@ -13,9 +13,8 @@ class FacultyAttendanceOption extends StatefulWidget {
 
 class _FacultyAttendanceOptionState extends State<FacultyAttendanceOption> {
   String selectedsub = '';
-  String date = '';
+  String date = 'Select Date and Time';
   final fkey = GlobalKey<FormState>();
-  static int count = 0;
 
   void timePicker() async {
     TimeOfDay time = const TimeOfDay(hour: 9, minute: 0);
@@ -103,9 +102,9 @@ class _FacultyAttendanceOptionState extends State<FacultyAttendanceOption> {
                         top: 12, bottom: 12, left: 15, right: 15),
                   ),
                   onPressed: (){timePicker();
-                    count+=1;},
-                  child: Text(date.isEmpty
-                      ? 'Select Date and Time'
+},
+                  child: Text(date
+                      == 'Select Date and Time'? date
                       : DateFormat('dd/MM/yyyy HH:mm')
                           .format(DateFormat('dd-MM-yyyy-HH-mm').parse(date))),
                 ),
@@ -123,13 +122,14 @@ class _FacultyAttendanceOptionState extends State<FacultyAttendanceOption> {
                   ),
                   onPressed: () {
                     if(fkey.currentState!.validate()) {
-                      print(count);
-                      (count >= 1)?
+                      (date != 'Select Date and Time')?
                         Navigator.of(context).push(MaterialPageRoute(
                         builder: (_) => FacultyAttendance(
                               subject: widget.info['Subjects'][selectedsub],
                               date: date,
-                            ))):ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Select Date and Time'),));
+                            )
+                        ))
+                          :ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Select Date and Time'),));
                     }
                   },
                   child: const Text('Next'),

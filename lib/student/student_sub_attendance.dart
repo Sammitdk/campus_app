@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class StudentSubAttendance extends StatefulWidget {
   final String sub;
@@ -29,9 +30,7 @@ class _StudentSubAttendanceState extends State<StudentSubAttendance> {
     //         return const Scaffold(
     //             backgroundColor: Colors.white,
     //             body: Center(
-    //                 child: CircularProgressIndicator(
-    //                   value: 3,
-    //                 )));
+    //                 child: LoadingAnimationWidget.staggeredDotsWave(size: 50, color: Colors.red)));
     //       } else {
     //         if (attendance.hasError) {
     //           return Text(attendance.error.toString());
@@ -203,7 +202,7 @@ class _StudentSubAttendanceState extends State<StudentSubAttendance> {
               },
             );
           }else{
-            return const CircularProgressIndicator();
+            return LoadingAnimationWidget.staggeredDotsWave(size: 50, color: Colors.red);
           }
         },
       ),
