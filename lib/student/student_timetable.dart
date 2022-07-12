@@ -48,22 +48,35 @@ class _StudentTimeTableState extends State<StudentTimeTable> {
                 body: Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: DropdownButtonFormField<String>(
-                        alignment: AlignmentDirectional.center,
-                        value: selectedday,
-                        items: weekdays
-                            .map<DropdownMenuItem<String>>(
-                                (value) => DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(value),
-                            ))
-                            .toList(),
-                        onChanged: (newvalue) {
-                          selectedday = newvalue!;
-                          setState((){});
-                          // print(widget.info['Subjects'][selectedsub]);
-                        },
+                      padding: const EdgeInsets.only(top: 10),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width/1.2,
+                        padding: const EdgeInsets.all(10.0),
+                        height: 80,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(color: Colors.black45,width: 2)
+                        ),
+                        child: DropdownButtonFormField<String>(
+                          elevation: 0,
+                          decoration: const InputDecoration(
+                            border: InputBorder.none,
+                          ),
+                          iconEnabledColor: Colors.red,
+                          alignment: AlignmentDirectional.center,
+                          value: selectedday,
+                          items: weekdays
+                              .map<DropdownMenuItem<String>>(
+                                  (value) => DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              ))
+                              .toList(),
+                          onChanged: (newvalue) {
+                            selectedday = newvalue!;
+                            setState((){});
+                          },
+                        ),
                       ),
                     ),
                     Expanded(
@@ -103,7 +116,7 @@ class _StudentTimeTableState extends State<StudentTimeTable> {
                                                           bottomStart: Radius.circular(50)),
                                                       color: Colors.blue[100],
                                                     ),
-                                                    child: Text(timetable.data[key].toString(),style: const TextStyle(fontSize: 20,fontFamily: 'Custom'),textAlign: TextAlign.center))),
+                                                    child: Text(timetable.data[key].toString(),style: const TextStyle(fontSize: 20),textAlign: TextAlign.center))),
                                             const SizedBox(width: 10,),
                                             Expanded(
                                               flex: 1,

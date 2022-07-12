@@ -202,7 +202,7 @@ class _StudentSubAttendanceState extends State<StudentSubAttendance> {
               },
             );
           }else{
-            return LoadingAnimationWidget.staggeredDotsWave(size: 50, color: Colors.red);
+            return Center(child: LoadingAnimationWidget.staggeredDotsWave(size: 50, color: Colors.red));
           }
         },
       ),
