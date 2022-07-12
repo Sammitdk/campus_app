@@ -15,21 +15,27 @@ class StudentAttendance extends StatefulWidget {
 class _StudentAttendanceState extends State<StudentAttendance> {
   Map<String, dynamic> attendance = {};
   Map<String, dynamic> subject = {};
+  List sorted = [];
 
   Stream<Map<String, dynamic>> getAttendance() async* {
     final DocumentReference subjects = FirebaseFirestore.instance.doc(
         '/College/${widget.info['Branch']}/${widget.info['Year']}/Subjects');
     DocumentSnapshot subjectsnapshot = await subjects.get();
     subject = subjectsnapshot.data() as Map<String, dynamic>;
+    // print(subject);
     final CollectionReference studentdetail = FirebaseFirestore.instance
         .collection('/Student_Detail/${widget.info['PRN']}/Attendance');
-
-    await subject[widget.info['Sem']].forEach((key, value) async {
+    sorted = subject[widget.info['Sem']].keys.toList();
+    sorted.sort();
+    sorted.forEach((key) async {
+      // print(key);
       DocumentSnapshot sub = await studentdetail.doc(key).get();
       Map<String, dynamic> list = sub.data() as Map<String, dynamic>;
-      attendance[value] = list;
+      attendance[subject[widget.info['Sem']][key]] = list;
+      // print(attendance);
     });
-    await Future.delayed(const Duration(milliseconds: 350));
+    await Future.delayed(const Duration(milliseconds: 450));
+    // print('aaaaaaaaaaaaaaaaaaa$attendance');
     yield attendance;
   }
 
@@ -40,6 +46,7 @@ class _StudentAttendanceState extends State<StudentAttendance> {
       builder: (context,AsyncSnapshot<Map<String,dynamic>> snap){
         if(snap.hasData){
           Map attendance = snap.data as Map<String,dynamic >;
+          // print(attendance);
           return Scaffold(
             appBar: AppBar(
               centerTitle: true,
@@ -51,7 +58,7 @@ class _StudentAttendanceState extends State<StudentAttendance> {
               child: ListView.builder(
                 itemCount: attendance.length,
                 itemBuilder: (BuildContext context, int index) {
-                  String key = attendance.keys.elementAt(index);
+                  String key = sorted.elementAt(index);
                   return Column(
                     children: [
                       Padding(
@@ -68,46 +75,56 @@ class _StudentAttendanceState extends State<StudentAttendance> {
                             Expanded(
                               flex: 7,
                               child: Padding(
-                                padding: const EdgeInsets.only(top: 15.0),
+                                padding:  const EdgeInsetsDirectional.only(start: 20,end: 20,top: 30),
                                 child: InkWell(
                                   onTap: (){
-                                    Navigator.of(context).push(MaterialPageRoute(builder: (_) => StudentSubAttendance(sub: '/Student_Detail/${widget.info['PRN']}/Attendance/${subject[widget.info['Sem']].keys.firstWhere((element) => subject[widget.info['Sem']][element]==key)}')));
+                                    Navigator.of(context).push(MaterialPageRoute(builder: (_) => StudentSubAttendance(sub: '/Student_Detail/${widget.info['PRN']}/Attendance/${subject[widget.info['Sem']].keys.firstWhere((element) => subject[widget.info['Sem']][element]==subject[widget.info['Sem']][key])}')));
                                   },
                                   child: Row(
                                     children: [
                                       Expanded(
                                           flex: 4,
-                                          child: Container(
-                                            alignment: Alignment.center,
-                                            height: 100,
-                                            decoration:  BoxDecoration(
-                                                borderRadius:
-                                                const BorderRadiusDirectional.only(
-                                                    topStart: Radius.circular(50),
-                                                    topEnd: Radius.circular(50),
-                                                    bottomStart: Radius.circular(50)),
-                                                color: Colors.blue[100]),
-                                            child: Text(key,
-                                                style: const TextStyle(
-                                                    fontSize: 20),
-                                                textAlign: TextAlign.center),
-                                          )),
-                                      const SizedBox(width: 20,),
-                                      Expanded(
-                                          flex: 1,
-                                          child: Container(
+                                          child: Card(
+                                            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(bottomLeft: Radius.circular(50),topLeft: Radius.circular(50),topRight: Radius.circular(50))),
+                                            elevation: 5,
+                                            color: Colors.blue[100],
+                                            child: Container(
                                               alignment: Alignment.center,
                                               height: 100,
                                               decoration:  BoxDecoration(
                                                   borderRadius:
                                                   const BorderRadiusDirectional.only(
-                                                    topStart: Radius.circular(50),
-                                                    topEnd: Radius.circular(50),
-                                                    bottomEnd: Radius.circular(50),),
+                                                      topStart: Radius.circular(50),
+                                                      topEnd: Radius.circular(50),
+                                                      bottomStart: Radius.circular(50)),
                                                   color: Colors.blue[100]),
-                                              child: Text(
-                                                '${attendance[key].entries.where((e) => e.value == true).toList().length.toString()}/${attendance[key].length}',
-                                              )
+                                              child: Text(subject[widget.info['Sem']][key],
+                                                  style: const TextStyle(
+                                                      fontSize: 20),
+                                                  textAlign: TextAlign.center),
+                                            ),
+                                          )),
+                                      const SizedBox(width: 20,),
+                                      Expanded(
+                                          flex: 1,
+                                          child: Card(
+                                            elevation: 5,
+                                            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(bottomRight: Radius.circular(50),topLeft: Radius.circular(50),topRight: Radius.circular(50))),
+                                            color: Colors.blue[100],
+                                            child: Container(
+                                                alignment: Alignment.center,
+                                                height: 100,
+                                                // decoration:  BoxDecoration(
+                                                //     borderRadius:
+                                                //     const BorderRadiusDirectional.only(
+                                                //       topStart: Radius.circular(50),
+                                                //       topEnd: Radius.circular(50),
+                                                //       bottomEnd: Radius.circular(50),),
+                                                //     color: Colors.blue[100]),
+                                                child: Text(
+                                                  '${attendance[subject[widget.info['Sem']][key]].entries.where((e) => e.value == true).toList().length.toString()}/${attendance[subject[widget.info['Sem']][key]].length}',
+                                                )
+                                            ),
                                           )
                                       ),
                                     ],

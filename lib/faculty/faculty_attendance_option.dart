@@ -54,89 +54,97 @@ class _FacultyAttendanceOptionState extends State<FacultyAttendanceOption> {
         key: fkey,
         child: Column(
           children: [
-            Container(
-              margin: const EdgeInsetsDirectional.only(
-                  start: 20, top: 70, end: 20, bottom: 40),
-              alignment: Alignment.center,
-              height: 80,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+            Expanded(
+              flex: 2,
+              child: Container(
+                // padding: const EdgeInsetsDirectional.only(
+                //     start: 20, top: 70, end: 20,bottom: 10),
+                padding: const EdgeInsets.all(20),
+                alignment: Alignment.center,
+                height: 80,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('Selct Subject.*'),
+                    DropdownButtonFormField<String>(
+                      validator: (value){
+                        if(value == null || value.isEmpty){
+                          return 'Select Subject.';
+                        }
+                        return null;
+                      },
+                      alignment: AlignmentDirectional.center,
+                      value: null,
+                      items: subjects
+                          .map<DropdownMenuItem<String>>(
+                              (value) => DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value),
+                                  ))
+                          .toList(),
+                      onChanged: (newvalue) {
+                        selectedsub = newvalue!;
+                        print(widget.info['Subjects'][selectedsub]);
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Expanded(
+              flex: 2,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text('Selct Subject.*'),
-                  DropdownButtonFormField<String>(
-                    validator: (value){
-                      if(value == null || value.isEmpty){
-                        return 'Select Subject.';
-                      }
-                      return null;
-                    },
-                    alignment: AlignmentDirectional.center,
-                    value: null,
-                    items: subjects
-                        .map<DropdownMenuItem<String>>(
-                            (value) => DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(value),
-                                ))
-                        .toList(),
-                    onChanged: (newvalue) {
-                      selectedsub = newvalue!;
-                      print(widget.info['Subjects'][selectedsub]);
-                    },
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0)),
+                      textStyle:
+                          const TextStyle(fontFamily: 'MiliBold', fontSize: 18),
+                      onPrimary: Colors.black,
+                      primary: Colors.white,
+                      padding: const EdgeInsets.only(
+                          top: 12, bottom: 12, left: 15, right: 15),
+                    ),
+                    onPressed: (){timePicker();
+},
+                    child: Text(date
+                        == 'Select Date and Time'? date
+                        : DateFormat('dd/MM/yyyy HH:mm')
+                            .format(DateFormat('dd-MM-yyyy-HH-mm').parse(date))),
                   ),
+                  const SizedBox(
+                    width: 30,
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      textStyle:
+                          const TextStyle(fontFamily: 'MiliBold', fontSize: 18),
+                      onPrimary: Colors.black,
+                      primary: Colors.white,
+                      padding: const EdgeInsets.only(
+                          top: 12, bottom: 12, left: 15, right: 15),
+                    ),
+                    onPressed: () {
+                      if(fkey.currentState!.validate()) {
+                        (date != 'Select Date and Time')?
+                          Navigator.of(context).push(MaterialPageRoute(
+                          builder: (_) => FacultyAttendance(
+                                subject: widget.info['Subjects'][selectedsub],
+                                date: date,
+                              )
+                          ))
+                            :ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Select Date and Time'),));
+                      }
+                    },
+                    child: const Text('Next'),
+                  )
                 ],
               ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0)),
-                    textStyle:
-                        const TextStyle(fontFamily: 'MiliBold', fontSize: 18),
-                    onPrimary: Colors.black,
-                    primary: Colors.white,
-                    padding: const EdgeInsets.only(
-                        top: 12, bottom: 12, left: 15, right: 15),
-                  ),
-                  onPressed: (){timePicker();
-},
-                  child: Text(date
-                      == 'Select Date and Time'? date
-                      : DateFormat('dd/MM/yyyy HH:mm')
-                          .format(DateFormat('dd-MM-yyyy-HH-mm').parse(date))),
-                ),
-                const SizedBox(
-                  width: 30,
-                ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    textStyle:
-                        const TextStyle(fontFamily: 'MiliBold', fontSize: 18),
-                    onPrimary: Colors.black,
-                    primary: Colors.white,
-                    padding: const EdgeInsets.only(
-                        top: 12, bottom: 12, left: 15, right: 15),
-                  ),
-                  onPressed: () {
-                    if(fkey.currentState!.validate()) {
-                      (date != 'Select Date and Time')?
-                        Navigator.of(context).push(MaterialPageRoute(
-                        builder: (_) => FacultyAttendance(
-                              subject: widget.info['Subjects'][selectedsub],
-                              date: date,
-                            )
-                        ))
-                          :ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Select Date and Time'),));
-                    }
-                  },
-                  child: const Text('Next'),
-                )
-              ],
-            ),
             Expanded(
+              flex: 7,
               child: Card(
                   color: Colors.white,
                   child: Image.asset("assets/images/attendance.gif")),

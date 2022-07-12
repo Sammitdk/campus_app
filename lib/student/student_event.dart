@@ -1,4 +1,3 @@
-import 'package:campus_subsystem/faculty/faculty_sub_event.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -29,19 +28,24 @@ class _StudentEventState extends State<StudentEvent> {
                     },
                     child: Padding(
                       padding:  const EdgeInsetsDirectional.all(18),
-                      child: Container(
-                        alignment: Alignment.center,
-                        height: 80,
-                        // width: 300,
-                        decoration:  BoxDecoration(
-                            borderRadius:
-                            const BorderRadiusDirectional.only(
-                                topStart: Radius.circular(50),
-                                topEnd: Radius.circular(50),
-                                bottomEnd: Radius.circular(50),
-                                bottomStart: Radius.circular(50)),
-                            color: Colors.blue[100]),
-                        child: Text((x['Title']),textAlign: TextAlign.center,style: const TextStyle(fontFamily: "Bold",fontSize: 30),),
+                      child: Card(
+                        elevation: 5,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+                        color: Colors.blue[100],
+                        child: Container(
+                          alignment: Alignment.center,
+                          height: 80,
+                          // width: 300,
+                          // decoration:  BoxDecoration(
+                          //     borderRadius:
+                          //     const BorderRadiusDirectional.only(
+                          //         topStart: Radius.circular(50),
+                          //         topEnd: Radius.circular(50),
+                          //         bottomEnd: Radius.circular(50),
+                          //         bottomStart: Radius.circular(50)),
+                          //     color: Colors.blue[100]),
+                          child: Text((x['Title']),textAlign: TextAlign.center,style: const TextStyle(fontFamily: "Bold",fontSize: 30),),
+                        ),
                       ),
                     ),
                   );

@@ -59,7 +59,10 @@ class _FacultyNotesState extends State<FacultyNotes> {
         stream: FirebaseFirestore.instance.collection("notes").snapshots(),
         builder: (context, AsyncSnapshot<QuerySnapshot>snapshot){
           if(snapshot.hasData){
-            return ListView.builder(
+            if(snapshot.data!.docs.isEmpty){
+              return const Center(child: Text('Files Not Added.',style: TextStyle(color: Colors.grey,fontSize: 20),));
+            } else {
+              return ListView.builder(
               itemCount: snapshot.data!.docs.length,
               itemBuilder: (context,i){
                 QueryDocumentSnapshot x = snapshot.data!.docs[i];
@@ -68,29 +71,27 @@ class _FacultyNotesState extends State<FacultyNotes> {
                   },
                   child: Expanded(
                     child: Padding(
-                      padding:  const EdgeInsetsDirectional.all(10),
-                      child: Container(
-                        alignment: Alignment.center,
-                        height: 80,
-                        // width: 300,
-                        decoration:  BoxDecoration(
-                            borderRadius:
-                            const BorderRadiusDirectional.only(
-                                topStart: Radius.circular(50),
-                                topEnd: Radius.circular(50),
-                                bottomEnd: Radius.circular(50),
-                                bottomStart: Radius.circular(50)),
-                            color: Colors.blue[100]),
-                        child: Text((x['num']),textAlign: TextAlign.center,style: const TextStyle(fontFamily: "Bold",fontSize: 30),),
+                      padding:  const EdgeInsetsDirectional.only(start: 20,end: 20,top: 40),
+                      child: Card(
+                        elevation: 5,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+                        color: Colors.blue[100],
+                        child: Container(
+                          alignment: Alignment.center,
+                          height: 80,
+                          child: Text((x['num']),textAlign: TextAlign.center,style: const TextStyle(fontFamily: "Bold",fontSize: 30),),
+                        ),
                       ),
                     ),
                   ),
                 );
               });
-          }
-          return Center(
+            }
+          } else {
+            return Center(
             child: LoadingAnimationWidget.staggeredDotsWave(size: 50, color: Colors.red),
           );
+          }
         }
       ),
     );

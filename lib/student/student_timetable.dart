@@ -100,40 +100,47 @@ class _StudentTimeTableState extends State<StudentTimeTable> {
                                     ),
                                     Expanded(
                                       flex: 5,
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(top: 15.0),
-                                        child:  Row(
-                                          children: [
-                                            Expanded(flex: 4,
+                                      child: Row(
+                                        children: [
+                                          Expanded(flex: 4,
+                                              child: Card(
+                                                shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(bottomLeft: Radius.circular(50),topLeft: Radius.circular(50),topRight: Radius.circular(50))),
+                                                elevation: 5,
+                                                color: Colors.blue[100],
                                                 child: Container(
                                                     alignment: Alignment.center,
-                                                    height: 100,
+                                                    height: 80,
                                                     // width: 300,
-                                                    decoration:  BoxDecoration(
-                                                      borderRadius: const BorderRadiusDirectional.only(
-                                                          topStart: Radius.circular(50),
-                                                          topEnd: Radius.circular(50),
-                                                          bottomStart: Radius.circular(50)),
-                                                      color: Colors.blue[100],
-                                                    ),
-                                                    child: Text(timetable.data[key].toString(),style: const TextStyle(fontSize: 20),textAlign: TextAlign.center))),
-                                            const SizedBox(width: 10,),
-                                            Expanded(
-                                              flex: 1,
+                                                    // decoration:  BoxDecoration(
+                                                    //   borderRadius: const BorderRadiusDirectional.only(
+                                                    //       topStart: Radius.circular(50),
+                                                    //       topEnd: Radius.circular(50),
+                                                    //       bottomStart: Radius.circular(50)),
+                                                    //   color: Colors.blue[100],
+                                                    // ),
+                                                    child: Text(timetable.data[key].toString(),style: const TextStyle(fontSize: 20),textAlign: TextAlign.center)),
+                                              )),
+                                          const SizedBox(width: 10,),
+                                          Expanded(
+                                            flex: 1,
+                                              child: Card(
+                                                elevation: 5,
+                                                shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(bottomRight: Radius.circular(50),topLeft: Radius.circular(50),topRight: Radius.circular(50))),
+                                                color: Colors.blue[100],
                                                 child: Container(
                                                   alignment: Alignment.center,
-                                                    height: 100,
+                                                    height: 80,
                                                     // width: 300,
-                                                    decoration:  BoxDecoration(
-                                                      borderRadius: const BorderRadiusDirectional.only(
-                                                          topStart: Radius.circular(50),
-                                                          topEnd: Radius.circular(50),
-                                                          bottomEnd: Radius.circular(50),),
-                                                      color: Colors.blue[100],
-                                                    ),
-                                                    child: Text(DateFormat.Hm().format(DateFormat('HH-mm').parse(key)).toString()))),
-                                          ],
-                                        ),
+                                                    // decoration:  BoxDecoration(
+                                                    //   borderRadius: const BorderRadiusDirectional.only(
+                                                    //       topStart: Radius.circular(50),
+                                                    //       topEnd: Radius.circular(50),
+                                                    //       bottomEnd: Radius.circular(50),),
+                                                    //   color: Colors.blue[100],
+                                                    // ),
+                                                    child: Text(DateFormat.Hm().format(DateFormat('HH-mm').parse(key)).toString())),
+                                              )),
+                                        ],
                                       ),
                                     ),
                                   ],
