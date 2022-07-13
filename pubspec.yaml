@@ -32,7 +32,6 @@ dependencies:
   file_picker: ^3.0.4
   syncfusion_flutter_pdfviewer: ^20.2.36-beta
   loading_animation_widget: ^1.2.0+2
-  connectivity_plus: ^2.3.5
   internet_connection_checker: ^0.0.1+4
 
 dev_dependencies:
@@ -40,6 +39,9 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^2.0.0
 
+flutter_icons:
+  android: true
+  image_path: "assets/images/launcher_icon.png"
 
 flutter:
   uses-material-design: true

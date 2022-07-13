@@ -107,16 +107,19 @@ class _FacultyAttendanceOptionState extends State<FacultyAttendanceOption> {
 },
                     child: Text(date
                         == 'Select Date and Time'? date
-                        : DateFormat('dd/MM/yyyy HH:mm')
+                        : DateFormat('dd MMM yyyy HH:mm')
                             .format(DateFormat('dd-MM-yyyy-HH-mm').parse(date))),
                   ),
                   const SizedBox(
                     width: 30,
                   ),
                   ElevatedButton(
+
                     style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0)),
                       textStyle:
-                          const TextStyle(fontFamily: 'MiliBold', fontSize: 18),
+                      const TextStyle(fontFamily: 'MiliBold', fontSize: 18),
                       onPrimary: Colors.black,
                       primary: Colors.white,
                       padding: const EdgeInsets.only(
