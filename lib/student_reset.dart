@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../firebase/signIn.dart';
-import '../firebase/wrapper.dart';
+import 'firebase/signIn.dart';
+import 'firebase/wrapper.dart';
 
 class ResetPassword extends StatefulWidget {
   @override
@@ -51,6 +51,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                     {
                       if(await auth.resetPassword(emailcontrol.text))
                       {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Reset Link has been sent to your email address(${emailcontrol.text})'),));
                         Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) =>  const Wrapper()));
                       }
                       else

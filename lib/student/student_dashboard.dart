@@ -1,8 +1,6 @@
-import 'package:campus_subsystem/student/student_message.dart';
 import 'package:campus_subsystem/student/student_profile.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
-// import 'package:url_launcher/url_launcher.dart';
 import '../firebase/signIn.dart';
 import 'student_home.dart';
 
@@ -26,15 +24,12 @@ class _StudentDashboardState extends State<StudentDashboard> {
   Widget build(BuildContext context) {
     final screen = [
       StudentHome(info: widget.info),
-      StudentMessage(info: widget.info),
       StudentProfile(info: widget.info),
     ];
     final items = <Widget>
     [
       const Icon(Icons.home_outlined,size: 30,),
-      const Icon(Icons.messenger_outline_rounded,size: 30,),
       const Icon(Icons.person_outline_outlined,size: 30,),
-      // const Icon(Icons.logout,size: 30,),
     ];
     return Scaffold(
         backgroundColor: Colors.white,

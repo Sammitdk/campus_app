@@ -38,7 +38,6 @@ class _FacultyAttendanceOptionState extends State<FacultyAttendanceOption> {
   @override
   Widget build(BuildContext context) {
     List subjects = widget.info['Subjects'].keys.toList();
-    // return Container();
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -57,8 +56,6 @@ class _FacultyAttendanceOptionState extends State<FacultyAttendanceOption> {
             Expanded(
               flex: 2,
               child: Container(
-                // padding: const EdgeInsetsDirectional.only(
-                //     start: 20, top: 70, end: 20,bottom: 10),
                 padding: const EdgeInsets.all(20),
                 alignment: Alignment.center,
                 height: 80,
@@ -84,7 +81,6 @@ class _FacultyAttendanceOptionState extends State<FacultyAttendanceOption> {
                           .toList(),
                       onChanged: (newvalue) {
                         selectedsub = newvalue!;
-                        print(widget.info['Subjects'][selectedsub]);
                       },
                     ),
                   ],

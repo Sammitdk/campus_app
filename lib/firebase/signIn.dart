@@ -27,7 +27,6 @@ class Auth
       return _userFromCredUser(user);
     } catch (e)
     {
-      print(e.toString());
       return null;
     }
   }
@@ -47,10 +46,8 @@ class Auth
   Future resetPassword(email) async{
     try{
       await auth.sendPasswordResetEmail(email: email);
-      print('sssssssssssssssssssssssss');
       return true;
-    }on FirebaseException catch(e){
-      print('${e.toString()} sjansdnasjdnasdnad');
+    }on FirebaseException {
       return false;
     }
   }

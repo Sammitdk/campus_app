@@ -16,7 +16,6 @@ class FacultyHome extends StatefulWidget {
 class _FacultyHomeState extends State<FacultyHome> {
   @override
   Widget build(BuildContext context) {
-    // print(widget.info);
     return Padding(
       padding: const EdgeInsetsDirectional.all(20),
       child: Column(

@@ -22,135 +22,126 @@ class _StudentAttendanceState extends State<StudentAttendance> {
         '/College/${widget.info['Branch']}/${widget.info['Year']}/Subjects');
     DocumentSnapshot subjectsnapshot = await subjects.get();
     subject = subjectsnapshot.data() as Map<String, dynamic>;
-    // print(subject);
     final CollectionReference studentdetail = FirebaseFirestore.instance
         .collection('/Student_Detail/${widget.info['PRN']}/Attendance');
     sorted = subject[widget.info['Sem']].keys.toList();
     sorted.sort();
     sorted.forEach((key) async {
-      // print(key);
       DocumentSnapshot sub = await studentdetail.doc(key).get();
       Map<String, dynamic> list = sub.data() as Map<String, dynamic>;
       attendance[subject[widget.info['Sem']][key]] = list;
-      // print(attendance);
     });
-    await Future.delayed(const Duration(milliseconds: 450));
-    // print('aaaaaaaaaaaaaaaaaaa$attendance');
+    await Future.delayed(const Duration(seconds: 1));
     yield attendance;
   }
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-      stream: getAttendance(),
-      builder: (context,AsyncSnapshot<Map<String,dynamic>> snap){
-        if(snap.hasData){
-          Map attendance = snap.data as Map<String,dynamic >;
-          // print(attendance);
-          return Scaffold(
-            appBar: AppBar(
-              centerTitle: true,
-              title: const Text("Attendance",style: TextStyle(fontFamily: 'Narrow', fontSize: 30),textAlign: TextAlign.center,),
-              backgroundColor: Colors.indigo[300],
-            ),
-            body: Padding(
-              padding: const EdgeInsetsDirectional.all(20),
-              child: ListView.builder(
-                itemCount: attendance.length,
-                itemBuilder: (BuildContext context, int index) {
-                  String key = sorted.elementAt(index);
-                  return Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsetsDirectional.only(bottom: 10),
-                        child: Row(
-                          children: [
-                            const Expanded(
-                              flex: 1,
-                              child: Icon(
-                                Icons.subject_sharp,
-                                size: 40,
+    return RefreshIndicator(
+      onRefresh: () => Future(() {
+        setState(() {});
+      }),
+      child: StreamBuilder(
+        stream: getAttendance(),
+        builder: (context,AsyncSnapshot<Map<String,dynamic>> snap){
+          if(snap.hasData){
+            Map attendance = snap.data as Map<String,dynamic >;
+            return Scaffold(
+              appBar: AppBar(
+                centerTitle: true,
+                title: const Text("Attendance",style: TextStyle(fontFamily: 'Narrow', fontSize: 30),textAlign: TextAlign.center,),
+                backgroundColor: Colors.indigo[300],
+              ),
+              body: Padding(
+                padding: const EdgeInsetsDirectional.all(20),
+                child: ListView.builder(
+                  itemCount: attendance.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    String key = sorted.elementAt(index);
+                    return Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsetsDirectional.only(bottom: 10),
+                          child: Row(
+                            children: [
+                              const Expanded(
+                                flex: 1,
+                                child: Icon(
+                                  Icons.subject_sharp,
+                                  size: 40,
+                                ),
                               ),
-                            ),
-                            Expanded(
-                              flex: 7,
-                              child: Padding(
-                                padding:  const EdgeInsetsDirectional.only(start: 20,end: 20,top: 30),
-                                child: InkWell(
-                                  onTap: (){
-                                    Navigator.of(context).push(MaterialPageRoute(builder: (_) => StudentSubAttendance(sub: '/Student_Detail/${widget.info['PRN']}/Attendance/${subject[widget.info['Sem']].keys.firstWhere((element) => subject[widget.info['Sem']][element]==subject[widget.info['Sem']][key])}')));
-                                  },
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                          flex: 4,
-                                          child: Card(
-                                            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(bottomLeft: Radius.circular(50),topLeft: Radius.circular(50),topRight: Radius.circular(50))),
-                                            elevation: 5,
-                                            color: Colors.blue[100],
-                                            child: Container(
-                                              alignment: Alignment.center,
-                                              height: 100,
-                                              decoration:  BoxDecoration(
-                                                  borderRadius:
-                                                  const BorderRadiusDirectional.only(
-                                                      topStart: Radius.circular(50),
-                                                      topEnd: Radius.circular(50),
-                                                      bottomStart: Radius.circular(50)),
-                                                  color: Colors.blue[100]),
-                                              child: Text(subject[widget.info['Sem']][key],
-                                                  style: const TextStyle(
-                                                      fontSize: 20),
-                                                  textAlign: TextAlign.center),
-                                            ),
-                                          )),
-                                      const SizedBox(width: 20,),
-                                      Expanded(
-                                          flex: 1,
-                                          child: Card(
-                                            elevation: 5,
-                                            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(bottomRight: Radius.circular(50),topLeft: Radius.circular(50),topRight: Radius.circular(50))),
-                                            color: Colors.blue[100],
-                                            child: Container(
+                              Expanded(
+                                flex: 7,
+                                child: Padding(
+                                  padding:  const EdgeInsetsDirectional.only(start: 20,end: 20,top: 30),
+                                  child: InkWell(
+                                    onTap: (){
+                                      Navigator.of(context).push(MaterialPageRoute(builder: (_) => StudentSubAttendance(name: subject[widget.info['Sem']][key],sub: '/Student_Detail/${widget.info['PRN']}/Attendance/${subject[widget.info['Sem']].keys.firstWhere((element) => subject[widget.info['Sem']][element]==subject[widget.info['Sem']][key])}')));
+                                    },
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                            flex: 4,
+                                            child: Card(
+                                              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(bottomLeft: Radius.circular(50),topLeft: Radius.circular(50),topRight: Radius.circular(50))),
+                                              elevation: 5,
+                                              color: Colors.blue[100],
+                                              child: Container(
                                                 alignment: Alignment.center,
                                                 height: 100,
-                                                // decoration:  BoxDecoration(
-                                                //     borderRadius:
-                                                //     const BorderRadiusDirectional.only(
-                                                //       topStart: Radius.circular(50),
-                                                //       topEnd: Radius.circular(50),
-                                                //       bottomEnd: Radius.circular(50),),
-                                                //     color: Colors.blue[100]),
-                                                child: Text(
-                                                  '${attendance[subject[widget.info['Sem']][key]].entries.where((e) => e.value == true).toList().length.toString()}/${attendance[subject[widget.info['Sem']][key]].length}',
-                                                )
-                                            ),
-                                          )
-                                      ),
-                                    ],
+                                                decoration:  BoxDecoration(
+                                                    borderRadius:
+                                                    const BorderRadiusDirectional.only(
+                                                        topStart: Radius.circular(50),
+                                                        topEnd: Radius.circular(50),
+                                                        bottomStart: Radius.circular(50)),
+                                                    color: Colors.blue[100]),
+                                                child: Text(subject[widget.info['Sem']][key],
+                                                    style: const TextStyle(
+                                                        fontSize: 20),
+                                                    textAlign: TextAlign.center),
+                                              ),
+                                            )),
+                                        const SizedBox(width: 20,),
+                                        Expanded(
+                                            flex: 1,
+                                            child: Card(
+                                              elevation: 5,
+                                              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(bottomRight: Radius.circular(50),topLeft: Radius.circular(50),topRight: Radius.circular(50))),
+                                              color: Colors.blue[100],
+                                              child: Container(
+                                                  alignment: Alignment.center,
+                                                  height: 100,
+                                                  child: Text(
+                                                    '${attendance[subject[widget.info['Sem']][key]].entries.where((e) => e.value == true).toList().length.toString()}/${attendance[subject[widget.info['Sem']][key]].length}',
+                                                  )
+                                              ),
+                                            )
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                      )
-                    ],
-                  );
-                },
+                            ],
+                          ),
+                        )
+                      ],
+                    );
+                  },
+                ),
               ),
-            ),
-          );
-          // return Container();
-        }else{
-          return Container(
-            color: Colors.white,
-            child: Center(
-                child: LoadingAnimationWidget.staggeredDotsWave(size: 50, color: Colors.red)),
-          );
+            );
+          }else{
+            return Container(
+              color: Colors.white,
+              child: Center(
+                  child: LoadingAnimationWidget.staggeredDotsWave(size: 50, color: Colors.red)),
+            );
+          }
         }
-      }
+      ),
     );
-    // return Container();
   }
 }

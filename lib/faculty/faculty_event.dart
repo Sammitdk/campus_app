@@ -34,7 +34,6 @@ class _FacultyEventState extends State<FacultyEvent> {
                       child: Container(
                         alignment: Alignment.center,
                         height: 80,
-                        // width: 300,
                         decoration:  BoxDecoration(
                             borderRadius:
                             const BorderRadiusDirectional.only(

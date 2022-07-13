@@ -44,16 +44,6 @@ class _StudentSyllabusState extends State<StudentSyllabus> {
                           child: Container(
                             alignment: Alignment.center,
                             height: 80,
-                            // width: 300,
-                            // decoration:  BoxDecoration(
-                            //     borderRadius:
-                            //     const BorderRadiusDirectional.only(
-                            //         topStart: Radius.circular(50),
-                            //         topEnd: Radius.circular(50),
-                            //         bottomEnd: Radius.circular(50),
-                            //         bottomStart:
-                            //         Radius.circular(50)),
-                            //     color: Colors.blue[100]),
                             child: Text((x["num"]),textAlign: TextAlign.center,style: const TextStyle(fontSize: 25),),
                           ),
                         ),
