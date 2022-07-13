@@ -68,15 +68,12 @@ class _FacultyProfileState extends State<FacultyProfile> {
               child: Text("${widget.info['Name']['First']}.${widget.info['Name']['Middle']}.${widget.info['Name']['Last']}", style: const TextStyle(fontSize: 40,color: Colors.white,fontFamily:'MuliBold',),),
             ),
             Positioned(
-                top: height/9,
-                left: width/2,
+                top: height/5.8,
+                left: width/1.75,
                 child: CircleAvatar(
                   backgroundColor: Colors.transparent,
-                  maxRadius: 110,
-                  child: ClipOval(
-                    clipBehavior: Clip.antiAlias,
-                    child: widget.info['urlPicture']!=null ? Image.network(widget.info['urlPicture']) : Image.asset("assets/images/profile"),
-                  ),
+                  radius: 80,
+                  backgroundImage: widget.info['urlPicture']!=null ? NetworkImage(widget.info['urlPicture']) : const AssetImage("assets/images/profile") as ImageProvider,
                 ),
             ),
             Positioned(

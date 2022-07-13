@@ -16,10 +16,9 @@ class _FacultyAttendanceState extends State<FacultyAttendance> {
   Map<String,dynamic> rolls = {};
   Map<String,bool> rollattend = {};
   Future markAttendance() async {
-    DocumentSnapshot col = await widget.subject[0].get();
-    Map<String,dynamic> previous = col.data() as Map<String,dynamic>;
-    previous[widget.date] = rollattend;
-    widget.subject[0].update(previous);
+    Map<String,dynamic> mark = {};
+    mark[widget.date] = rollattend;
+    widget.subject[0].set(mark,SetOptions(merge: true));
   }
   Future perStudentAttendance()async{
     rollattend.forEach((key, value) async {
@@ -27,10 +26,10 @@ class _FacultyAttendanceState extends State<FacultyAttendance> {
       Map<String,dynamic> info = ds.data() as Map<String,dynamic>;
       String PRN = info['PRN'];
       DocumentReference student = FirebaseFirestore.instance.doc('Student_Detail/${PRN}/${widget.subject[2]}');
-      DocumentSnapshot stu = await student.get();
-      Map<String,dynamic> previous = stu.data() as Map<String,dynamic>;
-      previous[widget.date] = value;
-      student.update(previous);
+      // DocumentSnapshot stu = await student.get();
+      Map<String,dynamic> mark = {};
+      mark[widget.date] = value;
+      student.set(mark,SetOptions(merge: true));
     });
   }
   Future<Map<String,dynamic>> getStudentList()async{
@@ -100,7 +99,7 @@ class _FacultyAttendanceState extends State<FacultyAttendance> {
               foregroundColor: Colors.black,
               onPressed: () async{
                 await markAttendance();
-                await perStudentAttendance();
+                // await perStudentAttendance();
                 Navigator.pop(context);
                 Navigator.pop(context);
               },
