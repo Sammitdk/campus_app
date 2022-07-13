@@ -56,8 +56,8 @@ class _StudentProfileState extends State<StudentProfile> {
               painter: CurvePainter(),
             )),
         Positioned(
-            top: height / 5.8,
-            left: width / 1.75,
+            top: height/8.5,
+            left: width / 1.7,
             child: CircleAvatar(
               backgroundColor: Colors.transparent,
               maxRadius: 80,
@@ -66,7 +66,7 @@ class _StudentProfileState extends State<StudentProfile> {
                   : const AssetImage("assets/images/profile") as ImageProvider,
             )),
         Positioned(
-            top: height / 3.0,
+            top: height / 3.65,
             width: width / 0.55,
             child: FloatingActionButton(
               elevation: 0,

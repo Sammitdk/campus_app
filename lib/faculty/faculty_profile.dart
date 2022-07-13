@@ -68,8 +68,8 @@ class _FacultyProfileState extends State<FacultyProfile> {
               child: Text("${widget.info['Name']['First']}.${widget.info['Name']['Middle']}.${widget.info['Name']['Last']}", style: const TextStyle(fontSize: 40,color: Colors.white,fontFamily:'MuliBold',),),
             ),
             Positioned(
-                top: height/5.8,
-                left: width/1.75,
+                top: height/8.5,
+                left: width/1.7,
                 child: CircleAvatar(
                   backgroundColor: Colors.transparent,
                   radius: 80,
@@ -77,7 +77,7 @@ class _FacultyProfileState extends State<FacultyProfile> {
                 ),
             ),
             Positioned(
-                top: height/3.0,
+                top: height/3.65,
                 width: width/0.55,
                 child: FloatingActionButton(
                   elevation: 0,
@@ -108,7 +108,7 @@ class _FacultyProfileState extends State<FacultyProfile> {
                           padding: const EdgeInsetsDirectional.only(start: 20),
                           child: Column(
                             children: [
-                              Text("${widget.info['Trade']}",style: const TextStyle(fontSize: 25,)),
+                              Text("${widget.info['Trade']}",style: const TextStyle(fontSize: 20,)),
                             ],
                           ),
                         ),
