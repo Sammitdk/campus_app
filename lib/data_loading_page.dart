@@ -3,7 +3,6 @@ import 'package:campus_subsystem/student/student_dashboard.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-
 Widget loading() => Scaffold(
     backgroundColor: Colors.white,
     body: Column(

@@ -12,7 +12,6 @@ import 'firebase/signIn.dart';
 import 'firebase_options.dart';
 import 'loading_page.dart';
 
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [

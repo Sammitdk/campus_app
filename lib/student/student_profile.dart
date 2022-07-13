@@ -1,12 +1,11 @@
 import 'dart:io';
 import 'package:campus_subsystem/firebase/wrapper.dart';
-import 'package:campus_subsystem/student_reset.dart';
+import 'package:campus_subsystem/password_reset.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:lottie/lottie.dart';
 import '../firebase/signIn.dart';
 
 class StudentProfile extends StatefulWidget {
@@ -61,7 +60,7 @@ class _StudentProfileState extends State<StudentProfile> {
                 child: ClipOval(
                   clipBehavior: Clip.antiAlias,
                   //clipper: MyClipper(),
-                  child: widget.info['url']!=null ? Image.network(widget.info['url']) : Lottie.network("https://assets5.lottiefiles.com/packages/lf20_lyp6fz8l.json"),
+                  child: widget.info['url']!=null ? Image.network(widget.info['url']) : Image.asset("assets/images/profile"),
                 ),
               )
             ),

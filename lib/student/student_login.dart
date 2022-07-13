@@ -1,9 +1,8 @@
 import 'package:campus_subsystem/firebase/wrapper.dart';
-import 'package:campus_subsystem/student_reset.dart';
+import 'package:campus_subsystem/password_reset.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
-import 'package:lottie/lottie.dart';
 import '../firebase/signIn.dart';
 
 class StudentLogin extends StatefulWidget {
@@ -39,8 +38,8 @@ class _StudentLoginState extends State<StudentLogin> {
             children: <Widget>[
               isKeyboardVisible
                   ? SizedBox(
-                      child: Lottie.network(
-                          "https://assets1.lottiefiles.com/temp/lf20_vKPgdY.json"),
+                  width: 150,
+                      child: Image.asset("assets/images/keyboardLoad.gif"),
                     )
                   : Container(
                       margin: const EdgeInsets.all(10),
