@@ -1,10 +1,10 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
 class FacultySubEvent extends StatefulWidget {
   FacultySubEvent({Key? key,required this.info}) : super(key: key);
@@ -19,7 +19,7 @@ class _FacultySubEventState extends State<FacultySubEvent> {
   final formkey = GlobalKey<FormState>();
   final title = TextEditingController();
   final description = TextEditingController();
-  DateTime date = DateUtils.dateOnly(DateTime.now());
+  String date = 'Select Date and Time of Event';
 
   File? file;
   String? url;
@@ -38,16 +38,24 @@ class _FacultySubEventState extends State<FacultySubEvent> {
   }
 
   void timePicker() async {
-    final DateTime? selectedDate = await showDatePicker(
+    TimeOfDay time = const TimeOfDay(hour: 9, minute: 0);
+    DateTime date = DateUtils.dateOnly(DateTime.now());
+    print(time);
+    final DateTime? selecteddate = await showDatePicker(
         context: context,
         initialDate: date,
         lastDate: DateTime(2030),
-        firstDate: DateTime(2010)
-    );
-    if (selectedDate != null) {
-      date = selectedDate;
+        firstDate: DateTime(2010));
+    final TimeOfDay? selectedtime =
+    await showTimePicker(context: context, initialTime: time);
+    if (selecteddate != null && selectedtime != null) {
+      time = selectedtime;
+      date = selecteddate;
+      this.date = "${DateFormat('dd-MM-yyyy').format(date)}-${DateFormat('HH-mm').format(DateFormat('H:mm a').parse(time.format(context)))}";
     }
+    setState(() {});
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -108,15 +116,21 @@ class _FacultySubEventState extends State<FacultySubEvent> {
                   ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30.0)),
                     textStyle:
-                    const TextStyle(fontSize: 18),
+                    const TextStyle(fontFamily: 'MiliBold', fontSize: 18),
                     onPrimary: Colors.black,
                     primary: Colors.white,
                     padding: const EdgeInsets.only(
                         top: 12, bottom: 12, left: 15, right: 15),
                   ),
-                  onPressed: timePicker,
-                  child: Text('Date $date'),
+                  onPressed: (){timePicker();
+                  },
+                  child: Text(date
+                      == 'Select Date and Time of Event'? date
+                      : DateFormat('dd/MM/yyyy HH:mm')
+                      .format(DateFormat('dd-MM-yyyy-HH-mm').parse(date))),
                 ),
                 const Padding(
                   padding: EdgeInsets.only(bottom: 15,top: 40),

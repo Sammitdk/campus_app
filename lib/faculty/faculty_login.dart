@@ -4,7 +4,7 @@ import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:lottie/lottie.dart';
 import '../firebase/signIn.dart';
 import '../firebase/wrapper.dart';
-import '../student_reset.dart';
+import '../password_reset.dart';
 
 class FacultyLogin extends StatefulWidget {
   const FacultyLogin({Key? key}) : super(key: key);

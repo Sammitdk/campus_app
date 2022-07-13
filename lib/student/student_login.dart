@@ -1,5 +1,5 @@
 import 'package:campus_subsystem/firebase/wrapper.dart';
-import 'package:campus_subsystem/student_reset.dart';
+import 'package:campus_subsystem/password_reset.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';

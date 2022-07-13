@@ -9,7 +9,7 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lottie/lottie.dart';
 
-import '../student_reset.dart';
+import '../password_reset.dart';
 
 class FacultyProfile extends StatefulWidget {
 

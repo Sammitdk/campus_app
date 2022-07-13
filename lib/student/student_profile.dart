@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:campus_subsystem/firebase/wrapper.dart';
-import 'package:campus_subsystem/student_reset.dart';
+import 'package:campus_subsystem/password_reset.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';

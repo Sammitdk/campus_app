@@ -94,15 +94,18 @@ class _FacultyAttendanceState extends State<FacultyAttendance> {
               );
             },
             ),
-            floatingActionButton: FloatingActionButton(
+            floatingActionButton: FloatingActionButton.extended(
               elevation: 1,
               backgroundColor: Colors.indigo[200],
               foregroundColor: Colors.black,
               onPressed: () async{
                 await markAttendance();
                 await perStudentAttendance();
+                Navigator.pop(context);
+                Navigator.pop(context);
               },
-              child: const Text("Submit",style: TextStyle(fontFamily: 'MuliBold'),),
+              icon: Icon(Icons.done_outline_rounded),
+              label: const Text("Submit",style: TextStyle(fontFamily: 'MuliBold'),),
             ),
           );
         }
