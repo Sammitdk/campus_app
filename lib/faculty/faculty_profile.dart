@@ -9,6 +9,8 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lottie/lottie.dart';
 
+import '../student_reset.dart';
+
 class FacultyProfile extends StatefulWidget {
 
   Map<String, dynamic> info = {};
@@ -121,6 +123,26 @@ class _FacultyProfileState extends State<FacultyProfile> {
                     ),
                   ),
                   Padding(
+                    padding: const EdgeInsetsDirectional.only(bottom: 20,start: 30,),
+                    child:Row(
+                      children: [
+                        const Icon(
+                          Icons.phone,
+                          size: 50,
+                          color: Colors.blue,
+                        ),
+                        Padding(
+                          padding: const EdgeInsetsDirectional.only(start: 20),
+                          child: Column(
+                            children: [
+                              Text("${widget.info['Mobile']}",style: const TextStyle(fontSize: 20,)),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
                     padding: const EdgeInsetsDirectional.only(bottom: 20),
                     child: Row(
                       children: [
@@ -149,7 +171,7 @@ class _FacultyProfileState extends State<FacultyProfile> {
                                           ),
                                           Expanded(
                                             flex: 2,
-                                              child: Text(widget.info['Subjects'].keys.elementAt(index),style: const TextStyle(fontSize: 22,color: Colors.black))),
+                                              child: Text(widget.info['Subjects'].keys.elementAt(index),style: const TextStyle(fontSize: 18,color: Colors.black))),
                                         ]
                                       ),
                                     );
@@ -172,8 +194,9 @@ class _FacultyProfileState extends State<FacultyProfile> {
         animatedIcon: AnimatedIcons.menu_close,
         children: [
           SpeedDialChild(
-            label: 'Forget Pass',
+            label: 'Forget Password',
             onTap: () async {
+              Navigator.of(context).push(MaterialPageRoute(builder: (_) => ResetPassword()));
             },
             backgroundColor: Colors.white,
             foregroundColor: Colors.black,

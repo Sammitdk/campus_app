@@ -36,21 +36,16 @@ class _StudentSyllabusState extends State<StudentSyllabus> {
                         Navigator.push(context, MaterialPageRoute(builder: (_) => LoadFirebasePdf(url: x["url"],)));
                       },
                       child: Padding(
-                        padding:  const EdgeInsetsDirectional.all(20),
-                        child: Container(
-                          alignment: Alignment.center,
-                          height: 80,
-                          // width: 300,
-                          decoration:  BoxDecoration(
-                              borderRadius:
-                              const BorderRadiusDirectional.only(
-                                  topStart: Radius.circular(50),
-                                  topEnd: Radius.circular(50),
-                                  bottomEnd: Radius.circular(50),
-                                  bottomStart:
-                                  Radius.circular(50)),
-                              color: Colors.blue[100]),
-                          child: Text((x["num"]),textAlign: TextAlign.center,style: const TextStyle(fontSize: 25),),
+                        padding:  const EdgeInsetsDirectional.only(start: 20,end: 20,top: 30),
+                        child: Card(
+                          elevation: 5,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+                          color: Colors.blue[100],
+                          child: Container(
+                            alignment: Alignment.center,
+                            height: 80,
+                            child: Text((x["num"]),textAlign: TextAlign.center,style: const TextStyle(fontSize: 25),),
+                          ),
                         ),
                       ),
                     );

@@ -53,10 +53,8 @@ class _DataLoadingState extends State<DataLoading> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await getData(widget.email);
       if(exist) {
-        // print('object $exist');
         Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => StudentDashboard(info: info)));
       }else{
-        // print('object $exist');
         Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => FacultyDashboard(info: info)));
       }
     });

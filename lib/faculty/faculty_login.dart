@@ -1,11 +1,10 @@
-import 'package:campus_subsystem/faculty/faculty_dashboard.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:lottie/lottie.dart';
 import '../firebase/signIn.dart';
 import '../firebase/wrapper.dart';
-import '../student/student_reset.dart';
+import '../student_reset.dart';
 
 class FacultyLogin extends StatefulWidget {
   const FacultyLogin({Key? key}) : super(key: key);
@@ -40,7 +39,6 @@ class _FacultyLoginState extends State<FacultyLogin> {
               isKeyboardVisible ?  SizedBox(
                 child: Lottie.network("https://assets1.lottiefiles.com/temp/lf20_vKPgdY.json"),
               ) : Container(
-                //shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 margin: const EdgeInsets.all(10),
                 child: Column(
                   children: [
@@ -108,7 +106,6 @@ class _FacultyLoginState extends State<FacultyLogin> {
                             shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))),),
                           child: const Text('Log In',style: TextStyle(fontSize: 17),),
                           onPressed: () async {
-                            // Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => FacultyDashboard(email: emailController.text)));
                             if(formkey.currentState!.validate())
                             {
                               if(await FirebaseFirestore.instance.doc('Faculty_Detail/${emailController.text}').get().then((value) => value.exists))

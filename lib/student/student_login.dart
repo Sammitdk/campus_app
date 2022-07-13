@@ -1,5 +1,5 @@
 import 'package:campus_subsystem/firebase/wrapper.dart';
-import 'package:campus_subsystem/student/student_reset.dart';
+import 'package:campus_subsystem/student_reset.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -43,7 +43,6 @@ class _StudentLoginState extends State<StudentLogin> {
                           "https://assets1.lottiefiles.com/temp/lf20_vKPgdY.json"),
                     )
                   : Container(
-                      //shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                       margin: const EdgeInsets.all(10),
                       child: Column(
                         children: [
