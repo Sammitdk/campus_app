@@ -1,7 +1,6 @@
-import 'dart:async';
-
 import 'package:campus_subsystem/login_page.dart';
 import 'package:campus_subsystem/data_loading_page.dart';
+import 'package:campus_subsystem/no_internet.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
@@ -15,32 +14,28 @@ class Wrapper extends StatefulWidget {
 }
 
 class _WrapperState extends State<Wrapper> {
-  Stream<bool> con() async* {
-    bool result = await InternetConnectionChecker().hasConnection;
-    if(result == true) {
-      print('YAY! Free cute dog pics!');
-    } else {
-      print('No internet :( Reason:');
-    }
-    yield result;
+
+  internetConnectionCheck() {
+      InternetConnectionChecker().onStatusChange.listen((status) {
+      switch (status) {
+        case InternetConnectionStatus.connected:
+          break;
+        case InternetConnectionStatus.disconnected:
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const NoInternet()));
+          break;
+      }
+    });
   }
   @override
   Widget build(BuildContext context) {
+    internetConnectionCheck();
     final user = Provider.of<User?>(context);
-    Stream<bool> re = con();
-    re.listen(print);
-    re.map((event) =>
-        print('!!!!!!!!!!!!!!!!!!$event'));
     if (user == null) {
       return const Login();
     } else {
-      final email = user.email;
-      if (email != null) {
+        final email = user.email!;
         return DataLoading(email: email);
-      } else {
-        return const Login();
       }
     }
 
   }
-}

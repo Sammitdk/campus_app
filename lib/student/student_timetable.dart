@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:lottie/lottie.dart';
 
 class StudentTimeTable extends StatefulWidget {
   final Map<String,dynamic> info;
@@ -68,7 +67,7 @@ class _StudentTimeTableState extends State<StudentTimeTable> {
                       ),
                     ),
                     Expanded(
-                      child: timetable.data == null? Center(child: Lottie.network("https://assets4.lottiefiles.com/private_files/lf30_vdqgavca.json")) : ListView.builder(
+                      child: timetable.data == null? Center(child: Image.asset("asset/images/holiday.gif")) : ListView.builder(
                         itemCount: timetable.data.length,
                         scrollDirection: Axis.vertical,
                         itemBuilder: (BuildContext context,int index) {

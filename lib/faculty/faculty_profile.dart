@@ -1,14 +1,10 @@
 import 'dart:io';
-
 import 'package:campus_subsystem/login_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-
 import 'package:image_picker/image_picker.dart';
-import 'package:lottie/lottie.dart';
-
 import '../password_reset.dart';
 
 class FacultyProfile extends StatefulWidget {
@@ -79,7 +75,7 @@ class _FacultyProfileState extends State<FacultyProfile> {
                   maxRadius: 110,
                   child: ClipOval(
                     clipBehavior: Clip.antiAlias,
-                    child: widget.info['urlPicture']!=null ? Image.network(widget.info['urlPicture']) : Lottie.network("https://assets5.lottiefiles.com/packages/lf20_lyp6fz8l.json"),
+                    child: widget.info['urlPicture']!=null ? Image.network(widget.info['urlPicture']) : Image.asset("assets/images/profile"),
                   ),
                 ),
             ),
