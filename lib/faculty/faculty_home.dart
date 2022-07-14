@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'faculty_attendance_option.dart';
 import 'faculty_event.dart';
+import 'faculty_timetable.dart';
 
 class FacultyHome extends StatefulWidget {
   Map<String,dynamic> info = {};
@@ -36,6 +37,9 @@ class _FacultyHomeState extends State<FacultyHome> {
               children: [
                 Expanded(
                     child: InkWell(
+                      onTap: (){
+                        Navigator.of(context).push(MaterialPageRoute(builder: (_) => FacultyTimeTable(info: widget.info)));
+                      },
                       child: Card(
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12)),

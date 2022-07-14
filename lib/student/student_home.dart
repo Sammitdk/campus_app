@@ -6,6 +6,8 @@ import 'package:campus_subsystem/student/student_timetable.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
+import '../faculty/faculty_timetable.dart';
+
 class StudentHome extends StatefulWidget {
   final Map<String, dynamic> info;
   const StudentHome({Key? key, required this.info}) : super(key: key);
@@ -40,7 +42,7 @@ class _StudentHomeState extends State<StudentHome> {
                     child: InkWell(
                   onTap: () {
                     Navigator.of(context).push(MaterialPageRoute(
-                        builder: (_) => StudentTimeTable(info: widget.info)));
+                        builder: (_) => FacultyTimeTable(info: widget.info)));
                   },
                   child: Card(
                     shape: RoundedRectangleBorder(

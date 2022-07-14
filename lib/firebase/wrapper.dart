@@ -28,7 +28,7 @@ class _WrapperState extends State<Wrapper> {
   }
   @override
   Widget build(BuildContext context) {
-    internetConnectionCheck();
+    // internetConnectionCheck();
     final user = Provider.of<User?>(context);
     if (user == null) {
       return const Login();
