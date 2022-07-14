@@ -15,7 +15,8 @@ class StudentTimeTable extends StatefulWidget {
 class _StudentTimeTableState extends State<StudentTimeTable> {
   Map<String,dynamic> timetable = {};
   List weekdays = DateFormat('EEEE').dateSymbols.STANDALONEWEEKDAYS;
-   String selectedday =   DateFormat('EEEE').format(DateTime.now());
+  String selectedday =   DateFormat('EEEE').format(DateTime.now());
+
   Future<Map<String,dynamic>> getTimetable()async {
     DocumentReference timetables = FirebaseFirestore.instance.doc('/College/${widget.info['Branch']}/${widget.info['Year']}/Timetable');
     DocumentSnapshot timetableSnapshot = await timetables.get();
