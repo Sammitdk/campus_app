@@ -22,9 +22,9 @@ class _FacultyTimeTableState extends State<FacultyTimeTable> {
     DocumentReference timetables = FirebaseFirestore.instance.doc('/College/${widget.info['Branch']}/TY/Timetable');
     DocumentSnapshot timetableSnapshot = await timetables.get();
     Map temp = timetableSnapshot.data() as Map<String, dynamic>;
-    List l = temp[widget.info['Sem']][selectedday].keys.toList()..sort();
+    List l = temp['6'][selectedday].keys.toList()..sort();
     l.forEach((element) {
-      timetable[element] = temp[widget.info['Sem']][selectedday][element];
+      timetable[element] = temp['6'][selectedday][element];
     });
     await Future.delayed(const Duration(milliseconds: 350));
     return timetable;
@@ -69,7 +69,10 @@ class _FacultyTimeTableState extends State<FacultyTimeTable> {
                     ),
                   ),
                   Expanded(
-                    child: timetable.data == null? Center(child: Image.asset("asset/images/holiday.gif")) : ListView.builder(
+                    child: timetable.data == null? Center(child: Container(
+                      height: MediaQuery.of(context).size.height,
+                        color: Colors.amber[50],
+                        child: Image.asset("assets/images/holiday.gif"))) : ListView.builder(
                       itemCount: timetable.data.length,
                       scrollDirection: Axis.vertical,
                       itemBuilder: (BuildContext context,int index) {

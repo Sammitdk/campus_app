@@ -69,18 +69,16 @@ class _FacultyNotesState extends State<FacultyNotes> {
                 return InkWell(
                   onTap: (){Navigator.push(context, MaterialPageRoute(builder: (_) => LoadFirebasePdf(url: x['url'],)));
                   },
-                  child: Expanded(
-                    child: Padding(
-                      padding:  const EdgeInsetsDirectional.only(start: 20,end: 20,top: 40),
-                      child: Card(
-                        elevation: 5,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-                        color: Colors.blue[100],
-                        child: Container(
-                          alignment: Alignment.center,
-                          height: 80,
-                          child: Text((x['num']),textAlign: TextAlign.center,style: const TextStyle(fontFamily: "Bold",fontSize: 30),),
-                        ),
+                  child: Padding(
+                    padding:  const EdgeInsetsDirectional.only(start: 20,end: 20,top: 40),
+                    child: Card(
+                      elevation: 5,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+                      color: Colors.blue[100],
+                      child: Container(
+                        alignment: Alignment.center,
+                        height: 80,
+                        child: Text((x['num']),textAlign: TextAlign.center,style: const TextStyle(fontFamily: "Bold",fontSize: 30),),
                       ),
                     ),
                   ),

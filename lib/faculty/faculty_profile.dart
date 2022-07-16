@@ -108,7 +108,7 @@ class _FacultyProfileState extends State<FacultyProfile> {
                           padding: const EdgeInsetsDirectional.only(start: 20),
                           child: Column(
                             children: [
-                              Text("${widget.info['Trade']}",style: const TextStyle(fontSize: 20,)),
+                              Text("${widget.info['Branch']}",style: const TextStyle(fontSize: 20,)),
                             ],
                           ),
                         ),
