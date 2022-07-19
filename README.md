@@ -2,7 +2,7 @@
 
  I have developed an Campus App for my academic project. This app can notify students of their acadmic activities.
  There are many features in application like 
-  * IN faculty
+  * In faculty
     - Mark attendance
     - View Teacher Timetable
     - Upload / update event information
