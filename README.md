@@ -20,5 +20,5 @@
   
   This app created using flutter / dart and firebase.
   This app acadmic project that has developed by 
-    - https://github.com/RajPatil002
-    - https://github.com/Sammitdk
+  - https://github.com/RajPatil002
+  - https://github.com/Sammitdk
