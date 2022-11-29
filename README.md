@@ -1,17 +1,24 @@
-# campus_subsystem
+# campus_app
 
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-flutter build apk --target-platform android-arm64 --analyze-size
+ I have developed an Campus App for my academic project. This app can notify students of their acadmic activities.
+ There are many features in application like 
+  * In faculty
+    - Mark attendance
+    - View Teacher Timetable
+    - Upload / update event information
+    - View syllabus as per subjects
+    - Upload notes in pdf
+  * In student
+    - View attendance
+    - View class timetable
+    - View event information
+    - View syllabus
+    - View notes
+    - View result
+ 
+ ## About
+  
+  This app created using flutter / dart and firebase.
+  This app is acadmic project that has developed by 
+  - https://github.com/Sammitdk
+  - https://github.com/RajPatil002
