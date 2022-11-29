@@ -1,8 +1,8 @@
-
+import 'package:campus_subsystem/loadpdf.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_pdf_viewer/easy_pdf_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 
 class FacultySubject extends StatefulWidget {
@@ -31,8 +31,8 @@ class _FacultySubjectState extends State<FacultySubject> {
                   itemBuilder: (context,i){
                     QueryDocumentSnapshot x = snapshot.data!.docs[i];
                     return InkWell(
-                      onTap: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (_) => LoadFirebasePdf(url: x["url"],)));
+                      onTap: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (_) => LoadPdf(url:x["url"])));
                       },
                       child: Padding(
                         padding:  const EdgeInsetsDirectional.only(start: 20,end: 20,top: 40),
@@ -58,18 +58,3 @@ class _FacultySubjectState extends State<FacultySubject> {
   }
 }
 
-class LoadFirebasePdf extends StatelessWidget {
-  PdfViewerController? _pdfViewerController;
-  final url;
-  LoadFirebasePdf({this.url});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: SfPdfViewer.network(
-        url,
-        controller: _pdfViewerController,
-      ),
-    );
-  }
-}

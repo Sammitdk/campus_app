@@ -2,12 +2,12 @@ import 'package:campus_subsystem/student/student_profile.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import '../firebase/signIn.dart';
+import '../messaging/test.dart';
 import 'student_home.dart';
 
 
 class StudentDashboard extends StatefulWidget {
-  final Map<String,dynamic> info;
-  const StudentDashboard({Key? key,required this.info}) : super(key: key);
+  const StudentDashboard({Key? key,}) : super(key: key);
 
   @override
   State<StudentDashboard> createState() => _StudentDashboardState();
@@ -23,13 +23,15 @@ class _StudentDashboardState extends State<StudentDashboard> {
   @override
   Widget build(BuildContext context) {
     final screen = [
-      StudentHome(info: widget.info),
-      StudentProfile(info: widget.info),
+      const StudentHome(),
+      const StudentProfile(),
+      const Test(),
     ];
     final items = <Widget>
     [
       const Icon(Icons.home_outlined,size: 30,),
       const Icon(Icons.person_outline_outlined,size: 30,),
+      const Icon(Icons.messenger_outline_rounded, size: 30,)
     ];
     return Scaffold(
         backgroundColor: Colors.white,

@@ -1,6 +1,7 @@
 import 'dart:io';
-import 'package:campus_subsystem/student/student_syllabus.dart';
+import 'package:campus_subsystem/loadpdf.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_pdf_viewer/easy_pdf_viewer.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -31,7 +32,7 @@ class _FacultyNotesState extends State<FacultyNotes> {
 
     //  to cloud firebase
 
-    await FirebaseFirestore.instance.collection("notes").doc().set(
+    await FirebaseFirestore.instance.collection("notes").doc('num').set(
       {
         'url':url,
         'num': fileName,
@@ -67,7 +68,8 @@ class _FacultyNotesState extends State<FacultyNotes> {
               itemBuilder: (context,i){
                 QueryDocumentSnapshot x = snapshot.data!.docs[i];
                 return InkWell(
-                  onTap: (){Navigator.push(context, MaterialPageRoute(builder: (_) => LoadFirebasePdf(url: x['url'],)));
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => LoadPdf(url:x["url"])));
                   },
                   child: Padding(
                     padding:  const EdgeInsetsDirectional.only(start: 20,end: 20,top: 40),

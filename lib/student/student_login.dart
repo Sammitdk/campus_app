@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import '../firebase/signIn.dart';
+import '../redux/actions/fetchUserData.dart';
 
 class StudentLogin extends StatefulWidget {
   const StudentLogin({Key? key}) : super(key: key);
@@ -123,7 +124,8 @@ class _StudentLoginState extends State<StudentLogin> {
                             if (formkey.currentState!.validate()) {
                               if (await FirebaseFirestore.instance.doc('Email/${emailController.text}').get().then((value) => value.exists)) {
                                 if(await auth.signIn(username: emailController.text, password: passwordController.text) != null) {
-                                  Navigator.of(this.context).pushReplacement(MaterialPageRoute(builder: (_) => const Wrapper()));
+                                  print('ran');
+                                  fetchUserData(emailController.text).then((value) => Navigator.pushReplacementNamed(context, "/"));
                                 }else{
                                   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Incorrect Email Address or Password'),));
                                 }

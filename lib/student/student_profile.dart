@@ -1,51 +1,48 @@
 import 'dart:io';
-import 'package:campus_subsystem/firebase/wrapper.dart';
 import 'package:campus_subsystem/password_reset.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:image_picker/image_picker.dart';
 import '../firebase/signIn.dart';
+import '../redux/reducer.dart';
 
-class StudentProfile extends StatefulWidget {
-  final Map<String, dynamic> info;
-  const StudentProfile({Key? key, required this.info}) : super(key: key);
-  @override
-  State<StudentProfile> createState() => _StudentProfileState();
-}
-
-class _StudentProfileState extends State<StudentProfile> {
-  final Auth auth = Auth();
-  File? file;
-  Future selectFiles() async {
-    final result =
-        await ImagePicker.platform.pickImage(source: ImageSource.gallery);
-    if (result == null) return;
-    final path = result.path;
-    setState(() => file = File(path));
-  }
-
-  Future uploadFile() async {
-    if (file == null) return;
-    final destination = 'Images/${widget.info['PRN']}';
-    final ref = FirebaseStorage.instance.ref(destination);
-    await ref.putFile(file!);
-    String url = await ref.getDownloadURL();
-    await FirebaseFirestore.instance
-        .collection("Student_Detail")
-        .doc("${widget.info['PRN']}")
-        .update({'url': url});
-  }
-
-  void refresh() {
-    setState(() {});
-  }
+class StudentProfile extends HookWidget {
+  const StudentProfile({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
+    var state = StoreProvider.of<AppState>(context).state;
+    final Auth auth = Auth();
+    File? file;
+    final stateUrl = useState(state.imgUrl);
+
+    Future selectFiles() async {
+      final result =
+          await ImagePicker.platform.pickImage(source: ImageSource.gallery);
+      if (result == null) return;
+      final path = result.path;
+      file = File(path);
+    }
+
+    Future uploadFile() async {
+      if (file == null) return;
+      final destination = 'Images/${state.prn}';
+      final ref = FirebaseStorage.instance.ref(destination);
+      await ref.putFile(file!);
+      String url = await ref.getDownloadURL();
+      stateUrl.value = url;
+      await FirebaseFirestore.instance
+          .collection("Student_Detail")
+          .doc("${state.prn}")
+          .update({'imgUrl': url});
+    }
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: Stack(children: [
@@ -56,14 +53,14 @@ class _StudentProfileState extends State<StudentProfile> {
               painter: CurvePainter(),
             )),
         Positioned(
-            top: height/8.5,
+            top: height / 8.5,
             left: width / 1.7,
-            child: CircleAvatar(
+            child:  CircleAvatar(
               backgroundColor: Colors.transparent,
               maxRadius: 80,
-              backgroundImage: widget.info['url'] != null
-                  ? NetworkImage(widget.info['url'])
-                  : const AssetImage("assets/images/profile") as ImageProvider,
+              backgroundImage: stateUrl.value != null
+                  ?  NetworkImage(state.imgUrl)
+                  : const AssetImage("assets/images/profile.gif") as ImageProvider,
             )),
         Positioned(
             top: height / 3.65,
@@ -81,9 +78,7 @@ class _StudentProfileState extends State<StudentProfile> {
         Positioned(
           top: 8,
           left: 20,
-          child: Text(
-            "${widget.info['Name']['First']} ${widget.info['Name']['Last']}",
-            style: const TextStyle(
+          child: Text("${state.name['First']} ${state.name['Middle']} ${state.name['Last']}", style: const TextStyle(
               fontSize: 40,
               color: Colors.white,
               fontFamily: 'MuliBold',
@@ -93,17 +88,17 @@ class _StudentProfileState extends State<StudentProfile> {
         Positioned(
           top: 65,
           left: 20,
-          child: Text("${widget.info['Email']}",
+          child: Text(state.email,
               style: const TextStyle(fontSize: 20, color: Colors.white)),
         ),
         Positioned(
           top: 100,
           left: 20,
-          child: Text("${widget.info['Mobile'][0]}",
+          child: Text(state.mobile,
               style: const TextStyle(fontSize: 20, color: Colors.white)),
         ),
         Container(
-          padding: EdgeInsetsDirectional.only(top: height / 2.4, start: 40),
+          padding: EdgeInsetsDirectional.only(top: height / 2.8, start: 40),
           height: height,
           width: width / 1.2,
           child: Column(
@@ -128,7 +123,7 @@ class _StudentProfileState extends State<StudentProfile> {
                             "Address",
                             style: TextStyle(fontSize: 15, color: Colors.black),
                           ),
-                          Text("${widget.info['Address']}",
+                          Text(state.address,
                               style: const TextStyle(
                                   fontSize: 25, color: Colors.black)),
                         ],
@@ -157,7 +152,7 @@ class _StudentProfileState extends State<StudentProfile> {
                             "Trade",
                             style: TextStyle(fontSize: 15, color: Colors.black),
                           ),
-                          Text("${widget.info['Branch']}",
+                          Text(state.branch,
                               style: const TextStyle(
                                   fontSize: 25, color: Colors.black)),
                         ],
@@ -186,7 +181,7 @@ class _StudentProfileState extends State<StudentProfile> {
                             "Birth Date",
                             style: TextStyle(fontSize: 15, color: Colors.black),
                           ),
-                          Text("${widget.info['DOB']}",
+                          Text(state.dob.toString(),
                               style: const TextStyle(
                                   fontSize: 25, color: Colors.black)),
                         ],
@@ -215,7 +210,7 @@ class _StudentProfileState extends State<StudentProfile> {
                             "PRN",
                             style: TextStyle(fontSize: 15, color: Colors.black),
                           ),
-                          Text("${widget.info['PRN']}",
+                          Text(state.prn,
                               style: const TextStyle(
                                   fontSize: 25, color: Colors.black)),
                         ],
@@ -244,7 +239,7 @@ class _StudentProfileState extends State<StudentProfile> {
                             "Semester",
                             style: TextStyle(fontSize: 15, color: Colors.black),
                           ),
-                          Text("${widget.info['Sem']}",
+                          Text(state.sem,
                               style: const TextStyle(
                                   fontSize: 25, color: Colors.black)),
                         ],
@@ -275,9 +270,8 @@ class _StudentProfileState extends State<StudentProfile> {
           SpeedDialChild(
             label: 'Log Out',
             onTap: () async {
-              await auth.signOut();
-              Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  builder: (BuildContext context) => Wrapper()));
+              await auth.signOut().then(
+                  (value) => Navigator.pushReplacementNamed(context, "/"));
             },
             backgroundColor: Colors.white,
             foregroundColor: Colors.black,
@@ -292,7 +286,7 @@ class _StudentProfileState extends State<StudentProfile> {
 class MyClipper extends CustomClipper<Rect> {
   @override
   Rect getClip(Size size) {
-    return Rect.fromLTWH(0, 0, 150, 150);
+    return const Rect.fromLTWH(0, 0, 150, 150);
   }
 
   @override
