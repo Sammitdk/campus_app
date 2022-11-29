@@ -9,6 +9,11 @@ class Auth
     return user;
   }
 
+  String? getMail(User? user){
+    return user?.email;
+  }
+
+
   Stream<User?> get user {
     return auth.authStateChanges().map(_userFromCredUser);
   }

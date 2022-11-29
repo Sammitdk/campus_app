@@ -1,36 +1,34 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-
-class FacultyTimeTable extends StatefulWidget {
-  final Map<String,dynamic> info;
-
-  const FacultyTimeTable({Key? key,required this.info}) : super(key: key);
-
-  @override
-  State<FacultyTimeTable> createState() => _FacultyTimeTableState();
-}
-
-class _FacultyTimeTableState extends State<FacultyTimeTable> {
-  Map<String,dynamic> timetable = {};
-  List weekdays = DateFormat('EEEE').dateSymbols.STANDALONEWEEKDAYS;
-  String selectedday =   DateFormat('EEEE').format(DateTime.now());
+import '../redux/reducer.dart';
 
 
-  Future<Map<String,dynamic>> getTimetable()async {
-    DocumentReference timetables = FirebaseFirestore.instance.doc('/College/${widget.info['Branch']}/TY/Timetable');
-    DocumentSnapshot timetableSnapshot = await timetables.get();
-    Map temp = timetableSnapshot.data() as Map<String, dynamic>;
-    List l = temp['6'][selectedday].keys.toList()..sort();
-    l.forEach((element) {
-      timetable[element] = temp['6'][selectedday][element];
-    });
-    await Future.delayed(const Duration(milliseconds: 350));
-    return timetable;
-  }
+class FacultyTimeTable extends HookWidget {
+  const FacultyTimeTable({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
+    Map<String,dynamic> timetable = {};
+    List weekdays = DateFormat('EEEE').dateSymbols.STANDALONEWEEKDAYS;
+    final selectedDay = useState(DateFormat('EEEE').format(DateTime.now()));
+    var data = StoreProvider.of<AppState>(context).state;
+
+
+    Future<Map<String,dynamic>> getTimetable() async {
+      DocumentReference timetables = FirebaseFirestore.instance.doc('/College/${data.branch}/TY/Timetable');
+      DocumentSnapshot timetableSnapshot = await timetables.get();
+      Map temp = timetableSnapshot.data() as Map<String, dynamic>;
+      List l = temp['6'][selectedDay.value].keys.toList()..sort();
+      for (var element in l) {
+        timetable[element] = temp['6'][selectedDay.value][element];
+      }
+      await Future.delayed(const Duration(milliseconds: 350));
+      return timetable;
+    }
     return FutureBuilder<Map<String,dynamic>>(
         future: getTimetable(),
         builder: (context,AsyncSnapshot timetable) {
@@ -54,7 +52,7 @@ class _FacultyTimeTableState extends State<FacultyTimeTable> {
                       elevation: 0,
                       iconEnabledColor: Colors.red,
                       alignment: AlignmentDirectional.center,
-                      value: selectedday,
+                      value: selectedDay.value,
                       items: weekdays
                           .map<DropdownMenuItem<String>>(
                               (value) => DropdownMenuItem<String>(
@@ -63,14 +61,14 @@ class _FacultyTimeTableState extends State<FacultyTimeTable> {
                           ))
                           .toList(),
                       onChanged: (newvalue) {
-                        selectedday = newvalue!;
-                        setState((){});
+                        selectedDay.value = newvalue!;
+                        // setState((){});
                       },
                     ),
                   ),
                   Expanded(
                     child: timetable.data == null? Center(child: Container(
-                      height: MediaQuery.of(context).size.height,
+                        height: MediaQuery.of(context).size.height,
                         color: Colors.amber[50],
                         child: Image.asset("assets/images/holiday.gif"))) : ListView.builder(
                       itemCount: timetable.data.length,
@@ -135,3 +133,4 @@ class _FacultyTimeTableState extends State<FacultyTimeTable> {
     );
   }
 }
+

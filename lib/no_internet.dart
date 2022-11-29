@@ -15,7 +15,6 @@ class NoInternet extends StatelessWidget {
             break;
         }
       });
-
     return Scaffold(
       backgroundColor: Colors.white,
       body: Column(

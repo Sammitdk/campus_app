@@ -37,9 +37,9 @@ class _FacultyHomeState extends State<FacultyHome> {
               children: [
                 Expanded(
                     child: InkWell(
-                      onTap: (){
-                        Navigator.of(context).push(MaterialPageRoute(builder: (_) => FacultyTimeTable(info: widget.info)));
-                      },
+                      // onTap: (){
+                      //   Navigator.of(context).push(MaterialPageRoute(builder: (_) => const FacultyTimeTable()));
+                      // },
                       child: Card(
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12)),

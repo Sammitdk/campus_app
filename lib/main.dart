@@ -1,14 +1,16 @@
+import 'package:campus_subsystem/redux/store.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:campus_subsystem/faculty/faculty_login.dart';
-import 'package:campus_subsystem/firebase/wrapper.dart';
 import 'package:campus_subsystem/login_page.dart';
 import 'package:campus_subsystem/student/student_login.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:provider/provider.dart';
 import 'firebase/signIn.dart';
+import 'firebase/wrapper.dart';
 import 'firebase_options.dart';
 import 'loading_page.dart';
 
@@ -30,25 +32,24 @@ class Main extends StatelessWidget
 
   @override
   Widget build(BuildContext context) {
-    return StreamProvider<User?>.value(
+    return StoreProvider(store: store, child: StreamProvider<User?>.value(
       value: Auth().user,
       initialData: null,
       child: MaterialApp(
         theme: ThemeData(
-          fontFamily: "Muli"
+            fontFamily: "Muli"
         ),
         color: Colors.transparent,
         debugShowCheckedModeBanner: false,
-        // home: Wrapper(),
         initialRoute: 'loading_page',
         routes: {
           '/' :(context) => const Wrapper(),
-          'loading_page':(context) => const LoadingPage(),
+          'loading_page':(context) =>  LoadingPage(email: Auth().auth.currentUser?.email),
           'login_page': (context) => const Login(),
           't_login_form': (context) => const KeyboardVisibilityProvider(child: FacultyLogin()),
           's_login_form': (context) => const KeyboardVisibilityProvider(child: StudentLogin()),
         },
       ),
-    );
+    ));
   }
 }
