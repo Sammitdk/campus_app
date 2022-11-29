@@ -15,24 +15,27 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_keyboard_visibility: ^5.3.0
-  firebase_core: ^1.17.1
-  firebase_auth: ^3.3.19
-  cloud_firestore: ^3.1.17
+  firebase_core: ^2.3.0
+  firebase_auth: ^4.1.4
+  cloud_firestore: ^4.1.0
   cupertino_icons: ^1.0.2
   provider: ^6.0.3
   flutter_speed_dial: ^6.0.0
   curved_navigation_bar: ^1.0.3
   url_launcher: ^6.1.4
   intl: ^0.17.0
-  firebase_storage: ^10.2.18
+  firebase_storage: ^11.0.6
   path_provider: ^2.0.11
   image_picker: ^0.8.5+3
   http: ^0.13.4
-  syncfusion_flutter_pdf: ^20.2.36
-  file_picker: ^3.0.4
-  syncfusion_flutter_pdfviewer: ^20.2.36-beta
+  file_picker: ^5.2.2
   loading_animation_widget: ^1.2.0+2
   internet_connection_checker: ^0.0.1+4
+  flutter_hooks: ^0.18.5+1
+  flutter_redux: ^0.10.0
+  redux_thunk: ^0.4.0
+  easy_pdf_viewer: ^1.0.6
+  flutterfire: ^0.0.1
 
 dev_dependencies:
   flutter_test:

@@ -1,10 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
 import '../faculty/faculty_event_show.dart';
 
 class StudentEvent extends StatefulWidget {
-  StudentEvent({Key? key}) : super(key: key);
+  const StudentEvent({Key? key}) : super(key: key);
 
   @override
   State<StudentEvent> createState() => _StudentEventState();

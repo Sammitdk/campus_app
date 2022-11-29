@@ -1,22 +1,20 @@
-
+import 'package:campus_subsystem/loadpdf.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_pdf_viewer/easy_pdf_viewer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
+import '../redux/reducer.dart';
 
 
-class StudentSyllabus extends StatefulWidget {
-  StudentSyllabus({Key? key,required this.info}) : super(key: key);
-  Map<String,dynamic> info ;
+class StudentSyllabus extends StatelessWidget {
+  const StudentSyllabus({Key? key}) : super(key: key);
 
-
-  @override
-  State<StudentSyllabus> createState() => _StudentSyllabusState();
-}
-
-class _StudentSyllabusState extends State<StudentSyllabus> {
   @override
   Widget build(BuildContext context) {
+
+    var data = StoreProvider.of<AppState>(context).state;
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -24,7 +22,7 @@ class _StudentSyllabusState extends State<StudentSyllabus> {
         backgroundColor: Colors.indigo[300],
       ),
       body: StreamBuilder(
-          stream: FirebaseFirestore.instance.collection('/College/${widget.info['Branch']}/${widget.info['Year']}/Syllabus/Subject').snapshots(),
+          stream: FirebaseFirestore.instance.collection('College/${data.branch}/${data.year}/Syllabus/Subject').snapshots(),
           builder: (context ,AsyncSnapshot<QuerySnapshot> snapshot) {
             if(snapshot.hasData){
               return ListView.builder(
@@ -32,8 +30,8 @@ class _StudentSyllabusState extends State<StudentSyllabus> {
                   itemBuilder: (context,i){
                     QueryDocumentSnapshot x = snapshot.data!.docs[i];
                     return InkWell(
-                      onTap: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (_) => LoadFirebasePdf(url: x["url"],)));
+                      onTap: ()  {
+                        Navigator.push(context, MaterialPageRoute(builder: (_) => LoadPdf( url:x["url"],)));
                       },
                       child: Padding(
                         padding:  const EdgeInsetsDirectional.only(start: 20,end: 20,top: 30),
@@ -59,18 +57,5 @@ class _StudentSyllabusState extends State<StudentSyllabus> {
   }
 }
 
-class LoadFirebasePdf extends StatelessWidget {
-  PdfViewerController? _pdfViewerController;
-  final url;
-  LoadFirebasePdf({this.url});
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: SfPdfViewer.network(
-        url,
-        controller: _pdfViewerController,
-      ),
-    );
-  }
-}
+
