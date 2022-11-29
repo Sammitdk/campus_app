@@ -5,10 +5,11 @@ class Message extends StatelessWidget {
     Key? key,
     required this.text,
     required this.isCurrentUser,
+    required this.name,
   }) : super(key: key);
   final String text;
   final bool isCurrentUser;
-  final String name = "sammit";
+  final String name;
 
   @override
   Widget build(BuildContext context) {
@@ -25,16 +26,29 @@ class Message extends StatelessWidget {
         child: DecoratedBox(
           // chat bubble decoration
           decoration: BoxDecoration(
-            color: isCurrentUser ? Colors.indigo[300] : Colors.grey[300],
-            borderRadius: BorderRadius.circular(16),
-          ),
+              color: isCurrentUser ? Colors.indigo[300] : Colors.grey[300],
+              borderRadius: BorderRadius.only(
+                  topLeft:
+                      isCurrentUser ? const Radius.circular(20) : Radius.zero,
+                  topRight:
+                      isCurrentUser ? Radius.zero : const Radius.circular(20),
+                  bottomRight: const Radius.circular(20),
+                  bottomLeft: const Radius.circular(20))),
           child: Padding(
             padding: const EdgeInsets.all(12),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                isCurrentUser? const SizedBox(height: 0,width: 0,):
-                Text(name,style: const TextStyle(fontSize: 12 , fontWeight: FontWeight.bold , color: Colors.green)),
+                isCurrentUser
+                    ? const SizedBox(
+                        height: 0,
+                        width: 0,
+                      )
+                    : Text(name,
+                        style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.green)),
                 Text(
                   text,
                   style: Theme.of(context).textTheme.bodyText1!.copyWith(

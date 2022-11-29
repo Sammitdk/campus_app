@@ -78,8 +78,8 @@ class StudentProfile extends HookWidget {
         Positioned(
           top: 8,
           left: 20,
-          child: Text("${state.name['First']} ${state.name['Middle']} ${state.name['Last']}", style: const TextStyle(
-              fontSize: 40,
+          child: Text("${state.name['First']}.${state.name['Middle'].toString().substring(0,1)}.${state.name['Last']}", style: const TextStyle(
+              fontSize: 30,
               color: Colors.white,
               fontFamily: 'MuliBold',
             ),
