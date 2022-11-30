@@ -89,7 +89,9 @@ class Test extends HookWidget {
                       // ),
                       IconButton(onPressed: (){
                         // todo
-                        }, icon: const Icon(Icons.add,/*color: Colors.white,*/size: 30,)),
+                        },
+                          icon: const Icon(Icons.add,/*color: Colors.white,*/size: 30,)
+                      ),
                       const SizedBox(
                         width: 15,
                       ),
