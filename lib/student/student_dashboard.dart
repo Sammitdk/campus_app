@@ -66,7 +66,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
             });
           },
           child: Container(
-            height: 20,
+            height: 0
           ),
         )
     );
