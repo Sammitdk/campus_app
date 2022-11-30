@@ -1,14 +1,24 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
+import '../redux/reducer.dart';
 import 'Message.dart';
 
 class Test extends HookWidget {
-  const Test({Key? key}) : super(key: key);
+  final bool isShowing;
+  const Test({required this.isShowing, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final myController = TextEditingController();
     var isClicked = useState(false);
+    var data = StoreProvider.of<AppState>(context).state;
+
+    useEffect(() {});
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white70,
       appBar: AppBar(
         centerTitle: true,
@@ -21,49 +31,46 @@ class Test extends HookWidget {
       ),
       body: Scaffold(
         body: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.only(top: 10, bottom: 0),
             child: Column(
               children: [
-                Expanded(flex: 8, child: ListView(
-                  children: const [
-                    Message(
-                      text: 'Hey',
-                      isCurrentUser: true,
-                    ),
-                    Message(
-                      text:
-                          'Hey iam fine what about you dkjabhdjkkkkkkdkahduhaiiiiiiiiiiiudkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkka ? ',
-                      isCurrentUser: false,
-                    ),
-                    Message(
-                      text:
-                          'GoodhkAjdhkajhdkajhdiu haiuhduiah iudhauihda uhiuhd aiuhduaihdad',
-                      isCurrentUser: true,
-                    ),
-                    Message(
-                      text:
-                      'GoodhkAjdhkajhdkajhdiu haiuhduiah iudhauihda uhiuhd aiuhduaihdad',
-                      isCurrentUser: true,
-                    ),Message(
-                      text:
-                      'GoodhkAjdhkajhdkajhdiu haiuhduiah iudhauihda uhiuhd aiuhduaihdad',
-                      isCurrentUser: true,
-                    ),Message(
-                      text:
-                      'GoodhkAjdhkajhdkajhdiu haiuhduiah iudhauihda uhiuhd aiuhduaihdad',
-                      isCurrentUser: true,
-                    ),
-                  ],
-                )),
                 Expanded(
-                  flex: isClicked.value ? 2 : 1,
+                  flex: 10,
+                  child: StreamBuilder(
+                      stream: FirebaseFirestore.instance
+                          .collection("Messages").orderBy('time')
+                          .snapshots(),
+                      builder: (ctx, AsyncSnapshot<QuerySnapshot> snapshot) {
+                        if (snapshot.hasData) {
+                          return ListView.builder(
+                              itemCount: snapshot.data?.docs.length,
+                              itemBuilder: (ctx, index) {
+                                QueryDocumentSnapshot x =
+                                    snapshot.data!.docs[index];
+                                return Message(
+                                  isCurrentUser: x["email"].toString() == data.email,
+                                  text: x['message'],
+                                  name: x['name'],
+                                );
+                              });
+                        } else {
+                          return Center(child: LoadingAnimationWidget.staggeredDotsWave(size: 50, color: Colors.red));
+                        }
+                      }),
+                ),
+                Expanded(
+                  flex: 2,
                   child: Align(
                     child: Container(
+                      decoration: BoxDecoration(
+                          color: isClicked.value
+                              ? Colors.transparent
+                              : Colors.white70,
+                          borderRadius: BorderRadius.circular(30)),
                       padding:
                           const EdgeInsets.only(left: 10, bottom: 10, top: 10),
                       height: 60,
                       width: double.infinity,
-                      color: isClicked.value ? Colors.transparent : Colors.white,
                       child: Row(
                         children: <Widget>[
                           GestureDetector(
@@ -85,24 +92,28 @@ class Test extends HookWidget {
                           const SizedBox(
                             width: 15,
                           ),
-                           Expanded(
-                            child: GestureDetector(
-                              onTap: () {
-                                isClicked.value = true;
-                              },
-                              child: const TextField(
-                                decoration: InputDecoration(
-                                    hintText: "Write message...",
-                                    hintStyle: TextStyle(color: Colors.black54),
-                                    border: InputBorder.none),
-                              ),
+                          Expanded(
+                            child: TextField(
+                              controller: myController,
+                              decoration: const InputDecoration(
+                                  hintText: "Write message...",
+                                  hintStyle: TextStyle(color: Colors.black54),
+                                  border: InputBorder.none),
                             ),
                           ),
                           const SizedBox(
                             width: 15,
                           ),
                           FloatingActionButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              final firebaseData = {
+                                "name": data.name['First'],
+                                "time": Timestamp.now(),
+                                "email" : data.email,
+                                "message": myController.text
+                              };
+                              FirebaseFirestore.instance.collection("Messages").add(firebaseData);
+                            },
                             backgroundColor: Colors.blue,
                             elevation: 0,
                             child: const Icon(

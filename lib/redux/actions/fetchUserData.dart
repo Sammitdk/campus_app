@@ -56,7 +56,7 @@ Future<ThunkAction<AppState>> fetchUserData(String? email) async {
       });
     } else {
       final DocumentReference facultyRef = FirebaseFirestore.instance
-          .doc('Faculty_Detail/sammitkhade77@gmail.com');
+          .doc('Faculty_Detail/$email');
       await facultyRef.get().then((value) async {
         final data = value.data() as Map<String, dynamic>;
         store.dispatch(FetchData(
