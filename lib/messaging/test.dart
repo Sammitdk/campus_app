@@ -72,8 +72,7 @@ class Test extends HookWidget {
                               name: x['name'],
                             );
                           });
-                    } 
-                    else {
+                    } else {
                       return Center(
                           child: LoadingAnimationWidget.staggeredDotsWave(
                               size: 50, color: Colors.red));
@@ -82,138 +81,38 @@ class Test extends HookWidget {
             ),
           ),
           Positioned(
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: Align(
-              alignment: Alignment.bottomLeft,
-              child: Container(
-                padding: const EdgeInsets.only(left: 10, bottom: 10, top: 10),
-                height: 60,
-                width: double.infinity,
-                color: Colors.white,
-                child: Row(
-                  children: <Widget>[
-                    InkWell(
-                      onTap: () {
-                        scrollController.animateTo(
-                            scrollController.position.maxScrollExtent,
-                            duration: const Duration(milliseconds: 300),
-                            curve: Curves.easeInOut);
-                      },
-                      child: Container(
-                        height: 30,
-                        width: 30,
-                        decoration: BoxDecoration(
-                          color: Colors.lightBlue,
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        child: const Icon(
-                          Icons.add,
-                          color: Colors.white,
-                          size: 20,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 15,
-                    ),
-                    Expanded(
-                      child: TextField(
-                        controller: myController,
-                        decoration: const InputDecoration(
-                            hintText: "Write message...",
-                            hintStyle: TextStyle(color: Colors.black54),
-                            border: InputBorder.none),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 15,
-                    ),
-                    FloatingActionButton(
-                      onPressed: () {
-                        final firebaseData = {
-                          "name": data.name['First'],
-                          "time": Timestamp.now(),
-                          "email": data.email,
-                          "message": myController.text
-                        };
-                        FirebaseFirestore.instance
-                            .collection("Messages")
-                            .add(firebaseData);
-                        myController.clear();
-                      },
-                      backgroundColor: Colors.blue,
-                      elevation: 0,
-                      child: const Icon(
-                        Icons.send,
-                        color: Colors.white,
-                        size: 18,
-                      ),
-                    ),
-                  ],
-      body: Scaffold(
-        body: Padding(
-            padding: const EdgeInsets.only(top: 10, bottom: 0),
-            child: Column(
-              children: [
-                Expanded(
-                  flex: 10,
-                  child: StreamBuilder(
-                      stream: FirebaseFirestore.instance
-                          .collection("Messages").orderBy('time')
-                          .snapshots(),
-                      builder: (ctx, AsyncSnapshot<QuerySnapshot> snapshot) {
-                        if (snapshot.hasData) {
-                          return ListView.builder(
-                              itemCount: snapshot.data?.docs.length,
-                              itemBuilder: (ctx, index) {
-                                QueryDocumentSnapshot x =
-                                    snapshot.data!.docs[index];
-                                return Message(
-                                  isCurrentUser: x["email"].toString() == data.email,
-                                  text: x['message'],
-                                  name: x['name'],
-                                );
-                              });
-                        } else {
-                          return Center(child: LoadingAnimationWidget.staggeredDotsWave(size: 50, color: Colors.red));
-                        }
-                      }),
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                      color: isClicked.value
-                          ? Colors.transparent
-                          : Colors.white70,
-                      borderRadius: BorderRadius.circular(50),
-                    border: Border.all(color: Colors.grey)
-                  ),
-                  padding: const EdgeInsets.all(10),
-                  // height: 60,
-                  // width: double.infinity,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              child: Align(
+                alignment: Alignment.bottomLeft,
+                child: Container(
+                  padding: const EdgeInsets.only(left: 10, bottom: 10, top: 10),
+                  height: 60,
+                  width: double.infinity,
+                  color: Colors.white,
                   child: Row(
                     children: <Widget>[
-                      // GestureDetector(
-                      //   onTap: () {},
-                      //   child: Container(
-                      //     height: 30,
-                      //     width: 30,
-                      //     decoration: BoxDecoration(
-                      //       color: Colors.lightBlue,
-                      //       borderRadius: BorderRadius.circular(30),
-                      //     ),
-                      //     child: const Icon(
-                      //       Icons.add,
-                      //       color: Colors.white,
-                      //       size: 20,
-                      //     ),
-                      //   ),
-                      // ),
-                      IconButton(onPressed: (){
-                        // todo
+                      InkWell(
+                        onTap: () {
+                          scrollController.animateTo(
+                              scrollController.position.maxScrollExtent,
+                              duration: const Duration(milliseconds: 300),
+                              curve: Curves.easeInOut);
                         },
-                          icon: const Icon(Icons.add,/*color: Colors.white,*/size: 30,)
+                        child: Container(
+                          height: 30,
+                          width: 30,
+                          decoration: BoxDecoration(
+                            color: Colors.lightBlue,
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          child: const Icon(
+                            Icons.add,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                        ),
                       ),
                       const SizedBox(
                         width: 15,
@@ -235,10 +134,13 @@ class Test extends HookWidget {
                           final firebaseData = {
                             "name": data.name['First'],
                             "time": Timestamp.now(),
-                            "email" : data.email,
+                            "email": data.email,
                             "message": myController.text
                           };
-                          FirebaseFirestore.instance.collection("Messages").add(firebaseData);
+                          FirebaseFirestore.instance
+                              .collection("Messages")
+                              .add(firebaseData);
+                          myController.clear();
                         },
                         backgroundColor: Colors.blue,
                         elevation: 0,
@@ -251,9 +153,7 @@ class Test extends HookWidget {
                     ],
                   ),
                 ),
-              ),
-            ),
-          ),
+              )),
         ],
       ),
     );
