@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 
 class Auth
 {
@@ -18,21 +19,18 @@ class Auth
     return auth.authStateChanges().map(_userFromCredUser);
   }
 
-  Future signIn({required String username, required String password}) async
+
+
+  Future signIn({required String username, required String password , required dynamic context}) async
   {
     try
     {
       final UserCredential result = await FirebaseAuth.instance.signInWithEmailAndPassword(email: username, password: password);
       //we got user
       User? user = result.user;
-
-      //we getting document for this user
-
-
       return _userFromCredUser(user);
-    } catch (e)
-    {
-      return null;
+    } on FirebaseAuthException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.code.toString())));
     }
   }
 
@@ -40,7 +38,7 @@ class Auth
   {
    try
    {
-      await auth.signOut();
+      await FirebaseAuth.instance.signOut();
    }
    catch(e)
    {
