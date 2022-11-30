@@ -58,73 +58,72 @@ class Test extends HookWidget {
                         }
                       }),
                 ),
-                Expanded(
-                  flex: 2,
-                  child: Align(
-                    child: Container(
-                      decoration: BoxDecoration(
-                          color: isClicked.value
-                              ? Colors.transparent
-                              : Colors.white70,
-                          borderRadius: BorderRadius.circular(30)),
-                      padding:
-                          const EdgeInsets.only(left: 10, bottom: 10, top: 10),
-                      height: 60,
-                      width: double.infinity,
-                      child: Row(
-                        children: <Widget>[
-                          GestureDetector(
-                            onTap: () {},
-                            child: Container(
-                              height: 30,
-                              width: 30,
-                              decoration: BoxDecoration(
-                                color: Colors.lightBlue,
-                                borderRadius: BorderRadius.circular(30),
-                              ),
-                              child: const Icon(
-                                Icons.add,
-                                color: Colors.white,
-                                size: 20,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 15,
-                          ),
-                          Expanded(
-                            child: TextField(
-                              controller: myController,
-                              decoration: const InputDecoration(
-                                  hintText: "Write message...",
-                                  hintStyle: TextStyle(color: Colors.black54),
-                                  border: InputBorder.none),
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 15,
-                          ),
-                          FloatingActionButton(
-                            onPressed: () {
-                              final firebaseData = {
-                                "name": data.name['First'],
-                                "time": Timestamp.now(),
-                                "email" : data.email,
-                                "message": myController.text
-                              };
-                              FirebaseFirestore.instance.collection("Messages").add(firebaseData);
-                            },
-                            backgroundColor: Colors.blue,
-                            elevation: 0,
-                            child: const Icon(
-                              Icons.send,
-                              color: Colors.white,
-                              size: 18,
-                            ),
-                          ),
-                        ],
+                Container(
+                  decoration: BoxDecoration(
+                      color: isClicked.value
+                          ? Colors.transparent
+                          : Colors.white70,
+                      borderRadius: BorderRadius.circular(50),
+                    border: Border.all(color: Colors.grey)
+                  ),
+                  padding: const EdgeInsets.all(10),
+                  // height: 60,
+                  // width: double.infinity,
+                  child: Row(
+                    children: <Widget>[
+                      // GestureDetector(
+                      //   onTap: () {},
+                      //   child: Container(
+                      //     height: 30,
+                      //     width: 30,
+                      //     decoration: BoxDecoration(
+                      //       color: Colors.lightBlue,
+                      //       borderRadius: BorderRadius.circular(30),
+                      //     ),
+                      //     child: const Icon(
+                      //       Icons.add,
+                      //       color: Colors.white,
+                      //       size: 20,
+                      //     ),
+                      //   ),
+                      // ),
+                      IconButton(onPressed: (){
+                        // todo
+                        }, icon: const Icon(Icons.add,/*color: Colors.white,*/size: 30,)),
+                      const SizedBox(
+                        width: 15,
                       ),
-                    ),
+                      Expanded(
+                        child: TextField(
+                          controller: myController,
+                          decoration: const InputDecoration(
+                              hintText: "Write message...",
+                              hintStyle: TextStyle(color: Colors.black54),
+                              border: InputBorder.none),
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 15,
+                      ),
+                      FloatingActionButton(
+                        onPressed: () {
+                          final firebaseData = {
+                            "name": data.name['First'],
+                            "time": Timestamp.now(),
+                            "email" : data.email,
+                            "message": myController.text
+                          };
+                          FirebaseFirestore.instance.collection("Messages").add(firebaseData);
+                        },
+                        backgroundColor: Colors.blue,
+                        elevation: 0,
+                        child: const Icon(
+                          Icons.send,
+                          color: Colors.white,
+                          size: 18,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
