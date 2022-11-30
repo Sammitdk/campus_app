@@ -35,6 +35,7 @@ dependencies:
   redux_thunk: ^0.4.0
   easy_pdf_viewer: ^1.0.6
   flutterfire: ^0.0.1
+  flutter_local_notifications: ^12.0.4
 
 dev_dependencies:
   flutter_test:
