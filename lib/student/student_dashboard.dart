@@ -1,8 +1,8 @@
+import 'package:campus_subsystem/messaging/conversation_screen.dart';
 import 'package:campus_subsystem/student/student_profile.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import '../firebase/signIn.dart';
-import '../messaging/test.dart';
 import 'student_home.dart';
 
 class StudentDashboard extends StatefulWidget {
@@ -18,13 +18,12 @@ class _StudentDashboardState extends State<StudentDashboard> {
   final navigationKey = GlobalKey<CurvedNavigationBarState>();
   final Auth auth = Auth();
   int index = 0;
-  bool isShowing = true;
 
   @override
   Widget build(BuildContext context) {
     final screen = [
       const StudentHome(),
-      Test(isShowing: isShowing),
+      const ConversationScreen(),
       const StudentProfile(),
     ];
     final items = <Widget>[
@@ -44,31 +43,17 @@ class _StudentDashboardState extends State<StudentDashboard> {
     return Scaffold(
         backgroundColor: Colors.white,
         body: screen[index],
-        bottomNavigationBar: isShowing ? CurvedNavigationBar(
+        bottomNavigationBar: CurvedNavigationBar(
           key: navigationKey,
           backgroundColor: Colors.transparent,
           height: 60,
           items: items,
           index: index,
           onTap: (index) {
-            if(index == 1) {
-              setState(() {
-                isShowing = false;
-              });
-            }
             setState(() {
-            this.index = index;
-          });},
-        ) :  InkWell(
-          onTap: () {
-            setState(() {
-              isShowing = true;
+              this.index = index;
             });
           },
-          child: Container(
-            height: 0
-          ),
-        )
-    );
+        ));
   }
 }
