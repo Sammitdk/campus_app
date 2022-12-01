@@ -11,7 +11,6 @@ Future<int> getMessageReads(dynamic data, dynamic gropName) async {
         count += 1;
       }
     }
-
   }).then((value) {
     return count;
   });
@@ -24,8 +23,14 @@ void readAll(dynamic data, String groupName) {
       .get()
       .then((QuerySnapshot querySnapshot) {
     for (var doc in querySnapshot.docs) {
-      if (doc['users'].contains(data.email)!) {
-        doc['users'].add(data.email);
+      if (doc['users'].contains(data.email) == false) {
+        FirebaseFirestore.instance
+            .collection(
+                "College/${data.branch}/MessageGroups/$groupName/Messages")
+            .doc(doc.id)
+            .update({
+          'users': FieldValue.arrayUnion([data.email])
+        });
       }
     }
   });

@@ -1,6 +1,4 @@
 import 'package:campus_subsystem/messaging/conversations.dart';
-import 'package:campus_subsystem/messaging/message_screen.dart';
-import 'package:campus_subsystem/messaging/read_message-fetch.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -97,33 +95,16 @@ class ConversationScreen extends HookWidget {
                         itemBuilder: (ctx, index) {
                           QueryDocumentSnapshot x = snapshot.data!.docs[index];
                           // a.add(getMessageReads(data, x["groupName"]));
-                          return InkWell(
-                            onTap: () {
-                              FirebaseFirestore.instance
-                                  .collection(
-                                      "College/${store.state.branch}/MessageGroups")
-                                  .doc(x["groupName"])
-                                  .update({"isMessageRead": true});
-                              readAll(store.state, x["groupName"]);
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (_) => MessageScreen(
-                                          groupName: x["groupName"])));
-                              },
-                            child: IgnorePointer(
-                              child: ConversationList(
-                                name: x['groupName'],
-                                messageText: x['messageText'],
-                                imageUrl: x['imgUrl'],
-                                time: DateFormat('hh:mm a')
-                                    .format(x['time'].toDate())
-                                    .toString(),
-                                isMessageRead: x['isMessageRead'],
-                                latestMessageBy: x['latestMessageBy'],
-                                count: 0,
-                              ),
-                            ),
+                          return ConversationList(
+                            name: x['groupName'],
+                            messageText: x['messageText'],
+                            imageUrl: x['imgUrl'],
+                            time: DateFormat('hh:mm a')
+                                .format(x['time'].toDate())
+                                .toString(),
+                            isMessageRead: x['isMessageRead'],
+                            latestMessageBy: x['latestMessageBy'],
+                            count: 0,
                           );
                         });
                   } else {
