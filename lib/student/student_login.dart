@@ -133,7 +133,7 @@ class _StudentLoginState extends State<StudentLogin> {
                                           password: passwordController.text,
                                           context: context)
                                       .then((value) {
-                                    fetchUserData(emailController.text).then(
+                                        fetchUserData(emailController.text).then(
                                         (value) => Navigator.pushReplacementNamed(
                                             context, "/"));});}
                               })),

@@ -1,18 +1,20 @@
-import 'package:campus_subsystem/messaging/conversations_list.dart';
+import 'package:campus_subsystem/messaging/conversations.dart';
 import 'package:campus_subsystem/messaging/message_screen.dart';
+import 'package:campus_subsystem/messaging/read_message-fetch.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import '../redux/reducer.dart';
 
-class ConversationScreen extends StatelessWidget {
+class ConversationScreen extends HookWidget {
   const ConversationScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    var data = StoreProvider.of<AppState>(context).state;
+    var store = StoreProvider.of<AppState>(context);
     return Scaffold(
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
@@ -83,7 +85,7 @@ class ConversationScreen extends StatelessWidget {
             ),
             StreamBuilder(
                 stream: FirebaseFirestore.instance
-                    .collection("College/${data.branch}/MessageGroups")
+                    .collection("College/${store.state.branch}/MessageGroups")
                     .orderBy('time')
                     .snapshots(),
                 builder: (ctx, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -94,26 +96,33 @@ class ConversationScreen extends StatelessWidget {
                         itemCount: snapshot.data?.docs.length,
                         itemBuilder: (ctx, index) {
                           QueryDocumentSnapshot x = snapshot.data!.docs[index];
+                          // a.add(getMessageReads(data, x["groupName"]));
                           return InkWell(
                             onTap: () {
-                              FirebaseFirestore.instance.collection("College/${data.branch}/MessageGroups").doc(x["groupName"]).update({
-                                "isMessageRead" : true
-                              });
+                              FirebaseFirestore.instance
+                                  .collection(
+                                      "College/${store.state.branch}/MessageGroups")
+                                  .doc(x["groupName"])
+                                  .update({"isMessageRead": true});
+                              readAll(store.state, x["groupName"]);
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                       builder: (_) => MessageScreen(
                                           groupName: x["groupName"])));
-                            },
+                              },
                             child: IgnorePointer(
                               child: ConversationList(
-                                  name: x['groupName'],
-                                  messageText: x['messageText'],
-                                  imageUrl: x['imgUrl'],
-                                  time: DateFormat('hh:mm a')
-                                      .format(x['time'].toDate())
-                                      .toString(),
-                                  isMessageRead: x['isMessageRead']),
+                                name: x['groupName'],
+                                messageText: x['messageText'],
+                                imageUrl: x['imgUrl'],
+                                time: DateFormat('hh:mm a')
+                                    .format(x['time'].toDate())
+                                    .toString(),
+                                isMessageRead: x['isMessageRead'],
+                                latestMessageBy: x['latestMessageBy'],
+                                count: 0,
+                              ),
                             ),
                           );
                         });
