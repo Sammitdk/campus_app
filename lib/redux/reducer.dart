@@ -53,8 +53,7 @@ class AppState {
         year: year ?? this.year,
         isStudent: isStudent ?? this.isStudent,
         imgUrl: imgUrl ?? this.imgUrl,
-        mobile: mobile ?? this.mobile
-    );
+        mobile: mobile ?? this.mobile);
   }
 
   const AppState.initialState(
@@ -68,7 +67,8 @@ class AppState {
       this.sem,
       this.year,
       this.dob,
-      this.isStudent, this.imgUrl);
+      this.isStudent,
+      this.imgUrl);
 }
 
 AppState FetchUserData(AppState state, dynamic action) {
@@ -85,8 +85,7 @@ AppState FetchUserData(AppState state, dynamic action) {
         isStudent: action.isStudent,
         address: action.address,
         sem: action.sem,
-        imgUrl: action.imgUrl
-    );
+        imgUrl: action.imgUrl);
   }
   return state;
 }

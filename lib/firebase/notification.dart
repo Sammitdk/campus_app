@@ -11,6 +11,18 @@ import 'package:http/http.dart' as http;
 import '../redux/actions/fetchUserData.dart';
 import '../redux/store.dart';
 
+void main() {
+    WidgetsFlutterBinding.ensureInitialized();
+      runApp(const MaterialApp(
+        home: Scaffold(
+          body: Noti(),
+        ),
+      ));
+    }
+
+class NotificationAPI{
+  static final _noti = FlutterLocalNotificationsPlugin();
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);

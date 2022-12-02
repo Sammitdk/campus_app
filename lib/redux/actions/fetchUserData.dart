@@ -5,6 +5,7 @@ import '../reducer.dart';
 import "./../store.dart";
 
 class FetchData {
+
   final dynamic email;
   final dynamic roll_No;
   final dynamic prn;
