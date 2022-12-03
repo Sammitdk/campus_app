@@ -83,7 +83,8 @@ class ConversationScreen extends HookWidget {
             ),
             StreamBuilder(
                 stream: FirebaseFirestore.instance
-                    .collection("College/${store.state.branch}/MessageGroups")
+                    .collection("GroupMessages")
+                    .where("users", arrayContains: store.state.email)
                     .orderBy('time')
                     .snapshots(),
                 builder: (ctx, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -94,7 +95,6 @@ class ConversationScreen extends HookWidget {
                         itemCount: snapshot.data?.docs.length,
                         itemBuilder: (ctx, index) {
                           QueryDocumentSnapshot x = snapshot.data!.docs[index];
-                          // a.add(getMessageReads(data, x["groupName"]));
                           return ConversationList(
                             name: x['groupName'],
                             messageText: x['messageText'],

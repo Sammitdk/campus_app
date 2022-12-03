@@ -32,9 +32,10 @@ class ConversationList extends HookWidget {
 
     return InkWell(
       onTap: () {
+        print(name);
         countState.value = 0;
         FirebaseFirestore.instance
-            .collection("College/${store.state.branch}/MessageGroups")
+            .collection("GroupMessages")
             .doc(name)
             .update({"isMessageRead": true});
         readAll(store.state, name);
@@ -87,7 +88,7 @@ class ConversationList extends HookWidget {
                                         style: TextStyle(
                                             fontSize: 15,
                                             color: Colors.grey.shade600,
-                                            fontWeight: isMessageRead
+                                            fontWeight: !isMessageRead
                                                 ? FontWeight.bold
                                                 : FontWeight.normal),
                                       )
@@ -96,7 +97,7 @@ class ConversationList extends HookWidget {
                                         style: TextStyle(
                                             fontSize: 15,
                                             color: Colors.grey.shade600,
-                                            fontWeight: isMessageRead
+                                            fontWeight: !isMessageRead
                                                 ? FontWeight.bold
                                                 : FontWeight.normal),
                                       ),
@@ -117,7 +118,7 @@ class ConversationList extends HookWidget {
                       time,
                       style: TextStyle(
                           fontSize: 12,
-                          fontWeight: isMessageRead
+                          fontWeight: !isMessageRead
                               ? FontWeight.bold
                               : FontWeight.normal),
                     ),
