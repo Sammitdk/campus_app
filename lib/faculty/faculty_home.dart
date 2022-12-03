@@ -1,10 +1,8 @@
 import 'package:campus_subsystem/faculty/faculty_notes.dart';
 import 'package:campus_subsystem/faculty/faculty_subject.dart';
 import 'package:flutter/material.dart';
-
 import 'faculty_attendance_option.dart';
 import 'faculty_event.dart';
-import 'faculty_timetable.dart';
 
 class FacultyHome extends StatefulWidget {
   Map<String,dynamic> info = {};
