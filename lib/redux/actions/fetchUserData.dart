@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:redux/redux.dart';
 import 'package:redux_thunk/redux_thunk.dart';
 import '../reducer.dart';
@@ -17,7 +18,7 @@ class FetchData {
   final dynamic year;
   final dynamic dob;
   final dynamic isStudent;
-  final dynamic imgUrl;
+  dynamic imgUrl;
   FetchData(
       {this.imgUrl,
       this.isStudent,
@@ -34,10 +35,13 @@ class FetchData {
 }
 
 Future<ThunkAction<AppState>> fetchUserData(String? email) async {
+  final firestoreinst = FirebaseFirestore.instance;
+
   final DocumentReference studentRef =
-  FirebaseFirestore.instance.doc('Email/$email');
-  await FirebaseFirestore.instance.collection('Student_Detail').where('Email',isEqualTo: "$email").get().then((value) async{
+  firestoreinst.doc('Email/$email');
+  await firestoreinst.collection('Student_Detail').where('Email',isEqualTo: "$email").get().then((value) async{
     if(value.docs.isNotEmpty){
+      firestoreinst.doc("Student_Detail/${value.docs[0]['PRN']}").set({"Token" : "${await FirebaseMessaging.instance.getToken()}"},SetOptions(merge: true));
       store.dispatch(FetchData(
           email: email,
           prn: value.docs[0]['PRN'],
@@ -50,12 +54,13 @@ Future<ThunkAction<AppState>> fetchUserData(String? email) async {
           name: value.docs[0]['Name'],
           isStudent: true,
           branch: value.docs[0]["Branch"],
-          imgUrl: value.docs[0]['imgUrl']
+          imgUrl: value.docs[0].data().containsKey("imgUrl") ? value.docs[0]["imgUrl"] : null
       ));
     } else {
-      final DocumentReference facultyRef = FirebaseFirestore.instance
+      final DocumentReference facultyRef = firestoreinst
           .doc('Faculty_Detail/$email');
       await facultyRef.get().then((value) async {
+        firestoreinst.doc("Faculty_Detail/$email").set({"Token" : await FirebaseMessaging.instance.getToken()});
         final data = value.data() as Map<String, dynamic>;
         store.dispatch(FetchData(
             email: studentRef.id,
