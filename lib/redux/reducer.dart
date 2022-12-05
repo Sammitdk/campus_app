@@ -14,6 +14,7 @@ class AppState {
   final dynamic dob;
   final dynamic isStudent;
   final dynamic imgUrl;
+  final dynamic subject;
   AppState(
       {this.imgUrl,
       this.isStudent,
@@ -26,6 +27,7 @@ class AppState {
       this.dob,
       this.email,
       this.roll_No,
+      this.subject,
       this.prn});
 
   AppState copyWith(
@@ -40,7 +42,8 @@ class AppState {
       year,
       dob,
       isStudent,
-      imgUrl}) {
+      imgUrl,
+      subject}) {
     return AppState(
         address: address ?? this.address,
         branch: branch ?? this.branch,
@@ -53,7 +56,9 @@ class AppState {
         year: year ?? this.year,
         isStudent: isStudent ?? this.isStudent,
         imgUrl: imgUrl ?? this.imgUrl,
-        mobile: mobile ?? this.mobile);
+        mobile: mobile ?? this.mobile,
+        subject: subject ?? this.subject
+    );
   }
 
   const AppState.initialState(
@@ -68,7 +73,8 @@ class AppState {
       this.year,
       this.dob,
       this.isStudent,
-      this.imgUrl);
+      this.imgUrl,
+      this.subject);
 }
 
 AppState FetchUserData(AppState state, dynamic action) {
@@ -85,7 +91,9 @@ AppState FetchUserData(AppState state, dynamic action) {
         isStudent: action.isStudent,
         address: action.address,
         sem: action.sem,
-        imgUrl: action.imgUrl);
+        imgUrl: action.imgUrl,
+        subject: action.subject
+    );
   }
   return state;
 }

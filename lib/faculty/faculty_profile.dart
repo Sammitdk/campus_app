@@ -3,15 +3,16 @@ import 'package:campus_subsystem/login_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:image_picker/image_picker.dart';
 import '../password_reset.dart';
+import '../redux/reducer.dart';
 
 class FacultyProfile extends StatefulWidget {
 
-  Map<String, dynamic> info = {};
-
-  FacultyProfile({Key? key,required this.info}) : super(key: key);
+  const FacultyProfile({Key? key}) : super(key: key);
 
   @override
   State<FacultyProfile> createState() => _FacultyProfileState();
@@ -20,25 +21,30 @@ class FacultyProfile extends StatefulWidget {
 class _FacultyProfileState extends State<FacultyProfile> {
   File? file;
 
-
   Future selectFiles() async{
     final result = await ImagePicker.platform.pickImage(source: ImageSource.gallery);
     if(result == null) return;
     final path = result.path;
     setState(() => file = File(path));
   }
-  Future uploadFile() async {
-    if(file == null) return;
-    final destination = 'Images/${widget.info['Email']}';
-    final ref = FirebaseStorage.instance.ref(destination);
-    await ref.putFile(file!);
-    String url = await ref.getDownloadURL();
-    await FirebaseFirestore.instance.collection("Faculty_Detail").doc("${widget.info['Email']}").update({'urlPicture':url});
-  }
+
   @override
   Widget build(BuildContext context) {
+    var state = StoreProvider.of<AppState>(context).state;
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
+    final stateurl = useState(state.imgUrl);
+
+    Future uploadFile() async {
+      if(file == null) return;
+      final destination = 'Images/${state.email}';
+      final ref = FirebaseStorage.instance.ref(destination);
+      await ref.putFile(file!);
+      String url = await ref.getDownloadURL();
+      stateurl.value = url;
+      await FirebaseFirestore.instance.collection("Faculty_Detail").doc("${state.email}").update({'imgUrl':url});
+    }
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: Stack(
@@ -60,12 +66,12 @@ class _FacultyProfileState extends State<FacultyProfile> {
             Positioned(
               top: 65,
               left: 20,
-              child: Text("${widget.info['Email']}",style: const TextStyle(fontSize: 20,color: Colors.white)),
+              child: Text("${state.email}",style: const TextStyle(fontSize: 20,color: Colors.white)),
             ),
             Positioned(
               top: 8,
               left: 20,
-              child: Text("${widget.info['Name']['First']}.${widget.info['Name']['Middle']}.${widget.info['Name']['Last']}", style: const TextStyle(fontSize: 40,color: Colors.white,fontFamily:'MuliBold',),),
+              child: Text("${state.name['First']}.${state.name['Middle']}.${state.name['Last']}", style: const TextStyle(fontSize: 40,color: Colors.white,fontFamily:'MuliBold',),),
             ),
             Positioned(
                 top: height/8.5,
@@ -73,7 +79,7 @@ class _FacultyProfileState extends State<FacultyProfile> {
                 child: CircleAvatar(
                   backgroundColor: Colors.transparent,
                   radius: 80,
-                  backgroundImage: widget.info['urlPicture']!=null ? NetworkImage(widget.info['urlPicture']) : const AssetImage("assets/images/profile") as ImageProvider,
+                  backgroundImage: stateurl != null ? NetworkImage(state.imgUrl) : const AssetImage("assets/images/profile.gif") as ImageProvider,
                 ),
             ),
             Positioned(
@@ -108,7 +114,7 @@ class _FacultyProfileState extends State<FacultyProfile> {
                           padding: const EdgeInsetsDirectional.only(start: 20),
                           child: Column(
                             children: [
-                              Text("${widget.info['Branch']}",style: const TextStyle(fontSize: 20,)),
+                              Text("${state.branch}",style: const TextStyle(fontSize: 20,)),
                             ],
                           ),
                         ),
@@ -128,7 +134,7 @@ class _FacultyProfileState extends State<FacultyProfile> {
                           padding: const EdgeInsetsDirectional.only(start: 20),
                           child: Column(
                             children: [
-                              Text("${widget.info['Mobile']}",style: const TextStyle(fontSize: 20,)),
+                              Text("${state.mobile}",style: const TextStyle(fontSize: 20,)),
                             ],
                           ),
                         ),
@@ -147,7 +153,7 @@ class _FacultyProfileState extends State<FacultyProfile> {
                                 width: 300,
                                 height: 200,
                                 child: ListView.builder(
-                                  itemCount: widget.info['Subjects'].keys.length,
+                                  itemCount: state.subject.keys.length,
                                   itemBuilder: (context,index){
                                     return Padding(
                                       padding: const EdgeInsetsDirectional.all(10),
@@ -164,7 +170,7 @@ class _FacultyProfileState extends State<FacultyProfile> {
                                           ),
                                           Expanded(
                                             flex: 2,
-                                              child: Text(widget.info['Subjects'].keys.elementAt(index),style: const TextStyle(fontSize: 18,color: Colors.black))),
+                                              child: Text(state.subject.keys.elementAt(index),style: const TextStyle(fontSize: 18,color: Colors.black))),
                                         ]
                                       ),
                                     );

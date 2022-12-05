@@ -62,7 +62,7 @@ class _FacultyAttendanceOptionState extends State<FacultyAttendanceOption> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('Selct Subject.*'),
+                    const Text('Select Subject.*'),
                     DropdownButtonFormField<String>(
                       validator: (value){
                         if(value == null || value.isEmpty){
@@ -130,7 +130,9 @@ class _FacultyAttendanceOptionState extends State<FacultyAttendanceOption> {
                         (date != 'Select Date and Time')?
                           Navigator.of(context).push(MaterialPageRoute(
                           builder: (_) => FacultyAttendance(
-                                subject: widget.info['Subjects'][selectedsub],
+                                subject: <String,dynamic>{
+                                        selectedsub :widget.info['Subjects'][selectedsub]
+                                      },
                                 date: date,
                               )
                           ))

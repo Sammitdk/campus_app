@@ -60,7 +60,7 @@ class MessageScreen extends HookWidget {
               child: StreamBuilder(
                   stream: FirebaseFirestore.instance
                       .collection(
-                          "College/${data.branch}/MessageGroups/$groupName/Messages")
+                          "GroupMessages/$groupName/Messages")
                       .orderBy('time')
                       .snapshots(),
                   builder: (ctx, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -149,11 +149,11 @@ class MessageScreen extends HookWidget {
                           };
                           FirebaseFirestore.instance
                               .collection(
-                                  "College/${data.branch}/MessageGroups/$groupName/Messages")
+                                  "GroupMessages/$groupName/Messages")
                               .add(firebaseData);
                           FirebaseFirestore.instance
                               .collection(
-                                  "College/${data.branch}/MessageGroups")
+                                  "GroupMessages")
                               .doc(groupName)
                               .update({
                             "messageText": myController.text,

@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-Future<int> getMessageReads(dynamic data, dynamic gropName) async {
+Future<int> getMessageReads(dynamic data, dynamic groupName) async {
   int count = 0;
   await FirebaseFirestore.instance
-      .collection("College/${data.branch}/MessageGroups/$gropName/Messages")
+      .collection("GroupMessages/$groupName/Messages")
       .get()
       .then((QuerySnapshot querySnapshot) {
     for (var doc in querySnapshot.docs) {
@@ -19,14 +19,13 @@ Future<int> getMessageReads(dynamic data, dynamic gropName) async {
 
 void readAll(dynamic data, String groupName) {
   FirebaseFirestore.instance
-      .collection("College/${data.branch}/MessageGroups/$groupName/Messages")
+      .collection("GroupMessages/$groupName/Messages")
       .get()
       .then((QuerySnapshot querySnapshot) {
     for (var doc in querySnapshot.docs) {
       if (doc['users'].contains(data.email) == false) {
         FirebaseFirestore.instance
-            .collection(
-                "College/${data.branch}/MessageGroups/$groupName/Messages")
+            .collection("GroupMessages/$groupName/Messages")
             .doc(doc.id)
             .update({
           'users': FieldValue.arrayUnion([data.email])

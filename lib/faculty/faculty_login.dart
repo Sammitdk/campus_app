@@ -129,9 +129,12 @@ class _FacultyLoginState extends State<FacultyLogin> {
                                         password: passwordController.text,
                                         context: context)
                                     .then((value) {
-                                  fetchUserData(emailController.text).then(
-                                      (value) => Navigator.pushReplacementNamed(
-                                          context, "/"));
+                                  if(value != null){
+                                    fetchUserData(emailController.text).then(
+                                        (value) =>
+                                            Navigator.pushReplacementNamed(
+                                                context, "/"));
+                                  }
                                 });
                               }
                             },
@@ -157,7 +160,7 @@ class _FacultyLoginState extends State<FacultyLogin> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (_) => ResetPassword()));
+                                    builder: (_) => const ResetPassword()));
                           },
                         ),
                       ),

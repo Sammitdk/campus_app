@@ -2,20 +2,26 @@ import 'package:campus_subsystem/loadpdf.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_pdf_viewer/easy_pdf_viewer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+
+import '../redux/reducer.dart';
 
 
 class FacultySubject extends StatefulWidget {
-  FacultySubject({Key? key,required this.info}) : super(key: key);
-  Map<String,dynamic> info ;
+  const FacultySubject({Key? key}) : super(key: key);
 
   @override
   State<FacultySubject> createState() => _FacultySubjectState();
 }
 
 class _FacultySubjectState extends State<FacultySubject> {
+
+
+
   @override
   Widget build(BuildContext context) {
+    var state = StoreProvider.of<AppState>(context).state;
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -23,7 +29,7 @@ class _FacultySubjectState extends State<FacultySubject> {
         backgroundColor: Colors.indigo[300],
       ),
       body: StreamBuilder(
-          stream: FirebaseFirestore.instance.collection('/Faculty_Detail/${widget.info['Email']}/Subjects').snapshots(),
+          stream: FirebaseFirestore.instance.collection('/Faculty_Detail/${state.email}/Subjects').snapshots(),
           builder: (context ,AsyncSnapshot<QuerySnapshot> snapshot) {
             if(snapshot.hasData){
               return ListView.builder(
