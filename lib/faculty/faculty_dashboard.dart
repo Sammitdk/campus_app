@@ -1,13 +1,14 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import '../redux/reducer.dart';
 import 'faculty_home.dart';
 import 'faculty_profile.dart';
 
 
 class FacultyDashboard extends StatefulWidget {
-  final Map<String,dynamic> info;
 
-  const FacultyDashboard({required this.info});
+  const FacultyDashboard({super.key});
   @override
   State<FacultyDashboard> createState() => _FacultyDashboardState();
 }
@@ -18,9 +19,10 @@ class _FacultyDashboardState extends State<FacultyDashboard> {
 
   @override
   Widget build(BuildContext context) {
+    var state = StoreProvider.of<AppState>(context).state;
     final screen = [
-      FacultyHome(info: widget.info),
-      FacultyProfile(info: widget.info),
+      FacultyHome(),
+      FacultyProfile(),
     ];
     final items = <Widget>
     [
