@@ -1,6 +1,5 @@
 import 'package:campus_subsystem/loadpdf.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:easy_pdf_viewer/easy_pdf_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
