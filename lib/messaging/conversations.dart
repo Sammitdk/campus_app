@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:campus_subsystem/messaging/read_message-fetch.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -16,8 +17,10 @@ class ConversationList extends HookWidget {
   final String latestMessageBy;
   final int count;
   final dynamic isGroup;
+  final dynamic prn;
   const ConversationList(
       {Key? key,
+      this.prn,
       required this.name,
       required this.isGroup,
       required this.messageText,
@@ -32,27 +35,48 @@ class ConversationList extends HookWidget {
   Widget build(BuildContext context) {
     var data = StoreProvider.of<AppState>(context).state;
     var countState = useState(count);
-    getMessageReads(store.state, name, isGroup)
-        .then((value) => {countState.value = value});
+
+    if (isGroup) {
+      getMessageReads(store.state, name, isGroup)
+          .then((value) => {countState.value = value});
+    } else {
+      getMessageReads(store.state, prn, false)
+          .then((value) => {countState.value = value});
+    }
 
     return InkWell(
       onTap: () {
         countState.value = 0;
-        isGroup
-            ? FirebaseFirestore.instance
-                .collection("GroupMessages")
-                .doc(name)
-                .update({"isMessageRead": true})
-            : FirebaseFirestore.instance
-                .collection("Student_Detail/${data.prn}/Messages")
-                .doc(name)
-                .update({"isMessageRead": true});
-        readAll(store.state, name, isGroup);
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (_) => MessageScreen(
-                    groupName: name, imageUrl: imageUrl, isGroup: isGroup)));
+        if (isGroup) {
+          FirebaseFirestore.instance
+              .collection("GroupMessages")
+              .doc(name)
+              .update({"isMessageRead": true});
+          readAll(store.state, name, isGroup);
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (_) => MessageScreen(
+                      groupName: name, imageUrl: imageUrl, isGroup: isGroup)));
+        } else {
+          FirebaseFirestore.instance
+              .collection("Student_Detail/${data.prn}/Messages")
+              .doc(prn)
+              .update({"isMessageRead": true});
+          FirebaseFirestore.instance
+              .collection("Student_Detail/$prn/Messages")
+              .doc(data.prn)
+              .update({"isMessageRead": true});
+          readAll(store.state, prn, isGroup);
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (_) => MessageScreen(
+                      groupName: name,
+                      imageUrl: imageUrl,
+                      isGroup: false,
+                      prn: prn)));
+        }
       },
       child: IgnorePointer(
         child: Container(
@@ -63,10 +87,26 @@ class ConversationList extends HookWidget {
               Expanded(
                 child: Row(
                   children: <Widget>[
-                    CircleAvatar(
-                      backgroundImage: NetworkImage(imageUrl),
-                      maxRadius: 30,
-                    ),
+                    imageUrl != ""
+                        ? CachedNetworkImage(
+                            imageUrl: imageUrl,
+                            imageBuilder: (context, imageProvider) {
+                              return CircleAvatar(
+                                backgroundImage: imageProvider,
+                                maxRadius: 30,
+                              );
+                            },
+                            placeholder: (context, url) =>
+                                const CircularProgressIndicator(),
+                            errorWidget: (context, url, error) =>
+                                const Icon(Icons.error),
+                            fit: BoxFit.cover,
+                          )
+                        : const CircleAvatar(
+                            backgroundImage:
+                                AssetImage("assets/images/profile.gif"),
+                            maxRadius: 30,
+                          ),
                     const SizedBox(
                       width: 16,
                     ),

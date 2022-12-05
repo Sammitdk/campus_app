@@ -1,6 +1,11 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+
+import '../redux/reducer.dart';
+import 'message_screen.dart';
 
 class NewMessage extends HookWidget {
   const NewMessage({Key? key}) : super(key: key);
@@ -42,6 +47,8 @@ class NewMessage extends HookWidget {
                             name: x['Name'],
                             branch: x['Branch'],
                             year: x['Year'],
+                            email: x['Email'],
+                            prn: x['PRN'],
                           );
                         });
                   } else {
@@ -62,11 +69,9 @@ class NewMessage extends HookWidget {
                   futureDocReference.value = FirebaseFirestore.instance
                       .collection("Student_Detail")
                       .where("Name.First",
-                          isGreaterThanOrEqualTo: value.replaceFirst(
-                              value[0], value[0].toUpperCase()))
+                          isGreaterThanOrEqualTo: value.toLowerCase())
                       .where("Name.First",
-                          isLessThan:
-                              '${value.replaceFirst(value[0], value[0].toUpperCase())}z')
+                          isLessThan: '${value.toLowerCase()}z')
                       .orderBy("Name.First")
                       .get();
                 },
@@ -99,25 +104,42 @@ class User extends StatelessWidget {
   final dynamic name;
   final dynamic branch;
   final dynamic year;
+  final dynamic email;
+  final dynamic prn;
   const User({
     Key? key,
     required this.imageUrl,
     required this.name,
     required this.branch,
     required this.year,
+    this.email,
+    this.prn,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    var storeData = StoreProvider.of<AppState>(context).state;
     return Padding(
       padding: const EdgeInsets.all(20),
       child: Row(children: <Widget>[
-        CircleAvatar(
-          backgroundImage: imageUrl != ""
-              ? NetworkImage(imageUrl)
-              : const AssetImage("assets/images/profile.gif") as ImageProvider,
-          maxRadius: 30,
-        ),
+        imageUrl != ""
+            ? CachedNetworkImage(
+                imageUrl: imageUrl,
+                imageBuilder: (context, imageProvider) {
+                  return CircleAvatar(
+                    backgroundImage: imageProvider,
+                    maxRadius: 30,
+                  );
+                },
+                placeholder: (context, url) =>
+                    const CircularProgressIndicator(),
+                errorWidget: (context, url, error) => const Icon(Icons.error),
+                fit: BoxFit.cover,
+              )
+            : const CircleAvatar(
+                backgroundImage: AssetImage("assets/images/profile.gif"),
+                maxRadius: 30,
+              ),
         const SizedBox(width: 16),
         Expanded(
           child: Container(
@@ -146,7 +168,45 @@ class User extends StatelessWidget {
           ),
         ),
         IconButton(
-            onPressed: () {}, icon: const Icon(Icons.messenger_outline_rounded))
+            onPressed: () {
+              final data = {
+                'groupName': name['First'],
+                'imgUrl': imageUrl,
+                'isGroup': false,
+                'isMessageRead': false,
+                'messageText': "",
+                'messageType': 'userMessage',
+                'time': Timestamp.now(),
+                'prn': prn
+              };
+              final myData = {
+                'groupName': storeData.name['First'],
+                'imgUrl': storeData.imgUrl,
+                'isGroup': false,
+                'isMessageRead': false,
+                'messageText': "",
+                'messageType': 'userMessage',
+                'time': Timestamp.now(),
+                'prn': storeData.prn
+              };
+              FirebaseFirestore.instance
+                  .collection("Student_Detail/${storeData.prn}/Messages")
+                  .doc(prn)
+                  .set(data, SetOptions(merge: true));
+              FirebaseFirestore.instance
+                  .collection("Student_Detail/$prn/Messages")
+                  .doc(storeData.prn)
+                  .set(myData, SetOptions(merge: true));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => MessageScreen(
+                          groupName: name['First'],
+                          imageUrl: imageUrl,
+                          isGroup: false,
+                          prn: prn)));
+            },
+            icon: const Icon(Icons.messenger_outline_rounded))
       ]),
     );
   }

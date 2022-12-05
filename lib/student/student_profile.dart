@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:campus_subsystem/password_reset.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -57,17 +58,37 @@ class StudentProfile extends HookWidget {
             )),
         Positioned(
             top: height / 8.5,
-            left: width / 1.7,
-            child: CircleAvatar(
-              backgroundColor: Colors.transparent,
-              maxRadius: 80,
-              backgroundImage: clicked.value && file != null
-                  ? FileImage(file!)
-                  : stateUrl.value != null
-                      ? NetworkImage(stateUrl.value)
-                      : const AssetImage("assets/images/profile.gif")
-                          as ImageProvider,
-            )),
+            left: width / 1.8,
+            child: clicked.value && file != null
+                ? CircleAvatar(
+                    maxRadius: 80,
+                    backgroundImage: FileImage(file!),
+                  )
+                : stateUrl.value != ""
+                    ? CachedNetworkImage(
+                        imageUrl: stateUrl.value,
+                        imageBuilder: (context, imageProvider) {
+                          return CircleAvatar(
+                            backgroundImage: imageProvider,
+                            maxRadius: 80,
+                          );
+                        },
+                        placeholder: (context, url) => const CircleAvatar(
+                          backgroundColor: Colors.transparent,
+                          backgroundImage:
+                              AssetImage("assets/images/profile.gif"),
+                          maxRadius: 80,
+                        ),
+                        errorWidget: (context, url, error) =>
+                            const Icon(Icons.error),
+                        fit: BoxFit.cover,
+                      )
+                    : const CircleAvatar(
+                        backgroundImage:
+                            AssetImage("assets/images/profile.gif"),
+                        maxRadius: 80,
+                        backgroundColor: Colors.transparent,
+                      )),
         Positioned(
             top: height / 3.50,
             width: width / 0.55,
