@@ -21,16 +21,18 @@ class StudentProfile extends HookWidget {
     final Auth auth = Auth();
     File? file;
     final stateUrl = useState(state.imgUrl);
+    var clicked = useState(false);
 
     Future selectFiles() async {
-      final result = await ImagePicker.platform.pickImage(source: ImageSource.gallery);
+      final result =
+          await ImagePicker.platform.pickImage(source: ImageSource.gallery);
       if (result == null) return;
       final path = result.path;
       file = File(path);
+      clicked.value = true;
     }
 
     Future uploadFile() async {
-      stateUrl.value = null;
       if (file == null) return;
       final destination = 'Images/${state.prn}';
       final ref = FirebaseStorage.instance.ref(destination);
@@ -41,6 +43,7 @@ class StudentProfile extends HookWidget {
           .collection("Student_Detail")
           .doc("${state.prn}")
           .update({'imgUrl': url});
+      clicked.value = false;
     }
 
     return Scaffold(
@@ -58,10 +61,10 @@ class StudentProfile extends HookWidget {
             child: CircleAvatar(
               backgroundColor: Colors.transparent,
               maxRadius: 80,
-              backgroundImage: stateUrl.value != null
-                  ? NetworkImage(stateUrl.value)
-                  : file != null
-                      ? FileImage(file!)
+              backgroundImage: clicked.value && file != null
+                  ? FileImage(file!)
+                  : stateUrl.value != null
+                      ? NetworkImage(stateUrl.value)
                       : const AssetImage("assets/images/profile.gif")
                           as ImageProvider,
             )),

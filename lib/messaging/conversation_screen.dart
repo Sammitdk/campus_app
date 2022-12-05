@@ -17,6 +17,14 @@ class ConversationScreen extends HookWidget {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
+          floatingActionButton: FloatingActionButton(
+              backgroundColor: Colors.white,
+              foregroundColor: Colors.black,
+              child: const Icon(Icons.messenger_outline_outlined),
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (_) => const NewMessage()));
+              }),
           appBar: AppBar(
             automaticallyImplyLeading: false,
             backgroundColor: Colors.white,
@@ -48,16 +56,6 @@ class ConversationScreen extends HookWidget {
             children: [
               Stack(
                 children: <Widget>[
-                  Positioned(
-                    bottom: 15,
-                    right: 20,
-                    child: IconButton(
-                        icon: const Icon(Icons.messenger_outline_outlined),
-                        onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (_) => const NewMessage()));
-                        }
-                        ),
-                  ),
                   Positioned(
                     left: 0,
                     right: 0,

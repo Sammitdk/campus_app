@@ -39,8 +39,7 @@ class FetchData {
 Future<ThunkAction<AppState>> fetchUserData(String? email) async {
   final firestoreinst = FirebaseFirestore.instance;
 
-  final DocumentReference studentRef =
-  firestoreinst.doc('Email/$email');
+  final DocumentReference studentRef = firestoreinst.doc('Email/$email');
   await firestoreinst.collection('Student_Detail').where('Email',isEqualTo: "$email").get().then((value) async{
     if(value.docs.isNotEmpty){
       firestoreinst.doc("Student_Detail/${value.docs[0]['PRN']}").set({"Token" : "${await FirebaseMessaging.instance.getToken()}"},SetOptions(merge: true));
@@ -66,7 +65,7 @@ Future<ThunkAction<AppState>> fetchUserData(String? email) async {
         final data = value.data() as Map<String, dynamic>;
         store.dispatch(FetchData(
             name: data["Name"],
-            email: studentRef.id,
+            email: facultyRef.id,
             roll_No: data['Roll_No'],
             isStudent: false,
             imgUrl: data.containsKey("imgUrl") ? data["imgUrl"] : null,
