@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import '../redux/reducer.dart';
 import 'message.dart';
@@ -10,9 +11,11 @@ class MessageScreen extends HookWidget {
   final dynamic groupName;
   final dynamic imageUrl;
   final dynamic isGroup;
+  final dynamic prn;
 
   const MessageScreen({
     Key? key,
+    this.prn,
     required this.isGroup,
     required this.groupName,
     required this.imageUrl,
@@ -131,7 +134,7 @@ class MessageScreen extends HookWidget {
         body: Stack(
           children: <Widget>[
             Positioned(
-              top: 0,
+              top: 20,
               left: 0,
               right: 0,
               bottom: MediaQuery.of(context).viewInsets.bottom + 60,
@@ -147,7 +150,7 @@ class MessageScreen extends HookWidget {
                             .snapshots()
                         : FirebaseFirestore.instance
                             .collection(
-                                "Student_Detail/${data.prn}/Messages/$groupName/Messages")
+                                "Student_Detail/${data.prn}/Messages/$prn/Messages")
                             .orderBy('time')
                             .snapshots(),
                     builder: (ctx, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -164,6 +167,9 @@ class MessageScreen extends HookWidget {
                                 name: x['name'],
                                 messageType: x['messageType'],
                                 isCurrentUser: x['email'] == data.email,
+                                time: DateFormat('hh:mm a')
+                                    .format(x['time'].toDate())
+                                    .toString(),
                               );
                             });
                       } else {
@@ -227,48 +233,75 @@ class MessageScreen extends HookWidget {
                       FloatingActionButton(
                         onPressed: () {
                           if (myController.text.isNotEmpty) {
-                            final firebaseData = {
-                              "name": data.name['First'],
-                              "time": Timestamp.now(),
-                              "email": data.email,
-                              "message": myController.text,
-                              "users": [data.email],
-                              "messageType": "groupMessage"
-                            };
-                            final firebaseUserData = {
-                              "name": data.name['First'],
-                              "time": Timestamp.now(),
-                              "email": data.email,
-                              "message": myController.text,
-                              "messageType": "userMessage",
-                              "users": [data.email],
-                            };
-                            isGroup
-                                ? FirebaseFirestore.instance
-                                    .collection(
-                                        "GroupMessages/$groupName/Messages")
-                                    .add(firebaseData)
-                                : FirebaseFirestore.instance
-                                    .collection(
-                                        "Student_Detail/${data.prn}/Messages/$groupName/Messages")
-                                    .add(firebaseUserData);
-                            isGroup
-                                ? FirebaseFirestore.instance
-                                    .collection("GroupMessages")
-                                    .doc(groupName)
-                                    .update({
-                                    "messageText": myController.text,
-                                    "time": Timestamp.now(),
-                                    "latestMessageBy": data.name['First']
-                                  })
-                                : FirebaseFirestore.instance
-                                    .collection(
-                                        "Student_Detail/${data.prn}/Messages")
-                                    .doc(groupName)
-                                    .update({
-                                    "messageText": myController.text,
-                                    "time": Timestamp.now(),
-                                  });
+                            if (isGroup) {
+                              final firebaseData = {
+                                "name": data.name['First'],
+                                "time": Timestamp.now(),
+                                "email": data.email,
+                                "message": myController.text,
+                                "users": [data.email],
+                                "messageType": "groupMessage"
+                              };
+                              FirebaseFirestore.instance
+                                  .collection(
+                                      "GroupMessages/$groupName/Messages")
+                                  .add(firebaseData);
+                              FirebaseFirestore.instance
+                                  .collection("GroupMessages")
+                                  .doc(groupName)
+                                  .update({
+                                "messageText": myController.text,
+                                "time": Timestamp.now(),
+                                "latestMessageBy": data.name['First']
+                              });
+                            } else {
+                              final firebaseUserData = {
+                                "name": data.name['First'],
+                                "time": Timestamp.now(),
+                                "email": data.email,
+                                "message": myController.text,
+                                "messageType": "userMessage",
+                                "users": [data.email],
+                              };
+                              FirebaseFirestore.instance
+                                  .collection(
+                                      "Student_Detail/${data.prn}/Messages/$prn/Messages")
+                                  .add(firebaseUserData);
+                              FirebaseFirestore.instance
+                                  .collection(
+                                      "Student_Detail/${data.prn}/Messages")
+                                  .doc(prn)
+                                  .update({
+                                "messageText": myController.text,
+                                "time": Timestamp.now(),
+                              });
+                              FirebaseFirestore.instance
+                                  .collection(
+                                      "Student_Detail/$prn/Messages/${data.prn}/Messages")
+                                  .add(firebaseUserData);
+                              FirebaseFirestore.instance
+                                  .collection("Student_Detail/$prn/Messages")
+                                  .doc(data.prn)
+                                  .update({
+                                "messageText": myController.text,
+                                "time": Timestamp.now(),
+                              });
+                              FirebaseFirestore.instance
+                                  .collection(
+                                      "Student_Detail/${data.prn}/Messages")
+                                  .doc(prn)
+                                  .update({
+                                "messageText": myController.text,
+                                "time": Timestamp.now(),
+                              });
+                              FirebaseFirestore.instance
+                                  .collection("Student_Detail/$prn/Messages")
+                                  .doc(data.prn)
+                                  .update({
+                                "messageText": myController.text,
+                                "time": Timestamp.now(),
+                              });
+                            }
                           }
                           myController.clear();
                         },

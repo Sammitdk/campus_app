@@ -88,7 +88,8 @@ class ConversationScreen extends HookWidget {
                                         isMessageRead: x['isMessageRead'],
                                         latestMessageBy: "ok",
                                         count: 0,
-                                        isGroup: x["isGroup"]);
+                                        isGroup: x["isGroup"],
+                                        prn: x['prn']);
                                   });
                             } else {
                               return Center(
