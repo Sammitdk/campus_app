@@ -23,8 +23,7 @@ class StudentProfile extends HookWidget {
     final stateUrl = useState(state.imgUrl);
 
     Future selectFiles() async {
-      final result =
-          await ImagePicker.platform.pickImage(source: ImageSource.gallery);
+      final result = await ImagePicker.platform.pickImage(source: ImageSource.gallery);
       if (result == null) return;
       final path = result.path;
       file = File(path);

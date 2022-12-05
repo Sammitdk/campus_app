@@ -10,30 +10,24 @@ import 'package:image_picker/image_picker.dart';
 import '../password_reset.dart';
 import '../redux/reducer.dart';
 
-class FacultyProfile extends StatefulWidget {
+class FacultyProfile extends HookWidget {
 
-  const FacultyProfile({Key? key}) : super(key: key);
-
-  @override
-  State<FacultyProfile> createState() => _FacultyProfileState();
-}
-
-class _FacultyProfileState extends State<FacultyProfile> {
-  File? file;
-
-  Future selectFiles() async{
-    final result = await ImagePicker.platform.pickImage(source: ImageSource.gallery);
-    if(result == null) return;
-    final path = result.path;
-    setState(() => file = File(path));
-  }
+  FacultyProfile({super.key});
 
   @override
   Widget build(BuildContext context) {
     var state = StoreProvider.of<AppState>(context).state;
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
+    File? file;
     final stateurl = useState(state.imgUrl);
+
+    Future selectFiles() async{
+      final result = await ImagePicker.platform.pickImage(source: ImageSource.gallery);
+      if(result == null) return;
+      final path = result.path;
+      file = File(path);
+    }
 
     Future uploadFile() async {
       if(file == null) return;
@@ -42,7 +36,10 @@ class _FacultyProfileState extends State<FacultyProfile> {
       await ref.putFile(file!);
       String url = await ref.getDownloadURL();
       stateurl.value = url;
-      await FirebaseFirestore.instance.collection("Faculty_Detail").doc("${state.email}").update({'imgUrl':url});
+      await FirebaseFirestore.instance
+          .collection("Faculty_Detail")
+          .doc("${state.email}")
+          .update({'imgUrl':url});
     }
 
     return Scaffold(
@@ -79,7 +76,7 @@ class _FacultyProfileState extends State<FacultyProfile> {
                 child: CircleAvatar(
                   backgroundColor: Colors.transparent,
                   radius: 80,
-                  backgroundImage: stateurl != null ? NetworkImage(state.imgUrl) : const AssetImage("assets/images/profile.gif") as ImageProvider,
+                  backgroundImage: stateurl.value != null ? NetworkImage(state.imgUrl) : const AssetImage("assets/images/profile.gif") as ImageProvider,
                 ),
             ),
             Positioned(

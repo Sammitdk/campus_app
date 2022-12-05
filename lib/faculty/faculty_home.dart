@@ -107,7 +107,7 @@ class _FacultyHomeState extends State<FacultyHome> {
                     Expanded(
                       child: InkWell(
                         onTap: (){
-                          // Navigator.push(context,MaterialPageRoute(builder: (_) => FacultyAttendanceOption()));
+                          Navigator.push(context,MaterialPageRoute(builder: (_) => const FacultyAttendanceOption()));
                         },
                         child: Card(
                           shape: RoundedRectangleBorder(
