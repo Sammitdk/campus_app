@@ -20,35 +20,36 @@ void main() async {
     SystemUiOverlay.bottom, //This line is used for showing the bottom bar
   ]);
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const Main());
 }
 
-class Main extends StatelessWidget{
+class Main extends StatelessWidget {
   const Main({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
-    return StoreProvider(store: store, child: StreamProvider<User?>.value(
-      value: Auth().user,
-      initialData: null,
-      child: MaterialApp(
-        theme: ThemeData(
-            fontFamily: "Muli"
-        ),
-        color: Colors.transparent,
-        debugShowCheckedModeBanner: false,
-        initialRoute: 'loading_page',
-        routes: {
-          '/' :(context) => const Wrapper(),
-          'loading_page':(context) =>  LoadingPage(email: Auth().auth.currentUser?.email),
-          'login_page': (context) => const Login(),
-          't_login_form': (context) => const KeyboardVisibilityProvider(child: FacultyLogin()),
-          's_login_form': (context) => const KeyboardVisibilityProvider(child: StudentLogin()),
-        },
-      ),
-    ));
+
+    return StoreProvider(
+        store: store,
+        child: StreamProvider<User?>.value(
+          value: Auth().user,
+          initialData: null,
+          child: MaterialApp(
+            theme: ThemeData(fontFamily: "Muli"),
+            color: Colors.transparent,
+            debugShowCheckedModeBanner: false,
+            initialRoute: 'loading_page',
+            routes: {
+              '/': (context) => const Wrapper(),
+              'loading_page': (context) =>
+                  LoadingPage(email: Auth().auth.currentUser?.email),
+              'login_page': (context) => const Login(),
+              't_login_form': (context) =>
+                  const KeyboardVisibilityProvider(child: FacultyLogin()),
+              's_login_form': (context) =>
+                  const KeyboardVisibilityProvider(child: StudentLogin()),
+            },
+          ),
+        ));
   }
 }
