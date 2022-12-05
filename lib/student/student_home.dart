@@ -73,7 +73,7 @@ class _StudentHomeState extends State<StudentHome> {
                           child: InkWell(
                         onTap: () {
                           Navigator.of(context).push(MaterialPageRoute(
-                              builder: (_) => StudentSyllabus()));
+                              builder: (_) => const StudentSyllabus()));
                         },
                         child: Card(
                           shape: RoundedRectangleBorder(

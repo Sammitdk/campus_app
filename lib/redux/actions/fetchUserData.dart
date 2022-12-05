@@ -19,6 +19,7 @@ class FetchData {
   final dynamic dob;
   final dynamic isStudent;
   dynamic imgUrl;
+  dynamic subject;
   FetchData(
       {this.imgUrl,
       this.isStudent,
@@ -31,7 +32,8 @@ class FetchData {
       this.email,
       this.roll_No,
       this.prn,
-      this.dob});
+      this.dob,
+      this.subject});
 }
 
 Future<ThunkAction<AppState>> fetchUserData(String? email) async {
@@ -60,13 +62,18 @@ Future<ThunkAction<AppState>> fetchUserData(String? email) async {
       final DocumentReference facultyRef = firestoreinst
           .doc('Faculty_Detail/$email');
       await facultyRef.get().then((value) async {
-        firestoreinst.doc("Faculty_Detail/$email").set({"Token" : await FirebaseMessaging.instance.getToken()});
+        firestoreinst.doc("Faculty_Detail/$email").set({"Token" : await FirebaseMessaging.instance.getToken()},SetOptions(merge: true));
         final data = value.data() as Map<String, dynamic>;
         store.dispatch(FetchData(
+            name: data["Name"],
             email: studentRef.id,
             prn: data['PRN'],
             roll_No: data['Roll_No'],
-            isStudent: false));
+            isStudent: false,
+            imgUrl: data.containsKey("imgUrl") ? data["imgUrl"] : null,
+            branch: data['Branch'],
+            subject: data["Subjects"]
+        ));
       });
     }
   });

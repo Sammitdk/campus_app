@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class FacultyAttendance extends StatefulWidget {
-  final List<dynamic> subject;
+  final Map subject;
   final String date;
 
   const FacultyAttendance({Key? key,required this.subject, required this.date}) : super(key: key);
@@ -25,14 +25,14 @@ class _FacultyAttendanceState extends State<FacultyAttendance> {
       DocumentSnapshot ds = await rolls[key].get();
       Map<String,dynamic> info = ds.data() as Map<String,dynamic>;
       String PRN = info['PRN'];
-      DocumentReference student = FirebaseFirestore.instance.doc('Student_Detail/${PRN}/${widget.subject[2]}');
+      DocumentReference student = FirebaseFirestore.instance.doc('Student_Detail/${PRN}/Attendane/${widget.subject[2]}');
       // DocumentSnapshot stu = await student.get();
       Map<String,dynamic> mark = {};
       mark[widget.date] = value;
       student.set(mark,SetOptions(merge: true));
     });
   }
-  Future<Map<String,dynamic>> getStudentList()async{
+  Future<Map<String,dynamic>> getStudentList() async {
     DocumentSnapshot rolllist = await widget.subject[1].get();
     rolls = rolllist.data() as Map<String,dynamic>;
     rolls.forEach((key, value) async {
@@ -97,9 +97,9 @@ class _FacultyAttendanceState extends State<FacultyAttendance> {
               elevation: 1,
               backgroundColor: Colors.indigo[200],
               foregroundColor: Colors.black,
-              onPressed: () async{
-                await markAttendance();
-                // await perStudentAttendance();
+              onPressed: () {
+                markAttendance();
+                perStudentAttendance();
                 Navigator.pop(context);
                 Navigator.pop(context);
               },

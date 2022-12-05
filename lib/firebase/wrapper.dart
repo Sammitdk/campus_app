@@ -23,7 +23,7 @@ class Wrapper extends HookWidget {
             if(state.isStudent) {
               return const StudentDashboard();
             }else{
-              return const FacultyDashboard(info: {},);
+              return const FacultyDashboard();
             }
           }
         });
