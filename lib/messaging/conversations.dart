@@ -2,6 +2,8 @@ import 'package:campus_subsystem/messaging/read_message-fetch.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import '../redux/reducer.dart';
 import '../redux/store.dart';
 import 'message_screen.dart';
 
@@ -13,9 +15,11 @@ class ConversationList extends HookWidget {
   final bool isMessageRead;
   final String latestMessageBy;
   final int count;
+  final dynamic isGroup;
   const ConversationList(
       {Key? key,
       required this.name,
+      required this.isGroup,
       required this.messageText,
       required this.imageUrl,
       required this.time,
@@ -26,21 +30,29 @@ class ConversationList extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    var data = StoreProvider.of<AppState>(context).state;
     var countState = useState(count);
-    getMessageReads(store.state, name)
+    getMessageReads(store.state, name, isGroup)
         .then((value) => {countState.value = value});
 
     return InkWell(
       onTap: () {
-        print(name);
         countState.value = 0;
-        FirebaseFirestore.instance
-            .collection("GroupMessages")
-            .doc(name)
-            .update({"isMessageRead": true});
-        readAll(store.state, name);
-        Navigator.push(context,
-            MaterialPageRoute(builder: (_) => MessageScreen(groupName: name)));
+        isGroup
+            ? FirebaseFirestore.instance
+                .collection("GroupMessages")
+                .doc(name)
+                .update({"isMessageRead": true})
+            : FirebaseFirestore.instance
+                .collection("Student_Detail/${data.prn}/Messages")
+                .doc(name)
+                .update({"isMessageRead": true});
+        readAll(store.state, name, isGroup);
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (_) => MessageScreen(
+                    groupName: name, imageUrl: imageUrl, isGroup: isGroup)));
       },
       child: IgnorePointer(
         child: Container(
@@ -73,15 +85,17 @@ class ConversationList extends HookWidget {
                             ),
                             Row(
                               children: [
-                                Text(
-                                  "$latestMessageBy : ",
-                                  style: TextStyle(
-                                      fontSize: 13,
-                                      color: Colors.grey.shade600,
-                                      fontWeight: isMessageRead
-                                          ? FontWeight.bold
-                                          : FontWeight.normal),
-                                ),
+                                isGroup
+                                    ? Text(
+                                        "$latestMessageBy : ",
+                                        style: TextStyle(
+                                            fontSize: 13,
+                                            color: Colors.grey.shade600,
+                                            fontWeight: isMessageRead
+                                                ? FontWeight.bold
+                                                : FontWeight.normal),
+                                      )
+                                    : const SizedBox(),
                                 messageText.length >= 10
                                     ? Text(
                                         "${messageText.substring(0, 10)}...",

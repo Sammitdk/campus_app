@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-Future<int> getMessageReads(dynamic data, dynamic groupName) async {
+Future<int> getMessageReads(dynamic data, dynamic groupName , dynamic isGroup) async {
   int count = 0;
   await FirebaseFirestore.instance
       .collection("GroupMessages/$groupName/Messages")
@@ -17,7 +17,7 @@ Future<int> getMessageReads(dynamic data, dynamic groupName) async {
   return count;
 }
 
-void readAll(dynamic data, String groupName) {
+void readAll(dynamic data, String groupName, dynamic isGroup) {
   FirebaseFirestore.instance
       .collection("GroupMessages/$groupName/Messages")
       .get()

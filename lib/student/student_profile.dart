@@ -31,6 +31,7 @@ class StudentProfile extends HookWidget {
     }
 
     Future uploadFile() async {
+      stateUrl.value = null;
       if (file == null) return;
       final destination = 'Images/${state.prn}';
       final ref = FirebaseStorage.instance.ref(destination);
@@ -55,15 +56,18 @@ class StudentProfile extends HookWidget {
         Positioned(
             top: height / 8.5,
             left: width / 1.7,
-            child:  CircleAvatar(
+            child: CircleAvatar(
               backgroundColor: Colors.transparent,
               maxRadius: 80,
               backgroundImage: stateUrl.value != null
-                  ?  NetworkImage(state.imgUrl)
-                  : const AssetImage("assets/images/profile.gif") as ImageProvider,
+                  ? NetworkImage(stateUrl.value)
+                  : file != null
+                      ? FileImage(file!)
+                      : const AssetImage("assets/images/profile.gif")
+                          as ImageProvider,
             )),
         Positioned(
-            top: height / 3.65,
+            top: height / 3.50,
             width: width / 0.55,
             child: FloatingActionButton(
               elevation: 0,
@@ -78,7 +82,9 @@ class StudentProfile extends HookWidget {
         Positioned(
           top: 8,
           left: 20,
-          child: Text("${state.name['First']}.${state.name['Middle'].toString().substring(0,1)}.${state.name['Last']}", style: const TextStyle(
+          child: Text(
+            "${state.name['First']}.${state.name['Middle'].toString().substring(0, 1)}.${state.name['Last']}",
+            style: const TextStyle(
               fontSize: 30,
               color: Colors.white,
               fontFamily: 'MuliBold',
