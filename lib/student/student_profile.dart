@@ -2,13 +2,13 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:campus_subsystem/password_reset.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:image_picker/image_picker.dart';
-import '../firebase/signIn.dart';
 import '../redux/reducer.dart';
 
 class StudentProfile extends HookWidget {
@@ -19,10 +19,10 @@ class StudentProfile extends HookWidget {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     var state = StoreProvider.of<AppState>(context).state;
-    final Auth auth = Auth();
     File? file;
     final stateUrl = useState(state.imgUrl);
     var clicked = useState(false);
+
 
     Future selectFiles() async {
       final result =
@@ -282,6 +282,7 @@ class StudentProfile extends HookWidget {
         ),
       ]),
       floatingActionButton: SpeedDial(
+        closeManually: true,
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
         animatedIcon: AnimatedIcons.menu_close,
@@ -290,20 +291,20 @@ class StudentProfile extends HookWidget {
             label: 'Forget Password',
             onTap: () async {
               Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (_) => ResetPassword()));
+                  MaterialPageRoute(builder: (_) => const ResetPassword()));
             },
             backgroundColor: Colors.white,
             foregroundColor: Colors.black,
             child: const Icon(Icons.password),
           ),
           SpeedDialChild(
-            label: 'Log Out',
-            onTap: () {
-              auth.signOut();
-            },
             backgroundColor: Colors.white,
             foregroundColor: Colors.black,
             child: const Icon(Icons.logout),
+            label: 'Log Out',
+            onTap: () {
+              FirebaseAuth.instance.signOut();
+            },
           ),
         ],
       ),

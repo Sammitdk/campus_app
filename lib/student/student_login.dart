@@ -12,11 +12,18 @@ class StudentLogin extends StatefulWidget {
 
 class _StudentLoginState extends State<StudentLogin> {
   static const String _title = 'Log In';
-  final formkey = GlobalKey<FormState>();
+  final formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final Auth auth = Auth();
   bool isVisible = false;
+  bool isClicked = false;
+
+  void unClick() {
+    setState(() {
+      isClicked = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,12 +37,12 @@ class _StudentLoginState extends State<StudentLogin> {
         title: const Text(_title),
         backgroundColor: Colors.indigo[300],
       ),
-      body: SingleChildScrollView(
-        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-        child: InkWell(
-          onTap: (){
-            FocusScope.of(context).unfocus();
-          },
+      body: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        child: SingleChildScrollView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           child: Padding(
             padding: const EdgeInsets.all(10),
             child: Column(
@@ -63,7 +70,7 @@ class _StudentLoginState extends State<StudentLogin> {
                       style: TextStyle(fontSize: 30, fontFamily: 'Custom'),
                     )),
                 Form(
-                  key: formkey,
+                  key: formKey,
                   child: Column(
                     children: [
                       Container(
@@ -109,7 +116,7 @@ class _StudentLoginState extends State<StudentLogin> {
                       Container(
                           height: 50,
                           padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                          child: ElevatedButton(
+                          child: isClicked ? const Center(child: CircularProgressIndicator(),) : ElevatedButton(
                               style: ButtonStyle(
                                 backgroundColor: MaterialStateColor.resolveWith(
                                     (states) => Colors.white),
@@ -117,23 +124,27 @@ class _StudentLoginState extends State<StudentLogin> {
                                     (states) => Colors.black),
                                 shape: MaterialStateProperty.all(
                                     RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(15))),
+                                        borderRadius:
+                                            BorderRadius.circular(15))),
                               ),
                               child: const Text(
                                 'Log In',
                                 style: TextStyle(fontSize: 17),
                               ),
                               onPressed: () async {
-                                if (formkey.currentState!.validate()) {
-                                  await auth
-                                      .signIn(
-                                          username: emailController.text,
-                                          password: passwordController.text,
-                                          context: context)
-                                      .then((value) {
-                                        fetchUserData(emailController.text).then(
-                                        (value) => Navigator.pushReplacementNamed(
-                                            context, "/"));});}
+                                if (formKey.currentState!.validate()) {
+                                  setState(() {
+                                    isClicked = true;
+                                  });
+                                  await auth.signIn(
+                                      username: emailController.text,
+                                      password: passwordController.text,
+                                      context: context,
+                                      isStudent: true,
+                                    click : unClick
+                                  )
+                                  ;
+                                }
                               })),
                       Container(
                           height: 50,
@@ -146,12 +157,13 @@ class _StudentLoginState extends State<StudentLogin> {
                                     (states) => Colors.black),
                                 shape: MaterialStateProperty.all(
                                     RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(15))),
+                                        borderRadius:
+                                            BorderRadius.circular(15))),
                               ),
                               child: const Text(
                                 'Reset Password',
-                                style:
-                                    TextStyle(fontSize: 17, color: Colors.black),
+                                style: TextStyle(
+                                    fontSize: 17, color: Colors.black),
                               ),
                               onPressed: () async {
                                 Navigator.push(

@@ -6,7 +6,6 @@ import '../reducer.dart';
 import "./../store.dart";
 
 class FetchData {
-
   final dynamic email;
   final dynamic roll_No;
   final dynamic prn;
@@ -40,9 +39,15 @@ Future<ThunkAction<AppState>> fetchUserData(String? email) async {
   final firestoreinst = FirebaseFirestore.instance;
 
   final DocumentReference studentRef = firestoreinst.doc('Email/$email');
-  await firestoreinst.collection('Student_Detail').where('Email',isEqualTo: "$email").get().then((value) async{
-    if(value.docs.isNotEmpty){
-      firestoreinst.doc("Student_Detail/${value.docs[0]['PRN']}").set({"Token" : "${await FirebaseMessaging.instance.getToken()}"},SetOptions(merge: true));
+  await firestoreinst
+      .collection('Student_Detail')
+      .where('Email', isEqualTo: "$email")
+      .get()
+      .then((value) async {
+    if (value.docs.isNotEmpty) {
+      firestoreinst.doc("Student_Detail/${value.docs[0]['PRN']}").set(
+          {"Token": "${await FirebaseMessaging.instance.getToken()}"},
+          SetOptions(merge: true));
       store.dispatch(FetchData(
           email: email,
           prn: value.docs[0]['PRN'],
@@ -55,13 +60,16 @@ Future<ThunkAction<AppState>> fetchUserData(String? email) async {
           name: value.docs[0]['Name'],
           isStudent: true,
           branch: value.docs[0]["Branch"],
-          imgUrl: value.docs[0].data().containsKey("imgUrl") ? value.docs[0]["imgUrl"] : null
-      ));
+          imgUrl: value.docs[0].data().containsKey("imgUrl")
+              ? value.docs[0]["imgUrl"]
+              : null));
     } else {
-      final DocumentReference facultyRef = firestoreinst
-          .doc('Faculty_Detail/$email');
+      final DocumentReference facultyRef =
+          firestoreinst.doc('Faculty_Detail/$email');
       await facultyRef.get().then((value) async {
-        firestoreinst.doc("Faculty_Detail/$email").set({"Token" : await FirebaseMessaging.instance.getToken()},SetOptions(merge: true));
+        firestoreinst.doc("Faculty_Detail/$email").set(
+            {"Token": await FirebaseMessaging.instance.getToken()},
+            SetOptions(merge: true));
         final data = value.data() as Map<String, dynamic>;
         store.dispatch(FetchData(
             name: data["Name"],
@@ -70,8 +78,7 @@ Future<ThunkAction<AppState>> fetchUserData(String? email) async {
             isStudent: false,
             imgUrl: data.containsKey("imgUrl") ? data["imgUrl"] : null,
             branch: data['Branch'],
-            subject: data["Subjects"]
-        ));
+            subject: data["Subjects"]));
       });
     }
   });
