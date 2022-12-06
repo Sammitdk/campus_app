@@ -4,6 +4,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:intl/intl.dart';
 
 import '../redux/reducer.dart';
+import 'faculty_attendance_history.dart';
 
 class FacultyAttendanceOption extends StatefulWidget {
   const FacultyAttendanceOption({Key? key}) : super(key: key);
@@ -61,7 +62,7 @@ class _FacultyAttendanceOptionState extends State<FacultyAttendanceOption> {
             children: [
               FloatingActionButton.extended(
                 onPressed: (){
-                  // todo
+                  Navigator.of(context).push(MaterialPageRoute(builder: (_) => FacultyAttendanceHistory()));
                 },
                 icon: const Icon(Icons.history,color: Colors.black,),
                 label: const Text("History",style: TextStyle(color: Colors.black),),
@@ -144,10 +145,9 @@ class _FacultyAttendanceOptionState extends State<FacultyAttendanceOption> {
                           (date != 'Select Date and Time')?
                             Navigator.of(context).push(MaterialPageRoute(
                             builder: (_) => FacultyAttendance(
-                                  subject: <String,dynamic>{
-                                          selectedsub: state.subject[selectedsub]
-                                        },
+                                  references: state.subject[selectedsub],
                                   date: date,
+                                  subject: selectedsub,
                                 )
                             ))
                               :ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Select Date and Time'),));

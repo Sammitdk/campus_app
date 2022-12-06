@@ -29,15 +29,3 @@ class Wrapper extends HookWidget {
         });
   }
 }
-
-// internetConnectionCheck() {
-//   InternetConnectionChecker().onStatusChange.listen((status) {
-//     switch (status) {
-//       case InternetConnectionStatus.connected:
-//         break;
-//       case InternetConnectionStatus.disconnected:
-//         Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const NoInternet()));
-//         break;
-//     }
-//   });
-// }

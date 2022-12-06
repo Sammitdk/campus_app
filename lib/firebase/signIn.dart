@@ -30,7 +30,16 @@ class Auth
       User? user = result.user;
       return _userFromCredUser(user);
     } on FirebaseAuthException catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.code.toString())));
+      if(e.code == 'user-not-found'){
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Invalid Email Address.")));
+      }else if(e.code == 'wrong-password'){
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Incorrect Password.")));
+      }else if(e.code == 'network-request-failed'){
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Check Internet Connection.")));
+      }else {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(e.code.toString())));
+      }
     }
   }
 

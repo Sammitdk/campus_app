@@ -48,22 +48,25 @@ class FacultyTimeTable extends HookWidget {
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(20),
-                    child: DropdownButtonFormField<String>(
-                      elevation: 0,
-                      iconEnabledColor: Colors.red,
-                      alignment: AlignmentDirectional.center,
-                      value: selectedDay.value,
-                      items: weekdays
-                          .map<DropdownMenuItem<String>>(
-                              (value) => DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          ))
-                          .toList(),
-                      onChanged: (newvalue) {
-                        selectedDay.value = newvalue!;
-                        // setState((){});
-                      },
+                    child: ButtonTheme(
+                      alignedDropdown: true,
+                      child: DropdownButtonFormField<String>(
+                        elevation: 0,
+                        iconEnabledColor: Colors.red,
+                        alignment: AlignmentDirectional.center,
+                        value: selectedDay.value,
+                        items: weekdays
+                            .map<DropdownMenuItem<String>>(
+                                (value) => DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            ))
+                            .toList(),
+                        onChanged: (newvalue) {
+                          selectedDay.value = newvalue!;
+                          // setState((){});
+                        },
+                      ),
                     ),
                   ),
                   Expanded(
