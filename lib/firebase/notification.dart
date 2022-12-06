@@ -40,9 +40,6 @@ void main() async {
 
 class NotificationAPI {
   // static final _noti = FlutterLocalNotificationsPlugin();
-  static const messegingkey =
-      "AAAA2wiUVMg:APA91bEENP3sWlqNpFgCMRGsoiFuaqybUVWFJGtc9PzK_XTjXMikwD1moeFzDnKxAvY2wkCPaNTYf2gELn6rfMXRL0qNT-40NqT1t4-vMsySvUjKdb2ZSecHxD3wqrCwS31uDQ8-Xq3Z";
-
 
   static final _noti = FlutterLocalNotificationsPlugin();
 
@@ -73,7 +70,7 @@ class NotificationAPI {
         headers: <String, String>{
           "Content-Type": "application/json",
           "Authorization":
-              "key=$messegingkey",
+              "key=${DefaultFirebaseOptions.messegingkey}",
         },
         body: jsonEncode(
           <String, dynamic>{
