@@ -10,14 +10,16 @@ class LoadingPage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-
     useEffect(() {
-      if(email != null){
-        fetchUserData(email).then((value) => Navigator.pushReplacementNamed(context, "/"));
-      }else{
-        Future.delayed(const Duration(milliseconds: 3000)).then((value) =>Navigator.pushReplacementNamed(context, "/"));
+      if (email != null) {
+        fetchUserData(email)
+            .then((value) => Navigator.pushReplacementNamed(context, "/"));
+      } else {
+        Future.delayed(const Duration(milliseconds: 3000))
+            .then((value) => Navigator.pushReplacementNamed(context, "/"));
       }
-    },const []);
+      return null;
+    }, const []);
 
     double screenheight = MediaQuery.of(context).size.height;
     double screenwidth = MediaQuery.of(context).size.width;

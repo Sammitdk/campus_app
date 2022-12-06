@@ -32,7 +32,7 @@ class _FacultyLoginState extends State<FacultyLogin> {
       ),
       body: SingleChildScrollView(
         child: InkWell(
-          onTap: (){
+          onTap: () {
             WidgetsBinding.instance.focusManager.primaryFocus?.unfocus();
           },
           child: Padding(
@@ -129,12 +129,9 @@ class _FacultyLoginState extends State<FacultyLogin> {
                                         password: passwordController.text,
                                         context: context)
                                     .then((value) {
-                                  if(value != null){
-                                    fetchUserData(emailController.text).then(
-                                        (value) =>
-                                            Navigator.pushReplacementNamed(
-                                                context, "/"));
-                                  }
+                                  fetchUserData(emailController.text).then(
+                                      (value) => Navigator.pushReplacementNamed(
+                                          context, "/"));
                                 });
                               }
                             },

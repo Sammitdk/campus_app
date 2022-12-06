@@ -39,7 +39,7 @@ Future<int> getMessageReads(
 void readAll(dynamic data, String groupName, dynamic isGroup) {
   if (isGroup) {
     final ref = FirebaseFirestore.instance
-        .collection("Student_Detail/${data.prn}/Messages/$groupName/Messages");
+        .collection("GroupMessages/$groupName/Messages");
     ref.get().then((QuerySnapshot querySnapshot) {
       for (var doc in querySnapshot.docs) {
         if (doc['users'].contains(data.email) == false) {
