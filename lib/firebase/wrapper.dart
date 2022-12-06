@@ -20,16 +20,15 @@ class Wrapper extends HookWidget {
           if (user == null) {
             return const Login();
           } else {
-            if(state.isStudent) {
+            if (state.isStudent) {
               return const StudentDashboard();
-            }else{
+            } else {
               return const FacultyDashboard();
             }
           }
         });
   }
 }
-
 
 // internetConnectionCheck() {
 //   InternetConnectionChecker().onStatusChange.listen((status) {

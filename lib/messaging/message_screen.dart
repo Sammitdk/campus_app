@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:campus_subsystem/messaging/read_message-fetch.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -5,6 +8,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import '../redux/reducer.dart';
+import '../redux/store.dart';
 import 'message.dart';
 
 class MessageScreen extends HookWidget {
@@ -41,9 +45,26 @@ class MessageScreen extends HookWidget {
     ScrollController scroll = ScrollController();
     var groupInfo = useState(false);
 
+    dynamic stream = isGroup
+        ? FirebaseFirestore.instance
+            .collection("GroupMessages/$groupName/Messages")
+            .orderBy('time')
+            .snapshots()
+        : FirebaseFirestore.instance
+            .collection("Student_Detail/${data.prn}/Messages/$prn/Messages")
+            .orderBy('time')
+            .snapshots(includeMetadataChanges: true);
+
     useEffect(() {
+      stream.listen((event) {
+        if (isGroup) {
+          readAll(store, groupName, true);
+        } else {
+          readAll(store, prn, false);
+        }
+      });
       goDown();
-      return null;
+      return () => stream;
     }, []);
 
     return Scaffold(
@@ -143,16 +164,7 @@ class MessageScreen extends HookWidget {
                   FocusScope.of(context).unfocus();
                 },
                 child: StreamBuilder(
-                    stream: isGroup
-                        ? FirebaseFirestore.instance
-                            .collection("GroupMessages/$groupName/Messages")
-                            .orderBy('time')
-                            .snapshots()
-                        : FirebaseFirestore.instance
-                            .collection(
-                                "Student_Detail/${data.prn}/Messages/$prn/Messages")
-                            .orderBy('time')
-                            .snapshots(),
+                    stream: stream,
                     builder: (ctx, AsyncSnapshot<QuerySnapshot> snapshot) {
                       if (snapshot.hasData) {
                         return ListView.builder(

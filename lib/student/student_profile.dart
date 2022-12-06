@@ -298,9 +298,8 @@ class StudentProfile extends HookWidget {
           ),
           SpeedDialChild(
             label: 'Log Out',
-            onTap: () async {
-              await auth.signOut().then(
-                  (value) => Navigator.pushReplacementNamed(context, "/"));
+            onTap: () {
+              auth.signOut();
             },
             backgroundColor: Colors.white,
             foregroundColor: Colors.black,
