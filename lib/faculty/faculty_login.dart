@@ -12,11 +12,18 @@ class FacultyLogin extends StatefulWidget {
 
 class _FacultyLoginState extends State<FacultyLogin> {
   static const String _title = 'Log In';
-  final formkey = GlobalKey<FormState>();
+  final formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final Auth auth = Auth();
   bool isVisible = false;
+  bool isClicked = false;
+
+  void unClick() {
+    setState(() {
+      isClicked = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,11 +37,11 @@ class _FacultyLoginState extends State<FacultyLogin> {
         title: const Text(_title),
         backgroundColor: Colors.indigo[300],
       ),
-      body: SingleChildScrollView(
-        child: InkWell(
-          onTap: () {
-            WidgetsBinding.instance.focusManager.primaryFocus?.unfocus();
-          },
+      body: GestureDetector(
+        onTap: () {
+          WidgetsBinding.instance.focusManager.primaryFocus?.unfocus();
+        },
+        child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(10),
             child: Column(
@@ -62,7 +69,7 @@ class _FacultyLoginState extends State<FacultyLogin> {
                       style: TextStyle(fontSize: 30, fontFamily: 'Custom'),
                     )),
                 Form(
-                  key: formkey,
+                  key: formKey,
                   child: Column(
                     children: [
                       Container(
@@ -107,35 +114,46 @@ class _FacultyLoginState extends State<FacultyLogin> {
                       Container(
                           height: 50,
                           padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                          child: ElevatedButton(
-                            style: ButtonStyle(
-                              backgroundColor: MaterialStateColor.resolveWith(
-                                  (states) => Colors.white),
-                              foregroundColor: MaterialStateColor.resolveWith(
-                                  (states) => Colors.black),
-                              shape: MaterialStateProperty.all(
-                                  RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(15))),
-                            ),
-                            child: const Text(
-                              'Log In',
-                              style: TextStyle(fontSize: 17),
-                            ),
-                            onPressed: () async {
-                              if (formkey.currentState!.validate()) {
-                                await auth
-                                    .signIn(
-                                        username: emailController.text,
-                                        password: passwordController.text,
-                                        context: context)
-                                    .then((value) {
-                                  fetchUserData(emailController.text).then(
-                                      (value) => Navigator.pushReplacementNamed(
-                                          context, "/"));
-                                });
-                              }
-                            },
-                          )),
+                          child: isClicked
+                              ? const Center(
+                                  child: CircularProgressIndicator(),
+                                )
+                              : ElevatedButton(
+                                  style: ButtonStyle(
+                                    backgroundColor:
+                                        MaterialStateColor.resolveWith(
+                                            (states) => Colors.white),
+                                    foregroundColor:
+                                        MaterialStateColor.resolveWith(
+                                            (states) => Colors.black),
+                                    shape: MaterialStateProperty.all(
+                                        RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(15))),
+                                  ),
+                                  child: const Text(
+                                    'Log In',
+                                    style: TextStyle(fontSize: 17),
+                                  ),
+                                  onPressed: () async {
+                                    if (formKey.currentState!.validate()) {
+                                      setState(() => isClicked = true);
+                                      await auth
+                                          .signIn(
+                                              username: emailController.text,
+                                              password: passwordController.text,
+                                              context: context,
+                                              isStudent: false,
+                                              click: unClick)
+                                          .then((value) {
+                                        fetchUserData(emailController.text)
+                                            .then((value) =>
+                                                Navigator.pushReplacementNamed(
+                                                    context, "/"));
+                                      });
+                                    }
+                                  },
+                                )),
                       Container(
                         height: 50,
                         padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
