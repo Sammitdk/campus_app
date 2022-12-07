@@ -302,8 +302,33 @@ class StudentProfile extends HookWidget {
             foregroundColor: Colors.black,
             child: const Icon(Icons.logout),
             label: 'Log Out',
-            onTap: () {
-              FirebaseAuth.instance.signOut();
+            onTap: () async {
+
+              // todo internet connection check before delete(Token)
+
+              try{
+                if(state.isStudent){
+
+                  // remove student device token
+                  await FirebaseFirestore.instance.doc("Student_Detail/${state.prn}").update(
+                      {"Token": FieldValue.delete()});
+                  // .then((value) => FirebaseAuth.instance.signOut());
+                  FirebaseAuth.instance.signOut();
+                } else {
+
+
+                  // remove faculty device token
+                  await FirebaseFirestore.instance.doc("Faculty_Detail/${state.email}").update(
+                      {"Token": FieldValue.delete()});
+                  FirebaseAuth.instance.signOut();
+                }
+                // FirebaseAuth.instance.signOut();
+              }on FirebaseAuthException catch (e){
+                if (e.code == 'network-request-failed') {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("Check Internet Connection.")));
+                }
+              }
             },
           ),
         ],

@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:campus_subsystem/firebase/notification.dart';
+import 'package:campus_subsystem/main.dart';
 import 'package:campus_subsystem/messaging/read_message-fetch.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -363,11 +365,10 @@ class MessageScreen extends HookWidget {
                         width: 15,
                       ),
                       FloatingActionButton(
-                        onPressed: () {
-                          //TODO notification
-
+                        onPressed: () async {
                           if (myController.text.isNotEmpty) {
                             if (isGroup) {
+                              // for group message
                               final firebaseData = {
                                 "name": data.name['First'],
                                 "time": Timestamp.now(),
@@ -376,10 +377,14 @@ class MessageScreen extends HookWidget {
                                 "users": [data.email],
                                 "messageType": "groupMessage"
                               };
+
+                              // new message to group
                               FirebaseFirestore.instance
                                   .collection(
                                       "GroupMessages/$groupName/Messages")
                                   .add(firebaseData);
+
+                              // last message user info
                               FirebaseFirestore.instance
                                   .collection("GroupMessages")
                                   .doc(groupName)
@@ -388,8 +393,40 @@ class MessageScreen extends HookWidget {
                                 "time": Timestamp.now(),
                                 "latestMessageBy": data.name['First']
                               });
+
+
+                              // notification to all users
+                              FirebaseFirestore.instance
+                                  .doc("GroupMessages/$groupName")
+                                  .get()
+                                  .then((value) {
+                                Map group = value.data() as Map;
+                                if (group.containsKey("users")) {
+                                  group["users"].forEach((user) {
+                                    if (user != data.email) {
+                                      FirebaseFirestore.instance
+                                          .collection("Student_Detail")
+                                          .where("Email", isEqualTo: user)
+                                          .get()
+                                          .then((userdocs) {
+                                        if (userdocs.docs[0]
+                                            .data()
+                                            .containsKey("Token")) {
+                                          NotificationAPI.postNotification(
+                                              title: groupName,
+                                              message:
+                                                  "  ${data.name["First"].toString().capitalize()}: ${myController.text}",
+                                              receiver: userdocs.docs[0]
+                                                  ["Token"]);
+                                        }
+                                      });
+                                    }
+                                  });
+                                }
+                              });
                               myController.clear();
                             } else {
+                              // for user message
                               final firebaseUserData = {
                                 "name": data.name['First'],
                                 "time": Timestamp.now(),
@@ -398,10 +435,14 @@ class MessageScreen extends HookWidget {
                                 "messageType": "userMessage",
                                 "users": [data.email],
                               };
+
+                              // sender user
                               FirebaseFirestore.instance
                                   .collection(
                                       "Student_Detail/${data.prn}/Messages/$prn/Messages")
                                   .add(firebaseUserData);
+
+                              // last message info
                               FirebaseFirestore.instance
                                   .collection(
                                       "Student_Detail/${data.prn}/Messages")
@@ -410,10 +451,14 @@ class MessageScreen extends HookWidget {
                                 "messageText": myController.text,
                                 "time": Timestamp.now(),
                               });
+
+                              // receiver user
                               FirebaseFirestore.instance
                                   .collection(
                                       "Student_Detail/$prn/Messages/${data.prn}/Messages")
                                   .add(firebaseUserData);
+
+                              // last message info
                               FirebaseFirestore.instance
                                   .collection("Student_Detail/$prn/Messages")
                                   .doc(data.prn)
@@ -421,24 +466,30 @@ class MessageScreen extends HookWidget {
                                 "messageText": myController.text,
                                 "time": Timestamp.now(),
                               });
-                              FirebaseFirestore.instance
-                                  .collection(
-                                      "Student_Detail/${data.prn}/Messages")
-                                  .doc(prn)
-                                  .update({
-                                "messageText": myController.text,
-                                "time": Timestamp.now(),
+
+                              // notification to receiver
+                              String receiver = await FirebaseFirestore.instance
+                                  .doc("Student_Detail/$prn")
+                                  .get()
+                                  .then((value) {
+                                {
+                                  Map user = value.data() as Map;
+                                  if (user.containsKey("Token")) {
+                                    return user["Token"];
+                                  }
+                                  return '';
+                                }
                               });
-                              FirebaseFirestore.instance
-                                  .collection("Student_Detail/$prn/Messages")
-                                  .doc(data.prn)
-                                  .update({
-                                "messageText": myController.text,
-                                "time": Timestamp.now(),
-                              });
-                              myController.clear();
+                              receiver.isNotEmpty
+                                  ? NotificationAPI.postNotification(
+                                      title:
+                                          "${data.name['First'].toString().capitalize()} ${data.name['Last'].toString().capitalize()}",
+                                      message: myController.text,
+                                      receiver: receiver)
+                                  : null;
                             }
                           }
+                          myController.clear();
                         },
                         backgroundColor: Colors.blue,
                         elevation: 0,

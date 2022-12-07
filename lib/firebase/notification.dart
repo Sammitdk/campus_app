@@ -39,7 +39,6 @@ void main() async {
 
 
 class NotificationAPI {
-  // static final _noti = FlutterLocalNotificationsPlugin();
 
   static final _noti = FlutterLocalNotificationsPlugin();
 
@@ -58,7 +57,7 @@ class NotificationAPI {
     required String title,
     required String message,
   }) async {
-    _noti.show(id, title, message, notificationDetails, payload: "assets/logo.jpg");
+    _noti.show(id, title, message, notificationDetails, payload: "chat_screen");
   }
   static Future postNotification({
     int id = 0,
@@ -75,15 +74,15 @@ class NotificationAPI {
         body: jsonEncode(
           <String, dynamic>{
             "notification": <String, dynamic>{
-              "body": "Your God",
-              "title": "the message from universe"
+              "body": message,
+              "title": title
             },
             "priority": "high",
             "data": <String, dynamic>{
               "click_action": "FLUTTER_NOTIFICATION_CLICK",
               "id": "1",
               "status": "done",
-              "route": "kahape"
+              "route": "chat_screen"
             },
             "to": receiver,
           },
