@@ -83,7 +83,7 @@ class Message extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(top: 5),
+                padding: const EdgeInsets.only(top: 5, bottom: 5),
                 child: Text(time,
                     textAlign: isCurrentUser ? TextAlign.end : TextAlign.start,
                     style: TextStyle(
