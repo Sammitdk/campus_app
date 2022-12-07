@@ -23,7 +23,6 @@ class StudentProfile extends HookWidget {
     final stateUrl = useState(state.imgUrl);
     var clicked = useState(false);
 
-
     Future selectFiles() async {
       final result =
           await ImagePicker.platform.pickImage(source: ImageSource.gallery);
@@ -303,30 +302,33 @@ class StudentProfile extends HookWidget {
             child: const Icon(Icons.logout),
             label: 'Log Out',
             onTap: () async {
-
               // todo internet connection check before delete(Token)
 
-              try{
-                if(state.isStudent){
-
+              try {
+                if (state.isStudent) {
                   // remove student device token
-                  await FirebaseFirestore.instance.doc("Student_Detail/${state.prn}").update(
-                      {"Token": FieldValue.delete()});
+                  await FirebaseFirestore.instance
+                      .doc("Student_Detail/${state.prn}")
+                      .update({"Token": FieldValue.delete()});
                   // .then((value) => FirebaseAuth.instance.signOut());
+
+                  FirebaseFirestore.instance
+                      .doc("Student_Detail/${state.prn}")
+                      .update({"status": "Offline"});
+
                   FirebaseAuth.instance.signOut();
                 } else {
-
-
                   // remove faculty device token
-                  await FirebaseFirestore.instance.doc("Faculty_Detail/${state.email}").update(
-                      {"Token": FieldValue.delete()});
+                  await FirebaseFirestore.instance
+                      .doc("Faculty_Detail/${state.email}")
+                      .update({"Token": FieldValue.delete()});
                   FirebaseAuth.instance.signOut();
                 }
                 // FirebaseAuth.instance.signOut();
-              }on FirebaseAuthException catch (e){
+              } on FirebaseAuthException catch (e) {
                 if (e.code == 'network-request-failed') {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("Check Internet Connection.")));
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text("Check Internet Connection.")));
                 }
               }
             },

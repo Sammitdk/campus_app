@@ -43,7 +43,6 @@ class MessageScreen extends HookWidget {
           });
     }
 
-    ScrollController scroll = ScrollController();
     var groupInfo = useState(false);
 
     dynamic stream = isGroup
@@ -61,11 +60,7 @@ class MessageScreen extends HookWidget {
         .doc(prn)
         .snapshots();
 
-    final focusNode = useFocusNode();
-    // useEffect(() {
-    //   focusNode.addListener(() {});
-    //   return () => focusNode.dispose();
-    // }, [focusNode]);
+
 
     useEffect(() {
       stream.listen((event) {
@@ -92,7 +87,6 @@ class MessageScreen extends HookWidget {
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
       body: NestedScrollView(
-        controller: scroll,
         floatHeaderSlivers: true,
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
@@ -279,41 +273,43 @@ class MessageScreen extends HookWidget {
         body: Stack(
           children: <Widget>[
             Positioned(
-              bottom: MediaQuery.of(context).viewInsets.bottom + 60,
+              bottom: MediaQuery.of(context).viewInsets.bottom + 55,
               top: 20,
               left: 0,
               right: 0,
-              child: GestureDetector(
-                onTap: () {
-                  FocusScope.of(context).unfocus();
-                },
-                child: StreamBuilder(
-                    stream: stream,
-                    builder: (ctx, AsyncSnapshot<QuerySnapshot> snapshot) {
-                      if (snapshot.hasData) {
-                        return ListView.builder(
-                            shrinkWrap: true,
-                            controller: scrollController,
-                            itemCount: snapshot.data?.docs.length,
-                            itemBuilder: (ctx, index) {
-                              QueryDocumentSnapshot x =
-                                  snapshot.data!.docs[index];
-                              return Message(
-                                text: x['message'],
-                                name: x['name'],
-                                messageType: x['messageType'],
-                                isCurrentUser: x['email'] == data.email,
-                                time: DateFormat('hh:mm a')
-                                    .format(x['time'].toDate())
-                                    .toString(),
-                              );
-                            });
-                      } else {
-                        return Center(
-                            child: LoadingAnimationWidget.staggeredDotsWave(
-                                size: 50, color: Colors.red));
-                      }
-                    }),
+              child: SingleChildScrollView(
+                controller: scrollController,
+                child: GestureDetector(
+                  onTap: () {
+                    FocusScope.of(context).unfocus();
+                  },
+                  child: StreamBuilder(
+                      stream: stream,
+                      builder: (ctx, AsyncSnapshot<QuerySnapshot> snapshot) {
+                        if (snapshot.hasData) {
+                          return ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: snapshot.data?.docs.length,
+                              itemBuilder: (ctx, index) {
+                                QueryDocumentSnapshot x =
+                                    snapshot.data!.docs[index];
+                                return Message(
+                                  text: x['message'],
+                                  name: x['name'],
+                                  messageType: x['messageType'],
+                                  isCurrentUser: x['email'] == data.email,
+                                  time: DateFormat('hh:mm a')
+                                      .format(x['time'].toDate())
+                                      .toString(),
+                                );
+                              });
+                        } else {
+                          return Center(
+                              child: LoadingAnimationWidget.staggeredDotsWave(
+                                  size: 50, color: Colors.red));
+                        }
+                      }),
+                ),
               ),
             ),
             Positioned(
@@ -336,10 +332,18 @@ class MessageScreen extends HookWidget {
                           color: Colors.lightBlue,
                           borderRadius: BorderRadius.circular(30),
                         ),
-                        child: const Icon(
-                          Icons.emoji_emotions_outlined,
-                          color: Colors.white,
-                          size: 20,
+                        child: GestureDetector(
+                          onTap: () {
+                            scrollController.animateTo(
+                                scrollController.position.maxScrollExtent,
+                                duration: const Duration(milliseconds: 1),
+                                curve: Curves.easeInOut);
+                          },
+                          child: const Icon(
+                            Icons.emoji_emotions_outlined,
+                            color: Colors.white,
+                            size: 20,
+                          ),
                         ),
                       ),
                       const SizedBox(
@@ -347,8 +351,7 @@ class MessageScreen extends HookWidget {
                       ),
                       Expanded(
                         child: TextField(
-                          focusNode: focusNode,
-                          onTap: () {
+                          onChanged: (v){
                             scrollController.animateTo(
                                 scrollController.position.maxScrollExtent,
                                 duration: const Duration(milliseconds: 1),
@@ -393,7 +396,6 @@ class MessageScreen extends HookWidget {
                                 "time": Timestamp.now(),
                                 "latestMessageBy": data.name['First']
                               });
-
 
                               // notification to all users
                               FirebaseFirestore.instance
