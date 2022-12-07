@@ -40,6 +40,7 @@ class Auth {
         await fetchUserData(result.user?.email);
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const FacultyDashboard()));
       }
+
       return _userFromCredUser(user);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {

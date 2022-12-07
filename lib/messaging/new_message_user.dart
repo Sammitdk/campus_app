@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-
 import '../redux/reducer.dart';
 import 'message_screen.dart';
 
@@ -12,6 +11,8 @@ class NewMessage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    var data = StoreProvider.of<AppState>(context).state;
+
     dynamic futureDocReference = useState(FirebaseFirestore.instance
         .collection("Student_Detail")
         .orderBy("Name.First")
@@ -42,14 +43,18 @@ class NewMessage extends HookWidget {
                         itemCount: snapshot.data!.docs.length,
                         itemBuilder: (context, i) {
                           QueryDocumentSnapshot x = snapshot.data!.docs[i];
-                          return User(
-                            imageUrl: x['imgUrl'],
-                            name: x['Name'],
-                            branch: x['Branch'],
-                            year: x['Year'],
-                            email: x['Email'],
-                            prn: x['PRN'],
-                          );
+                          if(x['Email'] != data.email){
+                            return User(
+                              imageUrl: x['imgUrl'],
+                              name: x['Name'],
+                              branch: x['Branch'],
+                              year: x['Year'],
+                              email: x['Email'],
+                              prn: x['PRN'],
+                            );
+                          }else{
+                            return const SizedBox();
+                          }
                         });
                   } else {
                     return const Center(

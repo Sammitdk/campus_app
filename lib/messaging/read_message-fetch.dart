@@ -36,7 +36,7 @@ Future<int> getMessageReads(
   return count;
 }
 
-void readAll(dynamic data, String groupName, dynamic isGroup) {
+void readAll({required dynamic data, required String groupName,required dynamic isGroup}) {
   if (isGroup) {
     final ref = FirebaseFirestore.instance
         .collection("GroupMessages/$groupName/Messages");

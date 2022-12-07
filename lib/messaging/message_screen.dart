@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:campus_subsystem/messaging/read_message-fetch.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +8,6 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import '../redux/reducer.dart';
-import '../redux/store.dart';
 import 'message.dart';
 
 class MessageScreen extends HookWidget {
@@ -55,16 +54,28 @@ class MessageScreen extends HookWidget {
             .orderBy('time')
             .snapshots(includeMetadataChanges: true);
 
+    dynamic onlineStream = FirebaseFirestore.instance
+        .collection("Student_Detail")
+        .doc(prn)
+        .snapshots();
+
     useEffect(() {
       stream.listen((event) {
         if (isGroup) {
-          readAll(store, groupName, true);
+          readAll(
+            groupName: groupName,
+            data: data,
+            isGroup: true,
+          );
         } else {
-          readAll(store, prn, false);
+          readAll(isGroup: false, groupName: prn, data: data);
         }
       });
       goDown();
-      return () => stream;
+      return () {
+        stream;
+        onlineStream;
+      };
     }, []);
 
     return Scaffold(
@@ -76,6 +87,7 @@ class MessageScreen extends HookWidget {
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
             SliverAppBar(
+              automaticallyImplyLeading: groupInfo.value ? false : false,
               flexibleSpace: groupInfo.value
                   ? FlexibleSpaceBar(
                       background: Image.network(
@@ -90,13 +102,66 @@ class MessageScreen extends HookWidget {
                       ),
                     )
                   : AppBar(
-                      backgroundColor: Colors.indigo[300],
-                      title: Text(
-                        groupName,
-                        style:
-                            const TextStyle(fontFamily: 'Narrow', fontSize: 25),
-                        textAlign: TextAlign.center,
-                      ),
+                      automaticallyImplyLeading: false,
+                      backgroundColor: Colors.white,
+                      foregroundColor: Colors.black,
+                      title: StreamBuilder(
+                          stream: onlineStream,
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              dynamic s = snapshot.data;
+                              return Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 8.0 , left: 8),
+                                    child: CachedNetworkImage(
+                                      imageUrl: s['imgUrl'],
+                                      imageBuilder: (context, imageProvider) {
+                                        return CircleAvatar(
+                                          backgroundImage: imageProvider,
+                                          maxRadius: 25,
+                                        );
+                                      },
+                                      placeholder: (context, url) =>
+                                          const CircleAvatar(
+                                        backgroundColor: Colors.transparent,
+                                        backgroundImage: AssetImage(
+                                            "assets/images/profile.gif"),
+                                        maxRadius: 30,
+                                      ),
+                                      errorWidget: (context, url, error) =>
+                                          CircleAvatar(
+                                            radius: 30,
+                                            child: Image.asset(
+                                            "assets/images/profile.gif"),
+                                      ),
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        groupName,
+                                        style: const TextStyle(
+                                            fontFamily: 'Narrow', fontSize: 23),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      Text(s["status"],
+                                          style: TextStyle(
+                                              fontSize: 15,
+                                              color: s["status"] == "Online"
+                                                  ? Colors.green
+                                                  : Colors.red[500]))
+                                    ],
+                                  ),
+                                ],
+                              );
+                            }
+                            return const CircularProgressIndicator();
+                          }),
                     ),
               expandedHeight: groupInfo.value ? 150 : 50,
               backgroundColor: Colors.indigo[300],

@@ -52,7 +52,6 @@ class ConversationList extends HookWidget {
               .collection("GroupMessages")
               .doc(name)
               .update({"isMessageRead": true});
-          readAll(store.state, name, isGroup);
           Navigator.push(
               context,
               MaterialPageRoute(
@@ -67,7 +66,6 @@ class ConversationList extends HookWidget {
               .collection("Student_Detail/$prn/Messages")
               .doc(data.prn)
               .update({"isMessageRead": true});
-          readAll(store.state, prn, isGroup);
           Navigator.push(
               context,
               MaterialPageRoute(
