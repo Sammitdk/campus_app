@@ -339,6 +339,8 @@ class MessageScreen extends HookWidget {
                                 "latestMessageBy": data.name['First']
                               });
 
+
+                              // notification to all users
                               FirebaseFirestore.instance
                                   .doc("GroupMessages/$groupName")
                                   .get()

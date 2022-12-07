@@ -1,6 +1,7 @@
 import 'package:campus_subsystem/messaging/conversation_screen.dart';
 import 'package:campus_subsystem/redux/store.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:campus_subsystem/faculty/faculty_login.dart';
 import 'package:campus_subsystem/login_page.dart';
@@ -11,6 +12,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:provider/provider.dart';
+import 'firebase/notification.dart';
 import 'firebase/signIn.dart';
 import 'firebase/wrapper.dart';
 import 'firebase_options.dart';
@@ -23,15 +25,26 @@ extension StringExtension on String {
 }
 
 void main() async {
+  int id = 0;
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [
     SystemUiOverlay.bottom, //This line is used for showing the bottom bar
   ]);
   FlutterLocalNotificationsPlugin().initialize(const InitializationSettings(
     android: AndroidInitializationSettings(
-        "app_icon"),
+        "notification_icon"),
   ));
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+
+
+
+  // listen notification on foreground
+  FirebaseMessaging.onMessage.listen((event) {
+    id += 1;
+    Map data = event.toMap();
+    NotificationAPI.postLocalNotification(id: id,title: data["notification"]['title'], message: data["notification"]['body']);
+  });
   runApp(const Main());
 }
 

@@ -4,6 +4,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
    <application
+        android:allowBackup="false"
         android:label="Campus App"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
@@ -46,5 +47,8 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+       <meta-data
+           android:name="com.google.firebase.messaging.default_notification_icon"
+           android:resource="@drawable/notification_icon" />
     </application>
 </manifest>

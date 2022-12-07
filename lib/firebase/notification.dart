@@ -57,7 +57,7 @@ class NotificationAPI {
     required String title,
     required String message,
   }) async {
-    _noti.show(id, title, message, notificationDetails, payload: "assets/logo.jpg");
+    _noti.show(id, title, message, notificationDetails, payload: "chat_screen");
   }
   static Future postNotification({
     int id = 0,
