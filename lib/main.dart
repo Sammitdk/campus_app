@@ -1,3 +1,4 @@
+import 'package:campus_subsystem/messaging/conversation_screen.dart';
 import 'package:campus_subsystem/redux/store.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import 'package:campus_subsystem/student/student_login.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:provider/provider.dart';
 import 'firebase/signIn.dart';
@@ -25,7 +27,10 @@ void main() async {
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [
     SystemUiOverlay.bottom, //This line is used for showing the bottom bar
   ]);
-
+  FlutterLocalNotificationsPlugin().initialize(const InitializationSettings(
+    android: AndroidInitializationSettings(
+        "app_icon"),
+  ));
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const Main());
 }
@@ -53,6 +58,7 @@ class Main extends StatelessWidget {
                   const KeyboardVisibilityProvider(child: FacultyLogin()),
               's_login_form': (context) =>
                   const KeyboardVisibilityProvider(child: StudentLogin()),
+              'chat_screen': (context) => const ConversationScreen()
             },
           ),
         ));

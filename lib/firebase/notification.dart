@@ -39,7 +39,6 @@ void main() async {
 
 
 class NotificationAPI {
-  // static final _noti = FlutterLocalNotificationsPlugin();
 
   static final _noti = FlutterLocalNotificationsPlugin();
 
@@ -75,15 +74,15 @@ class NotificationAPI {
         body: jsonEncode(
           <String, dynamic>{
             "notification": <String, dynamic>{
-              "body": "Your God",
-              "title": "the message from universe"
+              "body": message,
+              "title": title
             },
             "priority": "high",
             "data": <String, dynamic>{
               "click_action": "FLUTTER_NOTIFICATION_CLICK",
               "id": "1",
               "status": "done",
-              "route": "kahape"
+              "route": "chat_screen"
             },
             "to": receiver,
           },
