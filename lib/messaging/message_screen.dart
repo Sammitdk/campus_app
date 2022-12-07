@@ -35,7 +35,7 @@ class MessageScreen extends HookWidget {
               {
                 scrollController.animateTo(
                     scrollController.position.maxScrollExtent,
-                    duration: const Duration(milliseconds: 1),
+                    duration: const Duration(milliseconds: 300),
                     curve: Curves.easeInOut)
               }
           });
@@ -59,6 +59,12 @@ class MessageScreen extends HookWidget {
         .doc(prn)
         .snapshots();
 
+    final focusNode = useFocusNode();
+    // useEffect(() {
+    //   focusNode.addListener(() {});
+    //   return () => focusNode.dispose();
+    // }, [focusNode]);
+
     useEffect(() {
       stream.listen((event) {
         if (isGroup) {
@@ -75,6 +81,8 @@ class MessageScreen extends HookWidget {
       return () {
         stream;
         onlineStream;
+        myController.dispose();
+        scrollController.dispose();
       };
     }, []);
 
@@ -87,7 +95,7 @@ class MessageScreen extends HookWidget {
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
             SliverAppBar(
-              automaticallyImplyLeading: groupInfo.value ? false : false,
+              automaticallyImplyLeading: isGroup ? false : false,
               flexibleSpace: groupInfo.value
                   ? FlexibleSpaceBar(
                       background: Image.network(
@@ -101,68 +109,117 @@ class MessageScreen extends HookWidget {
                         textAlign: TextAlign.center,
                       ),
                     )
-                  : AppBar(
-                      automaticallyImplyLeading: false,
-                      backgroundColor: Colors.white,
-                      foregroundColor: Colors.black,
-                      title: StreamBuilder(
-                          stream: onlineStream,
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData) {
-                              dynamic s = snapshot.data;
-                              return Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 8.0 , left: 8),
-                                    child: CachedNetworkImage(
-                                      imageUrl: s['imgUrl'],
-                                      imageBuilder: (context, imageProvider) {
-                                        return CircleAvatar(
-                                          backgroundImage: imageProvider,
-                                          maxRadius: 25,
-                                        );
-                                      },
-                                      placeholder: (context, url) =>
-                                          const CircleAvatar(
-                                        backgroundColor: Colors.transparent,
-                                        backgroundImage: AssetImage(
-                                            "assets/images/profile.gif"),
-                                        maxRadius: 30,
-                                      ),
-                                      errorWidget: (context, url, error) =>
-                                          CircleAvatar(
+                  : isGroup
+                      ? AppBar(
+                          backgroundColor: Colors.white,
+                          foregroundColor: Colors.black,
+                          automaticallyImplyLeading: false,
+                          title: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding:
+                                    const EdgeInsets.only(right: 8.0, left: 8),
+                                child: CachedNetworkImage(
+                                  imageUrl: imageUrl,
+                                  imageBuilder: (context, imageProvider) {
+                                    return CircleAvatar(
+                                      backgroundImage: imageProvider,
+                                      maxRadius: 25,
+                                    );
+                                  },
+                                  placeholder: (context, url) =>
+                                      const CircleAvatar(
+                                    backgroundColor: Colors.transparent,
+                                    backgroundImage:
+                                        AssetImage("assets/images/profile.gif"),
+                                    maxRadius: 30,
+                                  ),
+                                  errorWidget: (context, url, error) =>
+                                      CircleAvatar(
+                                    radius: 30,
+                                    child: Image.asset(
+                                        "assets/images/profile.gif"),
+                                  ),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 5, top: 5),
+                                child: Text(
+                                  groupName,
+                                  style: const TextStyle(
+                                      fontFamily: 'Narrow', fontSize: 23),
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      : AppBar(
+                          automaticallyImplyLeading: false,
+                          backgroundColor: Colors.white,
+                          foregroundColor: Colors.black,
+                          title: StreamBuilder(
+                              stream: onlineStream,
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData) {
+                                  dynamic s = snapshot.data;
+                                  return Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            right: 8.0, left: 8),
+                                        child: CachedNetworkImage(
+                                          imageUrl: s['imgUrl'],
+                                          imageBuilder:
+                                              (context, imageProvider) {
+                                            return CircleAvatar(
+                                              backgroundImage: imageProvider,
+                                              maxRadius: 25,
+                                            );
+                                          },
+                                          placeholder: (context, url) =>
+                                              const CircleAvatar(
+                                            backgroundColor: Colors.transparent,
+                                            backgroundImage: AssetImage(
+                                                "assets/images/profile.gif"),
+                                            maxRadius: 30,
+                                          ),
+                                          errorWidget: (context, url, error) =>
+                                              CircleAvatar(
                                             radius: 30,
                                             child: Image.asset(
-                                            "assets/images/profile.gif"),
+                                                "assets/images/profile.gif"),
+                                          ),
+                                          fit: BoxFit.cover,
+                                        ),
                                       ),
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        groupName,
-                                        style: const TextStyle(
-                                            fontFamily: 'Narrow', fontSize: 23),
-                                        textAlign: TextAlign.center,
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            groupName,
+                                            style: const TextStyle(
+                                                fontFamily: 'Narrow',
+                                                fontSize: 23),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                          Text(s["status"],
+                                              style: TextStyle(
+                                                  fontSize: 15,
+                                                  color: s["status"] == "Online"
+                                                      ? Colors.green
+                                                      : Colors.red[500]))
+                                        ],
                                       ),
-                                      Text(s["status"],
-                                          style: TextStyle(
-                                              fontSize: 15,
-                                              color: s["status"] == "Online"
-                                                  ? Colors.green
-                                                  : Colors.red[500]))
                                     ],
-                                  ),
-                                ],
-                              );
-                            }
-                            return const CircularProgressIndicator();
-                          }),
-                    ),
+                                  );
+                                }
+                                return const CircularProgressIndicator();
+                              }),
+                        ),
               expandedHeight: groupInfo.value ? 150 : 50,
               backgroundColor: Colors.indigo[300],
               actions: [
@@ -220,10 +277,10 @@ class MessageScreen extends HookWidget {
         body: Stack(
           children: <Widget>[
             Positioned(
+              bottom: MediaQuery.of(context).viewInsets.bottom + 60,
               top: 20,
               left: 0,
               right: 0,
-              bottom: MediaQuery.of(context).viewInsets.bottom + 60,
               child: GestureDetector(
                 onTap: () {
                   FocusScope.of(context).unfocus();
@@ -270,25 +327,17 @@ class MessageScreen extends HookWidget {
                   color: Colors.white,
                   child: Row(
                     children: <Widget>[
-                      InkWell(
-                        onTap: () {
-                          scrollController.animateTo(
-                              scrollController.position.maxScrollExtent,
-                              duration: const Duration(milliseconds: 1),
-                              curve: Curves.easeInOut);
-                        },
-                        child: Container(
-                          height: 30,
-                          width: 30,
-                          decoration: BoxDecoration(
-                            color: Colors.lightBlue,
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          child: const Icon(
-                            Icons.add,
-                            color: Colors.white,
-                            size: 20,
-                          ),
+                      Container(
+                        height: 30,
+                        width: 30,
+                        decoration: BoxDecoration(
+                          color: Colors.lightBlue,
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        child: const Icon(
+                          Icons.emoji_emotions_outlined,
+                          color: Colors.white,
+                          size: 20,
                         ),
                       ),
                       const SizedBox(
@@ -296,7 +345,13 @@ class MessageScreen extends HookWidget {
                       ),
                       Expanded(
                         child: TextField(
-                          onChanged: (v) {},
+                          focusNode: focusNode,
+                          onTap: () {
+                            scrollController.animateTo(
+                                scrollController.position.maxScrollExtent,
+                                duration: const Duration(milliseconds: 1),
+                                curve: Curves.easeInOut);
+                          },
                           controller: myController,
                           decoration: const InputDecoration(
                               hintText: "Write message...",
@@ -309,6 +364,8 @@ class MessageScreen extends HookWidget {
                       ),
                       FloatingActionButton(
                         onPressed: () {
+                          //TODO notification
+
                           if (myController.text.isNotEmpty) {
                             if (isGroup) {
                               final firebaseData = {
@@ -331,6 +388,7 @@ class MessageScreen extends HookWidget {
                                 "time": Timestamp.now(),
                                 "latestMessageBy": data.name['First']
                               });
+                              myController.clear();
                             } else {
                               final firebaseUserData = {
                                 "name": data.name['First'],
@@ -378,9 +436,9 @@ class MessageScreen extends HookWidget {
                                 "messageText": myController.text,
                                 "time": Timestamp.now(),
                               });
+                              myController.clear();
                             }
                           }
-                          myController.clear();
                         },
                         backgroundColor: Colors.blue,
                         elevation: 0,
