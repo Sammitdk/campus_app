@@ -1,3 +1,4 @@
+import 'package:campus_subsystem/student/student_attendance.dart';
 import 'package:campus_subsystem/student/student_event.dart';
 import 'package:campus_subsystem/student/student_notes.dart';
 import 'package:campus_subsystem/student/student_syllabus.dart';
@@ -108,8 +109,8 @@ class _StudentHomeState extends State<StudentHome> {
                       Expanded(
                         child: InkWell(
                           onTap: () {
-                            // Navigator.of(context).push(MaterialPageRoute(
-                            //     builder: (_) => StudentAttendance()));
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (_) => StudentAttendance()));
                           },
                           child: Card(
                             shape: RoundedRectangleBorder(
