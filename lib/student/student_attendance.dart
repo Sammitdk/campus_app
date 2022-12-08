@@ -1,46 +1,60 @@
+import 'package:campus_subsystem/redux/reducer.dart';
 import 'package:campus_subsystem/student/student_sub_attendance.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class StudentAttendance extends StatefulWidget {
   Map<String, dynamic> info = {};
-  StudentAttendance({Key? key,required this.info}) : super(key: key);
+  StudentAttendance({Key? key}) : super(key: key);
 
   @override
   State<StudentAttendance> createState() => _StudentAttendanceState();
 }
 
 class _StudentAttendanceState extends State<StudentAttendance> {
-  Map<String, dynamic> attendance = {};
+  // Map<String, dynamic> attendance = {};
   Map<String, dynamic> subject = {};
   List sorted = [];
+  var state;
 
-  Stream<Map<String, dynamic>> getAttendance() async* {
-    final DocumentReference subjects = FirebaseFirestore.instance.doc(
-        '/College/${widget.info['Branch']}/${widget.info['Year']}/Subjects');
-    DocumentSnapshot subjectsnapshot = await subjects.get();
-    subject = subjectsnapshot.data() as Map<String, dynamic>;
-    final CollectionReference studentdetail = FirebaseFirestore.instance
-        .collection('/Student_Detail/${widget.info['PRN']}/Attendance');
-    sorted = subject[widget.info['Sem']].keys.toList();
-    sorted.sort();
-    sorted.forEach((key) async {
-      DocumentSnapshot sub = await studentdetail.doc(key).get();
-      Map<String, dynamic> list = sub.data() as Map<String, dynamic>;
-      attendance[subject[widget.info['Sem']][key]] = list;
-    });
-    await Future.delayed(const Duration(seconds: 1));
-    yield attendance;
-  }
+
 
   @override
   Widget build(BuildContext context) {
+    var state = StoreProvider.of<AppState>(context).state;
+
+
+    Stream<Map<String, dynamic>> getAttendance() async* {
+      // final DocumentReference subjects = FirebaseFirestore.instance.doc(
+      //     '/College/${state.branch}/${state.year}/Subjects');
+      // DocumentSnapshot subjectsnapshot = await subjects.get();
+      // subject = subjectsnapshot.data() as Map<String, dynamic>;
+      // final CollectionReference studentdetail = FirebaseFirestore.instance
+      //     .collection('/Student_Detail/${state.prn}/Attendance');
+      
+      FirebaseFirestore.instance.collection("Student_Detail/${state.prn}/Attendance").get().then((value){
+        value.docs.forEach((element) {print("FFFFFFFFFFF${element.data()}");});
+      });
+      
+      // sorted = subject[state.sem].keys.toList();
+      // sorted.sort();
+      // sorted.forEach((key) async {
+      // DocumentSnapshot sub = await studentdetail.doc(key).get();
+      // Map<String, dynamic> list = sub.data() as Map<String, dynamic>;
+      // attendance[subject[state.sem][key]] = list;
+      // });
+      await Future.delayed(const Duration(seconds: 1));
+      // yield attendance;
+    }
     return StreamBuilder(
-      stream: getAttendance(),
-      builder: (context,AsyncSnapshot<Map<String,dynamic>> snap){
-        if(snap.hasData){
-          Map attendance = snap.data as Map<String,dynamic >;
+      stream: FirebaseFirestore.instance.collection("Student_Detail/${state.prn}/Attendance").snapshots(),
+      builder: (context,AsyncSnapshot attendance){
+        if(attendance.hasData){
+          // Map attendance = snap.data as Map<String,dynamic >;
+
+          print("qqqqqqqqqqqqqqqqqqqqqqq${attendance.data.docs[0].data()}");
           return Scaffold(
             appBar: AppBar(
               centerTitle: true,
@@ -50,9 +64,9 @@ class _StudentAttendanceState extends State<StudentAttendance> {
             body: Padding(
               padding: const EdgeInsetsDirectional.all(20),
               child: ListView.builder(
-                itemCount: attendance.length,
+                itemCount: attendance.data.docs.length,
                 itemBuilder: (BuildContext context, int index) {
-                  String key = sorted.elementAt(index);
+                  // String key = sorted.elementAt(index);
                   return Column(
                     children: [
                       Padding(
@@ -72,7 +86,7 @@ class _StudentAttendanceState extends State<StudentAttendance> {
                                 padding:  const EdgeInsetsDirectional.only(start: 20,end: 20,top: 30),
                                 child: InkWell(
                                   onTap: (){
-                                    Navigator.of(context).push(MaterialPageRoute(builder: (_) => StudentSubAttendance(name: subject[widget.info['Sem']][key],sub: '/Student_Detail/${widget.info['PRN']}/Attendance/${subject[widget.info['Sem']].keys.firstWhere((element) => subject[widget.info['Sem']][element]==subject[widget.info['Sem']][key])}')));
+                                    // Navigator.of(context).push(MaterialPageRoute(builder: (_) => StudentSubAttendance()));
                                   },
                                   child: Row(
                                     children: [
@@ -92,7 +106,7 @@ class _StudentAttendanceState extends State<StudentAttendance> {
                                                       topEnd: Radius.circular(50),
                                                       bottomStart: Radius.circular(50)),
                                                   color: Colors.blue[100]),
-                                              child: Text(subject[widget.info['Sem']][key],
+                                              child: Text(attendance.data.docs[index].id,
                                                   style: const TextStyle(
                                                       fontSize: 20),
                                                   textAlign: TextAlign.center),
@@ -109,7 +123,7 @@ class _StudentAttendanceState extends State<StudentAttendance> {
                                                 alignment: Alignment.center,
                                                 height: 100,
                                                 child: Text(
-                                                  '${attendance[subject[widget.info['Sem']][key]].entries.where((e) => e.value == true).toList().length.toString()}/${attendance[subject[widget.info['Sem']][key]].length}',
+                                                  '${attendance.data.docs[index].data().entries.where((e) => e.value == true).toList().length.toString()}/${attendance.data.docs[index].data().length}',
                                                 )
                                             ),
                                           )

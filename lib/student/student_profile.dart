@@ -309,20 +309,22 @@ class StudentProfile extends HookWidget {
                   // remove student device token
                   await FirebaseFirestore.instance
                       .doc("Student_Detail/${state.prn}")
-                      .update({"Token": FieldValue.delete()});
-                  // .then((value) => FirebaseAuth.instance.signOut());
+                      .update({"Token": FieldValue.delete()})
+                  .then((value) => FirebaseAuth.instance.signOut());
 
                   FirebaseFirestore.instance
                       .doc("Student_Detail/${state.prn}")
                       .update({"status": "Offline"});
 
-                  FirebaseAuth.instance.signOut();
+                  FirebaseAuth.instance.signOut().then((value) =>
+                      Navigator.pushReplacementNamed(context, "loading_page"));
                 } else {
                   // remove faculty device token
                   await FirebaseFirestore.instance
                       .doc("Faculty_Detail/${state.email}")
                       .update({"Token": FieldValue.delete()});
-                  FirebaseAuth.instance.signOut();
+                  FirebaseAuth.instance.signOut().then((value) =>
+                      Navigator.pushReplacementNamed(context, "loading_page"));
                 }
                 // FirebaseAuth.instance.signOut();
               } on FirebaseAuthException catch (e) {
