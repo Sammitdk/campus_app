@@ -1,48 +1,29 @@
+import 'package:campus_subsystem/redux/reducer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
-class StudentSubAttendance extends StatefulWidget {
-  final String sub;
+class StudentSubAttendance extends StatelessWidget {
+  final String subject;
 
-  final String name;
-  const StudentSubAttendance({Key? key, required this.sub, required this.name}) : super(key: key);
-
-  @override
-  State<StudentSubAttendance> createState() => _StudentSubAttendanceState();
-}
-
-class _StudentSubAttendanceState extends State<StudentSubAttendance> {
-  Map<String, dynamic> attendance = {};
-  var sorted;
-  Stream<Map<String, dynamic>> allattend() async* {
-    DocumentReference dr = FirebaseFirestore.instance.doc(widget.sub);
-    DocumentSnapshot ds = await dr.get();
-    attendance = ds.data() as Map<String, dynamic>;
-    sorted = attendance.keys.toList();
-    sorted.sort();
-    sorted = sorted.reversed;
-    yield attendance;
-  }
+  const StudentSubAttendance({Key? key, required this.subject}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
-      onRefresh: () => Future(() {
-        setState(() {});
-      }),
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.indigo[300],
-          centerTitle: true,
-          title: Text(widget.name,style: const TextStyle(fontFamily: 'Narrow', fontSize: 30),textAlign: TextAlign.center,),
-        ),
-        body: StreamBuilder(
-          stream: allattend(),
-          builder: (context, AsyncSnapshot<Map<String, dynamic>> snapshot) {
+    var state = StoreProvider.of<AppState>(context).state;
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.indigo[300],
+        centerTitle: true,
+        title: Text(subject,style: const TextStyle(fontFamily: 'Narrow', fontSize: 30),textAlign: TextAlign.center,),
+      ),
+      body: StreamBuilder(
+          stream: FirebaseFirestore.instance.doc("Student_Detail/${state.prn}/Attendance/$subject").snapshots(),
+          builder: (context, AsyncSnapshot snapshot) {
             if (snapshot.hasData) {
-              Map attendance = snapshot.data as Map<String, dynamic>;
+              Map attendance = snapshot.data.data() as Map<String, dynamic>;
               if (attendance.isEmpty) {
                 return const Center(
                     child: Text(
@@ -51,9 +32,9 @@ class _StudentSubAttendanceState extends State<StudentSubAttendance> {
                 ));
               } else {
                 return ListView.builder(
-                  itemCount: snapshot.data!.length,
+                  itemCount: attendance.length,
                   itemBuilder: (context, index) {
-                    String key = sorted.elementAt(index);
+                    String key = attendance.keys.elementAt(index);
                     return Padding(
                       padding: const EdgeInsetsDirectional.all(20),
                       child: Column(
@@ -80,7 +61,7 @@ class _StudentSubAttendanceState extends State<StudentSubAttendance> {
                                         borderRadius:
                                             BorderRadius.circular(50)),
                                     color: Colors.blue[100],
-                                    child: Container(
+                                    child: SizedBox(
                                       height: 80,
                                       child: Row(
                                         children: [
@@ -129,7 +110,6 @@ class _StudentSubAttendanceState extends State<StudentSubAttendance> {
             }
           },
         ),
-      ),
     );
   }
 }
