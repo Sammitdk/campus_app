@@ -92,10 +92,7 @@ class ConversationScreen extends HookWidget {
                                         prn: x['prn']);
                                   });
                             } else {
-                              return Center(
-                                  child:
-                                      LoadingAnimationWidget.staggeredDotsWave(
-                                          size: 50, color: Colors.red));
+                              return const SizedBox();
                             }
                           }),
                     ),

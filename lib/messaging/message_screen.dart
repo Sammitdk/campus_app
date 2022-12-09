@@ -8,9 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:intl/intl.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 import '../redux/reducer.dart';
 import 'message.dart';
+import 'package:keyboard_visibility_pro/keyboard_visibility_pro.dart';
 
 class MessageScreen extends HookWidget {
   final dynamic groupName;
@@ -31,17 +31,9 @@ class MessageScreen extends HookWidget {
     final myController = TextEditingController();
     var data = StoreProvider.of<AppState>(context).state;
     ScrollController scrollController = ScrollController();
-    void goDown() async {
-      await Future.delayed(const Duration(milliseconds: 700)).then((value) => {
-            if (scrollController.hasClients)
-              {
-                scrollController.animateTo(
-                    scrollController.position.maxScrollExtent,
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.easeInOut)
-              }
-          });
-    }
+    var bottom = useState(60.0);
+    var isReverse = useState(true);
+
 
     var groupInfo = useState(false);
 
@@ -60,10 +52,8 @@ class MessageScreen extends HookWidget {
         .doc(prn)
         .snapshots();
 
-
-
     useEffect(() {
-      stream.listen((event) {
+      StreamSubscription messagestream = stream.listen((event) {
         if (isGroup) {
           readAll(
             groupName: groupName,
@@ -74,10 +64,9 @@ class MessageScreen extends HookWidget {
           readAll(isGroup: false, groupName: prn, data: data);
         }
       });
-      goDown();
+
       return () {
-        stream;
-        onlineStream;
+        messagestream.cancel();
         myController.dispose();
         scrollController.dispose();
       };
@@ -270,243 +259,261 @@ class MessageScreen extends HookWidget {
             )
           ];
         },
-        body: Stack(
-          children: <Widget>[
-            Positioned(
-              bottom: MediaQuery.of(context).viewInsets.bottom + 55,
-              top: 20,
-              left: 0,
-              right: 0,
-              child: SingleChildScrollView(
-                controller: scrollController,
-                child: GestureDetector(
-                  onTap: () {
-                    FocusScope.of(context).unfocus();
-                  },
-                  child: StreamBuilder(
-                      stream: stream,
-                      builder: (ctx, AsyncSnapshot<QuerySnapshot> snapshot) {
-                        if (snapshot.hasData) {
-                          return ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: snapshot.data?.docs.length,
-                              itemBuilder: (ctx, index) {
-                                QueryDocumentSnapshot x =
-                                    snapshot.data!.docs[index];
-                                return Message(
-                                  text: x['message'],
-                                  name: x['name'],
-                                  messageType: x['messageType'],
-                                  isCurrentUser: x['email'] == data.email,
-                                  time: DateFormat('hh:mm a')
-                                      .format(x['time'].toDate())
-                                      .toString(),
-                                );
-                              });
-                        } else {
-                          return Center(
-                              child: LoadingAnimationWidget.staggeredDotsWave(
-                                  size: 50, color: Colors.red));
-                        }
-                      }),
-                ),
-              ),
-            ),
-            Positioned(
-              bottom: MediaQuery.of(context).viewInsets.bottom,
-              left: 0,
-              right: 0,
-              child: Align(
-                alignment: Alignment.bottomLeft,
-                child: Container(
-                  padding: const EdgeInsets.only(left: 10, bottom: 10, top: 10),
-                  height: 60,
-                  width: double.infinity,
-                  color: Colors.white,
-                  child: Row(
-                    children: <Widget>[
-                      Container(
-                        height: 30,
-                        width: 30,
-                        decoration: BoxDecoration(
-                          color: Colors.lightBlue,
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        child: GestureDetector(
-                          onTap: () {
-                            scrollController.animateTo(
-                                scrollController.position.maxScrollExtent,
-                                duration: const Duration(milliseconds: 1),
-                                curve: Curves.easeInOut);
-                          },
-                          child: const Icon(
-                            Icons.emoji_emotions_outlined,
-                            color: Colors.white,
-                            size: 20,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 15,
-                      ),
-                      Expanded(
-                        child: TextField(
-                          onChanged: (v){
-                            scrollController.animateTo(
-                                scrollController.position.maxScrollExtent,
-                                duration: const Duration(milliseconds: 1),
-                                curve: Curves.easeInOut);
-                          },
-                          controller: myController,
-                          decoration: const InputDecoration(
-                              hintText: "Write message...",
-                              hintStyle: TextStyle(color: Colors.black54),
-                              border: InputBorder.none),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 15,
-                      ),
-                      FloatingActionButton(
-                        onPressed: () async {
-                          if (myController.text.isNotEmpty) {
-                            if (isGroup) {
-                              // for group message
-                              final firebaseData = {
-                                "name": data.name['First'],
-                                "time": Timestamp.now(),
-                                "email": data.email,
-                                "message": myController.text,
-                                "users": [data.email],
-                                "messageType": "groupMessage"
-                              };
-
-                              // new message to group
-                              FirebaseFirestore.instance
-                                  .collection(
-                                      "GroupMessages/$groupName/Messages")
-                                  .add(firebaseData);
-
-                              // last message user info
-                              FirebaseFirestore.instance
-                                  .collection("GroupMessages")
-                                  .doc(groupName)
-                                  .update({
-                                "messageText": myController.text,
-                                "time": Timestamp.now(),
-                                "latestMessageBy": data.name['First']
-                              });
-
-                              // notification to all users
-                              FirebaseFirestore.instance
-                                  .doc("GroupMessages/$groupName")
-                                  .get()
-                                  .then((value) {
-                                Map group = value.data() as Map;
-                                if (group.containsKey("users")) {
-                                  group["users"].forEach((user) {
-                                    if (user != data.email) {
-                                      FirebaseFirestore.instance
-                                          .collection("Student_Detail")
-                                          .where("Email", isEqualTo: user)
-                                          .get()
-                                          .then((userdocs) {
-                                        if (userdocs.docs[0]
-                                            .data()
-                                            .containsKey("Token")) {
-                                          NotificationAPI.postNotification(
-                                              title: groupName,
-                                              message:
-                                                  "  ${data.name["First"].toString().capitalize()}: ${myController.text}",
-                                              receiver: userdocs.docs[0]
-                                                  ["Token"]);
-                                        }
-                                      });
-                                    }
-                                  });
-                                }
-                              });
-                              myController.clear();
-                            } else {
-                              // for user message
-                              final firebaseUserData = {
-                                "name": data.name['First'],
-                                "time": Timestamp.now(),
-                                "email": data.email,
-                                "message": myController.text,
-                                "messageType": "userMessage",
-                                "users": [data.email],
-                              };
-
-                              // sender user
-                              FirebaseFirestore.instance
-                                  .collection(
-                                      "Student_Detail/${data.prn}/Messages/$prn/Messages")
-                                  .add(firebaseUserData);
-
-                              // last message info
-                              FirebaseFirestore.instance
-                                  .collection(
-                                      "Student_Detail/${data.prn}/Messages")
-                                  .doc(prn)
-                                  .update({
-                                "messageText": myController.text,
-                                "time": Timestamp.now(),
-                              });
-
-                              // receiver user
-                              FirebaseFirestore.instance
-                                  .collection(
-                                      "Student_Detail/$prn/Messages/${data.prn}/Messages")
-                                  .add(firebaseUserData);
-
-                              // last message info
-                              FirebaseFirestore.instance
-                                  .collection("Student_Detail/$prn/Messages")
-                                  .doc(data.prn)
-                                  .update({
-                                "messageText": myController.text,
-                                "time": Timestamp.now(),
-                              });
-
-                              // notification to receiver
-                              String receiver = await FirebaseFirestore.instance
-                                  .doc("Student_Detail/$prn")
-                                  .get()
-                                  .then((value) {
-                                {
-                                  Map user = value.data() as Map;
-                                  if (user.containsKey("Token")) {
-                                    return user["Token"];
-                                  }
-                                  return '';
-                                }
-                              });
-                              receiver.isNotEmpty
-                                  ? NotificationAPI.postNotification(
-                                      title:
-                                          "${data.name['First'].toString().capitalize()} ${data.name['Last'].toString().capitalize()}",
-                                      message: myController.text,
-                                      receiver: receiver)
-                                  : null;
-                            }
+        body: KeyboardVisibility(
+          onChanged: (isOpened) {
+            if (isOpened) {
+              bottom.value = 350.0;
+              isReverse.value = false;
+              scrollController.animateTo(
+                  scrollController.position.maxScrollExtent + bottom.value,
+                  duration: const Duration(milliseconds: 1),
+                  curve: Curves.easeInOut);
+            } else {
+              bottom.value = 60.0;
+            }
+          },
+          child: Stack(
+            children: <Widget>[
+              Positioned(
+                bottom: bottom.value,
+                top: 20,
+                left: 0,
+                right: 0,
+                child: SingleChildScrollView(
+                  controller: scrollController,
+                  reverse: isReverse.value,
+                  child: GestureDetector(
+                    onTap: () {
+                      FocusScope.of(context).unfocus();
+                    },
+                    child: StreamBuilder(
+                        stream: stream,
+                        builder: (ctx, AsyncSnapshot<QuerySnapshot> snapshot) {
+                          if (snapshot.hasData) {
+                            // if(snapshot.data?.docs.contains(data.email) as bool){
+                            //   return Center(child: Text("ok"));
+                            // }else {
+                              return ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: snapshot.data?.docs.length,
+                                itemBuilder: (ctx, index) {
+                                  QueryDocumentSnapshot x =
+                                      snapshot.data!.docs[index];
+                                  return Message(
+                                    text: x['message'],
+                                    name: x['name'],
+                                    messageType: x['messageType'],
+                                    isCurrentUser: x['email'] == data.email,
+                                    time: DateFormat('hh:mm a')
+                                        .format(x['time'].toDate())
+                                        .toString(),
+                                  );
+                                });
+                          } else {
+                            return const SizedBox();
                           }
-                          myController.clear();
-                        },
-                        backgroundColor: Colors.blue,
-                        elevation: 0,
-                        child: const Icon(
-                          Icons.send,
-                          color: Colors.white,
-                          size: 18,
-                        ),
-                      ),
-                    ],
+                        }),
                   ),
                 ),
               ),
-            ),
-          ],
+              Positioned(
+                bottom: MediaQuery.of(context).viewInsets.bottom,
+                left: 0,
+                right: 0,
+                child: Align(
+                  alignment: Alignment.bottomLeft,
+                  child: Container(
+                    padding:
+                        const EdgeInsets.only(left: 10, bottom: 10, top: 10),
+                    height: 60,
+                    width: double.infinity,
+                    color: Colors.white,
+                    child: Row(
+                      children: <Widget>[
+                        Container(
+                          height: 30,
+                          width: 30,
+                          decoration: BoxDecoration(
+                            color: Colors.lightBlue,
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          child: GestureDetector(
+                            onTap: () {
+                              scrollController.animateTo(
+                                  scrollController.position.maxScrollExtent,
+                                  duration: const Duration(milliseconds: 1),
+                                  curve: Curves.easeInOut);
+                            },
+                            child: const Icon(
+                              Icons.emoji_emotions_outlined,
+                              color: Colors.white,
+                              size: 20,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 15,
+                        ),
+                        Expanded(
+                          child: TextField(
+                            onChanged: (v) {
+                              scrollController.animateTo(
+                                  scrollController.position.maxScrollExtent,
+                                  duration: const Duration(milliseconds: 1),
+                                  curve: Curves.easeInOut);
+                            },
+                            controller: myController,
+                            decoration: const InputDecoration(
+                                hintText: "Write message...",
+                                hintStyle: TextStyle(color: Colors.black54),
+                                border: InputBorder.none),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 15,
+                        ),
+                        FloatingActionButton(
+                          onPressed: () async {
+                            if (myController.text.isNotEmpty) {
+                              if (isGroup) {
+                                // for group message
+                                final firebaseData = {
+                                  "name": data.name['First'],
+                                  "time": Timestamp.now(),
+                                  "email": data.email,
+                                  "message": myController.text,
+                                  "users": [data.email],
+                                  "messageType": "groupMessage"
+                                };
+
+                                // new message to group
+                                FirebaseFirestore.instance
+                                    .collection(
+                                        "GroupMessages/$groupName/Messages")
+                                    .add(firebaseData);
+
+                                // last message user info
+                                FirebaseFirestore.instance
+                                    .collection("GroupMessages")
+                                    .doc(groupName)
+                                    .update({
+                                  "messageText": myController.text,
+                                  "time": Timestamp.now(),
+                                  "latestMessageBy": data.name['First']
+                                });
+
+                                // notification to all users
+                                FirebaseFirestore.instance
+                                    .doc("GroupMessages/$groupName")
+                                    .get()
+                                    .then((value) {
+                                  Map group = value.data() as Map;
+                                  if (group.containsKey("users")) {
+                                    group["users"].forEach((user) {
+                                      if (user != data.email) {
+                                        FirebaseFirestore.instance
+                                            .collection("Student_Detail")
+                                            .where("Email", isEqualTo: user)
+                                            .get()
+                                            .then((userdocs) {
+                                          if (userdocs.docs[0]
+                                              .data()
+                                              .containsKey("Token")) {
+                                            NotificationAPI.postNotification(
+                                                title: groupName,
+                                                message:
+                                                    "  ${data.name["First"].toString().capitalize()}: ${myController.text}",
+                                                receiver: userdocs.docs[0]
+                                                    ["Token"]);
+                                          }
+                                        });
+                                      }
+                                    });
+                                  }
+                                });
+                                myController.clear();
+                              } else {
+                                // for user message
+                                final firebaseUserData = {
+                                  "name": data.name['First'],
+                                  "time": Timestamp.now(),
+                                  "email": data.email,
+                                  "message": myController.text,
+                                  "messageType": "userMessage",
+                                  "users": [data.email],
+                                };
+
+                                // sender user
+                                FirebaseFirestore.instance
+                                    .collection(
+                                        "Student_Detail/${data.prn}/Messages/$prn/Messages")
+                                    .add(firebaseUserData);
+
+                                // last message info
+                                FirebaseFirestore.instance
+                                    .collection(
+                                        "Student_Detail/${data.prn}/Messages")
+                                    .doc(prn)
+                                    .update({
+                                  "messageText": myController.text,
+                                  "time": Timestamp.now(),
+                                });
+
+                                // receiver user
+                                FirebaseFirestore.instance
+                                    .collection(
+                                        "Student_Detail/$prn/Messages/${data.prn}/Messages")
+                                    .add(firebaseUserData);
+
+                                // last message info
+                                FirebaseFirestore.instance
+                                    .collection("Student_Detail/$prn/Messages")
+                                    .doc(data.prn)
+                                    .update({
+                                  "messageText": myController.text,
+                                  "time": Timestamp.now(),
+                                });
+
+                                // notification to receiver
+                                String receiver = await FirebaseFirestore
+                                    .instance
+                                    .doc("Student_Detail/$prn")
+                                    .get()
+                                    .then((value) {
+                                  {
+                                    Map user = value.data() as Map;
+                                    if (user.containsKey("Token")) {
+                                      return user["Token"];
+                                    }
+                                    return '';
+                                  }
+                                });
+                                receiver.isNotEmpty
+                                    ? NotificationAPI.postNotification(
+                                        title:
+                                            "${data.name['First'].toString().capitalize()} ${data.name['Last'].toString().capitalize()}",
+                                        message: myController.text,
+                                        receiver: receiver)
+                                    : null;
+                              }
+                            }
+                            myController.clear();
+                          },
+                          backgroundColor: Colors.blue,
+                          elevation: 0,
+                          child: const Icon(
+                            Icons.send,
+                            color: Colors.white,
+                            size: 18,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
