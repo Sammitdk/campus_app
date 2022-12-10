@@ -80,7 +80,7 @@ class MessageScreen extends HookWidget {
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
             SliverAppBar(
-              automaticallyImplyLeading: isGroup ? false : false,
+              automaticallyImplyLeading: isGroup ? false : false,//todo
               flexibleSpace: groupInfo.value
                   ? FlexibleSpaceBar(
                       background: Image.network(
