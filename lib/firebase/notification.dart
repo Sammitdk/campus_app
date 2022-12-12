@@ -17,25 +17,6 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 }
 
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  // String? token = await FirebaseMessaging.instance.getToken();
-  // print(token);
-  FirebaseMessaging.onMessageOpenedApp.listen((event) {print(" aaaaaaaaaaaaaaaaa"+event.data.toString());});
-  FirebaseMessaging.onMessage.listen((event) {
-    Map data = event.toMap();
-    NotificationAPI.postLocalNotification(title: "local"+data["notification"]['title'], message: data["notification"]['body']);
-    print("     sfgsefseef" + data["notification"]['route'].toString());
-  });
-  runApp(const MaterialApp(
-    home: Scaffold(
-      body: Noti(),
-    ),
-  ));
-}
-
-
 
 
 class NotificationAPI {
@@ -56,8 +37,13 @@ class NotificationAPI {
     int id = 0,
     required String title,
     required String message,
+    String? image,
   }) async {
     _noti.show(id, title, message, notificationDetails, payload: "chat_screen");
+    // _noti.getNotificationAppLaunchDetails().asStream().listen((value){
+    //   print(value?.didNotificationLaunchApp);
+    //   // Navigator.of(context).pushNamed("chat_screen");
+    // });
   }
   static Future postNotification({
     int id = 0,

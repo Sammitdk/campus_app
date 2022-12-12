@@ -30,20 +30,22 @@ void main() async {
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [
     SystemUiOverlay.bottom, //This line is used for showing the bottom bar
   ]);
+
+
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  // notification permissions
   FlutterLocalNotificationsPlugin().initialize(const InitializationSettings(
     android: AndroidInitializationSettings(
         "notification_icon"),
   ));
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-
-
 
 
   // listen notification on foreground
   FirebaseMessaging.onMessage.listen((event) {
     id += 1;
     Map data = event.toMap();
-    NotificationAPI.postLocalNotification(id: id,title: data["notification"]['title'], message: data["notification"]['body']);
+    NotificationAPI.postLocalNotification(id: id,title: data["notification"]['title'], message: data["notification"]['body'],image: data["notification"]['image']);
   });
   runApp(const Main());
 }

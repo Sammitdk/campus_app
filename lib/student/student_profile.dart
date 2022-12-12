@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:campus_subsystem/main.dart';
 import 'package:campus_subsystem/password_reset.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -84,7 +85,7 @@ class StudentProfile extends HookWidget {
                     maxRadius: 80,
                     backgroundImage: FileImage(file!),
                   )
-                : stateUrl.value != ""
+                : stateUrl.value != "" && stateUrl.value != null
                     ? CachedNetworkImage(
                         imageUrl: stateUrl.value,
                         imageBuilder: (context, imageProvider) {
@@ -140,7 +141,7 @@ class StudentProfile extends HookWidget {
           top: 8,
           left: 20,
           child: Text(
-            "${state.name['First']}.${state.name['Middle'].toString().substring(0, 1)}.${state.name['Last']}",
+            "${state.name['First'].toString().capitalize()}.${state.name['Middle'].substring(0, 1).toString().capitalize()}.${state.name['Last'].toString().capitalize()}",
             style: const TextStyle(
               fontSize: 30,
               color: Colors.white,
