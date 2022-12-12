@@ -11,20 +11,22 @@ import 'message_screen.dart';
 class ConversationList extends HookWidget {
   final String name;
   final String messageText;
-  final String imageUrl;
+  final dynamic imageUrl;
   final String time;
   final bool isMessageRead;
   final String latestMessageBy;
   final int count;
   final dynamic isGroup;
   final dynamic prn;
+  final dynamic users;
   const ConversationList(
       {Key? key,
       this.prn,
+      this.users,
       required this.name,
       required this.isGroup,
       required this.messageText,
-      required this.imageUrl,
+      this.imageUrl,
       required this.time,
       required this.isMessageRead,
       required this.latestMessageBy,
@@ -35,6 +37,26 @@ class ConversationList extends HookWidget {
   Widget build(BuildContext context) {
     var data = StoreProvider.of<AppState>(context).state;
     var countState = useState(count);
+    var imageUrlState = useState("");
+    var onlineStatus = useState("Offline");
+    dynamic onlineStream;
+
+    useEffect(() {
+      if (isGroup == false) {
+        onlineStream = FirebaseFirestore.instance
+            .collection("Student_Detail")
+            .doc(prn)
+            .snapshots()
+            .listen((event) {
+          dynamic data = event.data();
+          imageUrlState.value = data['imgUrl'];
+          onlineStatus.value = data['status'];
+        });
+      }
+      return () => {
+            if (isGroup == false) {onlineStream.cancel()}
+          };
+    }, []);
 
     if (isGroup) {
       getMessageReads(store.state, name, isGroup)
@@ -56,7 +78,10 @@ class ConversationList extends HookWidget {
               context,
               MaterialPageRoute(
                   builder: (_) => MessageScreen(
-                      groupName: name, imageUrl: imageUrl, isGroup: isGroup)));
+                      users: users,
+                      groupName: name,
+                      imageUrl: imageUrl,
+                      isGroup: isGroup)));
         } else {
           FirebaseFirestore.instance
               .collection("Student_Detail/${data.prn}/Messages")
@@ -70,8 +95,9 @@ class ConversationList extends HookWidget {
               context,
               MaterialPageRoute(
                   builder: (_) => MessageScreen(
+                      status: onlineStatus.value,
                       groupName: name,
-                      imageUrl: imageUrl,
+                      imageUrl: imageUrlState.value,
                       isGroup: false,
                       prn: prn)));
         }
@@ -85,26 +111,47 @@ class ConversationList extends HookWidget {
               Expanded(
                 child: Row(
                   children: <Widget>[
-                    imageUrl != ""
-                        ? CachedNetworkImage(
-                            imageUrl: imageUrl,
-                            imageBuilder: (context, imageProvider) {
-                              return CircleAvatar(
-                                backgroundImage: imageProvider,
+                    isGroup
+                        ? imageUrl != ""
+                            ? CachedNetworkImage(
+                                imageUrl: imageUrl,
+                                imageBuilder: (context, imageProvider) {
+                                  return CircleAvatar(
+                                    backgroundImage: imageProvider,
+                                    maxRadius: 30,
+                                  );
+                                },
+                                placeholder: (context, url) =>
+                                    const CircularProgressIndicator(),
+                                errorWidget: (context, url, error) =>
+                                    const Icon(Icons.error),
+                                fit: BoxFit.cover,
+                              )
+                            : const CircleAvatar(
+                                backgroundImage:
+                                    AssetImage("assets/images/profile.gif"),
                                 maxRadius: 30,
-                              );
-                            },
-                            placeholder: (context, url) =>
-                                const CircularProgressIndicator(),
-                            errorWidget: (context, url, error) =>
-                                const Icon(Icons.error),
-                            fit: BoxFit.cover,
-                          )
-                        : const CircleAvatar(
-                            backgroundImage:
-                                AssetImage("assets/images/profile.gif"),
-                            maxRadius: 30,
-                          ),
+                              )
+                        : imageUrlState.value != ""
+                            ? CachedNetworkImage(
+                                imageUrl: imageUrlState.value,
+                                imageBuilder: (context, imageProvider) {
+                                  return CircleAvatar(
+                                    backgroundImage: imageProvider,
+                                    maxRadius: 30,
+                                  );
+                                },
+                                placeholder: (context, url) =>
+                                    const CircularProgressIndicator(),
+                                errorWidget: (context, url, error) =>
+                                    const Icon(Icons.error),
+                                fit: BoxFit.cover,
+                              )
+                            : const CircleAvatar(
+                                backgroundImage:
+                                    AssetImage("assets/images/profile.gif"),
+                                maxRadius: 30,
+                              ),
                     const SizedBox(
                       width: 16,
                     ),

@@ -81,7 +81,6 @@ class ConversationScreen extends HookWidget {
                                     return ConversationList(
                                         name: x['groupName'],
                                         messageText: x['messageText'],
-                                        imageUrl: x['imgUrl'],
                                         time: DateFormat('hh:mm a')
                                             .format(x['time'].toDate())
                                             .toString(),
@@ -89,7 +88,8 @@ class ConversationScreen extends HookWidget {
                                         latestMessageBy: "ok",
                                         count: 0,
                                         isGroup: x["isGroup"],
-                                        prn: x['prn']);
+                                        prn: x['prn'],
+                                    );
                                   });
                             } else {
                               return const SizedBox();
@@ -152,6 +152,7 @@ class ConversationScreen extends HookWidget {
                                     QueryDocumentSnapshot x =
                                         snapshot.data!.docs[index];
                                     return ConversationList(
+                                      users: x['users'],
                                       name: x['groupName'],
                                       messageText: x['messageText'],
                                       imageUrl: x['imgUrl'],

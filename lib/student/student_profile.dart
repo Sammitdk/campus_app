@@ -23,6 +23,7 @@ class StudentProfile extends HookWidget {
     File? file;
     final stateUrl = useState(state.imgUrl);
     var clicked = useState(false);
+    var progress = useState(0.0);
 
     Future selectFiles() async {
       final result =
@@ -37,14 +38,34 @@ class StudentProfile extends HookWidget {
       if (file == null) return;
       final destination = 'Images/${state.prn}';
       final ref = FirebaseStorage.instance.ref(destination);
-      await ref.putFile(file!);
-      String url = await ref.getDownloadURL();
-      stateUrl.value = url;
-      await FirebaseFirestore.instance
-          .collection("Student_Detail")
-          .doc("${state.prn}")
-          .update({'imgUrl': url});
-      clicked.value = false;
+      final storageRef = ref.putFile(file!);
+      storageRef.snapshotEvents.listen((event) async {
+        switch (event.state) {
+          case TaskState.running:
+            progress.value =
+                event.bytesTransferred.toDouble() / event.totalBytes.toDouble();
+            break;
+          case TaskState.paused:
+            clicked.value = false;
+            break;
+          case TaskState.canceled:
+            clicked.value = false;
+            break;
+          case TaskState.error:
+            clicked.value = false;
+            break;
+          case TaskState.success:
+            String url = await ref.getDownloadURL();
+            stateUrl.value = url;
+            await FirebaseFirestore.instance
+                .collection("Student_Detail")
+                .doc("${state.prn}")
+                .update({'imgUrl': url});
+            clicked.value = false;
+            storageRef.cancel();
+            break;
+        }
+      });
     }
 
     return Scaffold(
@@ -92,16 +113,30 @@ class StudentProfile extends HookWidget {
         Positioned(
             top: height / 3.50,
             width: width / 0.55,
-            child: FloatingActionButton(
-              elevation: 0,
-              backgroundColor: Colors.transparent,
-              foregroundColor: Colors.black,
-              onPressed: () async {
-                await selectFiles();
-                await uploadFile();
-              },
-              child: const Icon(Icons.add_photo_alternate_outlined),
-            )),
+            child: clicked.value
+                ? Padding(
+                    padding: const EdgeInsets.only(top: 20),
+                    child: Column(
+                      children: [
+                        CircularProgressIndicator(
+                          value: progress.value,
+                          color: Colors.black,
+                          strokeWidth: 3.0,
+                        ),
+                        Text(progress.value.toStringAsFixed(2)),
+                      ],
+                    ),
+                  )
+                : FloatingActionButton(
+                    elevation: 0,
+                    backgroundColor: Colors.transparent,
+                    foregroundColor: Colors.black,
+                    onPressed: () async {
+                      await selectFiles();
+                      await uploadFile();
+                    },
+                    child: const Icon(Icons.add_photo_alternate_outlined),
+                  )),
         Positioned(
           top: 8,
           left: 20,
@@ -310,8 +345,8 @@ class StudentProfile extends HookWidget {
                   // remove student device token
                   await FirebaseFirestore.instance
                       .doc("Student_Detail/${state.prn}")
-                      .update({"Token": FieldValue.delete()})
-                  .then((value) => FirebaseAuth.instance.signOut());
+                      .update({"Token": FieldValue.delete()}).then(
+                          (value) => FirebaseAuth.instance.signOut());
 
                   FirebaseFirestore.instance
                       .doc("Student_Detail/${state.prn}")

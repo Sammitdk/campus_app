@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:campus_subsystem/firebase/notification.dart';
 import 'package:campus_subsystem/main.dart';
+import 'package:campus_subsystem/messaging/group_info.dart';
 import 'package:campus_subsystem/messaging/read_message-fetch.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -17,9 +18,13 @@ class MessageScreen extends HookWidget {
   final dynamic imageUrl;
   final dynamic isGroup;
   final dynamic prn;
+  final dynamic status;
+  final dynamic users;
 
   const MessageScreen({
     Key? key,
+    this.users,
+    this.status,
     this.prn,
     required this.isGroup,
     required this.groupName,
@@ -34,9 +39,6 @@ class MessageScreen extends HookWidget {
     var bottom = useState(60.0);
     var isReverse = useState(true);
 
-
-    var groupInfo = useState(false);
-
     dynamic stream = isGroup
         ? FirebaseFirestore.instance
             .collection("GroupMessages/$groupName/Messages")
@@ -46,11 +48,6 @@ class MessageScreen extends HookWidget {
             .collection("Student_Detail/${data.prn}/Messages/$prn/Messages")
             .orderBy('time')
             .snapshots(includeMetadataChanges: true);
-
-    dynamic onlineStream = FirebaseFirestore.instance
-        .collection("Student_Detail")
-        .doc(prn)
-        .snapshots();
 
     useEffect(() {
       StreamSubscription messagestream = stream.listen((event) {
@@ -72,193 +69,151 @@ class MessageScreen extends HookWidget {
       };
     }, []);
 
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      backgroundColor: Colors.white,
-      body: NestedScrollView(
-        floatHeaderSlivers: true,
-        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-          return <Widget>[
-            SliverAppBar(
-              automaticallyImplyLeading: isGroup ? false : false,//todo
-              flexibleSpace: groupInfo.value
-                  ? FlexibleSpaceBar(
-                      background: Image.network(
-                        imageUrl,
+    return SafeArea(
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        backgroundColor: Colors.white,
+        appBar: isGroup
+            ? AppBar(
+                actions: [
+                  PopupMenuButton(itemBuilder: (context) {
+                    return [
+                      const PopupMenuItem<int>(
+                        value: 0,
+                        child: Text("Group Info"),
+                      ),
+                      const PopupMenuItem<int>(
+                        value: 1,
+                        child: Text("Search"),
+                      ),
+                      const PopupMenuItem<int>(
+                        value: 2,
+                        child: Text("Leave Group"),
+                      ),
+                    ];
+                  }, onSelected: (value) {
+                    if (value == 0) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => GroupInfo(
+                                    users : users,
+                                    imgUrl: imageUrl,
+                                    groupName: groupName,
+                                  )));
+                    } else if (value == 1) {
+                    } else if (value == 2) {
+                      FirebaseFirestore.instance
+                          .collection("GroupMessages")
+                          .doc(groupName)
+                          .update({
+                        "users": FieldValue.arrayRemove([data.email]),
+                      });
+                      FirebaseFirestore.instance
+                          .collection("GroupMessages/$groupName/Messages")
+                          .add(
+                        {
+                          "messageType": "left",
+                          "email": data.email,
+                          "name": data.name['First'],
+                          "time": Timestamp.now(),
+                          "users": FieldValue.arrayUnion([data.email]),
+                          "message": ""
+                        },
+                      );
+                      Navigator.pop(context);
+                    }
+                  })
+                ],
+                backgroundColor: Colors.white,
+                foregroundColor: Colors.black,
+                automaticallyImplyLeading: false,
+                title: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(right: 8.0, left: 8),
+                      child: CachedNetworkImage(
+                        imageUrl: imageUrl,
+                        imageBuilder: (context, imageProvider) {
+                          return CircleAvatar(
+                            backgroundImage: imageProvider,
+                            maxRadius: 25,
+                          );
+                        },
+                        placeholder: (context, url) => const CircleAvatar(
+                          backgroundColor: Colors.transparent,
+                          backgroundImage:
+                              AssetImage("assets/images/profile.gif"),
+                          maxRadius: 30,
+                        ),
+                        errorWidget: (context, url, error) => CircleAvatar(
+                          radius: 30,
+                          child: Image.asset("assets/images/profile.gif"),
+                        ),
                         fit: BoxFit.cover,
                       ),
-                      title: Text(
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 5, top: 5),
+                      child: Text(
                         groupName,
                         style:
-                            const TextStyle(fontFamily: 'Narrow', fontSize: 25),
-                        textAlign: TextAlign.center,
+                            const TextStyle(fontFamily: 'Narrow', fontSize: 23),
                       ),
-                    )
-                  : isGroup
-                      ? AppBar(
-                          backgroundColor: Colors.white,
-                          foregroundColor: Colors.black,
-                          automaticallyImplyLeading: false,
-                          title: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding:
-                                    const EdgeInsets.only(right: 8.0, left: 8),
-                                child: CachedNetworkImage(
-                                  imageUrl: imageUrl,
-                                  imageBuilder: (context, imageProvider) {
-                                    return CircleAvatar(
-                                      backgroundImage: imageProvider,
-                                      maxRadius: 25,
-                                    );
-                                  },
-                                  placeholder: (context, url) =>
-                                      const CircleAvatar(
-                                    backgroundColor: Colors.transparent,
-                                    backgroundImage:
-                                        AssetImage("assets/images/profile.gif"),
-                                    maxRadius: 30,
-                                  ),
-                                  errorWidget: (context, url, error) =>
-                                      CircleAvatar(
-                                    radius: 30,
-                                    child: Image.asset(
-                                        "assets/images/profile.gif"),
-                                  ),
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 5, top: 5),
-                                child: Text(
-                                  groupName,
-                                  style: const TextStyle(
-                                      fontFamily: 'Narrow', fontSize: 23),
-                                ),
-                              ),
-                            ],
-                          ),
-                        )
-                      : AppBar(
-                          automaticallyImplyLeading: false,
-                          backgroundColor: Colors.white,
-                          foregroundColor: Colors.black,
-                          title: StreamBuilder(
-                              stream: onlineStream,
-                              builder: (context, snapshot) {
-                                if (snapshot.hasData) {
-                                  dynamic s = snapshot.data;
-                                  return Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            right: 8.0, left: 8),
-                                        child: CachedNetworkImage(
-                                          imageUrl: s['imgUrl'],
-                                          imageBuilder:
-                                              (context, imageProvider) {
-                                            return CircleAvatar(
-                                              backgroundImage: imageProvider,
-                                              maxRadius: 25,
-                                            );
-                                          },
-                                          placeholder: (context, url) =>
-                                              const CircleAvatar(
-                                            backgroundColor: Colors.transparent,
-                                            backgroundImage: AssetImage(
-                                                "assets/images/profile.gif"),
-                                            maxRadius: 30,
-                                          ),
-                                          errorWidget: (context, url, error) =>
-                                              CircleAvatar(
-                                            radius: 30,
-                                            child: Image.asset(
-                                                "assets/images/profile.gif"),
-                                          ),
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            groupName,
-                                            style: const TextStyle(
-                                                fontFamily: 'Narrow',
-                                                fontSize: 23),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                          Text(s["status"],
-                                              style: TextStyle(
-                                                  fontSize: 15,
-                                                  color: s["status"] == "Online"
-                                                      ? Colors.green
-                                                      : Colors.red[500]))
-                                        ],
-                                      ),
-                                    ],
-                                  );
-                                }
-                                return const CircularProgressIndicator();
-                              }),
-                        ),
-              expandedHeight: groupInfo.value ? 150 : 50,
-              backgroundColor: Colors.indigo[300],
-              actions: [
-                isGroup
-                    ? PopupMenuButton(itemBuilder: (context) {
-                        return [
-                          const PopupMenuItem<int>(
-                            value: 0,
-                            child: Text("Group Info"),
-                          ),
-                          const PopupMenuItem<int>(
-                            value: 1,
-                            child: Text("Search"),
-                          ),
-                          const PopupMenuItem<int>(
-                            value: 2,
-                            child: Text("Leave Group"),
-                          ),
-                        ];
-                      }, onSelected: (value) {
-                        if (value == 0) {
-                          groupInfo.value = true;
-                        } else if (value == 1) {
-                        } else if (value == 2) {
-                          FirebaseFirestore.instance
-                              .collection("GroupMessages")
-                              .doc(groupName)
-                              .update({
-                            "users": FieldValue.arrayRemove([data.email]),
-                          });
-                          FirebaseFirestore.instance
-                              .collection("GroupMessages/$groupName/Messages")
-                              .add(
-                            {
-                              "messageType": "left",
-                              "email": data.email,
-                              "name": data.name['First'],
-                              "time": Timestamp.now(),
-                              "users": FieldValue.arrayUnion([data.email]),
-                              "message": ""
-                            },
+                    ),
+                  ],
+                ),
+              )
+            : AppBar(
+                automaticallyImplyLeading: false,
+                backgroundColor: Colors.white,
+                foregroundColor: Colors.black,
+                title: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(right: 8.0, left: 8),
+                      child: CachedNetworkImage(
+                        imageUrl: imageUrl,
+                        imageBuilder: (context, imageProvider) {
+                          return CircleAvatar(
+                            backgroundImage: imageProvider,
+                            maxRadius: 25,
                           );
-                          Navigator.pop(context);
-                        }
-                      })
-                    : const SizedBox(),
-              ],
-              floating: true,
-              pinned: true,
-              snap: true,
-              stretch: true,
-            )
-          ];
-        },
+                        },
+                        placeholder: (context, url) => const CircleAvatar(
+                          backgroundColor: Colors.transparent,
+                          backgroundImage:
+                              AssetImage("assets/images/profile.gif"),
+                          maxRadius: 30,
+                        ),
+                        errorWidget: (context, url, error) => CircleAvatar(
+                          radius: 30,
+                          child: Image.asset("assets/images/profile.gif"),
+                        ),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          groupName,
+                          style: const TextStyle(
+                              fontFamily: 'Narrow', fontSize: 23),
+                          textAlign: TextAlign.center,
+                        ),
+                        Text(status,
+                            style: TextStyle(
+                                fontSize: 15,
+                                color: status == "Online"
+                                    ? Colors.green
+                                    : Colors.red[500]))
+                      ],
+                    ),
+                  ],
+                )),
         body: KeyboardVisibility(
           onChanged: (isOpened) {
             if (isOpened) {
@@ -279,41 +234,37 @@ class MessageScreen extends HookWidget {
                 top: 20,
                 left: 0,
                 right: 0,
-                child: SingleChildScrollView(
-                  controller: scrollController,
-                  reverse: isReverse.value,
-                  child: GestureDetector(
-                    onTap: () {
-                      FocusScope.of(context).unfocus();
-                    },
-                    child: StreamBuilder(
-                        stream: stream,
-                        builder: (ctx, AsyncSnapshot<QuerySnapshot> snapshot) {
-                          if (snapshot.hasData) {
-                            // if(snapshot.data?.docs.contains(data.email) as bool){
-                            //   return Center(child: Text("ok"));
-                            // }else {
-                              return ListView.builder(
-                                shrinkWrap: true,
-                                itemCount: snapshot.data?.docs.length,
-                                itemBuilder: (ctx, index) {
-                                  QueryDocumentSnapshot x =
-                                      snapshot.data!.docs[index];
-                                  return Message(
-                                    text: x['message'],
-                                    name: x['name'],
-                                    messageType: x['messageType'],
-                                    isCurrentUser: x['email'] == data.email,
-                                    time: DateFormat('hh:mm a')
-                                        .format(x['time'].toDate())
-                                        .toString(),
-                                  );
-                                });
-                          } else {
-                            return const SizedBox();
-                          }
-                        }),
-                  ),
+                child: GestureDetector(
+                  onTap: () {
+                    FocusScope.of(context).unfocus();
+                  },
+                  child: StreamBuilder(
+                      stream: stream,
+                      builder: (ctx, AsyncSnapshot<QuerySnapshot> snapshot) {
+                        if (snapshot.hasData) {
+                          return ListView.builder(
+                            controller: scrollController,
+                            reverse: isReverse.value,
+                            shrinkWrap: true,
+                            itemCount: snapshot.data?.docs.length,
+                            itemBuilder: (ctx, index) {
+                              QueryDocumentSnapshot x =
+                                  snapshot.data!.docs[index];
+                              return Message(
+                                text: x['message'],
+                                name: x['name'],
+                                messageType: x['messageType'],
+                                isCurrentUser: x['email'] == data.email,
+                                time: DateFormat('hh:mm a')
+                                    .format(x['time'].toDate())
+                                    .toString(),
+                              );
+                            },
+                          );
+                        } else {
+                          return const SizedBox();
+                        }
+                      }),
                 ),
               ),
               Positioned(
@@ -345,7 +296,7 @@ class MessageScreen extends HookWidget {
                                   curve: Curves.easeInOut);
                             },
                             child: const Icon(
-                              Icons.emoji_emotions_outlined,
+                              Icons.add,
                               color: Colors.white,
                               size: 20,
                             ),
