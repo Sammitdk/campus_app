@@ -28,61 +28,23 @@ class GroupInfo extends StatelessWidget {
               return <Widget>[
                 SliverAppBar(
                   automaticallyImplyLeading: false,
+                  primary: false,
+                  floating: true,
+                  snap: true,
+                  // stretch: true,
                   flexibleSpace: FlexibleSpaceBar(
-                    title: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(right: 8.0, left: 8),
-                          child: CachedNetworkImage(
-                            imageUrl: imgUrl,
-                            imageBuilder: (context, imageProvider) {
-                              return CircleAvatar(
-                                backgroundImage: imageProvider,
-                                maxRadius: 25,
-                              );
-                            },
-                            placeholder: (context, url) => const CircleAvatar(
-                              backgroundColor: Colors.transparent,
-                              backgroundImage:
-                                  AssetImage("assets/images/profile.gif"),
-                              maxRadius: 30,
-                            ),
-                            errorWidget: (context, url, error) => CircleAvatar(
-                              radius: 30,
-                              child: Image.asset("assets/images/profile.gif"),
-                            ),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 5, top: 5),
-                          child: Text(
-                            groupName,
-                            style: const TextStyle(
-                                fontFamily: 'Narrow', fontSize: 23),
-                          ),
-                        ),
-                      ],
-                    ),
                     centerTitle: true,
-                    background: Column(
-                      children: [
-                        Expanded(
-                          flex: 5,
-                          child: CircleAvatar(
-                            radius: 100,
-                            backgroundImage: NetworkImage(imgUrl),
-                          ),
-                        ),
-                        Expanded(
-                            child: Text(groupName,
-                                style: const TextStyle(
-                                    color: Colors.black, fontSize: 25))),
-                      ],
+                    background: CircleAvatar(
+                      radius: 100,
+                      backgroundImage: NetworkImage(imgUrl),
                     ),
                   ),
-                  expandedHeight: 300,
+                  title: Text(
+                    groupName,
+                    style: const TextStyle(
+                        fontFamily: 'Narrow', fontSize: 23,color: Colors.black),
+                  ),
+                  expandedHeight: 250,
                   backgroundColor: Colors.white,
                   actions: [
                     PopupMenuButton(itemBuilder: (context) {
@@ -121,10 +83,6 @@ class GroupInfo extends StatelessWidget {
                       }
                     })
                   ],
-                  floating: true,
-                  pinned: true,
-                  snap: true,
-                  stretch: true,
                 )
               ];
             },
@@ -149,7 +107,7 @@ class GroupInfo extends StatelessWidget {
                   ),
                 ),
                 Expanded(
-                  flex: 5,
+                  flex: 8,
                   child: FutureBuilder(
                     future: FirebaseFirestore.instance
                         .collection("Student_Detail")
@@ -170,6 +128,7 @@ class GroupInfo extends StatelessWidget {
                                 year: x['Year'],
                                 email: x['Email'],
                                 prn: x['PRN'],
+                                status : x['status']
                               );
                             });
                       } else {
