@@ -1,3 +1,4 @@
+import 'package:campus_subsystem/main.dart';
 import 'package:campus_subsystem/student/student_attendance.dart';
 import 'package:campus_subsystem/student/student_event.dart';
 import 'package:campus_subsystem/student/student_notes.dart';
@@ -30,7 +31,7 @@ class _StudentHomeState extends State<StudentHome> {
                   child: Center(
                     child: Row(children: [
                       Text(
-                        "  Hey ${state.name['First']}",
+                        "  Hey ${state.name['First'].toString().capitalize()}",
                         style:
                             const TextStyle(fontSize: 30, fontFamily: 'Custom'),
                       )
@@ -180,7 +181,7 @@ class _StudentHomeState extends State<StudentHome> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (_) => StudentEvent()));
+                                  builder: (_) => const StudentEvent()));
                         },
                         child: Card(
                           shape: RoundedRectangleBorder(
