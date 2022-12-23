@@ -59,7 +59,7 @@ class _StudentDashboardState extends State<StudentDashboard>
     final screen = [
       const StudentHome(),
       const ConversationScreen(),
-      const StudentProfile(),
+      StudentProfile(),
     ];
     final items = <Widget>[
       const Icon(

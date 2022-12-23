@@ -11,107 +11,36 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:pie_chart/pie_chart.dart';
 import '../redux/reducer.dart';
 
-// void main() async {
-//   await Firebase.initializeApp(
-//     options: DefaultFirebaseOptions.currentPlatform
-//   );
-//   runApp(MaterialApp(
-//     home: StudentProfile(),
-//   ));
-// }
 
 class StudentProfile extends HookWidget {
-  const StudentProfile({Key? key}) : super(key: key);
-
+  StudentProfile({Key? key}) : super(key: key);
+  List subjectlist = [];
+  
   Map<String, double> getChartValues(AsyncSnapshot data) {
     Map<String, double> chartvalue = {"Absent": 0};
     // print(data.data!.docs.toList());
     data.data!.docs.forEach((element) {
-      chartvalue[element.id] = 0;
       // print(element.data());
-      element.data().forEach((key, value) {
-        // print("$key  $value");
-        if (value) {
-          chartvalue[element.id] = chartvalue[element.id]! + 1;
-        } else {
-          chartvalue["Absent"] = chartvalue["Absent"]! + 1;
-        }
-      });
+      if(subjectlist.contains(element.id)){
+        chartvalue[element.id] = 0;
+        element.data().forEach((key, value) {
+          // print("$key  $value");
+          if (value) {
+            chartvalue[element.id] = chartvalue[element.id]! + 1;
+          } else {
+            chartvalue["Absent"] = chartvalue["Absent"]! + 1;
+          }
+        });
+      }
     });
     // print(chartvalue);
     return chartvalue;
   }
 
-  // @override
-  // Widget build(BuildContext context) {
-  //   return Column(
-  //     children: [
-  //       Container(
-  //         child: PieChart(
-  //           chartValuesOptions: ChartValuesOptions(
-  //             showChartValueBackground: true,
-  //
-  //           ),
-  //           animationDuration: Duration(seconds: 1),
-  //           chartRadius: 200,
-  //           ringStrokeWidth: 20,
-  //           dataMap: {
-  //             "hi" : 3,
-  //             "hiq" : 3,
-  //           },
-  //         ),
-  //       ),
-  //       SizedBox(height: 50,),
-  //       StreamBuilder(
-  //         stream: FirebaseFirestore.instance.collection("Student_Detail/2019087344/Attendance").snapshots(),
-  //         builder: (context,AsyncSnapshot data) {
-  //           if(data.connectionState != ConnectionState.waiting) {
-  //               if(data.hasData) {
-  //                 return Padding(
-  //                   padding: const EdgeInsets.only(left: 20,right: 20,top: 10,bottom: 10),
-  //                   child: Card(
-  //                     elevation: 20,
-  //                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-  //                     child: Container(
-  //                       margin: EdgeInsets.all(MediaQuery.of(context).size.height * 0.01),
-  //                       child: PieChart(
-  //                         initialAngleInDegree: 270,
-  //                         chartType: ChartType.ring,
-  //                         chartValuesOptions: const ChartValuesOptions(
-  //                             // showChartValueBackground: true,
-  //                             showChartValuesInPercentage: true,
-  //                             // showChartValuesOutside: true,
-  //                             showChartValues: true),
-  //                         legendOptions: const LegendOptions(
-  //                           showLegends: true,
-  //                           legendShape: BoxShape.circle,
-  //                           legendTextStyle: TextStyle(
-  //                             fontSize: 10,
-  //                             fontWeight: FontWeight.bold,
-  //                           ),
-  //                         ),
-  //                         animationDuration: const Duration(seconds: 1),
-  //                         chartRadius: MediaQuery.of(context).size.height * 0.1,
-  //                         ringStrokeWidth: 20,
-  //                         dataMap: getChartValues(data),
-  //                       ),
-  //                     ),
-  //                   ),
-  //                 );
-  //               } else {
-  //                 return CircularProgressIndicator();
-  //               }
-  //             } else  {
-  //             return CircularProgressIndicator();
-  //           }
-  //         }
-  //       ),
-  //     ],
-  //   );
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -483,67 +412,83 @@ class StudentProfile extends HookWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    StreamBuilder(
-                        stream: FirebaseFirestore.instance
-                            .collection("Student_Detail/2019087344/Attendance")
-                            .snapshots(),
-                        builder: (context, AsyncSnapshot data) {
-                          if (data.connectionState != ConnectionState.waiting) {
-                            if (data.hasData) {
-                              return Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 20, right: 20, top: 10, bottom: 10),
-                                child: Card(
-                                  elevation: 5,
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20)),
-                                  child: InkWell(
-                                    onTap: ()=>Navigator.of(context).push(MaterialPageRoute(
-                                        builder: (_) => StudentAttendance())),
-                                    child: Container(
-                                      margin: EdgeInsets.all(
-                                          MediaQuery.of(context).size.height *
-                                              0.01),
-                                      child: PieChart(
-                                        initialAngleInDegree: 270,
-                                        chartType: ChartType.ring,
-                                        chartValuesOptions:
-                                            const ChartValuesOptions(
-                                                // showChartValueBackground: true,
-                                                showChartValuesInPercentage: true,
-                                                // showChartValuesOutside: true,
-                                                showChartValues: true),
-                                        legendOptions: const LegendOptions(
-                                          showLegends: true,
-                                          legendShape: BoxShape.circle,
-                                          legendTextStyle: TextStyle(
-                                            fontSize: 10,
-                                            fontWeight: FontWeight.bold,
+                    FutureBuilder(
+                      future: FirebaseFirestore.instance
+                          .doc("College/${state.branch}/${state.year}/Subjects")
+                          .get(),
+                      builder: (BuildContext context, AsyncSnapshot list) {
+                        if (list.connectionState == ConnectionState.waiting) {
+                          return Container(
+                            color: Colors.white,
+                            child: Center(
+                                child: LoadingAnimationWidget.staggeredDotsWave(
+                                    size: 50, color: Colors.red)),
+                          );
+                        } else {
+                          subjectlist = list.data.data()[state.sem].values.toList();
+                          return StreamBuilder(
+                              stream: FirebaseFirestore.instance
+                                  .collection("Student_Detail/${state.prn}/Attendance")
+                                  .snapshots(),
+                              builder: (context, AsyncSnapshot data) {
+                                if (data.connectionState != ConnectionState.waiting) {
+                                  if (data.hasData) {
+                                    return Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 20, right: 20, top: 10, bottom: 10),
+                                      child: Card(
+                                        elevation: 5,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(20)),
+                                        child: InkWell(
+                                          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => StudentAttendance())),
+                                          child: Container(
+                                            margin: EdgeInsets.all(
+                                                MediaQuery.of(context).size.height *
+                                                    0.01),
+                                            child: PieChart(
+                                              centerText: "Attendance",
+                                              initialAngleInDegree: 270,
+                                              chartType: ChartType.ring,
+                                              chartValuesOptions:
+                                              const ChartValuesOptions(
+                                                  showChartValuesInPercentage: true,
+                                                  showChartValuesOutside: true,
+                                                  showChartValues: true
+                                              ),
+                                              legendOptions: const LegendOptions(
+                                                legendShape: BoxShape.circle,
+                                                legendTextStyle: TextStyle(
+                                                  fontSize: 10,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              animationDuration:
+                                              const Duration(seconds: 1),
+                                              chartRadius:
+                                              MediaQuery.of(context).size.height *
+                                                  0.1,
+                                              ringStrokeWidth: 20,
+                                              dataMap: getChartValues(data),
+                                            ),
                                           ),
                                         ),
-                                        animationDuration:
-                                            const Duration(seconds: 1),
-                                        chartRadius:
-                                            MediaQuery.of(context).size.height *
-                                                0.1,
-                                        ringStrokeWidth: 20,
-                                        dataMap: getChartValues(data),
                                       ),
-                                    ),
-                                  ),
-                                ),
-                              );
-                            } else {
-                              return Align(
-                                  alignment: AlignmentDirectional.centerStart,
-                                  child: CircularProgressIndicator());
-                            }
-                          } else {
-                            return const Align(
-                                alignment: AlignmentDirectional.centerStart,
-                                child: CircularProgressIndicator());
-                          }
-                        }),
+                                    );
+                                  } else {
+                                    return Align(
+                                        alignment: AlignmentDirectional.centerStart,
+                                        child: CircularProgressIndicator());
+                                  }
+                                } else {
+                                  return const Align(
+                                      alignment: AlignmentDirectional.centerStart,
+                                      child: CircularProgressIndicator());
+                                }
+                              });
+                        }
+                      },
+                    ),
                     Padding(
                       padding: const EdgeInsetsDirectional.only(bottom: 20),
                       child: Row(
@@ -565,7 +510,7 @@ class StudentProfile extends HookWidget {
                                   style: TextStyle(
                                       fontSize: 15, color: Colors.black),
                                 ),
-                                Text(state.address,
+                                Text(state.address ?? "--",
                                     style: const TextStyle(
                                         fontSize: 25, color: Colors.black)),
                               ],
@@ -595,7 +540,7 @@ class StudentProfile extends HookWidget {
                                   style: TextStyle(
                                       fontSize: 15, color: Colors.black),
                                 ),
-                                Text(state.branch,
+                                Text(state.branch ?? "--",
                                     style: const TextStyle(
                                         fontSize: 25, color: Colors.black)),
                               ],
@@ -625,7 +570,7 @@ class StudentProfile extends HookWidget {
                                   style: TextStyle(
                                       fontSize: 15, color: Colors.black),
                                 ),
-                                Text(state.dob.toString(),
+                                Text(state.dob ?? "--",
                                     style: const TextStyle(
                                         fontSize: 25, color: Colors.black)),
                               ],
@@ -655,7 +600,7 @@ class StudentProfile extends HookWidget {
                                   style: TextStyle(
                                       fontSize: 15, color: Colors.black),
                                 ),
-                                Text(state.prn,
+                                Text(state.prn ?? "--",
                                     style: const TextStyle(
                                         fontSize: 25, color: Colors.black)),
                               ],
@@ -685,7 +630,7 @@ class StudentProfile extends HookWidget {
                                   style: TextStyle(
                                       fontSize: 15, color: Colors.black),
                                 ),
-                                Text(state.sem,
+                                Text(state.sem ?? "--",
                                     style: const TextStyle(
                                         fontSize: 25, color: Colors.black)),
                               ],
@@ -761,19 +706,6 @@ class StudentProfile extends HookWidget {
     );
   }
 }
-//
-// class MyClipper extends CustomClipper<Rect> {
-//   @override
-//   Rect getClip(Size size) {
-//     return const Rect.fromLTWH(0, 0, 150, 150);
-//   }
-//
-//   @override
-//   bool shouldReclip(covariant CustomClipper<Rect> oldClipper) {
-//     return false;
-//   }
-// }
-
 class CurvePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
