@@ -12,6 +12,7 @@ class User extends StatelessWidget {
   final dynamic year;
   final dynamic email;
   final dynamic prn;
+  final dynamic status;
   const User({
     Key? key,
     required this.imageUrl,
@@ -20,6 +21,7 @@ class User extends StatelessWidget {
     required this.year,
     this.email,
     this.prn,
+    this.status,
   }) : super(key: key);
 
   @override
@@ -107,6 +109,7 @@ class User extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                       builder: (_) => MessageScreen(
+                          status: status,
                           groupName: name['First'],
                           imageUrl: imageUrl,
                           isGroup: false,

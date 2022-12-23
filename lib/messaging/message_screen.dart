@@ -31,9 +31,10 @@ class MessageScreen extends HookWidget {
     required this.imageUrl,
   }) : super(key: key);
 
+  static TextEditingController myController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
-    final myController = TextEditingController();
     var data = StoreProvider.of<AppState>(context).state;
     ScrollController scrollController = ScrollController();
     var bottom = useState(60.0);
@@ -42,15 +43,15 @@ class MessageScreen extends HookWidget {
     dynamic stream = isGroup
         ? FirebaseFirestore.instance
             .collection("GroupMessages/$groupName/Messages")
-            .orderBy('time')
-            .snapshots()
+            .orderBy('time', descending: true)
+            .snapshots(includeMetadataChanges: true)
         : FirebaseFirestore.instance
             .collection("Student_Detail/${data.prn}/Messages/$prn/Messages")
-            .orderBy('time')
+            .orderBy('time', descending: true)
             .snapshots(includeMetadataChanges: true);
 
     useEffect(() {
-      StreamSubscription messagestream = stream.listen((event) {
+      StreamSubscription messageStream = stream.listen((event) {
         if (isGroup) {
           readAll(
             groupName: groupName,
@@ -63,8 +64,7 @@ class MessageScreen extends HookWidget {
       });
 
       return () {
-        messagestream.cancel();
-        myController.dispose();
+        messageStream.cancel();
         scrollController.dispose();
       };
     }, []);
@@ -97,7 +97,7 @@ class MessageScreen extends HookWidget {
                           context,
                           MaterialPageRoute(
                               builder: (_) => GroupInfo(
-                                    users : users,
+                                    users: users,
                                     imgUrl: imageUrl,
                                     groupName: groupName,
                                   )));
@@ -218,9 +218,7 @@ class MessageScreen extends HookWidget {
           onChanged: (isOpened) {
             if (isOpened) {
               bottom.value = 350.0;
-              isReverse.value = false;
-              scrollController.animateTo(
-                  scrollController.position.maxScrollExtent + bottom.value,
+              scrollController.animateTo(0,
                   duration: const Duration(milliseconds: 1),
                   curve: Curves.easeInOut);
             } else {
@@ -307,12 +305,6 @@ class MessageScreen extends HookWidget {
                         ),
                         Expanded(
                           child: TextField(
-                            onChanged: (v) {
-                              scrollController.animateTo(
-                                  scrollController.position.maxScrollExtent,
-                                  duration: const Duration(milliseconds: 1),
-                                  curve: Curves.easeInOut);
-                            },
                             controller: myController,
                             decoration: const InputDecoration(
                                 hintText: "Write message...",

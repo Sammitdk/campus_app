@@ -2,7 +2,6 @@ import 'package:campus_subsystem/password_reset.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import '../firebase/signIn.dart';
-import '../redux/actions/fetchUserData.dart';
 
 class StudentLogin extends StatefulWidget {
   const StudentLogin({Key? key}) : super(key: key);
