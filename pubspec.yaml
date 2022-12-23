@@ -40,6 +40,7 @@ dependencies:
   cached_network_image: ^3.2.1
   emoji_picker_flutter: ^1.5.1
   keyboard_visibility_pro: ^0.0.1
+  pie_chart: ^5.1.0
 
 dev_dependencies:
   flutter_test:
