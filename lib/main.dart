@@ -48,11 +48,28 @@ void main() async {
         message: data["notification"]['body'],
         image: data["notification"]['image']);
   });
+
   runApp(const Main());
 }
 
-class Main extends StatelessWidget {
+class Main extends StatefulWidget {
   const Main({Key? key}) : super(key: key);
+
+  @override
+  State<Main> createState() => _MainState();
+}
+
+class _MainState extends State<Main> {
+
+  @override
+  void initState() {
+    super.initState();
+
+    FirebaseMessaging.onMessageOpenedApp.listen((event) {
+      Navigator.of(context).pushNamed("chat_screen");
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return StoreProvider(

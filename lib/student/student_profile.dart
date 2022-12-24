@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:campus_subsystem/main.dart';
 import 'package:campus_subsystem/password_reset.dart';
+import 'package:campus_subsystem/student/student_attendance.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -10,10 +11,36 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:pie_chart/pie_chart.dart';
 import '../redux/reducer.dart';
 
+
 class StudentProfile extends HookWidget {
-  const StudentProfile({Key? key}) : super(key: key);
+  StudentProfile({Key? key}) : super(key: key);
+  List subjectlist = [];
+  
+  Map<String, double> getChartValues(AsyncSnapshot data) {
+    Map<String, double> chartvalue = {"Absent": 0};
+    // print(data.data!.docs.toList());
+    data.data!.docs.forEach((element) {
+      // print(element.data());
+      if(subjectlist.contains(element.id)){
+        chartvalue[element.id] = 0;
+        element.data().forEach((key, value) {
+          // print("$key  $value");
+          if (value) {
+            chartvalue[element.id] = chartvalue[element.id]! + 1;
+          } else {
+            chartvalue["Absent"] = chartvalue["Absent"]! + 1;
+          }
+        });
+      }
+    });
+    // print(chartvalue);
+    return chartvalue;
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -77,244 +104,547 @@ class StudentProfile extends HookWidget {
             child: CustomPaint(
               painter: CurvePainter(),
             )),
-        Positioned(
-            top: height / 8.5,
-            left: width / 1.8,
-            child: clicked.value && file != null
-                ? CircleAvatar(
-                    maxRadius: 80,
-                    backgroundImage: FileImage(file!),
-                  )
-                : stateUrl.value != "" && stateUrl.value != null
-                    ? CachedNetworkImage(
-                        imageUrl: stateUrl.value,
-                        imageBuilder: (context, imageProvider) {
-                          return CircleAvatar(
-                            backgroundImage: imageProvider,
-                            maxRadius: 80,
-                          );
-                        },
-                        placeholder: (context, url) => const CircleAvatar(
-                          backgroundColor: Colors.transparent,
-                          backgroundImage:
-                              AssetImage("assets/images/profile.gif"),
-                          maxRadius: 80,
-                        ),
-                        errorWidget: (context, url, error) =>
-                            const Icon(Icons.error),
-                        fit: BoxFit.cover,
-                      )
-                    : const CircleAvatar(
-                        backgroundImage:
-                            AssetImage("assets/images/profile.gif"),
-                        maxRadius: 80,
-                        backgroundColor: Colors.transparent,
-                      )),
-        Positioned(
-            top: height / 3.50,
-            width: width / 0.55,
-            child: clicked.value
-                ? Padding(
-                    padding: const EdgeInsets.only(top: 20),
-                    child: Column(
-                      children: [
-                        CircularProgressIndicator(
-                          value: progress.value,
-                          color: Colors.black,
-                          strokeWidth: 3.0,
-                        ),
-                        Text(progress.value.toStringAsFixed(2)),
-                      ],
-                    ),
-                  )
-                : FloatingActionButton(
-                    elevation: 0,
-                    backgroundColor: Colors.transparent,
-                    foregroundColor: Colors.black,
-                    onPressed: () async {
-                      await selectFiles();
-                      await uploadFile();
-                    },
-                    child: const Icon(Icons.add_photo_alternate_outlined),
-                  )),
-        Positioned(
-          top: 8,
-          left: 20,
-          child: Text(
-            "${state.name['First'].toString().capitalize()}.${state.name['Middle'].substring(0, 1).toString().capitalize()}.${state.name['Last'].toString().capitalize()}",
-            style: const TextStyle(
-              fontSize: 30,
-              color: Colors.white,
-              fontFamily: 'MuliBold',
-            ),
-          ),
-        ),
-        Positioned(
-          top: 65,
-          left: 20,
-          child: Text(state.email,
-              style: const TextStyle(fontSize: 20, color: Colors.white)),
-        ),
-        Positioned(
-          top: 100,
-          left: 20,
-          child: Text(state.mobile,
-              style: const TextStyle(fontSize: 20, color: Colors.white)),
-        ),
-        Container(
-          padding: EdgeInsetsDirectional.only(top: height / 2.8, start: 40),
-          height: height,
-          width: width / 1.2,
+        // profile image
+        // Positioned(
+        //     top: height / 8.5,
+        //     left: width / 1.8,
+        //     child: clicked.value && file != null
+        //         ? CircleAvatar(
+        //             maxRadius: 80,
+        //             backgroundImage: FileImage(file!),
+        //           )
+        //         : stateUrl.value != "" && stateUrl.value != null
+        //             ? CachedNetworkImage(
+        //                 imageUrl: stateUrl.value,
+        //                 imageBuilder: (context, imageProvider) {
+        //                   return CircleAvatar(
+        //                     backgroundImage: imageProvider,
+        //                     maxRadius: 80,
+        //                   );
+        //                 },
+        //                 placeholder: (context, url) => const CircleAvatar(
+        //                   backgroundColor: Colors.transparent,
+        //                   backgroundImage:
+        //                       AssetImage("assets/images/profile.gif"),
+        //                   maxRadius: 80,
+        //                 ),
+        //                 errorWidget: (context, url, error) =>
+        //                     const Icon(Icons.error),
+        //                 fit: BoxFit.cover,
+        //               )
+        //             : const CircleAvatar(
+        //                 backgroundImage:
+        //                     AssetImage("assets/images/profile.gif"),
+        //                 maxRadius: 80,
+        //                 backgroundColor: Colors.transparent,
+        //               )),
+
+
+        // Positioned(
+        //     top: height / 3.50,
+        //     width: width / 0.55,
+        //     child: FloatingActionButton(
+        //       elevation: 0,
+        //       backgroundColor: Colors.transparent,
+        //       foregroundColor: Colors.black,
+        //       onPressed: () async {
+        //         await selectFiles();
+        //         await uploadFile();
+        //       },
+        //       child: const Icon(Icons.add_photo_alternate_outlined),
+        //     )),
+        // Positioned(
+        //   top: 8,
+        //   left: 20,
+        //   child: Text(
+        //     "${state.name['First'].toString().capitalize()}.${state.name['Middle'].substring(0, 1).toString().capitalize()}.${state.name['Last'].toString().capitalize()}",
+        //     style: const TextStyle(
+        //       fontSize: 30,
+        //       color: Colors.white,
+        //       fontFamily: 'MuliBold',
+        //     ),
+        //   ),
+        // ),
+        // Positioned(
+        //   top: 65,
+        //   left: 20,
+        //   child: Text(state.email,
+        //       style: const TextStyle(fontSize: 20, color: Colors.white)),
+        // ),
+        // Positioned(
+        //   top: 100,
+        //   left: 20,
+        //   child: Text(state.mobile,
+        //       style: const TextStyle(fontSize: 20, color: Colors.white)),
+        // ),
+        // Container(
+        //   padding: EdgeInsetsDirectional.only(top: height / 2.8, start: 40),
+        //   height: height,
+        //   width: width / 1.2,
+        //   child: Column(
+        //     children: [
+        //       Padding(
+        //         padding: const EdgeInsetsDirectional.only(bottom: 20),
+        //         child: Row(
+        //           children: [
+        //             const Expanded(
+        //               flex: 1,
+        //               child: Icon(
+        //                 Icons.location_city_outlined,
+        //                 size: 50,
+        //                 color: Colors.blue,
+        //               ),
+        //             ),
+        //             Expanded(
+        //               flex: 2,
+        //               child: Column(
+        //                 children: [
+        //                   const Text(
+        //                     "Address",
+        //                     style: TextStyle(fontSize: 15, color: Colors.black),
+        //                   ),
+        //                   Text(state.address,
+        //                       style: const TextStyle(
+        //                           fontSize: 25, color: Colors.black)),
+        //                 ],
+        //               ),
+        //             )
+        //           ],
+        //         ),
+        //       ),
+        //       Padding(
+        //         padding: const EdgeInsetsDirectional.only(bottom: 20),
+        //         child: Row(
+        //           children: [
+        //             const Expanded(
+        //               flex: 1,
+        //               child: Icon(
+        //                 Icons.school_outlined,
+        //                 size: 50,
+        //                 color: Colors.blue,
+        //               ),
+        //             ),
+        //             Expanded(
+        //               flex: 2,
+        //               child: Column(
+        //                 children: [
+        //                   const Text(
+        //                     "Trade",
+        //                     style: TextStyle(fontSize: 15, color: Colors.black),
+        //                   ),
+        //                   Text(state.branch,
+        //                       style: const TextStyle(
+        //                           fontSize: 25, color: Colors.black)),
+        //                 ],
+        //               ),
+        //             )
+        //           ],
+        //         ),
+        //       ),
+        //       Padding(
+        //         padding: const EdgeInsetsDirectional.only(bottom: 20),
+        //         child: Row(
+        //           children: [
+        //             const Expanded(
+        //               flex: 1,
+        //               child: Icon(
+        //                 Icons.cake_outlined,
+        //                 size: 50,
+        //                 color: Colors.blue,
+        //               ),
+        //             ),
+        //             Expanded(
+        //               flex: 2,
+        //               child: Column(
+        //                 children: [
+        //                   const Text(
+        //                     "Birth Date",
+        //                     style: TextStyle(fontSize: 15, color: Colors.black),
+        //                   ),
+        //                   Text(state.dob.toString(),
+        //                       style: const TextStyle(
+        //                           fontSize: 25, color: Colors.black)),
+        //                 ],
+        //               ),
+        //             )
+        //           ],
+        //         ),
+        //       ),
+        //       Padding(
+        //         padding: const EdgeInsetsDirectional.only(bottom: 20),
+        //         child: Row(
+        //           children: [
+        //             const Expanded(
+        //               flex: 1,
+        //               child: Icon(
+        //                 Icons.numbers,
+        //                 size: 50,
+        //                 color: Colors.blue,
+        //               ),
+        //             ),
+        //             Expanded(
+        //               flex: 2,
+        //               child: Column(
+        //                 children: [
+        //                   const Text(
+        //                     "PRN",
+        //                     style: TextStyle(fontSize: 15, color: Colors.black),
+        //                   ),
+        //                   Text(state.prn,
+        //                       style: const TextStyle(
+        //                           fontSize: 25, color: Colors.black)),
+        //                 ],
+        //               ),
+        //             )
+        //           ],
+        //         ),
+        //       ),
+        //       Padding(
+        //         padding: const EdgeInsetsDirectional.only(bottom: 20),
+        //         child: Row(
+        //           children: [
+        //             const Expanded(
+        //               flex: 1,
+        //               child: Icon(
+        //                 Icons.book_outlined,
+        //                 size: 50,
+        //                 color: Colors.blue,
+        //               ),
+        //             ),
+        //             Expanded(
+        //               flex: 2,
+        //               child: Column(
+        //                 children: [
+        //                   const Text(
+        //                     "Semester",
+        //                     style: TextStyle(fontSize: 15, color: Colors.black),
+        //                   ),
+        //                   Text(state.sem,
+        //                       style: const TextStyle(
+        //                           fontSize: 25, color: Colors.black)),
+        //                 ],
+        //               ),
+        //             )
+        //           ],
+        //         ),
+        //       ),
+        //     ],
+        //   ),
+        // ),
+
+        Padding(
+          padding: const EdgeInsets.all(10.0),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
-                padding: const EdgeInsetsDirectional.only(bottom: 20),
-                child: Row(
-                  children: [
-                    const Expanded(
-                      flex: 1,
-                      child: Icon(
-                        Icons.location_city_outlined,
-                        size: 50,
-                        color: Colors.blue,
-                      ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "${state.name['First'].toString().capitalize()}.${state.name['Middle'].substring(0, 1).toString().capitalize()}.${state.name['Last'].toString().capitalize()}",
+                    style: const TextStyle(
+                      fontSize: 30,
+                      color: Colors.white,
+                      fontFamily: 'MuliBold',
                     ),
-                    Expanded(
-                      flex: 2,
-                      child: Column(
-                        children: [
-                          const Text(
-                            "Address",
-                            style: TextStyle(fontSize: 15, color: Colors.black),
-                          ),
-                          Text(state.address,
-                              style: const TextStyle(
-                                  fontSize: 25, color: Colors.black)),
-                        ],
+                  ),
+                  Text(state.email,
+                      style:
+                          const TextStyle(fontSize: 20, color: Colors.white)),
+                  Text(state.mobile,
+                      style:
+                          const TextStyle(fontSize: 20, color: Colors.white)),
+                  Stack(
+                    children: [
+                      Align(
+                        alignment: AlignmentDirectional.centerEnd,
+                        child: clicked.value && file != null
+                            ? CircleAvatar(
+                                maxRadius: 80,
+                                backgroundImage: FileImage(file!),
+                              )
+                            : stateUrl.value != "" && stateUrl.value != null
+                                ? CachedNetworkImage(
+                                    imageUrl: stateUrl.value,
+                                    imageBuilder: (context, imageProvider) {
+                                      return CircleAvatar(
+                                        backgroundImage: imageProvider,
+                                        maxRadius: 80,
+                                      );
+                                    },
+                                    placeholder: (context, url) =>
+                                        const CircleAvatar(
+                                      backgroundColor: Colors.transparent,
+                                      backgroundImage:
+                                          AssetImage("assets/images/profile.gif"),
+                                      maxRadius: 80,
+                                    ),
+                                    errorWidget: (context, url, error) =>
+                                        const Icon(Icons.error),
+                                    fit: BoxFit.cover,
+                                  )
+                                : const CircleAvatar(
+                                    backgroundImage:
+                                        AssetImage("assets/images/profile.gif"),
+                                    maxRadius: 80,
+                                    backgroundColor: Colors.transparent,
+                                  ),
                       ),
-                    )
-                  ],
-                ),
+                      Align(
+                        alignment: AlignmentDirectional.bottomEnd,
+                        child: IconButton(
+                          // elevation: 0,
+                          // backgroundColor: Colors.transparent,
+                          // foregroundColor: Colors.black,
+                          onPressed: () async {
+                            await selectFiles();
+                            await uploadFile();
+                          },
+                          icon: const Icon(Icons.add_photo_alternate_outlined),
+                        ),
+                      ),
+                    ],
+                  )
+                ],
               ),
-              Padding(
-                padding: const EdgeInsetsDirectional.only(bottom: 20),
-                child: Row(
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    const Expanded(
-                      flex: 1,
-                      child: Icon(
-                        Icons.school_outlined,
-                        size: 50,
-                        color: Colors.blue,
-                      ),
+                    FutureBuilder(
+                      future: FirebaseFirestore.instance
+                          .doc("College/${state.branch}/${state.year}/Subjects")
+                          .get(),
+                      builder: (BuildContext context, AsyncSnapshot list) {
+                        if (list.connectionState == ConnectionState.waiting) {
+                          return Container(
+                            color: Colors.white,
+                            child: Center(
+                                child: LoadingAnimationWidget.staggeredDotsWave(
+                                    size: 50, color: Colors.red)),
+                          );
+                        } else {
+                          subjectlist = list.data.data()[state.sem].values.toList();
+                          return StreamBuilder(
+                              stream: FirebaseFirestore.instance
+                                  .collection("Student_Detail/${state.prn}/Attendance")
+                                  .snapshots(),
+                              builder: (context, AsyncSnapshot data) {
+                                if (data.connectionState != ConnectionState.waiting) {
+                                  if (data.hasData) {
+                                    return Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 20, right: 20, top: 10, bottom: 10),
+                                      child: Card(
+                                        elevation: 5,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(20)),
+                                        child: InkWell(
+                                          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => StudentAttendance())),
+                                          child: Container(
+                                            margin: EdgeInsets.all(
+                                                MediaQuery.of(context).size.height *
+                                                    0.01),
+                                            child: PieChart(
+                                              centerText: "Attendance",
+                                              initialAngleInDegree: 270,
+                                              chartType: ChartType.ring,
+                                              chartValuesOptions:
+                                              const ChartValuesOptions(
+                                                  showChartValuesInPercentage: true,
+                                                  showChartValuesOutside: true,
+                                                  showChartValues: true
+                                              ),
+                                              legendOptions: const LegendOptions(
+                                                legendShape: BoxShape.circle,
+                                                legendTextStyle: TextStyle(
+                                                  fontSize: 10,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              animationDuration:
+                                              const Duration(seconds: 1),
+                                              chartRadius:
+                                              MediaQuery.of(context).size.height *
+                                                  0.1,
+                                              ringStrokeWidth: 20,
+                                              dataMap: getChartValues(data),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  } else {
+                                    return Align(
+                                        alignment: AlignmentDirectional.centerStart,
+                                        child: CircularProgressIndicator());
+                                  }
+                                } else {
+                                  return const Align(
+                                      alignment: AlignmentDirectional.centerStart,
+                                      child: CircularProgressIndicator());
+                                }
+                              });
+                        }
+                      },
                     ),
-                    Expanded(
-                      flex: 2,
-                      child: Column(
+                    Padding(
+                      padding: const EdgeInsetsDirectional.only(bottom: 20),
+                      child: Row(
                         children: [
-                          const Text(
-                            "Trade",
-                            style: TextStyle(fontSize: 15, color: Colors.black),
+                          const Expanded(
+                            flex: 1,
+                            child: Icon(
+                              Icons.location_city_outlined,
+                              size: 50,
+                              color: Colors.blue,
+                            ),
                           ),
-                          Text(state.branch,
-                              style: const TextStyle(
-                                  fontSize: 25, color: Colors.black)),
+                          Expanded(
+                            flex: 2,
+                            child: Column(
+                              children: [
+                                const Text(
+                                  "Address",
+                                  style: TextStyle(
+                                      fontSize: 15, color: Colors.black),
+                                ),
+                                Text(state.address ?? "--",
+                                    style: const TextStyle(
+                                        fontSize: 25, color: Colors.black)),
+                              ],
+                            ),
+                          )
                         ],
                       ),
-                    )
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsetsDirectional.only(bottom: 20),
-                child: Row(
-                  children: [
-                    const Expanded(
-                      flex: 1,
-                      child: Icon(
-                        Icons.cake_outlined,
-                        size: 50,
-                        color: Colors.blue,
-                      ),
                     ),
-                    Expanded(
-                      flex: 2,
-                      child: Column(
+                    Padding(
+                      padding: const EdgeInsetsDirectional.only(bottom: 20),
+                      child: Row(
                         children: [
-                          const Text(
-                            "Birth Date",
-                            style: TextStyle(fontSize: 15, color: Colors.black),
+                          const Expanded(
+                            flex: 1,
+                            child: Icon(
+                              Icons.school_outlined,
+                              size: 50,
+                              color: Colors.blue,
+                            ),
                           ),
-                          Text(state.dob.toString(),
-                              style: const TextStyle(
-                                  fontSize: 25, color: Colors.black)),
+                          Expanded(
+                            flex: 2,
+                            child: Column(
+                              children: [
+                                const Text(
+                                  "Trade",
+                                  style: TextStyle(
+                                      fontSize: 15, color: Colors.black),
+                                ),
+                                Text(state.branch ?? "--",
+                                    style: const TextStyle(
+                                        fontSize: 25, color: Colors.black)),
+                              ],
+                            ),
+                          )
                         ],
                       ),
-                    )
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsetsDirectional.only(bottom: 20),
-                child: Row(
-                  children: [
-                    const Expanded(
-                      flex: 1,
-                      child: Icon(
-                        Icons.numbers,
-                        size: 50,
-                        color: Colors.blue,
-                      ),
                     ),
-                    Expanded(
-                      flex: 2,
-                      child: Column(
+                    Padding(
+                      padding: const EdgeInsetsDirectional.only(bottom: 20),
+                      child: Row(
                         children: [
-                          const Text(
-                            "PRN",
-                            style: TextStyle(fontSize: 15, color: Colors.black),
+                          const Expanded(
+                            flex: 1,
+                            child: Icon(
+                              Icons.cake_outlined,
+                              size: 50,
+                              color: Colors.blue,
+                            ),
                           ),
-                          Text(state.prn,
-                              style: const TextStyle(
-                                  fontSize: 25, color: Colors.black)),
+                          Expanded(
+                            flex: 2,
+                            child: Column(
+                              children: [
+                                const Text(
+                                  "Birth Date",
+                                  style: TextStyle(
+                                      fontSize: 15, color: Colors.black),
+                                ),
+                                Text(state.dob ?? "--",
+                                    style: const TextStyle(
+                                        fontSize: 25, color: Colors.black)),
+                              ],
+                            ),
+                          )
                         ],
                       ),
-                    )
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsetsDirectional.only(bottom: 20),
-                child: Row(
-                  children: [
-                    const Expanded(
-                      flex: 1,
-                      child: Icon(
-                        Icons.book_outlined,
-                        size: 50,
-                        color: Colors.blue,
-                      ),
                     ),
-                    Expanded(
-                      flex: 2,
-                      child: Column(
+                    Padding(
+                      padding: const EdgeInsetsDirectional.only(bottom: 20),
+                      child: Row(
                         children: [
-                          const Text(
-                            "Semester",
-                            style: TextStyle(fontSize: 15, color: Colors.black),
+                          const Expanded(
+                            flex: 1,
+                            child: Icon(
+                              Icons.numbers,
+                              size: 50,
+                              color: Colors.blue,
+                            ),
                           ),
-                          Text(state.sem,
-                              style: const TextStyle(
-                                  fontSize: 25, color: Colors.black)),
+                          Expanded(
+                            flex: 2,
+                            child: Column(
+                              children: [
+                                const Text(
+                                  "PRN",
+                                  style: TextStyle(
+                                      fontSize: 15, color: Colors.black),
+                                ),
+                                Text(state.prn ?? "--",
+                                    style: const TextStyle(
+                                        fontSize: 25, color: Colors.black)),
+                              ],
+                            ),
+                          )
                         ],
                       ),
-                    )
+                    ),
+                    Padding(
+                      padding: const EdgeInsetsDirectional.only(bottom: 20),
+                      child: Row(
+                        children: [
+                          const Expanded(
+                            flex: 1,
+                            child: Icon(
+                              Icons.book_outlined,
+                              size: 50,
+                              color: Colors.blue,
+                            ),
+                          ),
+                          Expanded(
+                            flex: 2,
+                            child: Column(
+                              children: [
+                                const Text(
+                                  "Semester",
+                                  style: TextStyle(
+                                      fontSize: 15, color: Colors.black),
+                                ),
+                                Text(state.sem ?? "--",
+                                    style: const TextStyle(
+                                        fontSize: 25, color: Colors.black)),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
             ],
           ),
-        ),
+        )
       ]),
       floatingActionButton: SpeedDial(
         closeManually: true,
@@ -376,19 +706,6 @@ class StudentProfile extends HookWidget {
     );
   }
 }
-
-class MyClipper extends CustomClipper<Rect> {
-  @override
-  Rect getClip(Size size) {
-    return const Rect.fromLTWH(0, 0, 150, 150);
-  }
-
-  @override
-  bool shouldReclip(covariant CustomClipper<Rect> oldClipper) {
-    return false;
-  }
-}
-
 class CurvePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
