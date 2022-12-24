@@ -20,7 +20,7 @@ import 'loading_page.dart';
 
 extension StringExtension on String {
   String capitalize() {
-    return "${this[0].toUpperCase()}${this.substring(1).toLowerCase()}";
+    return "${this[0].toUpperCase()}${substring(1).toLowerCase()}";
   }
 }
 
@@ -31,27 +31,45 @@ void main() async {
     SystemUiOverlay.bottom, //This line is used for showing the bottom bar
   ]);
 
-
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   // notification permissions
   FlutterLocalNotificationsPlugin().initialize(const InitializationSettings(
-    android: AndroidInitializationSettings(
-        "notification_icon"),
+    android: AndroidInitializationSettings("notification_icon"),
   ));
-
 
   // listen notification on foreground
   FirebaseMessaging.onMessage.listen((event) {
     id += 1;
     Map data = event.toMap();
-    NotificationAPI.postLocalNotification(id: id,title: data["notification"]['title'], message: data["notification"]['body'],image: data["notification"]['image']);
+    NotificationAPI.postLocalNotification(
+        id: id,
+        title: data["notification"]['title'],
+        message: data["notification"]['body'],
+        image: data["notification"]['image']);
   });
+
   runApp(const Main());
 }
 
-class Main extends StatelessWidget {
+class Main extends StatefulWidget {
   const Main({Key? key}) : super(key: key);
+
+  @override
+  State<Main> createState() => _MainState();
+}
+
+class _MainState extends State<Main> {
+
+  @override
+  void initState() {
+    super.initState();
+
+    FirebaseMessaging.onMessageOpenedApp.listen((event) {
+      Navigator.of(context).pushNamed("chat_screen");
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return StoreProvider(
