@@ -74,7 +74,7 @@ Future<ThunkAction<AppState>> fetchUserData(String? email) async {
         store.dispatch(FetchData(
             name: data["Name"],
             email: facultyRef.id,
-            roll_No: data['Roll_No'],
+            prn: data['prn'],
             isStudent: false,
             imgUrl: data.containsKey("imgUrl") ? data["imgUrl"] : null,
             branch: data['Branch'],

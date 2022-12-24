@@ -5,9 +5,10 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import '../redux/reducer.dart';
 
-
 class NewMessage extends HookWidget {
-  const NewMessage({Key? key}) : super(key: key);
+  final dynamic isFaculty;
+  const NewMessage({Key? key , required this.isFaculty}) : super(key: key);
+
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +52,7 @@ class NewMessage extends HookWidget {
                               year: x['Year'],
                               email: x['Email'],
                               prn: x['PRN'],
+                              status: x['status'], isFaculty: isFaculty,
                             );
                           }else{
                             return const SizedBox();

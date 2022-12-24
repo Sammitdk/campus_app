@@ -4,9 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_redux/flutter_redux.dart';
-import '../firebase/signIn.dart';
-import '../redux/reducer.dart';
 import 'student_home.dart';
 
 class StudentDashboard extends StatefulWidget {
@@ -21,7 +18,6 @@ class StudentDashboard extends StatefulWidget {
 class _StudentDashboardState extends State<StudentDashboard>
     with WidgetsBindingObserver {
   final navigationKey = GlobalKey<CurvedNavigationBarState>();
-  final Auth auth = Auth();
   int index = 0;
 
   void setStatus(String status) {
@@ -54,11 +50,11 @@ class _StudentDashboardState extends State<StudentDashboard>
 
   @override
   Widget build(BuildContext context) {
-    var data = StoreProvider.of<AppState>(context).state;
-
     final screen = [
       const StudentHome(),
-      const ConversationScreen(),
+      const ConversationScreen(
+        isFaculty: false,
+      ),
       const StudentProfile(),
     ];
     final items = <Widget>[

@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:campus_subsystem/messaging/user_list.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -8,10 +7,12 @@ import '../redux/reducer.dart';
 class GroupInfo extends StatelessWidget {
   final dynamic groupName;
   final dynamic imgUrl;
+  final dynamic isFaculty;
   final dynamic users;
   const GroupInfo(
       {Key? key,
       required this.groupName,
+      required this.isFaculty,
       required this.imgUrl,
       required this.users})
       : super(key: key);
@@ -34,15 +35,20 @@ class GroupInfo extends StatelessWidget {
                   // stretch: true,
                   flexibleSpace: FlexibleSpaceBar(
                     centerTitle: true,
-                    background: CircleAvatar(
-                      radius: 100,
-                      backgroundImage: NetworkImage(imgUrl),
+                    background: Hero(
+                      tag: "dp",
+                      child: CircleAvatar(
+                        radius: 100,
+                        backgroundImage: NetworkImage(imgUrl),
+                      ),
                     ),
                   ),
                   title: Text(
                     groupName,
                     style: const TextStyle(
-                        fontFamily: 'Narrow', fontSize: 23,color: Colors.black),
+                        fontFamily: 'Narrow',
+                        fontSize: 23,
+                        color: Colors.black),
                   ),
                   expandedHeight: 250,
                   backgroundColor: Colors.white,
@@ -128,7 +134,8 @@ class GroupInfo extends StatelessWidget {
                                 year: x['Year'],
                                 email: x['Email'],
                                 prn: x['PRN'],
-                                status : x['status']
+                                status: x['status'],
+                                isFaculty: isFaculty,
                               );
                             });
                       } else {
