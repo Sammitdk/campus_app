@@ -136,13 +136,12 @@ class _StudentLoginState extends State<StudentLogin> {
                                     isClicked = true;
                                   });
                                   await auth.signIn(
-                                      username: emailController.text,
+                                      username: emailController.text.trim(),
                                       password: passwordController.text,
                                       context: context,
                                       isStudent: true,
-                                    click : unClick
-                                  )
-                                  ;
+                                      click : unClick
+                                  );
                                 }
                               })),
                       Container(
