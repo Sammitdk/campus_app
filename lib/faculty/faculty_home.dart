@@ -171,7 +171,7 @@ class _FacultyHomeState extends State<FacultyHome> {
                     Expanded(
                         child: InkWell(
                           onTap: (){
-                            // Navigator.push(context, MaterialPageRoute(builder: (_) => FacultyEvent(info: widget.info,)));
+                            Navigator.push(context, MaterialPageRoute(builder: (_) => FacultyEvent()));
                           },
                           child: Card(
                             shape: RoundedRectangleBorder(

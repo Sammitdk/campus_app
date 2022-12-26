@@ -47,6 +47,7 @@ class NotificationAPI {
   }
   static Future postNotification({
     int id = 0,
+    bool event = false,
     required String title,
     required String message,
     required String receiver,
@@ -61,12 +62,13 @@ class NotificationAPI {
           <String, dynamic>{
             "notification": <String, dynamic>{
               "body": message,
-              "title": title
+              "title": title,
             },
             "priority": "high",
             "data": <String, dynamic>{
               "click_action": "FLUTTER_NOTIFICATION_CLICK",
               "id": "1",
+              "event": event,
               "status": "done",
               "route": "chat_screen"
             },
