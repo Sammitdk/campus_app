@@ -19,10 +19,12 @@ class ConversationList extends HookWidget {
   final dynamic isGroup;
   final dynamic prn;
   final dynamic users;
+  final dynamic isFaculty;
   const ConversationList(
       {Key? key,
       this.prn,
       this.users,
+      required this.isFaculty,
       required this.name,
       required this.isGroup,
       required this.messageText,
@@ -43,15 +45,25 @@ class ConversationList extends HookWidget {
 
     useEffect(() {
       if (isGroup == false) {
-        onlineStream = FirebaseFirestore.instance
-            .collection("Student_Detail")
-            .doc(prn)
-            .snapshots()
-            .listen((event) {
-          dynamic data = event.data();
-          imageUrlState.value = data['imgUrl'];
-          onlineStatus.value = data['status'];
-        });
+        onlineStream = isFaculty
+            ? FirebaseFirestore.instance
+                .collection("Student_Detail")
+                .doc(prn)
+                .snapshots()
+                .listen((event) {
+                dynamic data = event.data();
+                imageUrlState.value = data['imgUrl'];
+                onlineStatus.value = data['status'];
+              })
+            : FirebaseFirestore.instance
+                .collection("Student_Detail")
+                .doc(prn)
+                .snapshots()
+                .listen((event) {
+                dynamic data = event.data();
+                imageUrlState.value = data['imgUrl'];
+                onlineStatus.value = data['status'];
+              });
       }
       return () => {
             if (isGroup == false) {onlineStream.cancel()}
@@ -59,10 +71,10 @@ class ConversationList extends HookWidget {
     }, []);
 
     if (isGroup) {
-      getMessageReads(store.state, name, isGroup)
+      getMessageReads(store.state, name, isGroup,isFaculty)
           .then((value) => {countState.value = value});
     } else {
-      getMessageReads(store.state, prn, false)
+      getMessageReads(store.state, prn, false , isFaculty)
           .then((value) => {countState.value = value});
     }
 
@@ -78,28 +90,54 @@ class ConversationList extends HookWidget {
               context,
               MaterialPageRoute(
                   builder: (_) => MessageScreen(
-                      users: users,
-                      groupName: name,
-                      imageUrl: imageUrl,
-                      isGroup: isGroup)));
+                        users: users,
+                        groupName: name,
+                        imageUrl: imageUrl,
+                        isGroup: isGroup,
+                        isFaculty: isFaculty,
+                      )));
         } else {
-          FirebaseFirestore.instance
-              .collection("Student_Detail/${data.prn}/Messages")
-              .doc(prn)
-              .update({"isMessageRead": true});
-          FirebaseFirestore.instance
-              .collection("Student_Detail/$prn/Messages")
-              .doc(data.prn)
-              .update({"isMessageRead": true});
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (_) => MessageScreen(
-                      status: onlineStatus.value,
-                      groupName: name,
-                      imageUrl: imageUrlState.value,
-                      isGroup: false,
-                      prn: prn)));
+          if (isFaculty) {
+            FirebaseFirestore.instance
+                .collection("Faculty_Detail/${data.email}/Messages")
+                .doc(prn)
+                .update({"isMessageRead": true});
+            FirebaseFirestore.instance
+                .collection("Student_Detail/$prn/Messages")
+                .doc(data.prn)
+                .update({"isMessageRead": true});
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (_) => MessageScreen(
+                          status: onlineStatus.value,
+                          groupName: name,
+                          imageUrl: imageUrlState.value,
+                          isGroup: false,
+                          prn: prn,
+                          isFaculty: isFaculty,
+                        )));
+          } else {
+            FirebaseFirestore.instance
+                .collection("Student_Detail/${data.prn}/Messages")
+                .doc(prn)
+                .update({"isMessageRead": true});
+            FirebaseFirestore.instance
+                .collection("Student_Detail/$prn/Messages")
+                .doc(data.prn)
+                .update({"isMessageRead": true});
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (_) => MessageScreen(
+                          status: onlineStatus.value,
+                          groupName: name,
+                          imageUrl: imageUrlState.value,
+                          isGroup: false,
+                          prn: prn,
+                          isFaculty: isFaculty,
+                        )));
+          }
         }
       },
       child: IgnorePointer(

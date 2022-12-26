@@ -13,12 +13,15 @@ class User extends StatelessWidget {
   final dynamic email;
   final dynamic prn;
   final dynamic status;
+  final dynamic isFaculty;
+
   const User({
     Key? key,
     required this.imageUrl,
     required this.name,
     required this.branch,
     required this.year,
+    required this.isFaculty,
     this.email,
     this.prn,
     this.status,
@@ -97,23 +100,45 @@ class User extends StatelessWidget {
                 'time': Timestamp.now(),
                 'prn': storeData.prn
               };
-              FirebaseFirestore.instance
-                  .collection("Student_Detail/${storeData.prn}/Messages")
-                  .doc(prn)
-                  .set(data, SetOptions(merge: true));
-              FirebaseFirestore.instance
-                  .collection("Student_Detail/$prn/Messages")
-                  .doc(storeData.prn)
-                  .set(myData, SetOptions(merge: true));
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (_) => MessageScreen(
-                          status: status,
-                          groupName: name['First'],
-                          imageUrl: imageUrl,
-                          isGroup: false,
-                          prn: prn)));
+              if (isFaculty) {
+                FirebaseFirestore.instance
+                    .collection("Student_Detail/$prn/Messages")
+                    .doc(storeData.email)
+                    .set(myData, SetOptions(merge: true));
+                FirebaseFirestore.instance
+                    .collection("Faculty_Detail/${storeData.email}/Messages")
+                    .doc(prn)
+                    .set(data, SetOptions(merge: true));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => MessageScreen(
+                            isFaculty: isFaculty,
+                            status: status,
+                            groupName: name['First'],
+                            imageUrl: imageUrl,
+                            isGroup: false,
+                            prn: prn)));
+              } else {
+                FirebaseFirestore.instance
+                    .collection("Student_Detail/${storeData.prn}/Messages")
+                    .doc(prn)
+                    .set(data, SetOptions(merge: true));
+                FirebaseFirestore.instance
+                    .collection("Student_Detail/$prn/Messages")
+                    .doc(storeData.prn)
+                    .set(myData, SetOptions(merge: true));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => MessageScreen(
+                            isFaculty: isFaculty,
+                            status: status,
+                            groupName: name['First'],
+                            imageUrl: imageUrl,
+                            isGroup: false,
+                            prn: prn)));
+              }
             },
             icon: const Icon(Icons.messenger_outline_rounded))
       ]),

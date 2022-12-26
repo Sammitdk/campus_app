@@ -20,6 +20,7 @@ class MessageScreen extends HookWidget {
   final dynamic prn;
   final dynamic status;
   final dynamic users;
+  final dynamic isFaculty;
 
   const MessageScreen({
     Key? key,
@@ -28,6 +29,7 @@ class MessageScreen extends HookWidget {
     this.prn,
     required this.isGroup,
     required this.groupName,
+    required this.isFaculty,
     required this.imageUrl,
   }) : super(key: key);
 
@@ -45,10 +47,16 @@ class MessageScreen extends HookWidget {
             .collection("GroupMessages/$groupName/Messages")
             .orderBy('time', descending: true)
             .snapshots(includeMetadataChanges: true)
-        : FirebaseFirestore.instance
-            .collection("Student_Detail/${data.prn}/Messages/$prn/Messages")
-            .orderBy('time', descending: true)
-            .snapshots(includeMetadataChanges: true);
+        : isFaculty
+            ? FirebaseFirestore.instance
+                .collection(
+                    "Faculty_Detail/${data.email}/Messages/$prn/Messages")
+                .orderBy('time', descending: true)
+                .snapshots(includeMetadataChanges: true)
+            : FirebaseFirestore.instance
+                .collection("Student_Detail/${data.prn}/Messages/$prn/Messages")
+                .orderBy('time', descending: true)
+                .snapshots(includeMetadataChanges: true);
 
     useEffect(() {
       StreamSubscription messageStream = stream.listen((event) {
@@ -57,9 +65,11 @@ class MessageScreen extends HookWidget {
             groupName: groupName,
             data: data,
             isGroup: true,
+            isFaculty: isFaculty,
           );
         } else {
-          readAll(isGroup: false, groupName: prn, data: data);
+          readAll(
+              isGroup: false, groupName: prn, data: data, isFaculty: isFaculty);
         }
       });
 
@@ -97,6 +107,7 @@ class MessageScreen extends HookWidget {
                           context,
                           MaterialPageRoute(
                               builder: (_) => GroupInfo(
+                                    isFaculty: isFaculty,
                                     users: users,
                                     imgUrl: imageUrl,
                                     groupName: groupName,
@@ -133,25 +144,28 @@ class MessageScreen extends HookWidget {
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(right: 8.0, left: 8),
-                      child: CachedNetworkImage(
-                        imageUrl: imageUrl,
-                        imageBuilder: (context, imageProvider) {
-                          return CircleAvatar(
-                            backgroundImage: imageProvider,
-                            maxRadius: 25,
-                          );
-                        },
-                        placeholder: (context, url) => const CircleAvatar(
-                          backgroundColor: Colors.transparent,
-                          backgroundImage:
-                              AssetImage("assets/images/profile.gif"),
-                          maxRadius: 30,
+                      child: Hero(
+                        tag: "dp",
+                        child: CachedNetworkImage(
+                          imageUrl: imageUrl,
+                          imageBuilder: (context, imageProvider) {
+                            return CircleAvatar(
+                              backgroundImage: imageProvider,
+                              maxRadius: 25,
+                            );
+                          },
+                          placeholder: (context, url) => const CircleAvatar(
+                            backgroundColor: Colors.transparent,
+                            backgroundImage:
+                                AssetImage("assets/images/profile.gif"),
+                            maxRadius: 30,
+                          ),
+                          errorWidget: (context, url, error) => CircleAvatar(
+                            radius: 30,
+                            child: Image.asset("assets/images/profile.gif"),
+                          ),
+                          fit: BoxFit.cover,
                         ),
-                        errorWidget: (context, url, error) => CircleAvatar(
-                          radius: 30,
-                          child: Image.asset("assets/images/profile.gif"),
-                        ),
-                        fit: BoxFit.cover,
                       ),
                     ),
                     Padding(
@@ -376,46 +390,88 @@ class MessageScreen extends HookWidget {
                                 });
                                 myController.clear();
                               } else {
-                                // for user message
-                                final firebaseUserData = {
-                                  "name": data.name['First'],
-                                  "time": Timestamp.now(),
-                                  "email": data.email,
-                                  "message": myController.text,
-                                  "messageType": "userMessage",
-                                  "users": [data.email],
-                                };
+                                if (isFaculty) {
+                                  // for user message
+                                  final firebaseUserData = {
+                                    "name": data.name['First'],
+                                    "time": Timestamp.now(),
+                                    "email": data.email,
+                                    "message": myController.text,
+                                    "messageType": "userMessage",
+                                    "users": [data.email],
+                                  };
+                                  // sender user
+                                  FirebaseFirestore.instance
+                                      .collection(
+                                          "Faculty_Detail/${data.email}/Messages/$prn/Messages")
+                                      .add(firebaseUserData);
+                                  // last message info
+                                  FirebaseFirestore.instance
+                                      .collection(
+                                          "Faculty_Detail/${data.email}/Messages")
+                                      .doc(prn)
+                                      .update({
+                                    "messageText": myController.text,
+                                    "time": Timestamp.now(),
+                                  });
+                                  // receiver user
+                                  FirebaseFirestore.instance
+                                      .collection(
+                                          "Student_Detail/$prn/Messages/${data.email}/Messages")
+                                      .add(firebaseUserData);
 
-                                // sender user
-                                FirebaseFirestore.instance
-                                    .collection(
-                                        "Student_Detail/${data.prn}/Messages/$prn/Messages")
-                                    .add(firebaseUserData);
+                                  // last message info
+                                  FirebaseFirestore.instance
+                                      .collection(
+                                          "Student_Detail/$prn/Messages")
+                                      .doc(data.email)
+                                      .update({
+                                    "messageText": myController.text,
+                                    "time": Timestamp.now(),
+                                  });
+                                } else {
+                                  // for user message
+                                  final firebaseUserData = {
+                                    "name": data.name['First'],
+                                    "time": Timestamp.now(),
+                                    "email": data.email,
+                                    "message": myController.text,
+                                    "messageType": "userMessage",
+                                    "users": [data.email],
+                                  };
 
-                                // last message info
-                                FirebaseFirestore.instance
-                                    .collection(
-                                        "Student_Detail/${data.prn}/Messages")
-                                    .doc(prn)
-                                    .update({
-                                  "messageText": myController.text,
-                                  "time": Timestamp.now(),
-                                });
+                                  // sender user
+                                  FirebaseFirestore.instance
+                                      .collection(
+                                          "Student_Detail/${data.prn}/Messages/$prn/Messages")
+                                      .add(firebaseUserData);
 
-                                // receiver user
-                                FirebaseFirestore.instance
-                                    .collection(
-                                        "Student_Detail/$prn/Messages/${data.prn}/Messages")
-                                    .add(firebaseUserData);
+                                  // last message info
+                                  FirebaseFirestore.instance
+                                      .collection(
+                                          "Student_Detail/${data.prn}/Messages")
+                                      .doc(prn)
+                                      .update({
+                                    "messageText": myController.text,
+                                    "time": Timestamp.now(),
+                                  });
 
-                                // last message info
-                                FirebaseFirestore.instance
-                                    .collection("Student_Detail/$prn/Messages")
-                                    .doc(data.prn)
-                                    .update({
-                                  "messageText": myController.text,
-                                  "time": Timestamp.now(),
-                                });
+                                  // receiver user
+                                  FirebaseFirestore.instance
+                                      .collection(
+                                          "Student_Detail/$prn/Messages/${data.prn}/Messages")
+                                      .add(firebaseUserData);
+
+                                  // last message info
+                                  FirebaseFirestore.instance
+                                      .collection(
+                                          "Student_Detail/$prn/Messages")
+                                      .doc(data.prn)
+                                      .update({
+                                    "messageText": myController.text,
+                                    "time": Timestamp.now(),
+                                  });
+                                }
 
                                 // notification to receiver
                                 String receiver = await FirebaseFirestore

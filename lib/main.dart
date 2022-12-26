@@ -91,7 +91,9 @@ class _MainState extends State<Main> {
                   const KeyboardVisibilityProvider(child: FacultyLogin()),
               's_login_form': (context) =>
                   const KeyboardVisibilityProvider(child: StudentLogin()),
-              'chat_screen': (context) => const ConversationScreen()
+              'chat_screen': (context) => const ConversationScreen(
+                    isFaculty: false,
+                  )
             },
           ),
         ));
