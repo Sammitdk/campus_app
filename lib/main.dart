@@ -25,7 +25,6 @@ extension StringExtension on String {
 }
 
 void main() async {
-  int id = 0;
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [
     SystemUiOverlay.bottom, //This line is used for showing the bottom bar
@@ -38,18 +37,31 @@ void main() async {
     android: AndroidInitializationSettings("notification_icon"),
   ));
 
-  // listen notification on foreground
-  FirebaseMessaging.onMessage.listen((event) {
-    id += 1;
-    Map data = event.toMap();
-    NotificationAPI.postLocalNotification(
-        id: id,
-        title: data["notification"]['title'],
-        message: data["notification"]['body'],
-        image: data["notification"]['image']);
-  });
-
-  runApp(const Main());
+  runApp(StoreProvider(
+      store: store,
+      child: StreamProvider<User?>.value(
+        value: Auth().user,
+        initialData: null,
+        child: MaterialApp(
+          theme: ThemeData(fontFamily: "Muli"),
+          color: Colors.transparent,
+          debugShowCheckedModeBanner: false,
+          initialRoute: 'loading_page',
+          routes: {
+            '/': (context) => const Main(),
+            'loading_page': (context) =>
+                LoadingPage(email: Auth().auth.currentUser?.email),
+            'login_page': (context) => const Login(),
+            't_login_form': (context) =>
+            const KeyboardVisibilityProvider(child: FacultyLogin()),
+            's_login_form': (context) =>
+            const KeyboardVisibilityProvider(child: StudentLogin()),
+            'chat_screen': (context) => const ConversationScreen(
+              isFaculty: false,
+            )
+          },
+        ),
+      )));
 }
 
 class Main extends StatefulWidget {
@@ -61,9 +73,26 @@ class Main extends StatefulWidget {
 
 class _MainState extends State<Main> {
 
+
   @override
   void initState() {
+    int id = 0;
     super.initState();
+
+    // listen notification on foreground
+    FirebaseMessaging.onMessage.listen((event) {
+      id += 1;
+      Map data = event.toMap();
+      print(data["data"]["event"]);
+
+      data["data"]["event"] != 'true'
+          ? NotificationAPI.postLocalNotification(
+              id: id,
+              title: data["notification"]['title'],
+              message: data["notification"]['body'],
+              image: data["notification"]['image'])
+          : showAlert(context, data);
+    });
 
     FirebaseMessaging.onMessageOpenedApp.listen((event) {
       Navigator.of(context).pushNamed("chat_screen");
@@ -72,30 +101,41 @@ class _MainState extends State<Main> {
 
   @override
   Widget build(BuildContext context) {
-    return StoreProvider(
-        store: store,
-        child: StreamProvider<User?>.value(
-          value: Auth().user,
-          initialData: null,
-          child: MaterialApp(
-            theme: ThemeData(fontFamily: "Muli"),
-            color: Colors.transparent,
-            debugShowCheckedModeBanner: false,
-            initialRoute: 'loading_page',
-            routes: {
-              '/': (context) => const Wrapper(),
-              'loading_page': (context) =>
-                  LoadingPage(email: Auth().auth.currentUser?.email),
-              'login_page': (context) => const Login(),
-              't_login_form': (context) =>
-                  const KeyboardVisibilityProvider(child: FacultyLogin()),
-              's_login_form': (context) =>
-                  const KeyboardVisibilityProvider(child: StudentLogin()),
-              'chat_screen': (context) => const ConversationScreen(
-                    isFaculty: false,
-                  )
-            },
+    return const Wrapper();
+  }
+
+  showAlert(BuildContext context,Map data) {
+    showDialog(context: context, builder: (BuildContext context){
+      return AlertDialog(
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30)),
+        alignment: Alignment.center,
+        title: Text(data["notification"]['title']),
+        content: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(data["notification"]['body'],maxLines: 9,),
+              // data["data"]["image"].isNotEmpty?Container(
+              //   decoration: BoxDecoration(
+              //     image: DecorationImage(image: NetworkImage(data["data"]["image"])),
+              //     shape: BoxShape.circle
+              //   ),
+              // ):Container(),
+            ],
           ),
-        ));
+        ),
+        actions: [
+          ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(Colors.deepPurpleAccent),
+                shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)))
+              ),
+              onPressed: () => Navigator.of(context).pop(), child: const Text("OK"))
+        ],
+      );
+    });
   }
 }

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:campus_subsystem/firebase/notification.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -6,8 +7,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
 class FacultySubEvent extends StatefulWidget {
-  FacultySubEvent({Key? key,required this.info}) : super(key: key);
-  Map<String,dynamic> info = {};
+  const FacultySubEvent({Key? key,required this.email}) : super(key: key);
+  final String email;
 
   @override
   State<FacultySubEvent> createState() => _FacultySubEventState();
@@ -28,9 +29,10 @@ class _FacultySubEventState extends State<FacultySubEvent> {
     final path = result.path;
     setState(() => file = File(path));
   }
+
   Future uploadFile() async {
     if(file == null) return;
-    final destination = 'Events/${widget.info['Email']}/$date';
+    final destination = 'Events/${widget.email}/$date';
     final ref = FirebaseStorage.instance.ref(destination);
     await ref.putFile(file!);
     url = await ref.getDownloadURL();
@@ -53,6 +55,21 @@ class _FacultySubEventState extends State<FacultySubEvent> {
       this.date = "${DateFormat('dd-MM-yyyy').format(date)}-${DateFormat('HH-mm').format(DateFormat('H:mm a').parse(time.format(context)))}";
     }
     setState(() {});
+  }
+
+  void sendNotificationToAll(){
+    FirebaseFirestore.instance.collection("Student_Detail").where("Token",isNull: false).get().then((students) => {
+      students.docs.forEach((student) {
+        Map studentdata = student.data();
+        if (studentdata["Token"].isNotEmpty) {
+          NotificationAPI.postNotification(
+              title: "Event : ${title.text}",
+              message: "  ${description.text}",
+              event: true,
+              receiver: studentdata["Token"]);
+        }
+      })
+    });
   }
 
   @override
@@ -157,6 +174,7 @@ class _FacultySubEventState extends State<FacultySubEvent> {
                       if (formkey.currentState!.validate()) {
                         await uploadFile();
                         await FirebaseFirestore.instance.collection("Events").doc("$date").set({'Title':title.text,'Description':description.text,'Date':date,'urlEvent':url});
+                        sendNotificationToAll();
                       }
                     },
                     child: const Text('Submit'),

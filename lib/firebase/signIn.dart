@@ -12,9 +12,9 @@ class Auth {
     return user;
   }
 
-  String? getMail(User? user) {
-    return user?.email;
-  }
+  // String? getMail(User? user) {
+  //   return user?.email;
+  // }
 
   Stream<User?> get user {
     return auth.authStateChanges().map(_userFromCredUser);
@@ -31,16 +31,20 @@ class Auth {
       final UserCredential result = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: username, password: password);
       //we got user
-      User? user = result.user;
 
+      print("hererrrrrrrrrrrrr 789");
+      User? user = await result.user;
+
+      print("hererrrrrrrrrrrrr 456");
+      await fetchUserData(result.user?.email);
       if(isStudent){
-        await fetchUserData(result.user?.email);
+        // await fetchUserData(result.user?.email);
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const StudentDashboard()));
       }else{
-        await fetchUserData(result.user?.email);
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const FacultyDashboard()));
       }
 
+      print("hererrrrrrrrrrrrr 123");
       return _userFromCredUser(user);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {

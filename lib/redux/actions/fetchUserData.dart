@@ -44,36 +44,34 @@ Future<ThunkAction<AppState>> fetchUserData(String? email) async {
       .where('Email', isEqualTo: "$email")
       .get()
       .then((value) async {
-    if (value.docs.isNotEmpty) {
-      firestoreinst.doc("Student_Detail/${value.docs[0]['PRN']}").set(
-          {"Token": "${await FirebaseMessaging.instance.getToken()}"},
-          SetOptions(merge: true));
-      store.dispatch(FetchData(
-          email: email,
-          prn: value.docs[0]['PRN'],
-          roll_No: value.docs[0]['Roll_No'],
-          address: value.docs[0]['Address'],
-          sem: value.docs[0]['Sem'],
-          mobile: value.docs[0]['Mobile'][0],
-          year: value.docs[0]['Year'],
-          dob: value.docs[0]['DOB'],
-          name: value.docs[0]['Name'],
-          isStudent: true,
-          branch: value.docs[0]["Branch"],
-          imgUrl: value.docs[0].data().containsKey("imgUrl")
-              ? value.docs[0]["imgUrl"]
-              : null));
-    } else {
-      final DocumentReference facultyRef =
-          firestoreinst.doc('Faculty_Detail/$email');
-      await facultyRef.get().then((value) async {
+        if (value.docs.isNotEmpty) {
+          await firestoreinst.doc("Student_Detail/${value.docs[0]['PRN']}")
+              .set({"Token": "${await FirebaseMessaging.instance.getToken()}"},SetOptions(merge: true));
+          store.dispatch(FetchData(
+              email: email,
+              prn: value.docs[0]['PRN'],
+              roll_No: value.docs[0]['Roll_No'],
+              address: value.docs[0]['Address'],
+              sem: value.docs[0]['Sem'],
+              mobile: value.docs[0]['Mobile'][0],
+              year: value.docs[0]['Year'],
+              dob: value.docs[0]['DOB'],
+              name: value.docs[0]['Name'],
+              isStudent: true,
+              branch: value.docs[0]["Branch"],
+              imgUrl: value.docs[0].data().containsKey("imgUrl")
+                  ? value.docs[0]["imgUrl"]
+                  : null)
+          );
+        } else {
+      await firestoreinst.doc('Faculty_Detail/$email').get().then((value) async {
         firestoreinst.doc("Faculty_Detail/$email").set(
             {"Token": await FirebaseMessaging.instance.getToken()},
             SetOptions(merge: true));
         final data = value.data() as Map<String, dynamic>;
         store.dispatch(FetchData(
             name: data["Name"],
-            email: facultyRef.id,
+            email: data['Email'],
             roll_No: data['Roll_No'],
             mobile: data['Mobile'],
             isStudent: false,

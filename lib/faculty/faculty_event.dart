@@ -1,14 +1,15 @@
 import 'package:campus_subsystem/faculty/faculty_sub_event.dart';
+import 'package:campus_subsystem/redux/reducer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import 'faculty_event_show.dart';
 
 class FacultyEvent extends StatefulWidget {
-  FacultyEvent({Key? key,required this.info}) : super(key: key);
-  Map<String,dynamic> info = {};
+  FacultyEvent({Key? key}) : super(key: key);
 
   @override
   State<FacultyEvent> createState() => _FacultyEventState();
@@ -56,6 +57,7 @@ class _FacultyEventState extends State<FacultyEvent> {
 }
   @override
   Widget build(BuildContext context) {
+    var state = StoreProvider.of<AppState>(context).state;
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -66,7 +68,7 @@ class _FacultyEventState extends State<FacultyEvent> {
           foregroundColor: Colors.black,
           backgroundColor: Colors.white,
           child: const Icon(Icons.add),
-          onPressed: (){Navigator.push(context, MaterialPageRoute(builder: (_) => FacultySubEvent(info: widget.info)));
+          onPressed: (){Navigator.push(context, MaterialPageRoute(builder: (_) => FacultySubEvent(email: state.email)));
       }
     ),
       body: Event(),
