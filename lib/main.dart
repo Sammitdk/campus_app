@@ -26,9 +26,17 @@ extension StringExtension on String {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [
-    SystemUiOverlay.bottom, //This line is used for showing the bottom bar
-  ]);
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays:
+    SystemUiOverlay.values, //This line is used for showing the bottom bar
+  );
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+    statusBarIconBrightness: Brightness.dark,
+  ));
+  // SystemChrome.setSystemUIOverlayStyle(
+  //     const SystemUiOverlayStyle(statusBarBrightness: Brightness.light),
+  //   // Or Brightness.dark
+  // );
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
@@ -83,8 +91,6 @@ class _MainState extends State<Main> {
     FirebaseMessaging.onMessage.listen((event) {
       id += 1;
       Map data = event.toMap();
-      print(data["data"]["event"]);
-
       data["data"]["event"] != 'true'
           ? NotificationAPI.postLocalNotification(
               id: id,
@@ -118,12 +124,12 @@ class _MainState extends State<Main> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(data["notification"]['body'],maxLines: 9,),
-              // data["data"]["image"].isNotEmpty?Container(
-              //   decoration: BoxDecoration(
-              //     image: DecorationImage(image: NetworkImage(data["data"]["image"])),
-              //     shape: BoxShape.circle
-              //   ),
-              // ):Container(),
+              data["data"]["image"].isNotEmpty?Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(image: NetworkImage(data["data"]["image"])),
+                  shape: BoxShape.circle
+                ),
+              ):Container(),
             ],
           ),
         ),

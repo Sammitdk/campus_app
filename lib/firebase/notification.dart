@@ -13,7 +13,6 @@ import "../redux/store.dart";
 
 
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  print("Handling a background message ${message.toMap()}");
 }
 
 
@@ -41,7 +40,6 @@ class NotificationAPI {
   }) async {
     _noti.show(id, title, message, notificationDetails, payload: "chat_screen");
     // _noti.getNotificationAppLaunchDetails().asStream().listen((value){
-    //   print(value?.didNotificationLaunchApp);
     //   // Navigator.of(context).pushNamed("chat_screen");
     // });
   }

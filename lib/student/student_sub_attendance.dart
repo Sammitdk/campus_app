@@ -42,59 +42,45 @@ class StudentSubAttendance extends StatelessWidget {
                           Padding(
                             padding:
                                 const EdgeInsetsDirectional.only(bottom: 10),
-                            child: Row(
-                              children: [
-                                const Expanded(
-                                  flex: 1,
-                                  child: Center(
-                                    child: Icon(
-                                      Icons.subject_sharp,
-                                      size: 40,
-                                    ),
+                            child: Card(
+                              elevation: 5,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                  BorderRadius.circular(50)),
+                              color: Colors.white,
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                      flex: 4,
+                                      child: Container(
+                                        height: 80,
+                                        alignment: Alignment.center,
+                                        child: Text(
+                                            DateFormat(
+                                                    'dd  MMM  yyyy hh:mm')
+                                                .format(DateFormat(
+                                                        'dd-MM-yyyy-hh-mm')
+                                                    .parse(key)),
+                                            style: const TextStyle(
+                                                fontSize: 20,
+                                                fontFamily: 'Custom'),
+                                            textAlign: TextAlign.center),
+                                      )),
+                                  Expanded(
+                                    flex: 2,
+                                    child: Text(
+                                        attendance[key]
+                                            ? '  Present'
+                                            : '  Absent',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                            fontSize: 18,
+                                            color: attendance[key]
+                                                ? Colors.green[800]
+                                                : Colors.red)),
                                   ),
-                                ),
-                                Expanded(
-                                  flex: 7,
-                                  child: Card(
-                                    elevation: 5,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(50)),
-                                    color: Colors.blue[100],
-                                    child: SizedBox(
-                                      height: 80,
-                                      child: Row(
-                                        children: [
-                                          Expanded(
-                                              flex: 4,
-                                              child: Text(
-                                                  DateFormat(
-                                                          'dd  MMM  yyyy hh:mm')
-                                                      .format(DateFormat(
-                                                              'dd-MM-yyyy-hh-mm')
-                                                          .parse(key)),
-                                                  style: const TextStyle(
-                                                      fontSize: 20,
-                                                      fontFamily: 'Custom'),
-                                                  textAlign: TextAlign.center)),
-                                          Expanded(
-                                            flex: 2,
-                                            child: Text(
-                                                attendance[key]
-                                                    ? '  Present'
-                                                    : '  Absent',
-                                                style: TextStyle(
-                                                    fontSize: 18,
-                                                    color: attendance[key]
-                                                        ? Colors.green[800]
-                                                        : Colors.red)),
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           )
                         ],

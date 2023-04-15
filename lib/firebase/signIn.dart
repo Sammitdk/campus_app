@@ -32,10 +32,8 @@ class Auth {
           .signInWithEmailAndPassword(email: username, password: password);
       //we got user
 
-      print("hererrrrrrrrrrrrr 789");
-      User? user = await result.user;
+      User? user = result.user;
 
-      print("hererrrrrrrrrrrrr 456");
       await fetchUserData(result.user?.email);
       if(isStudent){
         // await fetchUserData(result.user?.email);
@@ -44,7 +42,6 @@ class Auth {
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const FacultyDashboard()));
       }
 
-      print("hererrrrrrrrrrrrr 123");
       return _userFromCredUser(user);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {

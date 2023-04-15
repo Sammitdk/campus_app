@@ -22,13 +22,10 @@ class Wrapper extends HookWidget {
       return StoreConnector<AppState, AppState>(
           converter: (store) => store.state,
           builder: (_, state) {
-            print("hererrrrrrrrrrrrr else ${state.isStudent}");
             if(state.isStudent != null){
               if (state.isStudent) {
-                print("hererrrrrrrrrrrrr else if");
                 return const StudentDashboard();
               } else {
-                print("hererrrrrrrrrrrrr else else");
                 return const FacultyDashboard();
               }
             } else {

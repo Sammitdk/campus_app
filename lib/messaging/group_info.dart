@@ -1,25 +1,22 @@
 import 'package:campus_subsystem/messaging/user_list.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_redux/flutter_redux.dart';
-import '../redux/reducer.dart';
 
 class GroupInfo extends StatelessWidget {
   final dynamic groupName;
   final dynamic imgUrl;
-  final dynamic isFaculty;
   final dynamic users;
+  final dynamic data;
   const GroupInfo(
       {Key? key,
+        required this.data,
       required this.groupName,
-      required this.isFaculty,
       required this.imgUrl,
       required this.users})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    var data = StoreProvider.of<AppState>(context).state;
 
     return Scaffold(
         body: NestedScrollView(
@@ -36,7 +33,7 @@ class GroupInfo extends StatelessWidget {
                   flexibleSpace: FlexibleSpaceBar(
                     centerTitle: true,
                     background: Hero(
-                      tag: "dp",
+                      tag: "group",
                       child: CircleAvatar(
                         radius: 100,
                         backgroundImage: NetworkImage(imgUrl),
@@ -46,9 +43,7 @@ class GroupInfo extends StatelessWidget {
                   title: Text(
                     groupName,
                     style: const TextStyle(
-                        fontFamily: 'Narrow',
-                        fontSize: 23,
-                        color: Colors.black),
+                        fontFamily: 'Narrow', fontSize: 23,color: Colors.black),
                   ),
                   expandedHeight: 250,
                   backgroundColor: Colors.white,
@@ -134,8 +129,7 @@ class GroupInfo extends StatelessWidget {
                                 year: x['Year'],
                                 email: x['Email'],
                                 prn: x['PRN'],
-                                status: x['status'],
-                                isFaculty: isFaculty,
+                                status : x['status'], storeData: data,
                               );
                             });
                       } else {

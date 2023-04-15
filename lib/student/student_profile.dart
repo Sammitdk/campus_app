@@ -11,21 +11,21 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:pie_chart/pie_chart.dart';
 import '../redux/reducer.dart';
 
 
 class StudentProfile extends HookWidget {
   StudentProfile({Key? key}) : super(key: key);
-  List subjectlist = [];
+  List subjectList = [];
   
   Map<String, double> getChartValues(AsyncSnapshot data) {
     Map<String, double> chartvalue = {"Absent": 0};
     // print(data.data!.docs.toList());
     data.data!.docs.forEach((element) {
       // print(element.data());
-      if(subjectlist.contains(element.id)){
+      if(subjectList.contains(element.id)){
         chartvalue[element.id] = 0;
         element.data().forEach((key, value) {
           // print("$key  $value");
@@ -94,7 +94,6 @@ class StudentProfile extends HookWidget {
         }
       });
     }
-
     return Scaffold(
       backgroundColor: Colors.white,
       body: Stack(children: [
@@ -104,236 +103,77 @@ class StudentProfile extends HookWidget {
             child: CustomPaint(
               painter: CurvePainter(),
             )),
-        // profile image
-        // Positioned(
-        //     top: height / 8.5,
-        //     left: width / 1.8,
-        //     child: clicked.value && file != null
-        //         ? CircleAvatar(
-        //             maxRadius: 80,
-        //             backgroundImage: FileImage(file!),
-        //           )
-        //         : stateUrl.value != "" && stateUrl.value != null
-        //             ? CachedNetworkImage(
-        //                 imageUrl: stateUrl.value,
-        //                 imageBuilder: (context, imageProvider) {
-        //                   return CircleAvatar(
-        //                     backgroundImage: imageProvider,
-        //                     maxRadius: 80,
-        //                   );
-        //                 },
-        //                 placeholder: (context, url) => const CircleAvatar(
-        //                   backgroundColor: Colors.transparent,
-        //                   backgroundImage:
-        //                       AssetImage("assets/images/profile.gif"),
-        //                   maxRadius: 80,
-        //                 ),
-        //                 errorWidget: (context, url, error) =>
-        //                     const Icon(Icons.error),
-        //                 fit: BoxFit.cover,
-        //               )
-        //             : const CircleAvatar(
-        //                 backgroundImage:
-        //                     AssetImage("assets/images/profile.gif"),
-        //                 maxRadius: 80,
-        //                 backgroundColor: Colors.transparent,
-        //               )),
 
+        Positioned(
+          top: MediaQuery.of(context).size.height * 0.05,
+          left: MediaQuery.of(context).size.width * 0.55,
+          child: Stack(
+            alignment: AlignmentDirectional.topEnd,
+            children: [
+              clicked.value && file != null
+                  ? CircleAvatar(
+                maxRadius: MediaQuery.of(context).size.height * 0.1,
+                backgroundImage: FileImage(file!),
+              )
+                  : stateUrl.value != "" && stateUrl.value != null
+                  ? CachedNetworkImage(imageUrl: stateUrl.value,
+                imageBuilder: (context, imageProvider) {
+                  return CircleAvatar(
+                    backgroundImage: imageProvider,
+                    maxRadius: MediaQuery.of(context).size.height * 0.1,);
+                  }, placeholder: (context, url) =>
+                    CircleAvatar(
+                      backgroundColor: Colors.transparent,
+                      backgroundImage:
+                      const AssetImage("assets/images/profile.gif"),
+                      maxRadius: MediaQuery.of(context).size.height * 0.1,
+                    ), errorWidget: (context, url, error) => const Icon(Icons.error),
+                fit: BoxFit.cover,
+              )
+                  : CircleAvatar(
+                backgroundImage:
+                const AssetImage("assets/images/profile.gif"),
+                maxRadius: MediaQuery.of(context).size.height * 0.1,
+                backgroundColor: Colors.transparent,
+              ),
+              clicked.value ? Align(
+                heightFactor: 0.1,
+                widthFactor: 0.7,
+                child: CircularPercentIndicator(
+                    radius: 28.0,
+                    lineWidth: 8.0,
+                    animation: true,
+                    percent: progress.value,
+                    center: Text(
+                      progress.value.toStringAsFixed(2),
+                      style:
+                      const TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0),
+                    ),
+                    header: const Text(
+                      "Uploading",
+                      style:
+                      TextStyle(fontWeight: FontWeight.bold, fontSize: 14.0),
+                    ),
+                    circularStrokeCap: CircularStrokeCap.round,
+                    progressColor: Colors.purple,
+                  ),
+              ) : IconButton(
+                  // elevation: 0,
+                  // backgroundColor: Colors.transparent,
+                  // foregroundColor: Colors.black,
+                  onPressed: () async {
+                    await selectFiles();
+                    await uploadFile();
+                  },
+                  icon: const Icon(Icons.add_photo_alternate_outlined),
+                ),
 
-        // Positioned(
-        //     top: height / 3.50,
-        //     width: width / 0.55,
-        //     child: FloatingActionButton(
-        //       elevation: 0,
-        //       backgroundColor: Colors.transparent,
-        //       foregroundColor: Colors.black,
-        //       onPressed: () async {
-        //         await selectFiles();
-        //         await uploadFile();
-        //       },
-        //       child: const Icon(Icons.add_photo_alternate_outlined),
-        //     )),
-        // Positioned(
-        //   top: 8,
-        //   left: 20,
-        //   child: Text(
-        //     "${state.name['First'].toString().capitalize()}.${state.name['Middle'].substring(0, 1).toString().capitalize()}.${state.name['Last'].toString().capitalize()}",
-        //     style: const TextStyle(
-        //       fontSize: 30,
-        //       color: Colors.white,
-        //       fontFamily: 'MuliBold',
-        //     ),
-        //   ),
-        // ),
-        // Positioned(
-        //   top: 65,
-        //   left: 20,
-        //   child: Text(state.email,
-        //       style: const TextStyle(fontSize: 20, color: Colors.white)),
-        // ),
-        // Positioned(
-        //   top: 100,
-        //   left: 20,
-        //   child: Text(state.mobile,
-        //       style: const TextStyle(fontSize: 20, color: Colors.white)),
-        // ),
-        // Container(
-        //   padding: EdgeInsetsDirectional.only(top: height / 2.8, start: 40),
-        //   height: height,
-        //   width: width / 1.2,
-        //   child: Column(
-        //     children: [
-        //       Padding(
-        //         padding: const EdgeInsetsDirectional.only(bottom: 20),
-        //         child: Row(
-        //           children: [
-        //             const Expanded(
-        //               flex: 1,
-        //               child: Icon(
-        //                 Icons.location_city_outlined,
-        //                 size: 50,
-        //                 color: Colors.blue,
-        //               ),
-        //             ),
-        //             Expanded(
-        //               flex: 2,
-        //               child: Column(
-        //                 children: [
-        //                   const Text(
-        //                     "Address",
-        //                     style: TextStyle(fontSize: 15, color: Colors.black),
-        //                   ),
-        //                   Text(state.address,
-        //                       style: const TextStyle(
-        //                           fontSize: 25, color: Colors.black)),
-        //                 ],
-        //               ),
-        //             )
-        //           ],
-        //         ),
-        //       ),
-        //       Padding(
-        //         padding: const EdgeInsetsDirectional.only(bottom: 20),
-        //         child: Row(
-        //           children: [
-        //             const Expanded(
-        //               flex: 1,
-        //               child: Icon(
-        //                 Icons.school_outlined,
-        //                 size: 50,
-        //                 color: Colors.blue,
-        //               ),
-        //             ),
-        //             Expanded(
-        //               flex: 2,
-        //               child: Column(
-        //                 children: [
-        //                   const Text(
-        //                     "Trade",
-        //                     style: TextStyle(fontSize: 15, color: Colors.black),
-        //                   ),
-        //                   Text(state.branch,
-        //                       style: const TextStyle(
-        //                           fontSize: 25, color: Colors.black)),
-        //                 ],
-        //               ),
-        //             )
-        //           ],
-        //         ),
-        //       ),
-        //       Padding(
-        //         padding: const EdgeInsetsDirectional.only(bottom: 20),
-        //         child: Row(
-        //           children: [
-        //             const Expanded(
-        //               flex: 1,
-        //               child: Icon(
-        //                 Icons.cake_outlined,
-        //                 size: 50,
-        //                 color: Colors.blue,
-        //               ),
-        //             ),
-        //             Expanded(
-        //               flex: 2,
-        //               child: Column(
-        //                 children: [
-        //                   const Text(
-        //                     "Birth Date",
-        //                     style: TextStyle(fontSize: 15, color: Colors.black),
-        //                   ),
-        //                   Text(state.dob.toString(),
-        //                       style: const TextStyle(
-        //                           fontSize: 25, color: Colors.black)),
-        //                 ],
-        //               ),
-        //             )
-        //           ],
-        //         ),
-        //       ),
-        //       Padding(
-        //         padding: const EdgeInsetsDirectional.only(bottom: 20),
-        //         child: Row(
-        //           children: [
-        //             const Expanded(
-        //               flex: 1,
-        //               child: Icon(
-        //                 Icons.numbers,
-        //                 size: 50,
-        //                 color: Colors.blue,
-        //               ),
-        //             ),
-        //             Expanded(
-        //               flex: 2,
-        //               child: Column(
-        //                 children: [
-        //                   const Text(
-        //                     "PRN",
-        //                     style: TextStyle(fontSize: 15, color: Colors.black),
-        //                   ),
-        //                   Text(state.prn,
-        //                       style: const TextStyle(
-        //                           fontSize: 25, color: Colors.black)),
-        //                 ],
-        //               ),
-        //             )
-        //           ],
-        //         ),
-        //       ),
-        //       Padding(
-        //         padding: const EdgeInsetsDirectional.only(bottom: 20),
-        //         child: Row(
-        //           children: [
-        //             const Expanded(
-        //               flex: 1,
-        //               child: Icon(
-        //                 Icons.book_outlined,
-        //                 size: 50,
-        //                 color: Colors.blue,
-        //               ),
-        //             ),
-        //             Expanded(
-        //               flex: 2,
-        //               child: Column(
-        //                 children: [
-        //                   const Text(
-        //                     "Semester",
-        //                     style: TextStyle(fontSize: 15, color: Colors.black),
-        //                   ),
-        //                   Text(state.sem,
-        //                       style: const TextStyle(
-        //                           fontSize: 25, color: Colors.black)),
-        //                 ],
-        //               ),
-        //             )
-        //           ],
-        //         ),
-        //       ),
-        //     ],
-        //   ),
-        // ),
+            ],
+          ),
+        ),
 
         Padding(
-          padding: const EdgeInsets.all(10.0),
+          padding: const EdgeInsets.only(top: 30.0,left: 5),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -345,67 +185,16 @@ class StudentProfile extends HookWidget {
                     "${state.name['First'].toString().capitalize()}.${state.name['Middle'].substring(0, 1).toString().capitalize()}.${state.name['Last'].toString().capitalize()}",
                     style: const TextStyle(
                       fontSize: 30,
-                      color: Colors.white,
+                      color: Colors.black,
                       fontFamily: 'MuliBold',
                     ),
                   ),
                   Text(state.email,
                       style:
-                          const TextStyle(fontSize: 20, color: Colors.white)),
+                          const TextStyle(fontSize: 18, color: Colors.black)),
                   Text(state.mobile,
                       style:
-                          const TextStyle(fontSize: 20, color: Colors.white)),
-                  Stack(
-                    children: [
-                      Align(
-                        alignment: AlignmentDirectional.centerEnd,
-                        child: clicked.value && file != null
-                            ? CircleAvatar(
-                                maxRadius: 80,
-                                backgroundImage: FileImage(file!),
-                              )
-                            : stateUrl.value != "" && stateUrl.value != null
-                                ? CachedNetworkImage(
-                                    imageUrl: stateUrl.value,
-                                    imageBuilder: (context, imageProvider) {
-                                      return CircleAvatar(
-                                        backgroundImage: imageProvider,
-                                        maxRadius: 80,
-                                      );
-                                    },
-                                    placeholder: (context, url) =>
-                                        const CircleAvatar(
-                                      backgroundColor: Colors.transparent,
-                                      backgroundImage:
-                                          AssetImage("assets/images/profile.gif"),
-                                      maxRadius: 80,
-                                    ),
-                                    errorWidget: (context, url, error) =>
-                                        const Icon(Icons.error),
-                                    fit: BoxFit.cover,
-                                  )
-                                : const CircleAvatar(
-                                    backgroundImage:
-                                        AssetImage("assets/images/profile.gif"),
-                                    maxRadius: 80,
-                                    backgroundColor: Colors.transparent,
-                                  ),
-                      ),
-                      Align(
-                        alignment: AlignmentDirectional.bottomEnd,
-                        child: IconButton(
-                          // elevation: 0,
-                          // backgroundColor: Colors.transparent,
-                          // foregroundColor: Colors.black,
-                          onPressed: () async {
-                            await selectFiles();
-                            await uploadFile();
-                          },
-                          icon: const Icon(Icons.add_photo_alternate_outlined),
-                        ),
-                      ),
-                    ],
-                  )
+                          const TextStyle(fontSize: 18, color: Colors.black)),
                 ],
               ),
               Expanded(
@@ -420,12 +209,11 @@ class StudentProfile extends HookWidget {
                         if (list.connectionState == ConnectionState.waiting) {
                           return Container(
                             color: Colors.white,
-                            child: Center(
-                                child: LoadingAnimationWidget.staggeredDotsWave(
-                                    size: 50, color: Colors.red)),
+                            child: const Center(
+                                child: SizedBox()),
                           );
                         } else {
-                          subjectlist = list.data.data()[state.sem].values.toList();
+                          subjectList = list.data.data()[state.sem].values.toList();
                           return StreamBuilder(
                               stream: FirebaseFirestore.instance
                                   .collection("Student_Detail/${state.prn}/Attendance")
@@ -476,7 +264,7 @@ class StudentProfile extends HookWidget {
                                       ),
                                     );
                                   } else {
-                                    return Align(
+                                    return const Align(
                                         alignment: AlignmentDirectional.centerStart,
                                         child: CircularProgressIndicator());
                                   }
@@ -512,7 +300,7 @@ class StudentProfile extends HookWidget {
                                 ),
                                 Text(state.address ?? "--",
                                     style: const TextStyle(
-                                        fontSize: 25, color: Colors.black)),
+                                        fontSize: 18, color: Colors.black)),
                               ],
                             ),
                           )
@@ -542,7 +330,7 @@ class StudentProfile extends HookWidget {
                                 ),
                                 Text(state.branch ?? "--",
                                     style: const TextStyle(
-                                        fontSize: 25, color: Colors.black)),
+                                        fontSize: 18, color: Colors.black)),
                               ],
                             ),
                           )
@@ -572,7 +360,7 @@ class StudentProfile extends HookWidget {
                                 ),
                                 Text(state.dob ?? "--",
                                     style: const TextStyle(
-                                        fontSize: 25, color: Colors.black)),
+                                        fontSize: 18, color: Colors.black)),
                               ],
                             ),
                           )
@@ -602,7 +390,7 @@ class StudentProfile extends HookWidget {
                                 ),
                                 Text(state.prn ?? "--",
                                     style: const TextStyle(
-                                        fontSize: 25, color: Colors.black)),
+                                        fontSize: 18, color: Colors.black)),
                               ],
                             ),
                           )
@@ -632,7 +420,7 @@ class StudentProfile extends HookWidget {
                                 ),
                                 Text(state.sem ?? "--",
                                     style: const TextStyle(
-                                        fontSize: 25, color: Colors.black)),
+                                        fontSize: 18, color: Colors.black)),
                               ],
                             ),
                           )
@@ -710,7 +498,7 @@ class CurvePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     var paint = Paint();
-    paint.color = Colors.blueGrey;
+    paint.color = Colors.blueGrey[200]!;
     paint.style = PaintingStyle.fill;
 
     var path = Path();

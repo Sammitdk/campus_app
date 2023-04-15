@@ -50,7 +50,6 @@ class _FacultyAttendanceState extends State<FacultyAttendance> {
     return FutureBuilder(
         future: getStudentList(),
         builder: (context, AsyncSnapshot rollattend) {
-          print("${rollattend.data}");
           if (rollattend.connectionState == ConnectionState.waiting) {
             return Scaffold(
                 backgroundColor: Colors.white,

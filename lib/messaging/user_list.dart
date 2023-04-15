@@ -1,9 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_redux/flutter_redux.dart';
-import '../redux/reducer.dart';
 import 'message_screen.dart';
+import "package:campus_subsystem/main.dart";
 
 class User extends StatelessWidget {
   final dynamic imageUrl;
@@ -13,15 +12,15 @@ class User extends StatelessWidget {
   final dynamic email;
   final dynamic prn;
   final dynamic status;
-  final dynamic isFaculty;
+  final dynamic storeData;
 
   const User({
     Key? key,
+    required this.storeData,
     required this.imageUrl,
     required this.name,
     required this.branch,
     required this.year,
-    required this.isFaculty,
     this.email,
     this.prn,
     this.status,
@@ -29,7 +28,6 @@ class User extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var storeData = StoreProvider.of<AppState>(context).state;
     return Padding(
       padding: const EdgeInsets.all(20),
       child: Row(children: <Widget>[
@@ -59,7 +57,7 @@ class User extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  "${name['First']} ${name['Last']}",
+                  "${name['First'].toString().capitalize()} ${name['Last'].toString().capitalize()}",
                   style: const TextStyle(fontSize: 16),
                 ),
                 const SizedBox(
@@ -100,45 +98,50 @@ class User extends StatelessWidget {
                 'time': Timestamp.now(),
                 'prn': storeData.prn
               };
-              if (isFaculty) {
-                FirebaseFirestore.instance
-                    .collection("Student_Detail/$prn/Messages")
-                    .doc(storeData.email)
-                    .set(myData, SetOptions(merge: true));
-                FirebaseFirestore.instance
-                    .collection("Faculty_Detail/${storeData.email}/Messages")
-                    .doc(prn)
-                    .set(data, SetOptions(merge: true));
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (_) => MessageScreen(
-                            isFaculty: isFaculty,
-                            status: status,
-                            groupName: name['First'],
-                            imageUrl: imageUrl,
-                            isGroup: false,
-                            prn: prn)));
-              } else {
-                FirebaseFirestore.instance
-                    .collection("Student_Detail/${storeData.prn}/Messages")
-                    .doc(prn)
-                    .set(data, SetOptions(merge: true));
-                FirebaseFirestore.instance
-                    .collection("Student_Detail/$prn/Messages")
-                    .doc(storeData.prn)
-                    .set(myData, SetOptions(merge: true));
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (_) => MessageScreen(
-                            isFaculty: isFaculty,
-                            status: status,
-                            groupName: name['First'],
-                            imageUrl: imageUrl,
-                            isGroup: false,
-                            prn: prn)));
-              }
+
+              FirebaseFirestore.instance
+                  .collection("Student_Detail/${storeData.prn}/Messages")
+                  .doc(prn)
+                  .get()
+                  .then((value) => {
+                        if (value.exists)
+                          {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) => MessageScreen(
+                                          status: status,
+                                          groupName: name['First'],
+                                          imageUrl: imageUrl,
+                                          isGroup: false,
+                                          prn: prn,
+                                          data: storeData,
+                                        )))
+                          }
+                        else
+                          {
+                            FirebaseFirestore.instance
+                                .collection(
+                                    "Student_Detail/${storeData.prn}/Messages")
+                                .doc(prn)
+                                .set(data, SetOptions(merge: true)),
+                            FirebaseFirestore.instance
+                                .collection("Student_Detail/$prn/Messages")
+                                .doc(storeData.prn)
+                                .set(myData, SetOptions(merge: true)),
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) => MessageScreen(
+                                          status: status,
+                                          groupName: name['First'],
+                                          imageUrl: imageUrl,
+                                          isGroup: false,
+                                          prn: prn,
+                                          data: storeData,
+                                        )))
+                          }
+                      });
             },
             icon: const Icon(Icons.messenger_outline_rounded))
       ]),

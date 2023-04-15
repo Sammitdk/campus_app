@@ -22,7 +22,6 @@ class _FacultyAttendanceOptionState extends State<FacultyAttendanceOption> {
   void timePicker() async {
     TimeOfDay time = const TimeOfDay(hour: 9, minute: 0);
     DateTime date = DateUtils.dateOnly(DateTime.now());
-    print(time);
     final DateTime? selecteddate = await showDatePicker(
         context: context,
         initialDate: date,

@@ -5,14 +5,13 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import '../redux/reducer.dart';
 
-class NewMessage extends HookWidget {
-  final dynamic isFaculty;
-  const NewMessage({Key? key , required this.isFaculty}) : super(key: key);
 
+class NewMessage extends HookWidget {
+  final dynamic data;
+  const NewMessage({Key? key ,required this.data }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    var data = StoreProvider.of<AppState>(context).state;
 
     dynamic futureDocReference = useState(FirebaseFirestore.instance
         .collection("Student_Detail")
@@ -52,7 +51,7 @@ class NewMessage extends HookWidget {
                               year: x['Year'],
                               email: x['Email'],
                               prn: x['PRN'],
-                              status: x['status'], isFaculty: isFaculty,
+                              status: x['status'], storeData: data,
                             );
                           }else{
                             return const SizedBox();

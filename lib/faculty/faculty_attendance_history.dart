@@ -6,6 +6,8 @@ import 'package:intl/intl.dart';
 import '../redux/reducer.dart';
 
 class FacultyAttendanceHistory extends StatefulWidget {
+  const FacultyAttendanceHistory({Key? key}) : super(key: key);
+
   @override
   State<FacultyAttendanceHistory> createState() =>
       _FacultyAttendanceHistoryState();
@@ -88,7 +90,6 @@ class _FacultyAttendanceHistoryState extends State<FacultyAttendanceHistory> {
                                 }).toList(),
                                 onChanged: (String? value) => setState(() {
                                       selecteddate = value!;
-                                      // print(selecteddate);
                                     })),
                           ),
                         );
@@ -123,10 +124,8 @@ class _FacultyAttendanceHistoryState extends State<FacultyAttendanceHistory> {
                 future: state.subject[selectedsubject][0].collection(selectedsubject).doc(selecteddate).get(),
                 builder: (context,AsyncSnapshot snap) {
                     if(snap.connectionState != ConnectionState.waiting){
-                      print("if");
                       if (snap.data != null && snap.data.exists) {
                         Map attendance = snap.data.data() as Map;
-                        print("nest if");
                         return Expanded(
                           child: GridView.builder(
                             scrollDirection: Axis.vertical,
@@ -153,11 +152,9 @@ class _FacultyAttendanceHistoryState extends State<FacultyAttendanceHistory> {
                           ),
                         );
                       } else {
-                        print("nest else");
                         return Container();
                       }
                     } else {
-                      print("else $selecteddate");
                       return Container();
                     }
                   }
