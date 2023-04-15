@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:campus_subsystem/redux/actions/fetchUserData.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -10,11 +9,19 @@ class LoadingPage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    if(email != null){
-      fetchUserData(email).then((value) => Navigator.pushReplacementNamed(context, "/"));
-    }else{
-      Future.delayed(const Duration(milliseconds: 3000)).then((value) =>Navigator.pushReplacementNamed(context, "/"));
-    }
+    useEffect(() {
+      if (email != null) {
+        fetchUserData(email).then((value) => {
+              Future.delayed(const Duration(milliseconds: 3000)).then(
+                  (value) => {Navigator.pushReplacementNamed(context, "/")})
+            });
+      } else {
+        Future.delayed(const Duration(milliseconds: 3000))
+            .then((value) => Navigator.pushReplacementNamed(context, "/"));
+      }
+      return null;
+    }, const []);
+
     double screenheight = MediaQuery.of(context).size.height;
     double screenwidth = MediaQuery.of(context).size.width;
     return Scaffold(

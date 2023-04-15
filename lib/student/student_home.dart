@@ -1,7 +1,9 @@
+import 'package:campus_subsystem/main.dart';
 import 'package:campus_subsystem/student/student_attendance.dart';
 import 'package:campus_subsystem/student/student_event.dart';
 import 'package:campus_subsystem/student/student_notes.dart';
 import 'package:campus_subsystem/student/student_syllabus.dart';
+import 'package:campus_subsystem/student/student_timetable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -30,7 +32,7 @@ class _StudentHomeState extends State<StudentHome> {
                   child: Center(
                     child: Row(children: [
                       Text(
-                        "  Hey ${state.name['First']}",
+                        "  Hey ${state.name['First'].toString().capitalize()}",
                         style:
                             const TextStyle(fontSize: 30, fontFamily: 'Custom'),
                       )
@@ -43,38 +45,38 @@ class _StudentHomeState extends State<StudentHome> {
                     children: [
                       Expanded(
                           child: InkWell(
-                        onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (_) => const FacultyTimeTable()));
-                        },
-                        child: Card(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12)),
-                          elevation: 5,
-                          child: Column(
-                            children: [
-                              Expanded(
-                                  flex: 4,
-                                  child: Image.asset(
-                                    "assets/images/timetable.gif",
-                                  )),
-                              const Expanded(
-                                  flex: 1,
-                                  child: Text(
-                                    textAlign: TextAlign.center,
-                                    "Time Table",
-                                    style: TextStyle(
-                                        fontFamily: 'Custom', fontSize: 20),
-                                  )),
-                            ],
-                          ),
-                        ),
+                            onTap: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (_) => const StudentTimeTable()));
+                            },
+                            child: Card(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12)),
+                              elevation: 5,
+                              child: Column(
+                                children: [
+                                  Expanded(
+                                      flex: 4,
+                                      child: Image.asset(
+                                        "assets/images/timetable.gif",
+                                      )),
+                                  const Expanded(
+                                      flex: 1,
+                                      child: Text(
+                                        textAlign: TextAlign.center,
+                                        "Time Table",
+                                        style: TextStyle(
+                                            fontFamily: 'Custom', fontSize: 20),
+                                      )),
+                                ],
+                              ),
+                            ),
                       )),
                       Expanded(
                           child: InkWell(
                         onTap: () {
                           Navigator.of(context).push(MaterialPageRoute(
-                              builder: (_) => StudentSyllabus()));
+                              builder: (_) => const StudentSyllabus()));
                         },
                         child: Card(
                           shape: RoundedRectangleBorder(
@@ -109,8 +111,8 @@ class _StudentHomeState extends State<StudentHome> {
                       Expanded(
                         child: InkWell(
                           onTap: () {
-                            // Navigator.of(context).push(MaterialPageRoute(
-                            //     builder: (_) => StudentAttendance()));
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (_) => StudentAttendance()));
                           },
                           child: Card(
                             shape: RoundedRectangleBorder(
@@ -180,7 +182,7 @@ class _StudentHomeState extends State<StudentHome> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (_) => StudentEvent()));
+                                  builder: (_) => const StudentEvent()));
                         },
                         child: Card(
                           shape: RoundedRectangleBorder(

@@ -1,6 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import '../faculty/faculty_event_show.dart';
+import '../components/Event.dart';
 
 class StudentEvent extends StatefulWidget {
   const StudentEvent({Key? key}) : super(key: key);
@@ -10,43 +9,6 @@ class StudentEvent extends StatefulWidget {
 }
 
 class _StudentEventState extends State<StudentEvent> {
-
-  Widget Event(){
-    return StreamBuilder(
-        stream: FirebaseFirestore.instance.collection("Events").snapshots(),
-        builder: (context, AsyncSnapshot<QuerySnapshot>snapshot){
-          if(snapshot.hasData){
-            return ListView.builder(
-                itemCount: snapshot.data!.docs.length,
-                itemBuilder: (context,i){
-                  QueryDocumentSnapshot x = snapshot.data!.docs[i];
-                  return InkWell(
-                    onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (_) => ShowEvent(x: x,)));
-                    },
-                    child: Padding(
-                      padding:  const EdgeInsetsDirectional.all(18),
-                      child: Card(
-                        elevation: 5,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-                        color: Colors.blue[100],
-                        child: Container(
-                          alignment: Alignment.center,
-                          height: 80,
-                          child: Text((x['Title']),textAlign: TextAlign.center,style: const TextStyle(fontFamily: "Bold",fontSize: 30),),
-                        ),
-                      ),
-                    ),
-                  );
-                });
-          }
-          return const Center(
-            child: CircularProgressIndicator(
-            ),
-          );
-        }
-    );
-  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

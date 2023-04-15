@@ -1,43 +1,85 @@
+import 'package:campus_subsystem/faculty/faculty_home.dart';
+import 'package:campus_subsystem/faculty/faculty_profile.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
-import 'faculty_home.dart';
-import 'faculty_profile.dart';
-
 
 class FacultyDashboard extends StatefulWidget {
-  final Map<String,dynamic> info;
+  const FacultyDashboard({
+    Key? key,
+  }) : super(key: key);
 
-  const FacultyDashboard({required this.info});
   @override
   State<FacultyDashboard> createState() => _FacultyDashboardState();
 }
 
-class _FacultyDashboardState extends State<FacultyDashboard> {
-  final navigationkey = GlobalKey<CurvedNavigationBarState>();
+class _FacultyDashboardState extends State<FacultyDashboard>
+    with WidgetsBindingObserver {
+  final navigationKey = GlobalKey<CurvedNavigationBarState>();
   int index = 0;
+
+  // void setStatus(String status) {
+  //   FirebaseFirestore.instance
+  //       .collection("Faculty_Detail")
+  //       .where('Email', isEqualTo: FirebaseAuth.instance.currentUser?.email)
+  //       .get()
+  //       .then((value) => {
+  //             FirebaseFirestore.instance
+  //                 .doc("Faculty_Detail/${FirebaseAuth.instance.currentUser?.email}")
+  //                 .set({'status': status}, SetOptions(merge: true))
+  //           });
+  // }
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   setStatus("Online");
+  //   WidgetsBinding.instance.addObserver(this);
+  // }
+  //
+  // @override
+  // void didChangeAppLifecycleState(AppLifecycleState state) {
+  //   if (state == AppLifecycleState.resumed) {
+  //     setStatus("Online");
+  //   } else {
+  //     setStatus("Offline");
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
     final screen = [
-      FacultyHome(info: widget.info),
-      FacultyProfile(info: widget.info),
+      const FacultyHome(),
+      // const ConversationScreen(),
+      const FacultyProfile(),
     ];
-    final items = <Widget>
-    [
-      const Icon(Icons.home_outlined,size: 30,),
-      const Icon(Icons.person_outline_outlined,size: 30,),
+    final items = <Widget>[
+      const Icon(
+        Icons.home_outlined,
+        size: 30,
+      ),
+      // const Icon(
+      //   Icons.messenger_outline_rounded,
+      //   size: 30,
+      // ),
+      const Icon(
+        Icons.person_outline_outlined,
+        size: 30,
+      ),
     ];
     return Scaffold(
         backgroundColor: Colors.white,
         body: screen[index],
         bottomNavigationBar: CurvedNavigationBar(
-          key: navigationkey,
+          key: navigationKey,
           backgroundColor: Colors.transparent,
           height: 60,
           items: items,
           index: index,
-          onTap: (index) => setState(() { this.index = index;}),
-        )
-    );
+          onTap: (index) {
+            setState(() {
+              this.index = index;
+            });
+          },
+        ));
   }
 }
