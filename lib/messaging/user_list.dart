@@ -31,24 +31,25 @@ class User extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(20),
       child: Row(children: <Widget>[
-        imageUrl != ""
-            ? CachedNetworkImage(
-                imageUrl: imageUrl,
-                imageBuilder: (context, imageProvider) {
-                  return CircleAvatar(
-                    backgroundImage: imageProvider,
-                    maxRadius: 30,
-                  );
-                },
-                placeholder: (context, url) =>
-                    const CircularProgressIndicator(),
-                errorWidget: (context, url, error) => const Icon(Icons.error),
-                fit: BoxFit.cover,
-              )
-            : const CircleAvatar(
-                backgroundImage: AssetImage("assets/images/profile.gif"),
-                maxRadius: 30,
-              ),
+        CachedNetworkImage(
+          imageUrl: imageUrl,
+          imageBuilder: (context, imageProvider) {
+            return CircleAvatar(
+              backgroundImage: imageProvider,
+              maxRadius: 30,
+            );
+          },
+          placeholder: (context, url) =>
+          const CircleAvatar(
+            backgroundImage: AssetImage("assets/images/profile.gif"),
+            maxRadius: 30,
+          ),
+          errorWidget: (context, url, error) => const CircleAvatar(
+            backgroundImage: AssetImage("assets/images/profile.gif"),
+            maxRadius: 30,
+          ),
+          fit: BoxFit.cover,
+        ),
         const SizedBox(width: 16),
         Expanded(
           child: Container(
