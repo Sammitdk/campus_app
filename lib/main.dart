@@ -26,11 +26,11 @@ extension StringExtension on String {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays:
-    SystemUiOverlay.values, //This line is used for showing the bottom bar
+  SystemChrome.setEnabledSystemUIMode(
+    SystemUiMode.manual, overlays: SystemUiOverlay.values, //This line is used for showing the bottom bar
   );
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
+    statusBarColor: Colors.transparent,
     statusBarIconBrightness: Brightness.dark,
   ));
   // SystemChrome.setSystemUIOverlayStyle(
@@ -57,16 +57,15 @@ void main() async {
           initialRoute: 'loading_page',
           routes: {
             '/': (context) => const Main(),
-            'loading_page': (context) =>
-                LoadingPage(email: Auth().auth.currentUser?.email),
-            'login_page': (context) => const Login(),
-            't_login_form': (context) =>
-            const KeyboardVisibilityProvider(child: FacultyLogin()),
-            's_login_form': (context) =>
-            const KeyboardVisibilityProvider(child: StudentLogin()),
+            'loading_page': (context) => LoadingPage(email: Auth().auth.currentUser?.email),
+            // 'login_page': (context) => const Login(),
+            // 't_login_form': (context) =>
+            // const KeyboardVisibilityProvider(child: FacultyLogin()),
+            // 's_login_form': (context) =>
+            // const KeyboardVisibilityProvider(child: StudentLogin()),
             'chat_screen': (context) => const ConversationScreen(
-              isFaculty: false,
-            )
+                  isFaculty: false,
+                )
           },
         ),
       )));
@@ -80,8 +79,6 @@ class Main extends StatefulWidget {
 }
 
 class _MainState extends State<Main> {
-
-
   @override
   void initState() {
     int id = 0;
@@ -110,38 +107,42 @@ class _MainState extends State<Main> {
     return const Wrapper();
   }
 
-  showAlert(BuildContext context,Map data) {
-    showDialog(context: context, builder: (BuildContext context){
-      return AlertDialog(
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30)),
-        alignment: Alignment.center,
-        title: Text(data["notification"]['title']),
-        content: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(data["notification"]['body'],maxLines: 9,),
-              data["data"]["image"].isNotEmpty?Container(
-                decoration: BoxDecoration(
-                  image: DecorationImage(image: NetworkImage(data["data"]["image"])),
-                  shape: BoxShape.circle
-                ),
-              ):Container(),
-            ],
-          ),
-        ),
-        actions: [
-          ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.deepPurpleAccent),
-                shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)))
+  showAlert(BuildContext context, Map data) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+            alignment: Alignment.center,
+            title: Text(data["notification"]['title']),
+            content: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    data["notification"]['body'],
+                    maxLines: 9,
+                  ),
+                  data["data"]["image"].isNotEmpty
+                      ? Container(
+                          decoration: BoxDecoration(
+                              image: DecorationImage(image: NetworkImage(data["data"]["image"])), shape: BoxShape.circle),
+                        )
+                      : Container(),
+                ],
               ),
-              onPressed: () => Navigator.of(context).pop(), child: const Text("OK"))
-        ],
-      );
-    });
+            ),
+            actions: [
+              ElevatedButton(
+                  style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(Colors.deepPurpleAccent),
+                      shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)))),
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text("OK"))
+            ],
+          );
+        });
   }
 }
