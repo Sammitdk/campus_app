@@ -162,8 +162,8 @@ class _FacultyNotesState extends State<FacultyNotes> {
                                                   .delete()
                                             });
                                   },
-                                  backgroundColor: const Color(0xFFFE4A49),
-                                  foregroundColor: Colors.white,
+                                  backgroundColor: Colors.white,
+                                  foregroundColor: const Color(0xFFFE4A49),
                                   icon: Icons.delete,
                                   label: 'Delete',
                                 ),

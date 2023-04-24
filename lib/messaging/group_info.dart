@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:campus_subsystem/messaging/user_list.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -34,9 +35,23 @@ class GroupInfo extends StatelessWidget {
                     centerTitle: true,
                     background: Hero(
                       tag: "group",
-                      child: CircleAvatar(
-                        radius: 100,
-                        backgroundImage: NetworkImage(imgUrl),
+                      child: CachedNetworkImage(
+                        imageUrl: imgUrl,
+                        imageBuilder: (context, imageProvider) {
+                          return CircleAvatar(
+                            backgroundImage: imageProvider,
+                            radius: 100,
+                          );
+                        },
+                        placeholder: (context, url) =>
+                        const CircleAvatar(
+                          backgroundImage: AssetImage(
+                              "assets/images/profile.gif"),
+                          maxRadius: 30,
+                        ),
+                        errorWidget: (context, url, error) =>
+                        const Icon(Icons.error),
+                        fit: BoxFit.cover,
                       ),
                     ),
                   ),

@@ -35,7 +35,10 @@ class _FacultyEventState extends State<FacultyEvent> {
                 MaterialPageRoute(
                     builder: (_) => FacultySubEvent(email: state.email)));
           }),
-      body: Event(),
+      body: Padding(
+        padding: const EdgeInsets.all(15),
+        child: Event(state.isStudent),
+      ),
     );
   }
 }

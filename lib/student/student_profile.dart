@@ -15,17 +15,16 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:pie_chart/pie_chart.dart';
 import '../redux/reducer.dart';
 
-
 class StudentProfile extends HookWidget {
   StudentProfile({Key? key}) : super(key: key);
   List subjectList = [];
-  
+
   Map<String, double> getChartValues(AsyncSnapshot data) {
     Map<String, double> chartvalue = {"Absent": 0};
     // print(data.data!.docs.toList());
     data.data!.docs.forEach((element) {
       // print(element.data());
-      if(subjectList.contains(element.id)){
+      if (subjectList.contains(element.id)) {
         chartvalue[element.id] = 0;
         element.data().forEach((key, value) {
           // print("$key  $value");
@@ -40,7 +39,6 @@ class StudentProfile extends HookWidget {
     // print(chartvalue);
     return chartvalue;
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -94,6 +92,7 @@ class StudentProfile extends HookWidget {
         }
       });
     }
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: Stack(children: [
@@ -103,77 +102,67 @@ class StudentProfile extends HookWidget {
             child: CustomPaint(
               painter: CurvePainter(),
             )),
-
         Positioned(
           top: MediaQuery.of(context).size.height * 0.05,
           left: MediaQuery.of(context).size.width * 0.55,
           child: Stack(
             alignment: AlignmentDirectional.topEnd,
             children: [
-              clicked.value && file != null
-                  ? CircleAvatar(
-                maxRadius: MediaQuery.of(context).size.height * 0.1,
-                backgroundImage: FileImage(file!),
-              )
-                  : stateUrl.value != "" && stateUrl.value != null
-                  ? CachedNetworkImage(imageUrl: stateUrl.value,
+              CachedNetworkImage(
+                key: UniqueKey(),
+                imageUrl: stateUrl.value,
                 imageBuilder: (context, imageProvider) {
                   return CircleAvatar(
                     backgroundImage: imageProvider,
-                    maxRadius: MediaQuery.of(context).size.height * 0.1,);
-                  }, placeholder: (context, url) =>
-                    CircleAvatar(
-                      backgroundColor: Colors.transparent,
-                      backgroundImage:
+                    maxRadius: MediaQuery.of(context).size.height * 0.1,
+                  );
+                },
+                placeholder: (context, url) => CircleAvatar(
+                  backgroundImage:
                       const AssetImage("assets/images/profile.gif"),
-                      maxRadius: MediaQuery.of(context).size.height * 0.1,
-                    ), errorWidget: (context, url, error) => const Icon(Icons.error),
-                fit: BoxFit.cover,
-              )
-                  : CircleAvatar(
-                backgroundImage:
-                const AssetImage("assets/images/profile.gif"),
-                maxRadius: MediaQuery.of(context).size.height * 0.1,
-                backgroundColor: Colors.transparent,
-              ),
-              clicked.value ? Align(
-                heightFactor: 0.1,
-                widthFactor: 0.7,
-                child: CircularPercentIndicator(
-                    radius: 28.0,
-                    lineWidth: 8.0,
-                    animation: true,
-                    percent: progress.value,
-                    center: Text(
-                      progress.value.toStringAsFixed(2),
-                      style:
-                      const TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0),
-                    ),
-                    header: const Text(
-                      "Uploading",
-                      style:
-                      TextStyle(fontWeight: FontWeight.bold, fontSize: 14.0),
-                    ),
-                    circularStrokeCap: CircularStrokeCap.round,
-                    progressColor: Colors.purple,
-                  ),
-              ) : IconButton(
-                  // elevation: 0,
-                  // backgroundColor: Colors.transparent,
-                  // foregroundColor: Colors.black,
-                  onPressed: () async {
-                    await selectFiles();
-                    await uploadFile();
-                  },
-                  icon: const Icon(Icons.add_photo_alternate_outlined),
+                  maxRadius: MediaQuery.of(context).size.height * 0.1,
                 ),
-
+                errorWidget: (context, url, error) => const Icon(Icons.error),
+                fit: BoxFit.cover,
+              ),
+              clicked.value
+                  ? Align(
+                      heightFactor: 0.1,
+                      widthFactor: 0.7,
+                      child: CircularPercentIndicator(
+                        radius: 28.0,
+                        lineWidth: 8.0,
+                        animation: true,
+                        percent: progress.value,
+                        center: Text(
+                          progress.value.toStringAsFixed(2),
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 18.0),
+                        ),
+                        header: const Text(
+                          "Uploading",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 14.0),
+                        ),
+                        circularStrokeCap: CircularStrokeCap.round,
+                        progressColor: Colors.purple,
+                      ),
+                    )
+                  : IconButton(
+                      // elevation: 0,
+                      // backgroundColor: Colors.transparent,
+                      // foregroundColor: Colors.black,
+                      onPressed: () async {
+                        await selectFiles();
+                        await uploadFile();
+                      },
+                      icon: const Icon(Icons.add_photo_alternate_outlined),
+                    ),
             ],
           ),
         ),
-
         Padding(
-          padding: const EdgeInsets.only(top: 30.0,left: 5),
+          padding: const EdgeInsets.only(top: 30.0, left: 5),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -209,42 +198,55 @@ class StudentProfile extends HookWidget {
                         if (list.connectionState == ConnectionState.waiting) {
                           return Container(
                             color: Colors.white,
-                            child: const Center(
-                                child: SizedBox()),
+                            child: const Center(child: SizedBox()),
                           );
                         } else {
-                          subjectList = list.data.data()[state.sem].values.toList();
+                          subjectList =
+                              list.data.data()[state.sem].values.toList();
                           return StreamBuilder(
                               stream: FirebaseFirestore.instance
-                                  .collection("Student_Detail/${state.prn}/Attendance")
+                                  .collection(
+                                      "Student_Detail/${state.prn}/Attendance")
                                   .snapshots(),
                               builder: (context, AsyncSnapshot data) {
-                                if (data.connectionState != ConnectionState.waiting) {
+                                if (data.connectionState !=
+                                    ConnectionState.waiting) {
                                   if (data.hasData) {
                                     return Padding(
                                       padding: const EdgeInsets.only(
-                                          left: 20, right: 20, top: 10, bottom: 10),
+                                          left: 20,
+                                          right: 20,
+                                          top: 10,
+                                          bottom: 10),
                                       child: Card(
                                         elevation: 5,
                                         shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(20)),
+                                            borderRadius:
+                                                BorderRadius.circular(20)),
                                         child: InkWell(
-                                          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => StudentAttendance())),
+                                          onTap: () => Navigator.of(context)
+                                              .push(MaterialPageRoute(
+                                                  builder: (_) =>
+                                                      StudentAttendance())),
                                           child: Container(
                                             margin: EdgeInsets.all(
-                                                MediaQuery.of(context).size.height *
+                                                MediaQuery.of(context)
+                                                        .size
+                                                        .height *
                                                     0.01),
                                             child: PieChart(
                                               centerText: "Attendance",
                                               initialAngleInDegree: 270,
                                               chartType: ChartType.ring,
                                               chartValuesOptions:
-                                              const ChartValuesOptions(
-                                                  showChartValuesInPercentage: true,
-                                                  showChartValuesOutside: true,
-                                                  showChartValues: true
-                                              ),
-                                              legendOptions: const LegendOptions(
+                                                  const ChartValuesOptions(
+                                                      showChartValuesInPercentage:
+                                                          true,
+                                                      showChartValuesOutside:
+                                                          true,
+                                                      showChartValues: true),
+                                              legendOptions:
+                                                  const LegendOptions(
                                                 legendShape: BoxShape.circle,
                                                 legendTextStyle: TextStyle(
                                                   fontSize: 10,
@@ -252,10 +254,12 @@ class StudentProfile extends HookWidget {
                                                 ),
                                               ),
                                               animationDuration:
-                                              const Duration(seconds: 1),
+                                                  const Duration(seconds: 1),
                                               chartRadius:
-                                              MediaQuery.of(context).size.height *
-                                                  0.1,
+                                                  MediaQuery.of(context)
+                                                          .size
+                                                          .height *
+                                                      0.1,
                                               ringStrokeWidth: 20,
                                               dataMap: getChartValues(data),
                                             ),
@@ -265,12 +269,14 @@ class StudentProfile extends HookWidget {
                                     );
                                   } else {
                                     return const Align(
-                                        alignment: AlignmentDirectional.centerStart,
+                                        alignment:
+                                            AlignmentDirectional.centerStart,
                                         child: CircularProgressIndicator());
                                   }
                                 } else {
                                   return const Align(
-                                      alignment: AlignmentDirectional.centerStart,
+                                      alignment:
+                                          AlignmentDirectional.centerStart,
                                       child: CircularProgressIndicator());
                                 }
                               });
@@ -494,6 +500,7 @@ class StudentProfile extends HookWidget {
     );
   }
 }
+
 class CurvePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
