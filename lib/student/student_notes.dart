@@ -1,4 +1,5 @@
 import 'package:campus_subsystem/loadpdf.dart';
+import 'package:campus_subsystem/student/student_dashboard.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -42,10 +43,11 @@ class _StudentNotesState extends State<StudentNotes> {
                         QueryDocumentSnapshot x = snapshot.data!.docs[i];
                         return InkWell(
                           onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) => LoadPdf(url: x["url"])));
+                            StudentDashboard.launchAnyURL(x["url"],x["num"]);
+                            // Navigator.push(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //         builder: (_) => LoadPdf(url: x["url"])));
                           },
                           child: Padding(
                             padding: const EdgeInsets.all(10),

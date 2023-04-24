@@ -45,32 +45,32 @@ class _StudentHomeState extends State<StudentHome> {
                     children: [
                       Expanded(
                           child: InkWell(
-                            onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (_) => const StudentTimeTable()));
-                            },
-                            child: Card(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12)),
-                              elevation: 5,
-                              child: Column(
-                                children: [
-                                  Expanded(
-                                      flex: 4,
-                                      child: Image.asset(
-                                        "assets/images/timetable.gif",
-                                      )),
-                                  const Expanded(
-                                      flex: 1,
-                                      child: Text(
-                                        textAlign: TextAlign.center,
-                                        "Time Table",
-                                        style: TextStyle(
-                                            fontFamily: 'Custom', fontSize: 20),
-                                      )),
-                                ],
-                              ),
-                            ),
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (_) => const StudentTimeTable()));
+                        },
+                        child: Card(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12)),
+                          elevation: 5,
+                          child: Column(
+                            children: [
+                              Expanded(
+                                  flex: 4,
+                                  child: Image.asset(
+                                    "assets/images/timetable.gif",
+                                  )),
+                              const Expanded(
+                                  flex: 1,
+                                  child: Text(
+                                    textAlign: TextAlign.center,
+                                    "Time Table",
+                                    style: TextStyle(
+                                        fontFamily: 'Custom', fontSize: 20),
+                                  )),
+                            ],
+                          ),
+                        ),
                       )),
                       Expanded(
                           child: InkWell(
@@ -214,7 +214,9 @@ class _StudentHomeState extends State<StudentHome> {
                             await launchUrlString(url,
                                 webViewConfiguration:
                                     const WebViewConfiguration(
-                                        enableJavaScript: true));
+                                        enableJavaScript: true),
+                              mode: LaunchMode.externalApplication
+                            );
                           } catch (e) {
                             throw 'Could not launch $url';
                           }

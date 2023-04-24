@@ -28,54 +28,60 @@ class _FacultyNotesState extends State<FacultyNotes> {
       setState(() {
         uploading = false;
       });
+    } else {
+      setState(() {
+        uploading = true;
+      });
+      File pick = File(result!.files.single.path.toString());
+      var file = pick.readAsBytesSync();
+      String fileName = pick.path.split('/').last;
+
+      //uploading
+      var pdfFile =
+          FirebaseStorage.instance.ref().child("notes").child(fileName);
+      UploadTask task = pdfFile.putData(file);
+
+      uploadListner = task.snapshotEvents.listen((event) async {
+        switch (event.state) {
+          case TaskState.running:
+            setState(() {
+              progress = event.bytesTransferred.toDouble() /
+                  event.totalBytes.toDouble();
+            });
+            break;
+          case TaskState.paused:
+            setState(() {
+              uploading = false;
+            });
+            break;
+          case TaskState.canceled:
+            setState(() {
+              uploading = false;
+            });
+            break;
+          case TaskState.error:
+            setState(() {
+              uploading = false;
+            });
+            break;
+          case TaskState.success:
+            url = await pdfFile.getDownloadURL();
+
+            //  to cloud firebase
+
+            await FirebaseFirestore.instance.collection("notes").add({
+              'url': url,
+              'num': fileName,
+            });
+
+            setState(() {
+              uploading = false;
+            });
+            break;
+        }
+      });
+      uploadListner.cancle();
     }
-    File pick = File(result!.files.single.path.toString());
-    var file = pick.readAsBytesSync();
-    String fileName = pick.path.split('/').last;
-
-    //uploading
-    var pdfFile = FirebaseStorage.instance.ref().child("notes").child(fileName);
-    UploadTask task = pdfFile.putData(file);
-
-    uploadListner = task.snapshotEvents.listen((event) async {
-      switch (event.state) {
-        case TaskState.running:
-          setState(() {
-            progress =
-                event.bytesTransferred.toDouble() / event.totalBytes.toDouble();
-          });
-          break;
-        case TaskState.paused:
-          setState(() {
-            uploading = false;
-          });
-          break;
-        case TaskState.canceled:
-          setState(() {
-            uploading = false;
-          });
-          break;
-        case TaskState.error:
-          setState(() {
-            uploading = false;
-          });
-          break;
-        case TaskState.success:
-          url = await pdfFile.getDownloadURL();
-
-          //  to cloud firebase
-
-          await FirebaseFirestore.instance.collection("notes").add({
-            'url': url,
-            'num': fileName,
-          });
-
-          setState(() {
-            uploading = false;
-          });
-          break;
-      }
-    });
   }
 
   @override
@@ -94,12 +100,7 @@ class _FacultyNotesState extends State<FacultyNotes> {
         foregroundColor: Colors.black,
         backgroundColor: Colors.white,
         onPressed: () async {
-          setState(() {
-            uploading = true;
-          });
-
           await uploadDataToFirebase();
-          uploadListner.cancle();
         },
         child: uploading
             ? CircularPercentIndicator(
@@ -108,7 +109,7 @@ class _FacultyNotesState extends State<FacultyNotes> {
                 animation: true,
                 percent: progress,
                 center: Text(
-                  progress.toStringAsFixed(2),
+                  "${(progress * 100).toStringAsFixed(0)}%",
                   style: const TextStyle(
                       fontWeight: FontWeight.bold, fontSize: 18.0),
                 ),
