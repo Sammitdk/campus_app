@@ -18,12 +18,12 @@ class ConversationList extends HookWidget {
   final String latestMessageBy;
   final int count;
   final dynamic isGroup;
-  final dynamic prn;
+  final dynamic EmailR;
   final dynamic users;
 
   const ConversationList(
       {Key? key,
-      this.prn,
+      this.EmailR,
       this.users,
       required this.name,
       required this.isGroup,
@@ -44,8 +44,7 @@ class ConversationList extends HookWidget {
     useEffect(() {
       if (isGroup == false) {
         onlineStream = FirebaseFirestore.instance
-            .collection("Student_Detail")
-            .doc(prn)
+            .doc("Messages/$EmailR")
             .snapshots()
             .listen((event) {
           dynamic data = event.data();
@@ -61,7 +60,7 @@ class ConversationList extends HookWidget {
       getMessageReads(store.state, name, isGroup)
           .then((value) => {countState.value = value});
     } else {
-      getMessageReads(store.state, prn, false)
+      getMessageReads(store.state, EmailR, false)
           .then((value) => {countState.value = value});
     }
     return StoreConnector<AppState, AppState>(
@@ -87,12 +86,12 @@ class ConversationList extends HookWidget {
                             )));
               } else {
                 FirebaseFirestore.instance
-                    .collection("Student_Detail/${data.prn}/Messages")
-                    .doc(prn)
+                    .collection("Messages/${data.email}/Messages")
+                    .doc(EmailR)
                     .update({"isMessageRead": true});
                 FirebaseFirestore.instance
-                    .collection("Student_Detail/$prn/Messages")
-                    .doc(data.prn)
+                    .collection("Messages/$EmailR/Messages")
+                    .doc(data.email)
                     .update({"isMessageRead": true});
                 Navigator.push(
                     context,
@@ -102,7 +101,7 @@ class ConversationList extends HookWidget {
                               groupName: name,
                               imageUrl: imageUrl,
                               isGroup: false,
-                              prn: prn,
+                              EmailR: EmailR,
                               data: data,
                             )));
               }

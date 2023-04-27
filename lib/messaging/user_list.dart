@@ -9,9 +9,7 @@ class User extends StatelessWidget {
   final dynamic name;
   final dynamic branch;
   final dynamic year;
-  final dynamic email;
-  final dynamic prn;
-  final dynamic status;
+  final dynamic EmailR;
   final dynamic storeData;
 
   const User({
@@ -21,9 +19,7 @@ class User extends StatelessWidget {
     required this.name,
     required this.branch,
     required this.year,
-    this.email,
-    this.prn,
-    this.status,
+    required this.EmailR,
   }) : super(key: key);
 
   @override
@@ -39,8 +35,7 @@ class User extends StatelessWidget {
               maxRadius: 30,
             );
           },
-          placeholder: (context, url) =>
-          const CircleAvatar(
+          placeholder: (context, url) => const CircleAvatar(
             backgroundImage: AssetImage("assets/images/profile.gif"),
             maxRadius: 30,
           ),
@@ -87,7 +82,7 @@ class User extends StatelessWidget {
                 'messageText': "",
                 'messageType': 'userMessage',
                 'time': Timestamp.now(),
-                'prn': prn
+                'email': EmailR,
               };
               final myData = {
                 'groupName': storeData.name['First'],
@@ -97,12 +92,12 @@ class User extends StatelessWidget {
                 'messageText': "",
                 'messageType': 'userMessage',
                 'time': Timestamp.now(),
-                'prn': storeData.prn
+                'email': storeData.email,
               };
 
               FirebaseFirestore.instance
-                  .collection("Student_Detail/${storeData.prn}/Messages")
-                  .doc(prn)
+                  .collection("Messages/${storeData.email}/Messages")
+                  .doc(EmailR)
                   .get()
                   .then((value) => {
                         if (value.exists)
@@ -111,11 +106,12 @@ class User extends StatelessWidget {
                                 context,
                                 MaterialPageRoute(
                                     builder: (_) => MessageScreen(
-                                          status: status,
+                                          //TODO staus fetch
+                                          status: "Offline",
                                           groupName: name['First'],
                                           imageUrl: imageUrl,
                                           isGroup: false,
-                                          prn: prn,
+                                          EmailR: EmailR,
                                           data: storeData,
                                         )))
                           }
@@ -123,22 +119,27 @@ class User extends StatelessWidget {
                           {
                             FirebaseFirestore.instance
                                 .collection(
-                                    "Student_Detail/${storeData.prn}/Messages")
-                                .doc(prn)
+                                    "Messages/${storeData.email}/Messages")
+                                .doc(EmailR)
                                 .set(data, SetOptions(merge: true)),
                             FirebaseFirestore.instance
-                                .collection("Student_Detail/$prn/Messages")
-                                .doc(storeData.prn)
+                                .collection("Messages")
+                                .doc(EmailR)
+                                .set({'status': 'Offline'},
+                                SetOptions(merge: true)),
+                            FirebaseFirestore.instance
+                                .collection("Messages/$EmailR/Messages")
+                                .doc(storeData.email)
                                 .set(myData, SetOptions(merge: true)),
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (_) => MessageScreen(
-                                          status: status,
+                                          status: "Offline",
                                           groupName: name['First'],
                                           imageUrl: imageUrl,
                                           isGroup: false,
-                                          prn: prn,
+                                          EmailR: EmailR,
                                           data: storeData,
                                         )))
                           }

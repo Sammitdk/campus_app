@@ -4,7 +4,6 @@ import 'package:campus_subsystem/student/student_profile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:dio/dio.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:open_file_plus/open_file_plus.dart';
 import 'package:path_provider/path_provider.dart';
@@ -12,9 +11,8 @@ import '../firebase/signIn.dart';
 import 'student_home.dart';
 
 class StudentDashboard extends StatefulWidget {
-  const StudentDashboard({
-    Key? key,
-  }) : super(key: key);
+  final String email;
+  const StudentDashboard({Key? key,required this.email}) : super(key: key);
 
   @override
   State<StudentDashboard> createState() => _StudentDashboardState();
@@ -55,14 +53,8 @@ class _StudentDashboardState extends State<StudentDashboard>
 
   void setStatus(String status) {
     FirebaseFirestore.instance
-        .collection("Student_Detail")
-        .where('Email', isEqualTo: FirebaseAuth.instance.currentUser?.email)
-        .get()
-        .then((value) => {
-      FirebaseFirestore.instance
-          .doc("Student_Detail/${value.docs[0]["PRN"]}")
-          .set({'status': status}, SetOptions(merge: true))
-    });
+        .doc("Messages/${widget.email}")
+        .set({'status': status}, SetOptions(merge: true));
   }
 
   @override

@@ -66,7 +66,7 @@ class ConversationScreen extends HookWidget {
                         child: SingleChildScrollView(
                           child: StreamBuilder(
                               stream: FirebaseFirestore.instance
-                                  .collection("Student_Detail/${state.prn}/Messages")
+                                  .collection("Messages/${state.email}/Messages")
                                   .orderBy('time', descending: true)
                                   .snapshots(),
                               builder:
@@ -90,7 +90,8 @@ class ConversationScreen extends HookWidget {
                                           latestMessageBy: "ok",
                                           count: 0,
                                           isGroup: x["isGroup"],
-                                          prn: x['prn'], imageUrl: x["imgUrl"],
+                                          EmailR: x['email'],
+                                          imageUrl: x["imgUrl"],
                                         );
                                       });
                                 } else {

@@ -37,9 +37,9 @@ class Auth {
       await fetchUserData(result.user?.email);
       if(isStudent){
         // await fetchUserData(result.user?.email);
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const StudentDashboard()));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) =>  StudentDashboard(email: username,)));
       }else{
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const FacultyDashboard()));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) =>  FacultyDashboard(email: username)));
       }
 
       return _userFromCredUser(user);
