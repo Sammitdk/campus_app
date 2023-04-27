@@ -1,7 +1,5 @@
 import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:campus_subsystem/firebase/notification.dart';
-import 'package:campus_subsystem/main.dart';
 import 'package:campus_subsystem/messaging/group_info.dart';
 import 'package:campus_subsystem/messaging/read_message-fetch.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -15,7 +13,7 @@ class MessageScreen extends HookWidget {
   final dynamic groupName;
   final dynamic imageUrl;
   final dynamic isGroup;
-  final dynamic prn;
+  final dynamic EmailR;
   final dynamic status;
   final dynamic users;
   final dynamic data;
@@ -24,7 +22,7 @@ class MessageScreen extends HookWidget {
     Key? key,
     this.users,
     this.status,
-    this.prn,
+    this.EmailR,
     required this.data,
     required this.isGroup,
     required this.groupName,
@@ -45,7 +43,7 @@ class MessageScreen extends HookWidget {
             .orderBy('time', descending: true)
             .snapshots(includeMetadataChanges: true)
         : FirebaseFirestore.instance
-            .collection("Student_Detail/${data.prn}/Messages/$prn/Messages")
+            .collection("Messages/${data.email}/Messages/$EmailR/Messages")
             .orderBy('time', descending: true)
             .snapshots(includeMetadataChanges: true);
 
@@ -58,7 +56,7 @@ class MessageScreen extends HookWidget {
             isGroup: true,
           );
         } else {
-          readAll(isGroup: false, groupName: prn, data: data);
+          readAll(isGroup: false, groupName: EmailR, data: data);
         }
       });
 
@@ -73,160 +71,162 @@ class MessageScreen extends HookWidget {
       backgroundColor: Colors.white,
       appBar: isGroup
           ? AppBar(
-        actions: [
-          PopupMenuButton(itemBuilder: (context) {
-            return [
-              const PopupMenuItem<int>(
-                value: 0,
-                child: Text("Group Info"),
-              ),
-              const PopupMenuItem<int>(
-                value: 1,
-                child: Text("Search"),
-              ),
-              const PopupMenuItem<int>(
-                value: 2,
-                child: Text("Leave Group"),
-              ),
-            ];
-          }, onSelected: (value) {
-            if (value == 0) {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (_) => GroupInfo(
-                        users: users,
-                        imgUrl: imageUrl,
-                        groupName: groupName, data: data,
-                      )));
-            } else if (value == 1) {
-            } else if (value == 2) {
-              FirebaseFirestore.instance
-                  .collection("GroupMessages")
-                  .doc(groupName)
-                  .update({
-                "users": FieldValue.arrayRemove([data.email]),
-              });
-              FirebaseFirestore.instance
-                  .collection("GroupMessages/$groupName/Messages")
-                  .add(
-                {
-                  "messageType": "left",
-                  "email": data.email,
-                  "name": data.name['First'],
-                  "time": Timestamp.now(),
-                  "users": FieldValue.arrayUnion([data.email]),
-                  "message": ""
-                },
-              );
-              Navigator.pop(context);
-            }
-          })
-        ],
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
-        automaticallyImplyLeading: false,
-        title: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(right: 8.0, left: 8),
-              child: GestureDetector(
-                onTap: (){
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (_) => GroupInfo(
-                            users: users,
-                            imgUrl: imageUrl,
-                            groupName: groupName, data: data,
-                          )));
-                },
-                child: CachedNetworkImage(
-                  imageUrl: imageUrl,
-                  imageBuilder: (context, imageProvider) {
-                    return Hero(
-                      tag: "group",
-                      child: CircleAvatar(
-                        backgroundImage: imageProvider,
-                        maxRadius: 25,
-                      ),
+              actions: [
+                PopupMenuButton(itemBuilder: (context) {
+                  return [
+                    const PopupMenuItem<int>(
+                      value: 0,
+                      child: Text("Group Info"),
+                    ),
+                    const PopupMenuItem<int>(
+                      value: 1,
+                      child: Text("Search"),
+                    ),
+                    const PopupMenuItem<int>(
+                      value: 2,
+                      child: Text("Leave Group"),
+                    ),
+                  ];
+                }, onSelected: (value) {
+                  if (value == 0) {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => GroupInfo(
+                                  users: users,
+                                  imgUrl: imageUrl,
+                                  groupName: groupName,
+                                  data: data,
+                                )));
+                  } else if (value == 1) {
+                  } else if (value == 2) {
+                    FirebaseFirestore.instance
+                        .collection("GroupMessages")
+                        .doc(groupName)
+                        .update({
+                      "users": FieldValue.arrayRemove([data.email]),
+                    });
+                    FirebaseFirestore.instance
+                        .collection("GroupMessages/$groupName/Messages")
+                        .add(
+                      {
+                        "messageType": "left",
+                        "email": data.email,
+                        "name": data.name['First'],
+                        "time": Timestamp.now(),
+                        "users": FieldValue.arrayUnion([data.email]),
+                        "message": ""
+                      },
                     );
-                  },
-                  placeholder: (context, url) => const CircleAvatar(
-                    backgroundColor: Colors.transparent,
-                    backgroundImage:
-                    AssetImage("assets/images/profile.gif"),
-                    maxRadius: 30,
-                  ),
-                  errorWidget: (context, url, error) => CircleAvatar(
-                    radius: 30,
-                    child: Image.asset("assets/images/profile.gif"),
-                  ),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 5, top: 5),
-              child: Text(
-                groupName,
-                style:
-                const TextStyle(fontFamily: 'Narrow', fontSize: 23),
-              ),
-            ),
-          ],
-        ),
-      )
-          : AppBar(
-          automaticallyImplyLeading: false,
-          backgroundColor: Colors.white,
-          foregroundColor: Colors.black,
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(right: 8.0, left: 8),
-                child: CachedNetworkImage(
-                  imageUrl: imageUrl,
-                  imageBuilder: (context, imageProvider) {
-                    return CircleAvatar(
-                      backgroundImage: imageProvider,
-                      maxRadius: 25,
-                    );
-                  },
-                  placeholder: (context, url) => const CircleAvatar(
-                    backgroundColor: Colors.transparent,
-                    backgroundImage:
-                    AssetImage("assets/images/profile.gif"),
-                    maxRadius: 30,
-                  ),
-                  errorWidget: (context, url, error) => CircleAvatar(
-                    radius: 30,
-                    child: Image.asset("assets/images/profile.gif"),
-                  ),
-                  fit: BoxFit.cover,
-                ),
-              ),
-              Column(
+                    Navigator.pop(context);
+                  }
+                })
+              ],
+              backgroundColor: Colors.white,
+              foregroundColor: Colors.black,
+              automaticallyImplyLeading: false,
+              title: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    groupName,
-                    style: const TextStyle(
-                        fontFamily: 'Narrow', fontSize: 23),
-                    textAlign: TextAlign.center,
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8.0, left: 8),
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => GroupInfo(
+                                      users: users,
+                                      imgUrl: imageUrl,
+                                      groupName: groupName,
+                                      data: data,
+                                    )));
+                      },
+                      child: CachedNetworkImage(
+                        imageUrl: imageUrl,
+                        imageBuilder: (context, imageProvider) {
+                          return Hero(
+                            tag: "group",
+                            child: CircleAvatar(
+                              backgroundImage: imageProvider,
+                              maxRadius: 25,
+                            ),
+                          );
+                        },
+                        placeholder: (context, url) => const CircleAvatar(
+                          backgroundColor: Colors.transparent,
+                          backgroundImage:
+                              AssetImage("assets/images/profile.gif"),
+                          maxRadius: 30,
+                        ),
+                        errorWidget: (context, url, error) => CircleAvatar(
+                          radius: 30,
+                          child: Image.asset("assets/images/profile.gif"),
+                        ),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   ),
-                  Text(status,
-                      style: TextStyle(
-                          fontSize: 15,
-                          color: status == "Online"
-                              ? Colors.green
-                              : Colors.red[500]))
+                  Padding(
+                    padding: const EdgeInsets.only(left: 5, top: 5),
+                    child: Text(
+                      groupName,
+                      style:
+                          const TextStyle(fontFamily: 'Narrow', fontSize: 23),
+                    ),
+                  ),
                 ],
               ),
-            ],
-          )),
+            )
+          : AppBar(
+              automaticallyImplyLeading: false,
+              backgroundColor: Colors.white,
+              foregroundColor: Colors.black,
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8.0, left: 8),
+                    child: CachedNetworkImage(
+                      imageUrl: imageUrl,
+                      imageBuilder: (context, imageProvider) {
+                        return CircleAvatar(
+                          backgroundImage: imageProvider,
+                          maxRadius: 25,
+                        );
+                      },
+                      placeholder: (context, url) => const CircleAvatar(
+                        backgroundColor: Colors.transparent,
+                        backgroundImage:
+                            AssetImage("assets/images/profile.gif"),
+                        maxRadius: 30,
+                      ),
+                      errorWidget: (context, url, error) => CircleAvatar(
+                        radius: 30,
+                        child: Image.asset("assets/images/profile.gif"),
+                      ),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        groupName,
+                        style:
+                            const TextStyle(fontFamily: 'Narrow', fontSize: 23),
+                        textAlign: TextAlign.center,
+                      ),
+                      Text(status,
+                          style: TextStyle(
+                              fontSize: 15,
+                              color: status == "Online"
+                                  ? Colors.green
+                                  : Colors.red[500]))
+                    ],
+                  ),
+                ],
+              )),
       body: KeyboardVisibility(
         onChanged: (isOpened) {
           if (isOpened) {
@@ -260,7 +260,7 @@ class MessageScreen extends HookWidget {
                           itemCount: snapshot.data?.docs.length,
                           itemBuilder: (ctx, index) {
                             QueryDocumentSnapshot x =
-                            snapshot.data!.docs[index];
+                                snapshot.data!.docs[index];
                             return Message(
                               text: x['message'],
                               name: x['name'],
@@ -285,8 +285,7 @@ class MessageScreen extends HookWidget {
               child: Align(
                 alignment: Alignment.bottomLeft,
                 child: Container(
-                  padding:
-                  const EdgeInsets.only(left: 10, bottom: 10, top: 10),
+                  padding: const EdgeInsets.only(left: 10, bottom: 10, top: 10),
                   height: 60,
                   width: double.infinity,
                   color: Colors.white,
@@ -345,7 +344,7 @@ class MessageScreen extends HookWidget {
                               // new message to group
                               FirebaseFirestore.instance
                                   .collection(
-                                  "GroupMessages/$groupName/Messages")
+                                      "GroupMessages/$groupName/Messages")
                                   .add(firebaseData);
 
                               // last message user info
@@ -359,34 +358,34 @@ class MessageScreen extends HookWidget {
                               });
 
                               // notification to all users
-                              FirebaseFirestore.instance
-                                  .doc("GroupMessages/$groupName")
-                                  .get()
-                                  .then((value) {
-                                Map group = value.data() as Map;
-                                if (group.containsKey("users")) {
-                                  group["users"].forEach((user) {
-                                    if (user != data.email) {
-                                      FirebaseFirestore.instance
-                                          .collection("Student_Detail")
-                                          .where("Email", isEqualTo: user)
-                                          .get()
-                                          .then((userdocs) {
-                                        if (userdocs.docs[0]
-                                            .data()
-                                            .containsKey("Token")) {
-                                          NotificationAPI.postNotification(
-                                              title: groupName,
-                                              message:
-                                              "  ${data.name["First"].toString().capitalize()}: ${myController.text}",
-                                              receiver: userdocs.docs[0]
-                                              ["Token"]);
-                                        }
-                                      });
-                                    }
-                                  });
-                                }
-                              });
+                              // FirebaseFirestore.instance
+                              //     .doc("GroupMessages/$groupName")
+                              //     .get()
+                              //     .then((value) {
+                              //   Map group = value.data() as Map;
+                              //   if (group.containsKey("users")) {
+                              //     group["users"].forEach((user) {
+                              //       if (user != data.email) {
+                              //         FirebaseFirestore.instance
+                              //             .collection("Student_Detail")
+                              //             .where("Email", isEqualTo: user)
+                              //             .get()
+                              //             .then((userdocs) {
+                              //           if (userdocs.docs[0]
+                              //               .data()
+                              //               .containsKey("Token")) {
+                              //             NotificationAPI.postNotification(
+                              //                 title: groupName,
+                              //                 message:
+                              //                 "  ${data.name["First"].toString().capitalize()}: ${myController.text}",
+                              //                 receiver: userdocs.docs[0]
+                              //                 ["Token"]);
+                              //           }
+                              //         });
+                              //       }
+                              //     });
+                              //   }
+                              // });
                               myController.clear();
                             } else {
                               // for user message
@@ -402,14 +401,13 @@ class MessageScreen extends HookWidget {
                               // sender user
                               FirebaseFirestore.instance
                                   .collection(
-                                  "Student_Detail/${data.prn}/Messages/$prn/Messages")
+                                      "Messages/${data.email}/Messages/$EmailR/Messages")
                                   .add(firebaseUserData);
 
                               // last message info
                               FirebaseFirestore.instance
-                                  .collection(
-                                  "Student_Detail/${data.prn}/Messages")
-                                  .doc(prn)
+                                  .collection("Messages/${data.email}/Messages")
+                                  .doc(EmailR)
                                   .update({
                                 "messageText": myController.text,
                                 "time": Timestamp.now(),
@@ -418,40 +416,40 @@ class MessageScreen extends HookWidget {
                               // receiver user
                               FirebaseFirestore.instance
                                   .collection(
-                                  "Student_Detail/$prn/Messages/${data.prn}/Messages")
+                                      "Messages/$EmailR/Messages/${data.email}/Messages")
                                   .add(firebaseUserData);
 
                               // last message info
                               FirebaseFirestore.instance
-                                  .collection("Student_Detail/$prn/Messages")
-                                  .doc(data.prn)
+                                  .collection("Messages/$EmailR/Messages")
+                                  .doc(data.email)
                                   .update({
                                 "messageText": myController.text,
                                 "time": Timestamp.now(),
                               });
 
                               // notification to receiver
-                              String receiver = await FirebaseFirestore
-                                  .instance
-                                  .doc("Student_Detail/$prn")
-                                  .get()
-                                  .then((value) {
-                                {
-                                  Map user = value.data() as Map;
-                                  if (user.containsKey("Token")) {
-                                    return user["Token"];
-                                  }
-                                  return '';
-                                }
-                              });
-
-                              receiver.isNotEmpty
-                                  ? NotificationAPI.postNotification(
-                                  title:
-                                  "${data.name['First'].toString().capitalize()} ${data.name['Last'].toString().capitalize()}",
-                                  message: myController.text,
-                                  receiver: receiver)
-                                  : null;
+                              // String receiver = await FirebaseFirestore
+                              //     .instance
+                              //     .doc("Student_Detail/$EmailR")
+                              //     .get()
+                              //     .then((value) {
+                              //   {
+                              //     Map user = value.data() as Map;
+                              //     if (user.containsKey("Token")) {
+                              //       return user["Token"];
+                              //     }
+                              //     return '';
+                              //   }
+                              // });
+                              //
+                              // receiver.isNotEmpty
+                              //     ? NotificationAPI.postNotification(
+                              //     title:
+                              //     "${data.name['First'].toString().capitalize()} ${data.name['Last'].toString().capitalize()}",
+                              //     message: myController.text,
+                              //     receiver: receiver)
+                              //     : null;
                             }
                           }
                           myController.clear();

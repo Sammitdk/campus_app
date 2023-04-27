@@ -2,9 +2,6 @@ import 'package:campus_subsystem/messaging/user_list.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_redux/flutter_redux.dart';
-import '../redux/reducer.dart';
-
 
 class NewMessage extends HookWidget {
   final dynamic data;
@@ -49,9 +46,8 @@ class NewMessage extends HookWidget {
                               name: x['Name'],
                               branch: x['Branch'],
                               year: x['Year'],
-                              email: x['Email'],
-                              prn: x['PRN'],
-                              status: x['status'], storeData: data,
+                              EmailR: x['Email'],
+                              storeData: data,
                             );
                           }else{
                             return const SizedBox();

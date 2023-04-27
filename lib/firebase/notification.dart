@@ -1,10 +1,6 @@
 import "dart:convert";
-
 import "package:campus_subsystem/firebase_options.dart";
-import "package:cloud_firestore/cloud_firestore.dart";
-import "package:firebase_core/firebase_core.dart";
 import "package:firebase_messaging/firebase_messaging.dart";
-import "package:flutter/material.dart";
 import "package:flutter_local_notifications/flutter_local_notifications.dart";
 import "package:http/http.dart" as http;
 
@@ -47,7 +43,7 @@ class NotificationAPI {
     await http.post(Uri.parse("https://fcm.googleapis.com/fcm/send"),
         headers: <String, String>{
           "Content-Type": "application/json",
-          "Authorization": "key=${DefaultFirebaseOptions.messagingkey}",
+          "Authorization": "key=${DefaultFirebaseOptions.messegingkey}",
         },
         body: jsonEncode(
           <String, dynamic>{

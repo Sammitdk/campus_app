@@ -142,9 +142,8 @@ class GroupInfo extends StatelessWidget {
                                 name: x['Name'],
                                 branch: x['Branch'],
                                 year: x['Year'],
-                                email: x['Email'],
-                                prn: x['PRN'],
-                                status : x['status'], storeData: data,
+                                EmailR: x['PRN'],
+                                storeData: data,
                               );
                             });
                       } else {

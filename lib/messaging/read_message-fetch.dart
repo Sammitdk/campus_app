@@ -21,7 +21,7 @@ Future<int> getMessageReads(
     });
   } else {
     await FirebaseFirestore.instance
-        .collection("Student_Detail/${data.prn}/Messages/$groupName/Messages")
+        .collection("Messages/${data.email}/Messages/$groupName/Messages")
         .get()
         .then((QuerySnapshot querySnapshot) {
       for (var doc in querySnapshot.docs) {
@@ -51,7 +51,7 @@ void readAll({required dynamic data, required String groupName,required dynamic 
     });
   } else {
     final ref = FirebaseFirestore.instance
-        .collection("Student_Detail/${data.prn}/Messages/$groupName/Messages");
+        .collection("Messages/${data.email}/Messages/$groupName/Messages");
     ref.get().then((QuerySnapshot querySnapshot) {
       for (var doc in querySnapshot.docs) {
         if (doc['users'].contains(data.email) == false) {
