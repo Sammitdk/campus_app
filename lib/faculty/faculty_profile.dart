@@ -455,6 +455,8 @@ class FacultyProfile extends HookWidget {
             label: 'Forget Password',
             onTap: () async {
               Navigator.of(context).push(MaterialPageRoute(builder: (_) => ResetPassword()));
+              Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (_) => const ResetPassword()));
             },
             backgroundColor: Colors.white,
             foregroundColor: Colors.black,

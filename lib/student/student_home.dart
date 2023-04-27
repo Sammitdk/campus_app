@@ -49,6 +49,12 @@ class _StudentHomeState extends State<StudentHome> {
                         },
                         child: Card(
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (_) => const StudentTimeTable()));
+                        },
+                        child: Card(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12)),
                           elevation: 5,
                           child: Column(
                             children: [
@@ -63,6 +69,8 @@ class _StudentHomeState extends State<StudentHome> {
                                     textAlign: TextAlign.center,
                                     "Time Table",
                                     style: TextStyle(fontFamily: 'Custom', fontSize: 20),
+                                    style: TextStyle(
+                                        fontFamily: 'Custom', fontSize: 20),
                                   )),
                             ],
                           ),
@@ -192,6 +200,12 @@ class _StudentHomeState extends State<StudentHome> {
                           const url = 'http://14.139.121.222/studentresult/';
                           try {
                             await launchUrlString(url, webViewConfiguration: const WebViewConfiguration(enableJavaScript: true));
+                            await launchUrlString(url,
+                                webViewConfiguration:
+                                    const WebViewConfiguration(
+                                        enableJavaScript: true),
+                              mode: LaunchMode.externalApplication
+                            );
                           } catch (e) {
                             throw 'Could not launch $url';
                           }

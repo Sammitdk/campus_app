@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class ShowEvent extends StatelessWidget {
-  ShowEvent({Key? key,required this.x}) : super(key: key);
-  QueryDocumentSnapshot x;
+  const ShowEvent({Key? key,required this.x}) : super(key: key);
+  final QueryDocumentSnapshot x;
 
   @override
   Widget build(BuildContext context) {
