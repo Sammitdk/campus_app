@@ -11,19 +11,12 @@ import "package:http/http.dart" as http;
 import "../redux/actions/fetchUserData.dart";
 import "../redux/store.dart";
 
-
-Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-}
-
-
-
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {}
 
 class NotificationAPI {
-
   static final _noti = FlutterLocalNotificationsPlugin();
 
-  static NotificationDetails? get notificationDetails =>
-      const NotificationDetails(
+  static NotificationDetails? get notificationDetails => const NotificationDetails(
         android: AndroidNotificationDetails(
           "id",
           "name",
@@ -43,6 +36,7 @@ class NotificationAPI {
     //   // Navigator.of(context).pushNamed("chat_screen");
     // });
   }
+
   static Future postNotification({
     int id = 0,
     bool event = false,
@@ -53,8 +47,7 @@ class NotificationAPI {
     await http.post(Uri.parse("https://fcm.googleapis.com/fcm/send"),
         headers: <String, String>{
           "Content-Type": "application/json",
-          "Authorization":
-              "key=${DefaultFirebaseOptions.messegingkey}",
+          "Authorization": "key=${DefaultFirebaseOptions.messagingkey}",
         },
         body: jsonEncode(
           <String, dynamic>{

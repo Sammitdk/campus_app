@@ -1,4 +1,7 @@
+import 'package:campus_subsystem/faculty/faculty_login.dart';
+import 'package:campus_subsystem/student/student_login.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
 class Login extends StatelessWidget {
   const Login({Key? key}) : super(key: key);
@@ -8,20 +11,22 @@ class Login extends StatelessWidget {
       backgroundColor: Colors.white,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
-        children:
-        [
+        children: [
           Expanded(
             flex: 2,
-            child: Image.asset("assets/images/welcome.gif",),
+            child: Image.asset(
+              "assets/images/welcome.gif",
+            ),
           ),
           Row(
             children: [
               Expanded(
                 flex: 1,
                 child: InkWell(
-                  onTap: ()
-                  {
-                    Navigator.pushNamed(context, 's_login_form');
+                  onTap: () {
+                    // Navigator.pushNamed(context, 's_login_form');
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (_) => const KeyboardVisibilityProvider(child: StudentLogin())));
                   },
                   child: Card(
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -31,7 +36,7 @@ class Login extends StatelessWidget {
                         Image.asset(
                           "assets/icons/student_login.gif",
                         ),
-                        const Text("Student",style: TextStyle(fontFamily: 'Custom',fontSize: 20)),
+                        const Text("Student", style: TextStyle(fontFamily: 'Custom', fontSize: 20)),
                       ],
                     ),
                   ),
@@ -40,9 +45,10 @@ class Login extends StatelessWidget {
               Expanded(
                 flex: 1,
                 child: InkWell(
-                  onTap: ()
-                  {
-                    Navigator.pushNamed(context, 't_login_form');
+                  onTap: () {
+                    // Navigator.pushNamed(context, 't_login_form');
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (_) => const KeyboardVisibilityProvider(child: FacultyLogin())));
                   },
                   child: Card(
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -53,7 +59,7 @@ class Login extends StatelessWidget {
                           "assets/icons/teacher_login.gif",
                           repeat: ImageRepeat.repeat,
                         ),
-                        const Text("Faculty",style: TextStyle(fontFamily: 'Custom',fontSize: 20)),
+                        const Text("Faculty", style: TextStyle(fontFamily: 'Custom', fontSize: 20)),
                       ],
                     ),
                   ),
