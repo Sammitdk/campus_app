@@ -43,7 +43,7 @@ class NotificationAPI {
     await http.post(Uri.parse("https://fcm.googleapis.com/fcm/send"),
         headers: <String, String>{
           "Content-Type": "application/json",
-          "Authorization": "key=${DefaultFirebaseOptions.messegingkey}",
+          "Authorization": "key=${DefaultFirebaseOptions.messagingkey}",
         },
         body: jsonEncode(
           <String, dynamic>{

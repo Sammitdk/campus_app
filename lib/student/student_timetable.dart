@@ -50,7 +50,7 @@ class _StudentTimeTableState extends State<StudentTimeTable> {
               body: Column(
                 children: [
                   Container(
-                    color: Colors.grey[300],
+                    color: Colors.indigo[300],
                     child: Row(
                       children: [
                         Expanded(
@@ -64,7 +64,6 @@ class _StudentTimeTableState extends State<StudentTimeTable> {
                             decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: Colors.white),
                             margin: const EdgeInsets.all(20),
                             child: ButtonTheme(
-                              splashColor: Colors.greenAccent,
                               alignedDropdown: true,
                               child: DropdownButtonHideUnderline(
                                 child: DropdownButton<String>(
