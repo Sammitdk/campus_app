@@ -18,7 +18,7 @@ class User extends StatelessWidget {
     required this.imageUrl,
     required this.name,
     required this.branch,
-    required this.year,
+    this.year,
     required this.EmailR,
   }) : super(key: key);
 
@@ -62,7 +62,7 @@ class User extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      "$year $branch",
+                      "${year ?? ""} $branch",
                       style:
                           TextStyle(fontSize: 15, color: Colors.grey.shade600),
                     ),
@@ -125,7 +125,7 @@ class User extends StatelessWidget {
                             FirebaseFirestore.instance
                                 .collection("Messages")
                                 .doc(EmailR)
-                                .set({'status': 'Offline'},
+                                .set({'status': "Offline"},
                                 SetOptions(merge: true)),
                             FirebaseFirestore.instance
                                 .collection("Messages/$EmailR/Messages")

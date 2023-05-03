@@ -16,9 +16,31 @@ class GroupInfo extends StatelessWidget {
       required this.users})
       : super(key: key);
 
+
+  Future<List> getInfo() async {
+    List<dynamic> list = [];
+    QuerySnapshot<Map<String, dynamic>> ans = await FirebaseFirestore.instance
+        .collection("Faculty_Detail")
+        .where("Email", whereIn: users)
+        .orderBy("Name.First").get();
+
+    ans.docs.forEach((element) {
+      list.add(element.data());
+    });
+
+    ans = await FirebaseFirestore.instance
+        .collection("Student_Detail")
+        .where("Email", whereIn: users)
+        .orderBy("Name.First").get();
+
+    ans.docs.forEach((element) {
+      list.add(element.data());
+    });
+    return list;
+  }
+
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
         body: NestedScrollView(
             floatHeaderSlivers: true,
@@ -109,7 +131,9 @@ class GroupInfo extends StatelessWidget {
                     style: ButtonStyle(
                         backgroundColor:
                             MaterialStateProperty.all(Colors.green[400])),
-                    onPressed: () {},
+                    onPressed: () {
+                      getInfo();
+                    },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: const [
@@ -125,24 +149,20 @@ class GroupInfo extends StatelessWidget {
                 Expanded(
                   flex: 8,
                   child: FutureBuilder(
-                    future: FirebaseFirestore.instance
-                        .collection("Student_Detail")
-                        .where("Email", whereIn: users)
-                        .orderBy("Name.First")
-                        .get(),
+                    future: getInfo(),
                     builder: (BuildContext context,
-                        AsyncSnapshot<dynamic> snapshot) {
+                        AsyncSnapshot<List> snapshot) {
                       if (snapshot.hasData) {
                         return ListView.builder(
-                            itemCount: snapshot.data!.docs.length,
+                            itemCount: snapshot.data!.length,
                             itemBuilder: (context, i) {
-                              QueryDocumentSnapshot x = snapshot.data!.docs[i];
+                              Map<String,dynamic> x = snapshot.data![i];
                               return User(
                                 imageUrl: x['imgUrl'],
                                 name: x['Name'],
                                 branch: x['Branch'],
                                 year: x['Year'],
-                                EmailR: x['PRN'],
+                                EmailR: x['Email'],
                                 storeData: data,
                               );
                             });

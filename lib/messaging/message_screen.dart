@@ -9,7 +9,7 @@ import 'package:intl/intl.dart';
 import 'message.dart';
 import 'package:keyboard_visibility_pro/keyboard_visibility_pro.dart';
 
-class MessageScreen extends HookWidget {
+class MessageScreen extends StatefulHookWidget {
   final dynamic groupName;
   final dynamic imageUrl;
   final dynamic isGroup;
@@ -18,7 +18,7 @@ class MessageScreen extends HookWidget {
   final dynamic users;
   final dynamic data;
 
-  const MessageScreen({
+  MessageScreen({
     Key? key,
     this.users,
     this.status,
@@ -32,31 +32,40 @@ class MessageScreen extends HookWidget {
   static TextEditingController myController = TextEditingController();
 
   @override
+  State<MessageScreen> createState() => _MessageScreenState();
+}
+
+class _MessageScreenState extends State<MessageScreen> {
+  Set<String> set = {};
+  Set<String> deleteEveryone = {};
+
+  @override
   Widget build(BuildContext context) {
     ScrollController scrollController = ScrollController();
     var bottom = useState(60.0);
     var isReverse = useState(true);
 
-    dynamic stream = isGroup
+    dynamic stream = widget.isGroup
         ? FirebaseFirestore.instance
-            .collection("GroupMessages/$groupName/Messages")
+            .collection("GroupMessages/${widget.groupName}/Messages")
             .orderBy('time', descending: true)
             .snapshots(includeMetadataChanges: true)
         : FirebaseFirestore.instance
-            .collection("Messages/${data.email}/Messages/$EmailR/Messages")
+            .collection(
+                "Messages/${widget.data.email}/Messages/${widget.EmailR}/Messages")
             .orderBy('time', descending: true)
             .snapshots(includeMetadataChanges: true);
 
     useEffect(() {
       StreamSubscription messageStream = stream.listen((event) {
-        if (isGroup) {
+        if (widget.isGroup) {
           readAll(
-            groupName: groupName,
-            data: data,
+            groupName: widget.groupName,
+            data: widget.data,
             isGroup: true,
           );
         } else {
-          readAll(isGroup: false, groupName: EmailR, data: data);
+          readAll(isGroup: false, groupName: widget.EmailR, data: widget.data);
         }
       });
 
@@ -69,59 +78,112 @@ class MessageScreen extends HookWidget {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
-      appBar: isGroup
+      appBar: widget.isGroup
           ? AppBar(
-              actions: [
-                PopupMenuButton(itemBuilder: (context) {
-                  return [
-                    const PopupMenuItem<int>(
-                      value: 0,
-                      child: Text("Group Info"),
-                    ),
-                    const PopupMenuItem<int>(
-                      value: 1,
-                      child: Text("Search"),
-                    ),
-                    const PopupMenuItem<int>(
-                      value: 2,
-                      child: Text("Leave Group"),
-                    ),
-                  ];
-                }, onSelected: (value) {
-                  if (value == 0) {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => GroupInfo(
-                                  users: users,
-                                  imgUrl: imageUrl,
-                                  groupName: groupName,
-                                  data: data,
-                                )));
-                  } else if (value == 1) {
-                  } else if (value == 2) {
-                    FirebaseFirestore.instance
-                        .collection("GroupMessages")
-                        .doc(groupName)
-                        .update({
-                      "users": FieldValue.arrayRemove([data.email]),
-                    });
-                    FirebaseFirestore.instance
-                        .collection("GroupMessages/$groupName/Messages")
-                        .add(
-                      {
-                        "messageType": "left",
-                        "email": data.email,
-                        "name": data.name['First'],
-                        "time": Timestamp.now(),
-                        "users": FieldValue.arrayUnion([data.email]),
-                        "message": ""
-                      },
-                    );
-                    Navigator.pop(context);
-                  }
-                })
-              ],
+              actions: set.isEmpty
+                  ? [
+                      PopupMenuButton(itemBuilder: (context) {
+                        return [
+                          const PopupMenuItem<int>(
+                            value: 0,
+                            child: Text("Group Info"),
+                          ),
+                          const PopupMenuItem<int>(
+                            value: 1,
+                            child: Text("Search"),
+                          ),
+                          const PopupMenuItem<int>(
+                            value: 2,
+                            child: Text("Leave Group"),
+                          ),
+                        ];
+                      }, onSelected: (value) {
+                        if (value == 0) {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) => GroupInfo(
+                                        users: widget.users,
+                                        imgUrl: widget.imageUrl,
+                                        groupName: widget.groupName,
+                                        data: widget.data,
+                                      )));
+                        } else if (value == 1) {
+                        } else if (value == 2) {
+                          FirebaseFirestore.instance
+                              .collection("GroupMessages")
+                              .doc(widget.groupName)
+                              .update({
+                            "users":
+                                FieldValue.arrayRemove([widget.data.email]),
+                          });
+                          FirebaseFirestore.instance
+                              .collection(
+                                  "GroupMessages/${widget.groupName}/Messages")
+                              .add(
+                            {
+                              "messageType": "left",
+                              "email": widget.data.email,
+                              "name": widget.data.name['First'],
+                              "time": Timestamp.now(),
+                              "users":
+                                  FieldValue.arrayUnion([widget.data.email]),
+                              "message": ""
+                            },
+                          );
+                          Navigator.pop(context);
+                        }
+                      })
+                    ]
+                  : [
+                      Row(
+                        children: [
+                          Text(set.length.toString()),
+                          Container(
+                            padding: const EdgeInsets.all(5),
+                            child: IconButton(
+                              icon: const Icon(Icons.delete_outline_outlined),
+                              color: Colors.red,
+                              onPressed: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: const Text('Delete messages'),
+                                      content: const Text(
+                                          'Are you sure you want to delete these messages?'),
+                                      actions: <Widget>[
+                                        TextButton(
+                                          child: const Text('Cancel'),
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                        ),
+                                        TextButton(
+                                          child: const Text('Delete'),
+                                          onPressed: () {
+                                            for (var element in set) {
+                                              FirebaseFirestore.instance
+                                                  .doc(
+                                                      "GroupMessages/${widget.groupName}/Messages/$element")
+                                                  .delete();
+                                            }
+                                            setState(() {
+                                              set.clear();
+                                            });
+                                            Navigator.of(context).pop();
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      )
+                    ],
               backgroundColor: Colors.white,
               foregroundColor: Colors.black,
               automaticallyImplyLeading: false,
@@ -136,14 +198,14 @@ class MessageScreen extends HookWidget {
                             context,
                             MaterialPageRoute(
                                 builder: (_) => GroupInfo(
-                                      users: users,
-                                      imgUrl: imageUrl,
-                                      groupName: groupName,
-                                      data: data,
+                                      users: widget.users,
+                                      imgUrl: widget.imageUrl,
+                                      groupName: widget.groupName,
+                                      data: widget.data,
                                     )));
                       },
                       child: CachedNetworkImage(
-                        imageUrl: imageUrl,
+                        imageUrl: widget.imageUrl,
                         imageBuilder: (context, imageProvider) {
                           return Hero(
                             tag: "group",
@@ -170,7 +232,7 @@ class MessageScreen extends HookWidget {
                   Padding(
                     padding: const EdgeInsets.only(left: 5, top: 5),
                     child: Text(
-                      groupName,
+                      widget.groupName,
                       style:
                           const TextStyle(fontFamily: 'Narrow', fontSize: 23),
                     ),
@@ -182,13 +244,89 @@ class MessageScreen extends HookWidget {
               automaticallyImplyLeading: false,
               backgroundColor: Colors.white,
               foregroundColor: Colors.black,
+              actions: set.isNotEmpty
+                  ? [
+                      Row(
+                        children: [
+                          Text(set.length.toString()),
+                          Container(
+                              padding: const EdgeInsets.all(5),
+                              child: IconButton(
+                                icon: const Icon(Icons.delete_outline_outlined),
+                                color: Colors.red,
+                                onPressed: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: const Text('Delete messages'),
+                                        content: const Text(
+                                            'Are you sure you want to delete these messages?'),
+                                        actions: <Widget>[
+                                          TextButton(
+                                            child: const Text('Delete'),
+                                            onPressed: () {
+                                              for (var element in set) {
+                                                FirebaseFirestore.instance
+                                                    .doc(
+                                                        "Messages/${widget.data.email}/Messages/${widget.EmailR}/Messages/$element")
+                                                    .delete();
+                                              }
+                                              setState(() {
+                                                deleteEveryone.clear();
+                                                set.clear();
+                                              });
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                          TextButton(
+                                            child: const Text(
+                                                'Delete For Everyone'),
+                                            onPressed: () {
+                                              for (var element in set) {
+                                                FirebaseFirestore.instance
+                                                    .doc(
+                                                        "Messages/${widget.data.email}/Messages/${widget.EmailR}/Messages/$element")
+                                                    .delete();
+                                                FirebaseFirestore.instance
+                                                    .doc(
+                                                        "Messages/${widget.EmailR}/Messages/${widget.data.email}/Messages/$element")
+                                                    .delete();
+                                              }
+                                              setState(() {
+                                                deleteEveryone.clear();
+                                                set.clear();
+                                              });
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                          TextButton(
+                                            child: const Text('Cancel'),
+                                            onPressed: () {
+                                              setState(() {
+                                                set.clear();
+                                                deleteEveryone.clear();
+                                              });
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                },
+                              )),
+                        ],
+                      )
+                    ]
+                  : [],
               title: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(right: 8.0, left: 8),
                     child: CachedNetworkImage(
-                      imageUrl: imageUrl,
+                      imageUrl: widget.imageUrl,
                       imageBuilder: (context, imageProvider) {
                         return CircleAvatar(
                           backgroundImage: imageProvider,
@@ -212,15 +350,15 @@ class MessageScreen extends HookWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        groupName,
+                        widget.groupName,
                         style:
                             const TextStyle(fontFamily: 'Narrow', fontSize: 23),
                         textAlign: TextAlign.center,
                       ),
-                      Text(status,
+                      Text(widget.status,
                           style: TextStyle(
                               fontSize: 15,
-                              color: status == "Online"
+                              color: widget.status == "Online"
                                   ? Colors.green
                                   : Colors.red[500]))
                     ],
@@ -249,33 +387,66 @@ class MessageScreen extends HookWidget {
                 onTap: () {
                   FocusScope.of(context).unfocus();
                 },
-                child: StreamBuilder(
-                    stream: stream,
-                    builder: (ctx, AsyncSnapshot<QuerySnapshot> snapshot) {
-                      if (snapshot.hasData) {
-                        return ListView.builder(
-                          controller: scrollController,
-                          reverse: isReverse.value,
-                          shrinkWrap: true,
-                          itemCount: snapshot.data?.docs.length,
-                          itemBuilder: (ctx, index) {
-                            QueryDocumentSnapshot x =
-                                snapshot.data!.docs[index];
-                            return Message(
-                              text: x['message'],
-                              name: x['name'],
-                              messageType: x['messageType'],
-                              isCurrentUser: x['email'] == data.email,
-                              time: DateFormat('hh:mm a')
-                                  .format(x['time'].toDate())
-                                  .toString(),
-                            );
-                          },
-                        );
-                      } else {
-                        return const SizedBox();
-                      }
-                    }),
+                child: StreamBuilder<QuerySnapshot>(
+                  stream: stream,
+                  builder: (ctx, snapshot) {
+                    if (snapshot.hasData) {
+                      return ListView.builder(
+                        controller: scrollController,
+                        reverse: isReverse.value,
+                        shrinkWrap: true,
+                        itemCount: snapshot.data?.docs.length,
+                        itemBuilder: (ctx, index) {
+                          QueryDocumentSnapshot x = snapshot.data!.docs[index];
+                          return InkWell(
+                            onTap: () {
+                              setState(() {
+                                if (set.contains(x.id)) {
+                                  set.remove(x.id);
+                                }
+                                if (deleteEveryone.contains(x.id)) {
+                                  deleteEveryone.remove(x.id);
+                                }
+                              });
+                            },
+                            onLongPress: () {
+                              setState(() {
+                                if (!set.contains(x.id)) {
+                                  set.add(x.id);
+                                } else {
+                                  set.remove(x.id);
+                                }
+                                if (!deleteEveryone.contains(x.id) &&
+                                    x['email'] == widget.data.email) {
+                                  deleteEveryone.add(x.id);
+                                } else {
+                                  deleteEveryone.remove(x.id);
+                                }
+                              });
+                            },
+                            child: Container(
+                              margin: const EdgeInsets.only(top: 5, bottom: 5),
+                              color: set.contains(x.id)
+                                  ? Colors.indigo[100]
+                                  : Colors.white,
+                              child: Message(
+                                text: x['message'],
+                                name: x['name'],
+                                messageType: x['messageType'],
+                                isCurrentUser: x['email'] == widget.data.email,
+                                time: DateFormat('hh:mm a')
+                                    .format(x['time'].toDate())
+                                    .toString(),
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    } else {
+                      return const SizedBox();
+                    }
+                  },
+                ),
               ),
             ),
             Positioned(
@@ -317,7 +488,7 @@ class MessageScreen extends HookWidget {
                       ),
                       Expanded(
                         child: TextField(
-                          controller: myController,
+                          controller: MessageScreen.myController,
                           decoration: const InputDecoration(
                               hintText: "Write message...",
                               hintStyle: TextStyle(color: Colors.black54),
@@ -329,32 +500,32 @@ class MessageScreen extends HookWidget {
                       ),
                       FloatingActionButton(
                         onPressed: () async {
-                          if (myController.text.isNotEmpty) {
-                            if (isGroup) {
+                          if (MessageScreen.myController.text.isNotEmpty) {
+                            if (widget.isGroup) {
                               // for group message
                               final firebaseData = {
-                                "name": data.name['First'],
+                                "name": widget.data.name['First'],
                                 "time": Timestamp.now(),
-                                "email": data.email,
-                                "message": myController.text,
-                                "users": [data.email],
+                                "email": widget.data.email,
+                                "message": MessageScreen.myController.text,
+                                "users": [widget.data.email],
                                 "messageType": "groupMessage"
                               };
 
                               // new message to group
                               FirebaseFirestore.instance
                                   .collection(
-                                      "GroupMessages/$groupName/Messages")
+                                      "GroupMessages/${widget.groupName}/Messages")
                                   .add(firebaseData);
 
                               // last message user info
                               FirebaseFirestore.instance
                                   .collection("GroupMessages")
-                                  .doc(groupName)
+                                  .doc(widget.groupName)
                                   .update({
-                                "messageText": myController.text,
+                                "messageText": MessageScreen.myController.text,
                                 "time": Timestamp.now(),
-                                "latestMessageBy": data.name['First']
+                                "latestMessageBy": widget.data.name['First']
                               });
 
                               // notification to all users
@@ -386,45 +557,49 @@ class MessageScreen extends HookWidget {
                               //     });
                               //   }
                               // });
-                              myController.clear();
+                              MessageScreen.myController.clear();
                             } else {
                               // for user message
                               final firebaseUserData = {
-                                "name": data.name['First'],
+                                "name": widget.data.name['First'],
                                 "time": Timestamp.now(),
-                                "email": data.email,
-                                "message": myController.text,
+                                "email": widget.data.email,
+                                "message": MessageScreen.myController.text,
                                 "messageType": "userMessage",
-                                "users": [data.email],
+                                "users": [widget.data.email],
                               };
 
                               // sender user
                               FirebaseFirestore.instance
                                   .collection(
-                                      "Messages/${data.email}/Messages/$EmailR/Messages")
-                                  .add(firebaseUserData);
+                                      "Messages/${widget.data.email}/Messages/${widget.EmailR}/Messages")
+                                  .add(firebaseUserData)
+                                  .then((value) => {
+                                        // receiver user
+                                        FirebaseFirestore.instance
+                                            .collection(
+                                                "Messages/${widget.EmailR}/Messages/${widget.data.email}/Messages")
+                                            .doc(value.id)
+                                            .set(firebaseUserData)
+                                      });
 
                               // last message info
                               FirebaseFirestore.instance
-                                  .collection("Messages/${data.email}/Messages")
-                                  .doc(EmailR)
+                                  .collection(
+                                      "Messages/${widget.data.email}/Messages")
+                                  .doc(widget.EmailR)
                                   .update({
-                                "messageText": myController.text,
+                                "messageText": MessageScreen.myController.text,
                                 "time": Timestamp.now(),
                               });
 
-                              // receiver user
-                              FirebaseFirestore.instance
-                                  .collection(
-                                      "Messages/$EmailR/Messages/${data.email}/Messages")
-                                  .add(firebaseUserData);
-
                               // last message info
                               FirebaseFirestore.instance
-                                  .collection("Messages/$EmailR/Messages")
-                                  .doc(data.email)
+                                  .collection(
+                                      "Messages/${widget.EmailR}/Messages")
+                                  .doc(widget.data.email)
                                   .update({
-                                "messageText": myController.text,
+                                "messageText": MessageScreen.myController.text,
                                 "time": Timestamp.now(),
                               });
 
@@ -452,7 +627,7 @@ class MessageScreen extends HookWidget {
                               //     : null;
                             }
                           }
-                          myController.clear();
+                          MessageScreen.myController.clear();
                         },
                         backgroundColor: Colors.blue,
                         elevation: 0,
