@@ -592,6 +592,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.8.0"
+  multiselect_scope:
+    dependency: "direct main"
+    description:
+      name: multiselect_scope
+      sha256: e3c342314827f3415400dfdd16ddaa656c7037292e4f73e6a12cbfb869e7f495
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.0"
   nested:
     dependency: transitive
     description:
