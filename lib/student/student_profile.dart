@@ -481,32 +481,20 @@ class StudentProfile extends HookWidget {
             label: 'Log Out',
             onTap: () async {
               // todo internet connection check before delete(Token)
-
               try {
-                if (state.isStudent) {
-                  // remove student device token
-                  await FirebaseFirestore.instance
-                      .doc("Student_Detail/${state.prn}")
-                      .update({"Token": FieldValue.delete()}).then(
-                          (value) => FirebaseAuth.instance.signOut());
+                // remove student device token
+                await FirebaseFirestore.instance
+                    .doc("Student_Detail/${state.prn}")
+                    .update({"Token": FieldValue.delete()}).then(
+                        (value) => FirebaseAuth.instance.signOut());
 
-                  FirebaseFirestore.instance
-                      .doc("Messages/${state.email}")
-                      .set({'status': 'Offline'}, SetOptions(merge: true));
+                FirebaseFirestore.instance
+                    .doc("Messages/${state.email}")
+                    .set({'status': 'Offline'}, SetOptions(merge: true));
 
-                  FirebaseAuth.instance.signOut().then((value) =>
-                      Navigator.pushReplacementNamed(context, "loading_page"));
-                } else {
-                  // remove faculty device token
-                  await FirebaseFirestore.instance
-                      .doc("Faculty_Detail/${state.email}")
-                      .update({"Token": FieldValue.delete()});
-                  FirebaseFirestore.instance
-                      .doc("Messages/${state.email}")
-                      .set({'status': 'Offline'}, SetOptions(merge: true));
-                  FirebaseAuth.instance.signOut().then((value) =>
-                      Navigator.pushReplacementNamed(context, "loading_page"));
-                }
+                FirebaseAuth.instance.signOut().then((value) =>
+                    Navigator.pushReplacementNamed(context, "loading_page"));
+
                 // FirebaseAuth.instance.signOut();
               } on FirebaseAuthException catch (e) {
                 if (e.code == 'network-request-failed') {
