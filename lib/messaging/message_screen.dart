@@ -4,6 +4,7 @@ import 'package:campus_subsystem/messaging/group_info.dart';
 import 'package:campus_subsystem/messaging/read_message-fetch.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:intl/intl.dart';
 import 'message.dart';
@@ -18,7 +19,7 @@ class MessageScreen extends StatefulHookWidget {
   final dynamic users;
   final dynamic data;
 
-  MessageScreen({
+  const MessageScreen({
     Key? key,
     this.users,
     this.status,
@@ -37,13 +38,14 @@ class MessageScreen extends StatefulHookWidget {
 
 class _MessageScreenState extends State<MessageScreen> {
   Set<String> set = {};
-  Set<String> deleteEveryone = {};
 
   @override
   Widget build(BuildContext context) {
     ScrollController scrollController = ScrollController();
     var bottom = useState(60.0);
     var isReverse = useState(true);
+    var isDelete = useState(0);
+    var copy = useState("");
 
     dynamic stream = widget.isGroup
         ? FirebaseFirestore.instance
@@ -139,48 +141,70 @@ class _MessageScreenState extends State<MessageScreen> {
                       Row(
                         children: [
                           Text(set.length.toString()),
-                          Container(
-                            padding: const EdgeInsets.all(5),
-                            child: IconButton(
-                              icon: const Icon(Icons.delete_outline_outlined),
-                              color: Colors.red,
-                              onPressed: () {
-                                showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      title: const Text('Delete messages'),
-                                      content: const Text(
-                                          'Are you sure you want to delete these messages?'),
-                                      actions: <Widget>[
-                                        TextButton(
-                                          child: const Text('Cancel'),
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                          },
-                                        ),
-                                        TextButton(
-                                          child: const Text('Delete'),
-                                          onPressed: () {
-                                            for (var element in set) {
-                                              FirebaseFirestore.instance
-                                                  .doc(
-                                                      "GroupMessages/${widget.groupName}/Messages/$element")
-                                                  .delete();
-                                            }
-                                            setState(() {
-                                              set.clear();
-                                            });
-                                            Navigator.of(context).pop();
-                                          },
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                );
-                              },
-                            ),
+                          IconButton(
+                            icon: const Icon(Icons.delete_outline_outlined),
+                            color: Colors.red,
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: const Text('Delete messages'),
+                                    content: (isDelete.value <= 0)
+                                        ? const Text(
+                                            'Are you sure you want to delete these messages?')
+                                        : const Text(
+                                            'You cant delete others messages please unselect them'),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        child: const Text('Cancel'),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                      (isDelete.value <= 0)
+                                          ? TextButton(
+                                              child: const Text(
+                                                  'Delete For Everyone'),
+                                              onPressed: () {
+                                                for (var element in set) {
+                                                  FirebaseFirestore.instance
+                                                      .doc(
+                                                          "GroupMessages/${widget.groupName}/Messages/$element")
+                                                      .delete();
+                                                }
+                                                setState(() {
+                                                  set.clear();
+                                                });
+                                                Navigator.of(context).pop();
+                                              },
+                                            )
+                                          : const SizedBox(),
+                                    ],
+                                  );
+                                },
+                              );
+                            },
                           ),
+                          (set.length == 1)
+                              ? Padding(
+                                  padding: const EdgeInsets.only(right: 8.0),
+                                  child: IconButton(
+                                    icon: const Icon(
+                                      Icons.copy,
+                                      size: 19,
+                                    ),
+                                    onPressed: () {
+                                      Clipboard.setData(
+                                          ClipboardData(text: copy.value));
+                                      isDelete.value = 0;
+                                      setState(() {
+                                        set.clear();
+                                      });
+                                    },
+                                  ),
+                                )
+                              : const SizedBox(),
                         ],
                       )
                     ],
@@ -190,6 +214,16 @@ class _MessageScreenState extends State<MessageScreen> {
               title: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  set.isNotEmpty
+                      ? IconButton(
+                          onPressed: () {
+                            isDelete.value = 0;
+                            setState(() {
+                              set.clear();
+                            });
+                          },
+                          icon: const Icon(Icons.arrow_back))
+                      : const SizedBox(),
                   Padding(
                     padding: const EdgeInsets.only(right: 8.0, left: 8),
                     child: GestureDetector(
@@ -249,73 +283,91 @@ class _MessageScreenState extends State<MessageScreen> {
                       Row(
                         children: [
                           Text(set.length.toString()),
-                          Container(
-                              padding: const EdgeInsets.all(5),
-                              child: IconButton(
-                                icon: const Icon(Icons.delete_outline_outlined),
-                                color: Colors.red,
-                                onPressed: () {
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        title: const Text('Delete messages'),
-                                        content: const Text(
-                                            'Are you sure you want to delete these messages?'),
-                                        actions: <Widget>[
-                                          TextButton(
-                                            child: const Text('Delete'),
-                                            onPressed: () {
-                                              for (var element in set) {
-                                                FirebaseFirestore.instance
-                                                    .doc(
-                                                        "Messages/${widget.data.email}/Messages/${widget.EmailR}/Messages/$element")
-                                                    .delete();
-                                              }
-                                              setState(() {
-                                                deleteEveryone.clear();
-                                                set.clear();
-                                              });
-                                              Navigator.of(context).pop();
-                                            },
-                                          ),
-                                          TextButton(
-                                            child: const Text(
-                                                'Delete For Everyone'),
-                                            onPressed: () {
-                                              for (var element in set) {
-                                                FirebaseFirestore.instance
-                                                    .doc(
-                                                        "Messages/${widget.data.email}/Messages/${widget.EmailR}/Messages/$element")
-                                                    .delete();
-                                                FirebaseFirestore.instance
-                                                    .doc(
-                                                        "Messages/${widget.EmailR}/Messages/${widget.data.email}/Messages/$element")
-                                                    .delete();
-                                              }
-                                              setState(() {
-                                                deleteEveryone.clear();
-                                                set.clear();
-                                              });
-                                              Navigator.of(context).pop();
-                                            },
-                                          ),
-                                          TextButton(
-                                            child: const Text('Cancel'),
-                                            onPressed: () {
-                                              setState(() {
-                                                set.clear();
-                                                deleteEveryone.clear();
-                                              });
-                                              Navigator.of(context).pop();
-                                            },
-                                          ),
-                                        ],
-                                      );
-                                    },
+                          IconButton(
+                            icon: const Icon(Icons.delete_outline_outlined),
+                            color: Colors.red,
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: const Text('Delete messages'),
+                                    content: const Text(
+                                        'Are you sure you want to delete these messages?'),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        child: const Text('Delete For Me'),
+                                        onPressed: () {
+                                          for (var element in set) {
+                                            FirebaseFirestore.instance
+                                                .doc(
+                                                    "Messages/${widget.data.email}/Messages/${widget.EmailR}/Messages/$element")
+                                                .delete();
+                                          }
+                                          setState(() {
+                                            set.clear();
+                                          });
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                      (isDelete.value <= 0)
+                                          ? TextButton(
+                                              child: const Text(
+                                                'Delete For Everyone',
+                                              ),
+                                              onPressed: () {
+                                                for (var element in set) {
+                                                  FirebaseFirestore.instance
+                                                      .doc(
+                                                          "Messages/${widget.data.email}/Messages/${widget.EmailR}/Messages/$element")
+                                                      .delete();
+                                                  FirebaseFirestore.instance
+                                                      .doc(
+                                                          "Messages/${widget.EmailR}/Messages/${widget.data.email}/Messages/$element")
+                                                      .delete();
+                                                }
+                                                setState(() {
+                                                  set.clear();
+                                                });
+                                                Navigator.of(context).pop();
+                                              },
+                                            )
+                                          : const SizedBox(),
+                                      TextButton(
+                                        child: const Text('Cancel'),
+                                        onPressed: () {
+                                          isDelete.value = 0;
+                                          setState(() {
+                                            set.clear();
+                                          });
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                    ],
                                   );
                                 },
-                              )),
+                              );
+                            },
+                          ),
+                          (set.length == 1)
+                              ? Padding(
+                                  padding: const EdgeInsets.only(right: 8.0),
+                                  child: IconButton(
+                                    icon: const Icon(
+                                      Icons.copy,
+                                      size: 19,
+                                    ),
+                                    onPressed: () {
+                                      Clipboard.setData(
+                                          ClipboardData(text: copy.value));
+                                      isDelete.value = 0;
+                                      setState(() {
+                                        set.clear();
+                                      });
+                                    },
+                                  ),
+                                )
+                              : const SizedBox(),
                         ],
                       )
                     ]
@@ -323,6 +375,16 @@ class _MessageScreenState extends State<MessageScreen> {
               title: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
+                  set.isNotEmpty
+                      ? IconButton(
+                          onPressed: () {
+                            isDelete.value = 0;
+                            setState(() {
+                              set.clear();
+                            });
+                          },
+                          icon: const Icon(Icons.arrow_back))
+                      : const SizedBox(),
                   Padding(
                     padding: const EdgeInsets.only(right: 8.0, left: 8),
                     child: CachedNetworkImage(
@@ -402,25 +464,26 @@ class _MessageScreenState extends State<MessageScreen> {
                             onTap: () {
                               setState(() {
                                 if (set.contains(x.id)) {
+                                  if (x['email'] != widget.data.email) {
+                                    isDelete.value--;
+                                  }
                                   set.remove(x.id);
-                                }
-                                if (deleteEveryone.contains(x.id)) {
-                                  deleteEveryone.remove(x.id);
                                 }
                               });
                             },
                             onLongPress: () {
+                              copy.value = x['message'];
                               setState(() {
                                 if (!set.contains(x.id)) {
+                                  if (x['email'] != widget.data.email) {
+                                    isDelete.value++;
+                                  }
                                   set.add(x.id);
                                 } else {
+                                  if (x['email'] != widget.data.email) {
+                                    isDelete.value--;
+                                  }
                                   set.remove(x.id);
-                                }
-                                if (!deleteEveryone.contains(x.id) &&
-                                    x['email'] == widget.data.email) {
-                                  deleteEveryone.add(x.id);
-                                } else {
-                                  deleteEveryone.remove(x.id);
                                 }
                               });
                             },
@@ -488,6 +551,7 @@ class _MessageScreenState extends State<MessageScreen> {
                       ),
                       Expanded(
                         child: TextField(
+                          enableInteractiveSelection: true,
                           controller: MessageScreen.myController,
                           decoration: const InputDecoration(
                               hintText: "Write message...",
