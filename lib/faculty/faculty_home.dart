@@ -9,7 +9,7 @@ import 'faculty_event.dart';
 import 'faculty_timetable.dart';
 
 class FacultyHome extends StatefulWidget {
-  FacultyHome({Key? key}) : super(key: key);
+  const FacultyHome({Key? key}) : super(key: key);
 
   @override
   State<FacultyHome> createState() => _FacultyHomeState();
@@ -23,7 +23,6 @@ class _FacultyHomeState extends State<FacultyHome> {
     return StoreConnector<AppState,AppState>(
       converter: (store) => store.state,
       builder: (_,state){
-        print(state.name);
         return Padding(
           padding: const EdgeInsetsDirectional.all(20),
           child: Column(

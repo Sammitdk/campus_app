@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 import '../faculty/faculty_dashboard.dart';
 import '../login_page.dart';
@@ -22,14 +21,11 @@ class Wrapper extends HookWidget {
       return StoreConnector<AppState, AppState>(
           converter: (store) => store.state,
           builder: (_, state) {
-            print("hererrrrrrrrrrrrr else ${state.isStudent}");
             if(state.isStudent != null){
               if (state.isStudent) {
-                print("hererrrrrrrrrrrrr else if");
-                return const StudentDashboard();
+                return StudentDashboard(email: state.email,);
               } else {
-                print("hererrrrrrrrrrrrr else else");
-                return const FacultyDashboard();
+                return FacultyDashboard(email: state.email,);
               }
             } else {
               return Container();

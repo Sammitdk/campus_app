@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class Message extends StatelessWidget {
   const Message({
@@ -28,7 +27,7 @@ class Message extends StatelessWidget {
         ),
       );
     } else {
-      return Padding(
+      return Container(
         // asymmetric padding
         padding: EdgeInsets.fromLTRB(
           isCurrentUser ? 64.0 : 16.0,
@@ -42,55 +41,54 @@ class Message extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              DecoratedBox(
-                // chat bubble decoration
-                decoration: BoxDecoration(
+              IntrinsicWidth(
+                child: DecoratedBox(
+                  // chat bubble decoration
+                  decoration: BoxDecoration(
                     color: isCurrentUser ? Colors.indigo[300] : Colors.grey[300],
                     borderRadius: BorderRadius.only(
-                        topLeft:
-                            isCurrentUser ? const Radius.circular(20) : Radius.zero,
-                        topRight:
-                            isCurrentUser ? Radius.zero : const Radius.circular(20),
-                        bottomRight: const Radius.circular(20),
-                        bottomLeft: const Radius.circular(20))),
-                child: Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      isCurrentUser
-                          ? const SizedBox(
-                              height: 0,
-                              width: 0,
-                            )
-                          : Text(name,
-                              style: const TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.green)),
-                      Text(
-                        text,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyText1!
-                            .copyWith(
-                            color: isCurrentUser
-                                ? Colors.white
-                                : Colors.black87),
-                      ),
-                    ],
+                      topLeft: isCurrentUser ? const Radius.circular(20) : Radius.zero,
+                      topRight: isCurrentUser ? Radius.zero : const Radius.circular(20),
+                      bottomRight: const Radius.circular(20),
+                      bottomLeft: const Radius.circular(20),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (!isCurrentUser)
+                          Text(
+                            name,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.green,
+                            ),
+                          ),
+                        Text(
+                          text,
+                          style: TextStyle(color: isCurrentUser ? Colors.white : Colors.black87,fontSize: 15),
+                        ),
+                        Align(
+                          alignment: Alignment.bottomRight,
+                          child: Container(
+                            margin: const EdgeInsets.only(top: 3,left: 10),
+                            child: Text(
+                              time,
+                              textAlign: TextAlign.end,
+                              style: TextStyle(
+                                fontSize: 9,
+                                color: isCurrentUser ? Colors.black87 : Colors.black87,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 5, bottom: 5),
-                child: Text(time,
-                    textAlign: isCurrentUser ? TextAlign.end : TextAlign.start,
-                    style: TextStyle(
-                        fontSize: 10,
-                        color: isCurrentUser
-                            ? Colors.black87
-                            : Colors.black87)),
               ),
             ],
           ),
@@ -99,6 +97,3 @@ class Message extends StatelessWidget {
     }
   }
 }
-
-
-

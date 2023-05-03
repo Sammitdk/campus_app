@@ -5,7 +5,6 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import '../redux/reducer.dart';
 
-
 class StudentSyllabus extends StatelessWidget {
   const StudentSyllabus({Key? key}) : super(key: key);
 
@@ -37,11 +36,22 @@ class StudentSyllabus extends StatelessWidget {
                         child: Card(
                           elevation: 5,
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-                          color: Colors.blue[100],
-                          child: Container(
-                            alignment: Alignment.center,
-                            height: 80,
-                            child: Text((x["num"]),textAlign: TextAlign.center,style: const TextStyle(fontSize: 25),),
+                          color: Colors.white,
+                          child: Row(
+                            children: [
+                              const Expanded(child: Icon(Icons.book_outlined)),
+                              Expanded(
+                                flex: 5,
+                                child: Container(
+                                  alignment: Alignment.centerLeft,
+                                  height: 80,
+                                  child: Text(
+                                    (x["num"]),textAlign: TextAlign.center,style: const TextStyle(fontSize: 25),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),

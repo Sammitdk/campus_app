@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -6,165 +8,233 @@ import 'package:intl/intl.dart';
 import '../redux/reducer.dart';
 
 class FacultyAttendanceHistory extends StatefulWidget {
+  const FacultyAttendanceHistory({Key? key}) : super(key: key);
+
   @override
-  State<FacultyAttendanceHistory> createState() =>
-      _FacultyAttendanceHistoryState();
+  State<FacultyAttendanceHistory> createState() => _FacultyAttendanceHistoryState();
 }
 
 class _FacultyAttendanceHistoryState extends State<FacultyAttendanceHistory> {
   String selectedsubject = '';
   String selecteddate = '';
-  Map datesmap = {};
-  Map dates = {};
-  var state;
+  List<String> dates = [];
+  Map<String, dynamic> attendance = {};
+  List rolls = [];
 
+  Future<void> getDateAndAttendance(Map<String, dynamic> subject) async {
+    QuerySnapshot attendanceSnap =
+        await subject[selectedsubject][0].collection(selectedsubject).orderBy('time', descending: true).get();
+    dates = attendanceSnap.docs.map((e) {
+      Map temp = (e.data() as Map<String, dynamic>);
+      temp.remove('time');
+      attendance[e.id] = temp.map((key, value) {
+        return MapEntry(int.parse(key), value);
+      });
+      return e.id;
+    }).toList();
+    if (dates.isNotEmpty) {
+      selecteddate = dates[0];
+      rolls = getRolls(selecteddate);
+      rolls.sort();
+    }
+  }
+
+  List getRolls(String date) {
+    return attendance[selecteddate].keys.toList();
+  }
 
   @override
   Widget build(BuildContext context) {
-    state = StoreProvider.of<AppState>(context).state;
-
-    return Scaffold(
-      body: Column(
-        // crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(20),
-            child: ButtonTheme(
-              alignedDropdown: true,
-              child: DropdownButtonFormField(
-                hint: const Text('Select Subject.'),
-                validator: (String? value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Select Subject.';
-                  }
-                  return null;
-                },
-                elevation: 0,
-                iconEnabledColor: Colors.red,
-                alignment: AlignmentDirectional.center,
-                items: state.subject.keys
-                    .toList()
-                    .map<DropdownMenuItem<String>>(
-                        (value) => DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(value),
-                            ))
-                    .toList(),
-                onChanged: (String? value) =>
-                  setState(() {
-                    selectedsubject = value!;
-                  })
-                ,
+    return StoreConnector<AppState, AppState>(
+      converter: (store) => store.state,
+      builder: (_, state) {
+        return SafeArea(
+          // todo remove safe area
+          child: Scaffold(
+            appBar: AppBar(
+              centerTitle: true,
+              title: const Text(
+                "History",
+                style: TextStyle(fontFamily: 'Narrow', fontSize: 30),
+                textAlign: TextAlign.center,
               ),
+              backgroundColor: Colors.indigo[300],
+            ),
+            body: Column(
+              // crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Container(
+                  // height: 50,
+                  color: Colors.indigo[300],
+                  // decoration: BoxDecoration(color: Colors.indigo[300], border: const Border(top: BorderSide(color: Colors.black))),
+                  child: Column(
+                    children: [
+                      // select subject
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const Expanded(
+                              child: Text(
+                            "Subject",
+                            style: TextStyle(fontSize: 25, color: Colors.white, fontWeight: FontWeight.bold),
+                            textAlign: TextAlign.center,
+                          )),
+                          Expanded(
+                            flex: 2,
+                            child: Container(
+                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: Colors.white),
+                              margin: const EdgeInsets.all(20),
+                              child: ButtonTheme(
+                                alignedDropdown: true,
+                                child: DropdownButtonHideUnderline(
+                                  child: DropdownButton<String>(
+                                    hint: const Text('Select.'),
+                                    style: TextStyle(fontSize: 20, color: Colors.indigo[300]),
+                                    icon: const Icon(Icons.arrow_drop_down_rounded),
+                                    iconSize: 40,
+                                    elevation: 0,
+                                    value: selectedsubject.isEmpty ? null : selectedsubject,
+                                    iconEnabledColor: Colors.green,
+                                    alignment: AlignmentDirectional.center,
+                                    items: state.subject.keys
+                                        .toList()
+                                        .map<DropdownMenuItem<String>>((value) => DropdownMenuItem<String>(
+                                              value: value,
+                                              child: Text(value),
+                                            ))
+                                        .toList(),
+                                    onChanged: (String? value) async {
+                                      rolls = [];
+                                      selecteddate = '';
+                                      selectedsubject = value!;
+                                      await getDateAndAttendance(state.subject);
+                                      setState(() {});
+                                      // print("$dates,$attendance");
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      // select date
+                      Row(
+                        children: [
+                          const Expanded(
+                              child: Text(
+                            "Date",
+                            style: TextStyle(fontSize: 25, color: Colors.white),
+                            textAlign: TextAlign.center,
+                          )),
+                          Expanded(
+                            flex: 2,
+                            child: selectedsubject.isNotEmpty
+                                ? Container(
+                                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: Colors.white),
+                                    margin: const EdgeInsets.all(20),
+                                    child: ButtonTheme(
+                                      alignedDropdown: true,
+                                      child: DropdownButtonHideUnderline(
+                                        child: DropdownButton(
+                                            elevation: 0,
+                                            style: TextStyle(fontSize: 20, color: Colors.indigo[200]),
+                                            icon: const Icon(Icons.arrow_drop_down_rounded),
+                                            iconSize: 40,
+                                            iconEnabledColor: Colors.green,
+                                            iconDisabledColor: Colors.red,
+                                            value: selecteddate,
+                                            alignment: AlignmentDirectional.center,
+                                            hint: Text(dates.isNotEmpty ? "Select." : "No Records added."),
+                                            items: dates.isNotEmpty
+                                                ? dates.map<DropdownMenuItem<String>>((value) {
+                                                    return DropdownMenuItem<String>(
+                                                      value: value.toString(),
+                                                      child: Text(
+                                                          DateFormat('dd  MMM  yyyy hh:mm')
+                                                              .format(DateFormat('dd-MM-yyyy-hh-mm').parse(value)),
+                                                          style: const TextStyle(
+                                                            fontSize: 20,
+                                                          ),
+                                                          textAlign: TextAlign.center),
+                                                    );
+                                                  }).toList()
+                                                : null,
+                                            onChanged: (String? value) => setState(() {
+                                                  selecteddate = value!;
+                                                  rolls = getRolls(selecteddate);
+                                                  rolls.sort();
+                                                })),
+                                      ),
+                                    ),
+                                  )
+                                : Container(
+                                    color: Colors.indigo[300],
+                                    child: Container(
+                                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: Colors.white),
+                                      margin: const EdgeInsets.all(20),
+                                      child: ButtonTheme(
+                                        alignedDropdown: true,
+                                        child: DropdownButtonHideUnderline(
+                                          child: DropdownButton(
+                                              elevation: 0,
+                                              style: TextStyle(fontSize: 20, color: Colors.indigo[200]),
+                                              icon: const Icon(Icons.arrow_drop_down_rounded),
+                                              iconSize: 40,
+                                              iconDisabledColor: Colors.red,
+                                              alignment: AlignmentDirectional.center,
+                                              // hint: const Text("Select date."),
+                                              items: null,
+                                              onChanged: null),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+
+                selecteddate.isNotEmpty
+                    ? Text(DateFormat('dd  MMM  yyyy hh:mm').format(DateFormat('dd-MM-yyyy-hh-mm').parse(selecteddate)),
+                        style: const TextStyle(
+                          fontSize: 20,
+                        ),
+                        textAlign: TextAlign.center)
+                    : Container(),
+
+                // attendance grid
+                Expanded(
+                  child: attendance.isNotEmpty && selecteddate.isNotEmpty && attendance[selecteddate].isNotEmpty
+                      ? GridView.builder(
+                          scrollDirection: Axis.vertical,
+                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 6,
+                          ),
+                          itemCount: rolls.length,
+                          itemBuilder: (context, int index) {
+                            return Padding(
+                              padding: const EdgeInsets.all(5.0),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: attendance[selecteddate][rolls[index]] ? Colors.green[200] : Colors.red[200],
+                                ),
+                                child: Center(child: Text(rolls[index].toString())),
+                              ),
+                            );
+                          },
+                        )
+                      : Container(),
+                ),
+              ],
             ),
           ),
-          selectedsubject.isNotEmpty
-              ? FutureBuilder(
-                builder: (_, AsyncSnapshot<QuerySnapshot> dates) {
-                  if(dates.connectionState != ConnectionState.waiting){
-                      if (dates.hasData && dates.data!.docs.isNotEmpty) {
-                        return Padding(
-                          padding: const EdgeInsets.all(20),
-                          child: ButtonTheme(
-                            alignedDropdown: true,
-                            child: DropdownButtonFormField(
-                                elevation: 0,
-                                iconEnabledColor: Colors.red,
-                                alignment: AlignmentDirectional.center,
-                                hint: const Text("Select date."),
-                                items: dates.data!.docs.map<DropdownMenuItem<String>>((value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value.id.toString(),
-                                    child: Text(
-                                        DateFormat('dd  MMM  yyyy hh:mm')
-                                            .format(
-                                                DateFormat('dd-MM-yyyy-hh-mm')
-                                                    .parse(value.id)),
-                                        style: const TextStyle(
-                                          fontSize: 20,
-                                        ),
-                                        textAlign: TextAlign.center),
-                                  );
-                                }).toList(),
-                                onChanged: (String? value) => setState(() {
-                                      selecteddate = value!;
-                                      // print(selecteddate);
-                                    })),
-                          ),
-                        );
-                      } else {
-                        return const Expanded(
-                            child: Center(
-                                child: Text(
-                          'Records Not Added.',
-                          style: TextStyle(color: Colors.grey, fontSize: 20),
-                        )));
-                      }
-                    } else {
-                    return Container();
-                  }
-                },
-            future: state.subject[selectedsubject][0].collection(selectedsubject)
-                .orderBy('time',descending: true)
-                .get(),
-          )
-              : Container(),
-          selecteddate.isNotEmpty? Text(
-              DateFormat('dd  MMM  yyyy hh:mm')
-                  .format(
-                  DateFormat('dd-MM-yyyy-hh-mm')
-                      .parse(selecteddate)),
-              style: const TextStyle(
-                fontSize: 20,
-              ),
-              textAlign: TextAlign.center) : Container(),
-          selectedsubject.isNotEmpty && selecteddate.isNotEmpty
-              ? FutureBuilder(
-                future: state.subject[selectedsubject][0].collection(selectedsubject).doc(selecteddate).get(),
-                builder: (context,AsyncSnapshot snap) {
-                    if(snap.connectionState != ConnectionState.waiting){
-                      print("if");
-                      if (snap.data != null && snap.data.exists) {
-                        Map attendance = snap.data.data() as Map;
-                        print("nest if");
-                        return Expanded(
-                          child: GridView.builder(
-                            scrollDirection: Axis.vertical,
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 6,
-                            ),
-                            itemCount: attendance.length - 1,
-                            itemBuilder: (context, int index) {
-                              var key = attendance.keys.elementAt(index);
-                              return Padding(
-                                padding: const EdgeInsets.all(5.0),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: attendance[key]
-                                        ? Colors.green
-                                        : Colors.red,
-                                  ),
-                                  child: Center(child: Text(key)),
-                                ),
-                              );
-                            },
-                          ),
-                        );
-                      } else {
-                        print("nest else");
-                        return Container();
-                      }
-                    } else {
-                      print("else $selecteddate");
-                      return Container();
-                    }
-                  }
-              )
-              : Container()
-        ],
-      ),
+        );
+      },
     );
   }
 }

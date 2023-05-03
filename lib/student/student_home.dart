@@ -7,7 +7,6 @@ import 'package:campus_subsystem/student/student_timetable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-import '../faculty/faculty_timetable.dart';
 import '../redux/reducer.dart';
 
 class StudentHome extends StatefulWidget {
@@ -34,7 +33,7 @@ class _StudentHomeState extends State<StudentHome> {
                       Text(
                         "  Hey ${state.name['First'].toString().capitalize()}",
                         style:
-                            const TextStyle(fontSize: 30, fontFamily: 'Custom'),
+                        const TextStyle(fontSize: 30, fontFamily: 'Custom'),
                       )
                     ]),
                   ),
@@ -71,36 +70,36 @@ class _StudentHomeState extends State<StudentHome> {
                                 ],
                               ),
                             ),
-                      )),
+                          )),
                       Expanded(
                           child: InkWell(
-                        onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (_) => const StudentSyllabus()));
-                        },
-                        child: Card(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12)),
-                          elevation: 5,
-                          child: Column(
-                            children: [
-                              Expanded(
-                                flex: 4,
-                                child: Image.asset(
-                                  "assets/images/syllabus.gif",
-                                ),
+                            onTap: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (_) => const StudentSyllabus()));
+                            },
+                            child: Card(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12)),
+                              elevation: 5,
+                              child: Column(
+                                children: [
+                                  Expanded(
+                                    flex: 4,
+                                    child: Image.asset(
+                                      "assets/images/syllabus.gif",
+                                    ),
+                                  ),
+                                  const Expanded(
+                                      flex: 1,
+                                      child: Text(
+                                        "Syllabus",
+                                        style: TextStyle(
+                                            fontFamily: 'Custom', fontSize: 20),
+                                      )),
+                                ],
                               ),
-                              const Expanded(
-                                  flex: 1,
-                                  child: Text(
-                                    "Syllabus",
-                                    style: TextStyle(
-                                        fontFamily: 'Custom', fontSize: 20),
-                                  )),
-                            ],
-                          ),
-                        ),
-                      )),
+                            ),
+                          )),
                     ],
                   ),
                 ), //TimeTable-Syllabus
@@ -178,69 +177,71 @@ class _StudentHomeState extends State<StudentHome> {
                     children: [
                       Expanded(
                           child: InkWell(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (_) => const StudentEvent()));
-                        },
-                        child: Card(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12)),
-                          elevation: 5,
-                          child: Column(
-                            children: [
-                              Expanded(
-                                  flex: 4,
-                                  child: Image.asset(
-                                    "assets/images/events.gif",
-                                  )),
-                              const Expanded(
-                                  flex: 1,
-                                  child: Text(
-                                    "Events",
-                                    style: TextStyle(
-                                        fontFamily: 'Custom', fontSize: 20),
-                                  )),
-                            ],
-                          ),
-                        ),
-                      )),
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (_) => const StudentEvent()));
+                            },
+                            child: Card(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12)),
+                              elevation: 5,
+                              child: Column(
+                                children: [
+                                  Expanded(
+                                      flex: 4,
+                                      child: Image.asset(
+                                        "assets/images/events.gif",
+                                      )),
+                                  const Expanded(
+                                      flex: 1,
+                                      child: Text(
+                                        "Events",
+                                        style: TextStyle(
+                                            fontFamily: 'Custom', fontSize: 20),
+                                      )),
+                                ],
+                              ),
+                            ),
+                          )),
                       Expanded(
                           child: InkWell(
-                        onTap: () async {
-                          const url = 'http://14.139.121.222/studentresult/';
-                          try {
-                            await launchUrlString(url,
-                                webViewConfiguration:
+                            onTap: () async {
+                              const url = 'http://14.139.121.222/studentresult/';
+                              try {
+                                await launchUrlString(url,
+                                    webViewConfiguration:
                                     const WebViewConfiguration(
-                                        enableJavaScript: true));
-                          } catch (e) {
-                            throw 'Could not launch $url';
-                          }
-                        },
-                        child: Card(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12)),
-                          elevation: 5,
-                          child: Column(
-                            children: [
-                              Expanded(
-                                  flex: 4,
-                                  child: Image.asset(
-                                    "assets/images/result.gif",
-                                  )),
-                              const Expanded(
-                                  flex: 1,
-                                  child: Text(
-                                    "Result",
-                                    style: TextStyle(
-                                        fontFamily: 'Custom', fontSize: 20),
-                                  )),
-                            ],
-                          ),
-                        ),
-                      )),
+                                        enableJavaScript: true),
+                                    mode: LaunchMode.externalApplication
+                                );
+                              } catch (e) {
+                                throw 'Could not launch $url';
+                              }
+                            },
+                            child: Card(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12)),
+                              elevation: 5,
+                              child: Column(
+                                children: [
+                                  Expanded(
+                                      flex: 4,
+                                      child: Image.asset(
+                                        "assets/images/result.gif",
+                                      )),
+                                  const Expanded(
+                                      flex: 1,
+                                      child: Text(
+                                        "Result",
+                                        style: TextStyle(
+                                            fontFamily: 'Custom', fontSize: 20),
+                                      )),
+                                ],
+                              ),
+                            ),
+                          )),
                     ],
                   ),
                 ), //Events-Result

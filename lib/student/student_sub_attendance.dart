@@ -17,99 +17,68 @@ class StudentSubAttendance extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.indigo[300],
         centerTitle: true,
-        title: Text(subject,style: const TextStyle(fontFamily: 'Narrow', fontSize: 30),textAlign: TextAlign.center,),
+        title: Text(
+          subject,
+          style: const TextStyle(fontFamily: 'Narrow', fontSize: 30),
+          textAlign: TextAlign.center,
+        ),
       ),
       body: StreamBuilder(
-          stream: FirebaseFirestore.instance.doc("Student_Detail/${state.prn}/Attendance/$subject").snapshots(),
-          builder: (context, AsyncSnapshot snapshot) {
-            if (snapshot.hasData) {
-              Map attendance = snapshot.data.data() as Map<String, dynamic>;
-              if (attendance.isEmpty) {
-                return const Center(
-                    child: Text(
-                  'Records Not Added.',
-                  style: TextStyle(color: Colors.grey, fontSize: 20),
-                ));
-              } else {
-                return ListView.builder(
-                  itemCount: attendance.length,
-                  itemBuilder: (context, index) {
-                    String key = attendance.keys.elementAt(index);
-                    return Padding(
-                      padding: const EdgeInsetsDirectional.all(20),
-                      child: Column(
-                        children: [
-                          Padding(
-                            padding:
-                                const EdgeInsetsDirectional.only(bottom: 10),
-                            child: Row(
-                              children: [
-                                const Expanded(
-                                  flex: 1,
-                                  child: Center(
-                                    child: Icon(
-                                      Icons.subject_sharp,
-                                      size: 40,
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  flex: 7,
-                                  child: Card(
-                                    elevation: 5,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(50)),
-                                    color: Colors.blue[100],
-                                    child: SizedBox(
-                                      height: 80,
-                                      child: Row(
-                                        children: [
-                                          Expanded(
-                                              flex: 4,
-                                              child: Text(
-                                                  DateFormat(
-                                                          'dd  MMM  yyyy hh:mm')
-                                                      .format(DateFormat(
-                                                              'dd-MM-yyyy-hh-mm')
-                                                          .parse(key)),
-                                                  style: const TextStyle(
-                                                      fontSize: 20,
-                                                      fontFamily: 'Custom'),
-                                                  textAlign: TextAlign.center)),
-                                          Expanded(
-                                            flex: 2,
-                                            child: Text(
-                                                attendance[key]
-                                                    ? '  Present'
-                                                    : '  Absent',
-                                                style: TextStyle(
-                                                    fontSize: 18,
-                                                    color: attendance[key]
-                                                        ? Colors.green[800]
-                                                        : Colors.red)),
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                    );
-                  },
-                );
-              }
+        stream: FirebaseFirestore.instance.doc("Student_Detail/${state.prn}/Attendance/$subject").snapshots(),
+        builder: (context, AsyncSnapshot snapshot) {
+          if (snapshot.hasData) {
+            Map attendance = snapshot.data.data() as Map<String, dynamic>;
+            if (attendance.isEmpty) {
+              return const Center(
+                  child: Text(
+                'Records Not Added.',
+                style: TextStyle(color: Colors.grey, fontSize: 20),
+              ));
             } else {
-              return Center(
-                  child: LoadingAnimationWidget.staggeredDotsWave(
-                      size: 50, color: Colors.red));
+              return ListView.builder(
+                itemCount: attendance.length,
+                itemBuilder: (context, index) {
+                  String key = attendance.keys.elementAt(index);
+                  return Padding(
+                    padding: const EdgeInsetsDirectional.all(20),
+                    child: Column(
+                      children: [
+                        Card(
+                          elevation: 5,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+                          color: Colors.white,
+                          child: Row(
+                            children: [
+                              Expanded(
+                                  flex: 4,
+                                  child: Container(
+                                    height: 80,
+                                    alignment: Alignment.center,
+                                    child: Text(DateFormat('dd  MMM  yyyy hh:mm').format(DateFormat('dd-MM-yyyy-hh-mm').parse(key)),
+                                        style: const TextStyle(fontSize: 20, fontFamily: 'Custom'), textAlign: TextAlign.center),
+                                  )),
+                              Expanded(
+                                flex: 2,
+                                child: Text(attendance[key] ? '  Present' : '  Absent',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
+                                        color: attendance[key] ? Colors.green[800] : Colors.red)),
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  );
+                },
+              );
             }
-          },
-        ),
+          } else {
+            return Center(child: LoadingAnimationWidget.staggeredDotsWave(size: 50, color: Colors.red));
+          }
+        },
+      ),
     );
   }
 }

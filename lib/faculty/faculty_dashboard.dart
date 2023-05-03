@@ -1,14 +1,16 @@
 import 'package:campus_subsystem/faculty/faculty_home.dart';
 import 'package:campus_subsystem/faculty/faculty_profile.dart';
-import 'package:campus_subsystem/messaging/conversation_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import '../messaging/conversation_screen.dart';
+
 class FacultyDashboard extends StatefulWidget {
+  final String email;
   const FacultyDashboard({
     Key? key,
+    required this.email
   }) : super(key: key);
 
   @override
@@ -22,14 +24,8 @@ class _FacultyDashboardState extends State<FacultyDashboard>
 
   void setStatus(String status) {
     FirebaseFirestore.instance
-        .collection("Faculty_Detail")
-        .where('Email', isEqualTo: FirebaseAuth.instance.currentUser?.email)
-        .get()
-        .then((value) => {
-              FirebaseFirestore.instance
-                  .doc("Faculty_Detail/${FirebaseAuth.instance.currentUser?.email}")
-                  .set({'status': status}, SetOptions(merge: true))
-            });
+        .doc("Messages/${widget.email}")
+        .set({'status': status}, SetOptions(merge: true));
   }
 
   @override
@@ -48,12 +44,13 @@ class _FacultyDashboardState extends State<FacultyDashboard>
     }
   }
 
+
   @override
   Widget build(BuildContext context) {
     final screen = [
-      FacultyHome(),
+      const FacultyHome(),
       const ConversationScreen(isFaculty: true,),
-      FacultyProfile(),
+      const FacultyProfile(),
     ];
     final items = <Widget>[
       const Icon(
