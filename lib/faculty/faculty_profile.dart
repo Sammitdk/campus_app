@@ -29,7 +29,8 @@ class FacultyProfile extends HookWidget {
     var progress = useState(0.0);
 
     Future selectFiles() async {
-      final result = await ImagePicker.platform.pickImage(source: ImageSource.gallery);
+      final result =
+          await ImagePicker.platform.pickImage(source: ImageSource.gallery);
       if (result == null) return;
       final path = result.path;
       file = File(path);
@@ -44,7 +45,8 @@ class FacultyProfile extends HookWidget {
       storageRef.snapshotEvents.listen((event) async {
         switch (event.state) {
           case TaskState.running:
-            progress.value = event.bytesTransferred.toDouble() / event.totalBytes.toDouble();
+            progress.value =
+                event.bytesTransferred.toDouble() / event.totalBytes.toDouble();
             break;
           case TaskState.paused:
             clicked.value = false;
@@ -58,7 +60,10 @@ class FacultyProfile extends HookWidget {
           case TaskState.success:
             String url = await ref.getDownloadURL();
             stateUrl.value = url;
-            await FirebaseFirestore.instance.collection("Faculty_Detail").doc(state.email).update({'imgUrl': url});
+            await FirebaseFirestore.instance
+                .collection("Faculty_Detail")
+                .doc(state.email)
+                .update({'imgUrl': url});
             clicked.value = false;
             storageRef.cancel();
             break;
@@ -94,19 +99,24 @@ class FacultyProfile extends HookWidget {
                             imageBuilder: (context, imageProvider) {
                               return CircleAvatar(
                                 backgroundImage: imageProvider,
-                                maxRadius: MediaQuery.of(context).size.height * 0.1,
+                                maxRadius:
+                                    MediaQuery.of(context).size.height * 0.1,
                               );
                             },
                             placeholder: (context, url) => CircleAvatar(
                               backgroundColor: Colors.transparent,
-                              backgroundImage: const AssetImage("assets/images/profile.gif"),
-                              maxRadius: MediaQuery.of(context).size.height * 0.1,
+                              backgroundImage:
+                                  const AssetImage("assets/images/profile.gif"),
+                              maxRadius:
+                                  MediaQuery.of(context).size.height * 0.1,
                             ),
-                            errorWidget: (context, url, error) => const Icon(Icons.error),
+                            errorWidget: (context, url, error) =>
+                                const Icon(Icons.error),
                             fit: BoxFit.cover,
                           )
                         : CircleAvatar(
-                            backgroundImage: const AssetImage("assets/images/profile.gif"),
+                            backgroundImage:
+                                const AssetImage("assets/images/profile.gif"),
                             maxRadius: MediaQuery.of(context).size.height * 0.1,
                             backgroundColor: Colors.transparent,
                           ),
@@ -122,11 +132,13 @@ class FacultyProfile extends HookWidget {
                         percent: progress.value,
                         center: Text(
                           progress.value.toStringAsFixed(2),
-                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0),
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 18.0),
                         ),
                         header: const Text(
                           "Uploading",
-                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.0),
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 14.0),
                         ),
                         circularStrokeCap: CircularStrokeCap.round,
                         progressColor: Colors.purple,
@@ -162,8 +174,12 @@ class FacultyProfile extends HookWidget {
                       fontFamily: 'MuliBold',
                     ),
                   ),
-                  Text(state.email ?? "--", style: const TextStyle(fontSize: 20, color: Colors.white)),
-                  Text(state.mobile ?? '--', style: const TextStyle(fontSize: 20, color: Colors.white)),
+                  Text(state.email ?? "--",
+                      style:
+                          const TextStyle(fontSize: 20, color: Colors.white)),
+                  Text(state.mobile ?? '--',
+                      style:
+                          const TextStyle(fontSize: 20, color: Colors.white)),
                   // Stack(
                   //   children: [
                   //     Align(
@@ -346,9 +362,12 @@ class FacultyProfile extends HookWidget {
                               children: [
                                 const Text(
                                   "Address",
-                                  style: TextStyle(fontSize: 15, color: Colors.black),
+                                  style: TextStyle(
+                                      fontSize: 15, color: Colors.black),
                                 ),
-                                Text(state.address ?? "--", style: const TextStyle(fontSize: 25, color: Colors.black)),
+                                Text(state.address ?? "--",
+                                    style: const TextStyle(
+                                        fontSize: 25, color: Colors.black)),
                               ],
                             ),
                           )
@@ -373,9 +392,12 @@ class FacultyProfile extends HookWidget {
                               children: [
                                 const Text(
                                   "Trade",
-                                  style: TextStyle(fontSize: 15, color: Colors.black),
+                                  style: TextStyle(
+                                      fontSize: 15, color: Colors.black),
                                 ),
-                                Text(state.branch ?? "--", style: const TextStyle(fontSize: 25, color: Colors.black)),
+                                Text(state.branch ?? "--",
+                                    style: const TextStyle(
+                                        fontSize: 25, color: Colors.black)),
                               ],
                             ),
                           )
@@ -400,9 +422,12 @@ class FacultyProfile extends HookWidget {
                               children: [
                                 const Text(
                                   "Birth Date",
-                                  style: TextStyle(fontSize: 15, color: Colors.black),
+                                  style: TextStyle(
+                                      fontSize: 15, color: Colors.black),
                                 ),
-                                Text(state.dob ?? '--', style: const TextStyle(fontSize: 25, color: Colors.black)),
+                                Text(state.dob ?? '--',
+                                    style: const TextStyle(
+                                        fontSize: 25, color: Colors.black)),
                               ],
                             ),
                           )
@@ -454,9 +479,10 @@ class FacultyProfile extends HookWidget {
           SpeedDialChild(
             label: 'Forget Password',
             onTap: () async {
-              Navigator.of(context).push(MaterialPageRoute(builder: (_) => ResetPassword()));
               Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (_) => const ResetPassword()));
+                  .push(MaterialPageRoute(builder: (_) => ResetPassword()));
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const ResetPassword()));
             },
             backgroundColor: Colors.white,
             foregroundColor: Colors.black,
@@ -466,24 +492,19 @@ class FacultyProfile extends HookWidget {
             label: 'Log Out',
             onTap: () async {
               try {
-                if (state.isStudent) {
-                  // remove student device token
-                  await FirebaseFirestore.instance
-                      .doc("Student_Detail/${state.prn}")
-                      .update({"Token": FieldValue.delete()}).then((value) => FirebaseAuth.instance.signOut());
-
-                  FirebaseFirestore.instance.doc("Student_Detail/${state.prn}").update({"status": "Offline"});
-
-                  FirebaseAuth.instance.signOut().then((value) => Navigator.pushReplacementNamed(context, "loading_page"));
-                } else {
-                  // remove faculty device token
-                  await FirebaseFirestore.instance.doc("Faculty_Detail/${state.email}").update({"Token": FieldValue.delete()});
-                  FirebaseAuth.instance.signOut().then((value) => Navigator.pushReplacementNamed(context, "loading_page"));
-                }
-                // FirebaseAuth.instance.signOut();
+                // remove faculty device token
+                await FirebaseFirestore.instance
+                    .doc("Faculty_Detail/${state.email}")
+                    .update({"Token": FieldValue.delete()});
+                FirebaseFirestore.instance
+                    .doc("Messages/${state.email}")
+                    .set({'status': 'Offline'}, SetOptions(merge: true));
+                FirebaseAuth.instance.signOut().then((value) =>
+                    Navigator.pushReplacementNamed(context, "loading_page"));
               } on FirebaseAuthException catch (e) {
                 if (e.code == 'network-request-failed') {
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Check Internet Connection.")));
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text("Check Internet Connection.")));
                 }
               }
               // Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => const Login()));
@@ -508,7 +529,8 @@ class CurvePainter extends CustomPainter {
     var path = Path();
 
     path.moveTo(0, size.height / 1.9);
-    path.quadraticBezierTo(size.height / 3, size.height * 0.100, size.width, size.height * 0.200);
+    path.quadraticBezierTo(
+        size.height / 3, size.height * 0.100, size.width, size.height * 0.200);
     path.lineTo(size.width, 0);
     path.lineTo(0, 0);
 
