@@ -62,14 +62,14 @@ class Message extends StatelessWidget {
                           Text(
                             name,
                             style: const TextStyle(
-                              fontSize: 12,
+                              fontSize: 11,
                               fontWeight: FontWeight.bold,
                               color: Colors.green,
                             ),
                           ),
                         Text(
                           text,
-                          style: TextStyle(color: isCurrentUser ? Colors.white : Colors.black87,fontSize: 15),
+                          style: TextStyle(color: isCurrentUser ? Colors.white : Colors.black87,fontSize: 16),
                         ),
                         Align(
                           alignment: Alignment.bottomRight,
@@ -80,7 +80,7 @@ class Message extends StatelessWidget {
                               textAlign: TextAlign.end,
                               style: TextStyle(
                                 fontSize: 9,
-                                color: isCurrentUser ? Colors.black87 : Colors.black87,
+                                color: isCurrentUser ? Colors.white : Colors.black,
                               ),
                             ),
                           ),

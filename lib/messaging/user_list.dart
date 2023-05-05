@@ -1,10 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'message_screen.dart';
 import "package:campus_subsystem/main.dart";
 
-class User extends StatelessWidget {
+class User extends HookWidget {
   final dynamic imageUrl;
   final dynamic name;
   final dynamic branch;
@@ -22,8 +23,29 @@ class User extends StatelessWidget {
     required this.EmailR,
   }) : super(key: key);
 
+  Future<List> faculty() async {
+    List list = [];
+    await FirebaseFirestore.instance
+        .collection("Faculty_Detail")
+        .get()
+        .then((value) => {
+              value.docs.forEach((element) {
+                Map<String, dynamic> data = element.data();
+                list.add(data['Email']);
+              })
+            });
+    return list;
+  }
+
   @override
   Widget build(BuildContext context) {
+    var facultylist = useState<List<dynamic>>([]);
+    useEffect(() {
+      faculty().then((value) {
+        facultylist.value = value;
+      });
+      return null;
+    }, []);
     return Padding(
       padding: const EdgeInsets.all(20),
       child: Row(children: <Widget>[
@@ -61,6 +83,14 @@ class User extends StatelessWidget {
                 ),
                 Row(
                   children: [
+                    facultylist.value.isNotEmpty && facultylist.value.contains(EmailR)
+                        ? CircleAvatar(
+                            backgroundColor: Colors.white,
+                            radius: 7,
+                            child: Image.network(
+                                "https://firebasestorage.googleapis.com/v0/b/campus-76c01.appspot.com/o/icons%2Fpinpng.com-instagram-png-logo-577224.png?alt=media&token=a0bf0fc5-18ab-4ac3-8fc9-7f24580ae332"),
+                          )
+                        : const SizedBox(),
                     Text(
                       "${year ?? ""} $branch",
                       style:
@@ -72,80 +102,82 @@ class User extends StatelessWidget {
             ),
           ),
         ),
-        IconButton(
-            onPressed: () {
-              final data = {
-                'groupName': name['First'],
-                'imgUrl': imageUrl,
-                'isGroup': false,
-                'isMessageRead': false,
-                'messageText': "",
-                'messageType': 'userMessage',
-                'time': Timestamp.now(),
-                'email': EmailR,
-              };
-              final myData = {
-                'groupName': storeData.name['First'],
-                'imgUrl': storeData.imgUrl,
-                'isGroup': false,
-                'isMessageRead': false,
-                'messageText': "",
-                'messageType': 'userMessage',
-                'time': Timestamp.now(),
-                'email': storeData.email,
-              };
+        storeData.email != EmailR
+            ? IconButton(
+                onPressed: () {
+                  final data = {
+                    'groupName': name['First'],
+                    'imgUrl': imageUrl,
+                    'isGroup': false,
+                    'isMessageRead': false,
+                    'messageText': "",
+                    'messageType': 'userMessage',
+                    'time': Timestamp.now(),
+                    'email': EmailR,
+                  };
+                  final myData = {
+                    'groupName': storeData.name['First'],
+                    'imgUrl': storeData.imgUrl,
+                    'isGroup': false,
+                    'isMessageRead': false,
+                    'messageText': "",
+                    'messageType': 'userMessage',
+                    'time': Timestamp.now(),
+                    'email': storeData.email,
+                  };
 
-              FirebaseFirestore.instance
-                  .collection("Messages/${storeData.email}/Messages")
-                  .doc(EmailR)
-                  .get()
-                  .then((value) => {
-                        if (value.exists)
-                          {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) => MessageScreen(
-                                          //TODO staus fetch
-                                          status: "Offline",
-                                          groupName: name['First'],
-                                          imageUrl: imageUrl,
-                                          isGroup: false,
-                                          EmailR: EmailR,
-                                          data: storeData,
-                                        )))
-                          }
-                        else
-                          {
-                            FirebaseFirestore.instance
-                                .collection(
-                                    "Messages/${storeData.email}/Messages")
-                                .doc(EmailR)
-                                .set(data, SetOptions(merge: true)),
-                            FirebaseFirestore.instance
-                                .collection("Messages")
-                                .doc(EmailR)
-                                .set({'status': "Offline"},
-                                SetOptions(merge: true)),
-                            FirebaseFirestore.instance
-                                .collection("Messages/$EmailR/Messages")
-                                .doc(storeData.email)
-                                .set(myData, SetOptions(merge: true)),
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) => MessageScreen(
-                                          status: "Offline",
-                                          groupName: name['First'],
-                                          imageUrl: imageUrl,
-                                          isGroup: false,
-                                          EmailR: EmailR,
-                                          data: storeData,
-                                        )))
-                          }
-                      });
-            },
-            icon: const Icon(Icons.messenger_outline_rounded))
+                  FirebaseFirestore.instance
+                      .collection("Messages/${storeData.email}/Messages")
+                      .doc(EmailR)
+                      .get()
+                      .then((value) => {
+                            if (value.exists)
+                              {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (_) => MessageScreen(
+                                              //TODO staus fetch
+                                              status: "Offline",
+                                              groupName: name['First'],
+                                              imageUrl: imageUrl,
+                                              isGroup: false,
+                                              EmailR: EmailR,
+                                              data: storeData,
+                                            )))
+                              }
+                            else
+                              {
+                                FirebaseFirestore.instance
+                                    .collection(
+                                        "Messages/${storeData.email}/Messages")
+                                    .doc(EmailR)
+                                    .set(data, SetOptions(merge: true)),
+                                FirebaseFirestore.instance
+                                    .collection("Messages")
+                                    .doc(EmailR)
+                                    .set({'status': "Offline"},
+                                        SetOptions(merge: true)),
+                                FirebaseFirestore.instance
+                                    .collection("Messages/$EmailR/Messages")
+                                    .doc(storeData.email)
+                                    .set(myData, SetOptions(merge: true)),
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (_) => MessageScreen(
+                                              status: "Offline",
+                                              groupName: name['First'],
+                                              imageUrl: imageUrl,
+                                              isGroup: false,
+                                              EmailR: EmailR,
+                                              data: storeData,
+                                            )))
+                              }
+                          });
+                },
+                icon: const Icon(Icons.messenger_outline_rounded))
+            : const SizedBox()
       ]),
     );
   }

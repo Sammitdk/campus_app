@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:campus_subsystem/messaging/group_addmembers.dart';
 import 'package:campus_subsystem/messaging/user_list.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -8,36 +9,73 @@ class GroupInfo extends StatelessWidget {
   final dynamic imgUrl;
   final dynamic users;
   final dynamic data;
+
   const GroupInfo(
       {Key? key,
-        required this.data,
+      required this.data,
       required this.groupName,
       required this.imgUrl,
       required this.users})
       : super(key: key);
 
-
-  Future<List> getInfo() async {
+  Stream<List<dynamic>> getInfoStream() async* {
     List<dynamic> list = [];
+
+    // listen to changes in the document
+    Stream<DocumentSnapshot> snapshotStream =
+    FirebaseFirestore.instance.doc("GroupMessages/$groupName").snapshots();
+
+    // fetch initial data
+    DocumentSnapshot value = await FirebaseFirestore.instance
+        .doc("GroupMessages/$groupName")
+        .get();
+    Map<String, dynamic> temp = value.data() as Map<String, dynamic>;
     QuerySnapshot<Map<String, dynamic>> ans = await FirebaseFirestore.instance
         .collection("Faculty_Detail")
-        .where("Email", whereIn: users)
-        .orderBy("Name.First").get();
-
-    ans.docs.forEach((element) {
+        .where("Email", whereIn: temp['users'])
+        .orderBy("Name.First")
+        .get();
+    for (var element in ans.docs) {
       list.add(element.data());
-    });
+    }
 
     ans = await FirebaseFirestore.instance
         .collection("Student_Detail")
-        .where("Email", whereIn: users)
-        .orderBy("Name.First").get();
-
-    ans.docs.forEach((element) {
+        .where("Email", whereIn: temp['users'])
+        .orderBy("Name.First")
+        .get();
+    for (var element in ans.docs) {
       list.add(element.data());
-    });
-    return list;
+    }
+
+    yield list;
+
+    // listen to changes in the document and update the list accordingly
+    await for (DocumentSnapshot snapshot in snapshotStream) {
+      Map<String, dynamic> temp = snapshot.data() as Map<String, dynamic>;
+      QuerySnapshot<Map<String, dynamic>> ans = await FirebaseFirestore.instance
+          .collection("Faculty_Detail")
+          .where("Email", whereIn: temp['users'])
+          .orderBy("Name.First")
+          .get();
+      list = [];
+      for (var element in ans.docs) {
+        list.add(element.data());
+      }
+
+      ans = await FirebaseFirestore.instance
+          .collection("Student_Detail")
+          .where("Email", whereIn: temp['users'])
+          .orderBy("Name.First")
+          .get();
+      for (var element in ans.docs) {
+        list.add(element.data());
+      }
+
+      yield list;
+    }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -65,14 +103,13 @@ class GroupInfo extends StatelessWidget {
                             radius: 100,
                           );
                         },
-                        placeholder: (context, url) =>
-                        const CircleAvatar(
-                          backgroundImage: AssetImage(
-                              "assets/images/profile.gif"),
+                        placeholder: (context, url) => const CircleAvatar(
+                          backgroundImage:
+                              AssetImage("assets/images/profile.gif"),
                           maxRadius: 30,
                         ),
                         errorWidget: (context, url, error) =>
-                        const Icon(Icons.error),
+                            const Icon(Icons.error),
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -80,7 +117,9 @@ class GroupInfo extends StatelessWidget {
                   title: Text(
                     groupName,
                     style: const TextStyle(
-                        fontFamily: 'Narrow', fontSize: 23,color: Colors.black),
+                        fontFamily: 'Narrow',
+                        fontSize: 23,
+                        color: Colors.black),
                   ),
                   expandedHeight: 250,
                   backgroundColor: Colors.white,
@@ -132,31 +171,43 @@ class GroupInfo extends StatelessWidget {
                         backgroundColor:
                             MaterialStateProperty.all(Colors.green[400])),
                     onPressed: () {
-                      getInfo();
+                      getInfoStream();
                     },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: const [
-                        Padding(
-                          padding: EdgeInsets.all(20),
-                          child: Icon(Icons.add),
-                        ),
-                        Text("Add Members"),
-                      ],
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => AddToGroup(
+                                      data: data,
+                                      users: users,
+                                      groupName: groupName,
+                                    )));
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: const [
+                          Padding(
+                            padding: EdgeInsets.all(20),
+                            child: Icon(Icons.add),
+                          ),
+                          Text("Add Members"),
+                        ],
+                      ),
                     ),
                   ),
                 ),
                 Expanded(
                   flex: 8,
-                  child: FutureBuilder(
-                    future: getInfo(),
-                    builder: (BuildContext context,
-                        AsyncSnapshot<List> snapshot) {
+                  child: StreamBuilder<List<dynamic>>(
+                    stream: getInfoStream(),
+                    builder:
+                        (BuildContext context, AsyncSnapshot<List> snapshot) {
                       if (snapshot.hasData) {
                         return ListView.builder(
                             itemCount: snapshot.data!.length,
                             itemBuilder: (context, i) {
-                              Map<String,dynamic> x = snapshot.data![i];
+                              Map<String, dynamic> x = snapshot.data![i];
                               return User(
                                 imageUrl: x['imgUrl'],
                                 name: x['Name'],
