@@ -125,7 +125,7 @@ class _FacultyAttendanceHistoryState extends State<FacultyAttendanceHistory> {
                           const Expanded(
                               child: Text(
                             "Date",
-                            style: TextStyle(fontSize: 25, color: Colors.white),
+                            style: TextStyle(fontSize: 25, color: Colors.white, fontWeight: FontWeight.bold),
                             textAlign: TextAlign.center,
                           )),
                           Expanded(
