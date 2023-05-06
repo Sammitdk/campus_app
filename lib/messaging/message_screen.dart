@@ -18,6 +18,7 @@ class MessageScreen extends StatefulHookWidget {
   final dynamic status;
   final dynamic users;
   final dynamic data;
+  final dynamic facultyList;
 
   const MessageScreen({
     Key? key,
@@ -26,6 +27,7 @@ class MessageScreen extends StatefulHookWidget {
     this.EmailR,
     required this.data,
     required this.isGroup,
+    this.facultyList,
     required this.groupName,
     required this.imageUrl,
   }) : super(key: key);
@@ -109,6 +111,7 @@ class _MessageScreenState extends State<MessageScreen> {
                                         imgUrl: widget.imageUrl,
                                         groupName: widget.groupName,
                                         data: widget.data,
+                                        facultyList: widget.facultyList,
                                       )));
                         } else if (value == 1) {
                         } else if (value == 2) {
@@ -236,6 +239,7 @@ class _MessageScreenState extends State<MessageScreen> {
                                       imgUrl: widget.imageUrl,
                                       groupName: widget.groupName,
                                       data: widget.data,
+                                  facultyList: widget.facultyList,
                                     )));
                       },
                       child: CachedNetworkImage(

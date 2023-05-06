@@ -5,8 +5,10 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 
 class NewMessage extends HookWidget {
   final dynamic data;
+  final List<dynamic> facultyList;
 
-  const NewMessage({Key? key, required this.data}) : super(key: key);
+  const NewMessage({Key? key, required this.data, required this.facultyList})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -75,6 +77,7 @@ class NewMessage extends HookWidget {
                                     year: x['Year'],
                                     EmailR: x['Email'],
                                     storeData: data,
+                                    facultyList: facultyList,
                                   );
                                 } else {
                                   return const SizedBox();
@@ -151,6 +154,7 @@ class NewMessage extends HookWidget {
                                     branch: x['Branch'],
                                     EmailR: x['Email'],
                                     storeData: data,
+                                    facultyList: facultyList,
                                   );
                                 } else {
                                   return const SizedBox();

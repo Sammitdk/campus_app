@@ -1,17 +1,17 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'message_screen.dart';
 import "package:campus_subsystem/main.dart";
 
-class User extends HookWidget {
+class User extends StatelessWidget {
   final dynamic imageUrl;
   final dynamic name;
   final dynamic branch;
   final dynamic year;
   final dynamic EmailR;
   final dynamic storeData;
+  final dynamic facultyList;
 
   const User({
     Key? key,
@@ -20,32 +20,12 @@ class User extends HookWidget {
     required this.name,
     required this.branch,
     this.year,
+    this.facultyList,
     required this.EmailR,
   }) : super(key: key);
 
-  Future<List> faculty() async {
-    List list = [];
-    await FirebaseFirestore.instance
-        .collection("Faculty_Detail")
-        .get()
-        .then((value) => {
-              value.docs.forEach((element) {
-                Map<String, dynamic> data = element.data();
-                list.add(data['Email']);
-              })
-            });
-    return list;
-  }
-
   @override
   Widget build(BuildContext context) {
-    var facultylist = useState<List<dynamic>>([]);
-    useEffect(() {
-      faculty().then((value) {
-        facultylist.value = value;
-      });
-      return null;
-    }, []);
     return Padding(
       padding: const EdgeInsets.all(20),
       child: Row(children: <Widget>[
@@ -83,7 +63,7 @@ class User extends HookWidget {
                 ),
                 Row(
                   children: [
-                    facultylist.value.isNotEmpty && facultylist.value.contains(EmailR)
+                    facultyList.isNotEmpty && facultyList.contains(EmailR)
                         ? CircleAvatar(
                             backgroundColor: Colors.white,
                             radius: 7,

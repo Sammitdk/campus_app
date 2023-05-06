@@ -9,13 +9,14 @@ class GroupInfo extends StatelessWidget {
   final dynamic imgUrl;
   final dynamic users;
   final dynamic data;
+  final dynamic facultyList;
 
-  const GroupInfo(
-      {Key? key,
-      required this.data,
-      required this.groupName,
-      required this.imgUrl,
-      required this.users})
+  const GroupInfo({Key? key,
+    required this.data,
+    required this.groupName,
+    required this.imgUrl,
+    this.facultyList,
+    required this.users})
       : super(key: key);
 
   Stream<List<dynamic>> getInfoStream() async* {
@@ -76,7 +77,6 @@ class GroupInfo extends StatelessWidget {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -103,13 +103,14 @@ class GroupInfo extends StatelessWidget {
                             radius: 100,
                           );
                         },
-                        placeholder: (context, url) => const CircleAvatar(
+                        placeholder: (context, url) =>
+                        const CircleAvatar(
                           backgroundImage:
-                              AssetImage("assets/images/profile.gif"),
+                          AssetImage("assets/images/profile.gif"),
                           maxRadius: 30,
                         ),
                         errorWidget: (context, url, error) =>
-                            const Icon(Icons.error),
+                        const Icon(Icons.error),
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -136,8 +137,7 @@ class GroupInfo extends StatelessWidget {
                         ),
                       ];
                     }, onSelected: (value) {
-                      if (value == 0) {
-                      } else if (value == 1) {
+                      if (value == 0) {} else if (value == 1) {
                         FirebaseFirestore.instance
                             .collection("GroupMessages")
                             .doc(groupName)
@@ -169,7 +169,7 @@ class GroupInfo extends StatelessWidget {
                   child: ElevatedButton(
                     style: ButtonStyle(
                         backgroundColor:
-                            MaterialStateProperty.all(Colors.green[400])),
+                        MaterialStateProperty.all(Colors.green[400])),
                     onPressed: () {
                       getInfoStream();
                     },
@@ -178,7 +178,8 @@ class GroupInfo extends StatelessWidget {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (_) => AddToGroup(
+                                builder: (_) =>
+                                    AddToGroup(
                                       data: data,
                                       users: users,
                                       groupName: groupName,
@@ -215,6 +216,8 @@ class GroupInfo extends StatelessWidget {
                                 year: x['Year'],
                                 EmailR: x['Email'],
                                 storeData: data,
+                                facultyList: facultyList,
+
                               );
                             });
                       } else {

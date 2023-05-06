@@ -20,6 +20,7 @@ class ConversationList extends HookWidget {
   final dynamic isGroup;
   final dynamic EmailR;
   final dynamic users;
+  final dynamic facultyList;
 
   const ConversationList(
       {Key? key,
@@ -31,6 +32,7 @@ class ConversationList extends HookWidget {
       required this.imageUrl,
       required this.time,
       required this.isMessageRead,
+      required this.facultyList,
       required this.latestMessageBy,
       required this.count})
       : super(key: key);
@@ -78,6 +80,7 @@ class ConversationList extends HookWidget {
                     context,
                     MaterialPageRoute(
                         builder: (_) => MessageScreen(
+                              facultyList: facultyList,
                               users: users,
                               groupName: name,
                               imageUrl: imageUrl,
@@ -123,14 +126,13 @@ class ConversationList extends HookWidget {
                                 maxRadius: 30,
                               );
                             },
-                            placeholder: (context, url) =>
-                            const CircleAvatar(
-                              backgroundImage: AssetImage(
-                                  "assets/images/profile.gif"),
+                            placeholder: (context, url) => const CircleAvatar(
+                              backgroundImage:
+                                  AssetImage("assets/images/profile.gif"),
                               maxRadius: 30,
                             ),
                             errorWidget: (context, url, error) =>
-                            const Icon(Icons.error),
+                                const Icon(Icons.error),
                             fit: BoxFit.cover,
                           ),
                           const SizedBox(
