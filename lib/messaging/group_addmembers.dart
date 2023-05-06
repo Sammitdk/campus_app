@@ -21,14 +21,9 @@ class AddToGroup extends StatefulWidget {
 class _AddToGroupState extends State<AddToGroup> {
   Future<List> Members() async {
     List<dynamic> list = [];
-    DocumentSnapshot value = await FirebaseFirestore.instance
-        .doc("GroupMessages/${widget.groupName}")
-        .get();
-    Map<String, dynamic> temp = value.data() as Map<String, dynamic>;
-
     QuerySnapshot<Map<String, dynamic>> ans = await FirebaseFirestore.instance
         .collection("Faculty_Detail")
-        .where("Email", whereNotIn: temp['users'])
+        .where("Email", whereNotIn: widget.users)
         .orderBy("Email")
         .get();
 
@@ -38,7 +33,7 @@ class _AddToGroupState extends State<AddToGroup> {
 
     ans = await FirebaseFirestore.instance
         .collection("Student_Detail")
-        .where("Email", whereNotIn: temp['users'])
+        .where("Email", whereNotIn: widget.users)
         .orderBy("Email")
         .get();
     for (var element in ans.docs) {
@@ -123,20 +118,6 @@ class _AddToGroupState extends State<AddToGroup> {
                                 .update({
                               "users": FieldValue.arrayUnion([x['Email']]),
                             });
-                            FirebaseFirestore.instance
-                                .collection(
-                                    "GroupMessages/${widget.groupName}/Messages")
-                                .add(
-                              {
-                                "messageType": "joined",
-                                "email": widget.data.email,
-                                "name": x['Name']['First'].toString(),
-                                "time": Timestamp.now(),
-                                "users":
-                                    FieldValue.arrayUnion([widget.data.email]),
-                                "message": widget.data.name['First']
-                              },
-                            );
                             setState(() {
                               widget.users.add(x['Email']);
                             });
