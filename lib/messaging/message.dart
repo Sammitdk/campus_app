@@ -1,3 +1,4 @@
+import 'package:campus_subsystem/main.dart';
 import 'package:flutter/material.dart';
 
 class Message extends StatelessWidget {
@@ -18,15 +19,36 @@ class Message extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (messageType == "left") {
+      if(text.isNotEmpty){
+        return Padding(
+          padding: const EdgeInsetsDirectional.only(top: 10, bottom: 10),
+          child: Text(
+            "${text.capitalize()} removed ${name.capitalize()}",
+            textAlign: TextAlign.center,
+            style: const TextStyle(color: Colors.red),
+          ),
+        );
+      }else{
+        return Padding(
+          padding: const EdgeInsetsDirectional.only(top: 10, bottom: 10),
+          child: Text(
+            "${name.capitalize()} Left",
+            textAlign: TextAlign.center,
+            style: const TextStyle(color: Colors.red),
+          ),
+        );
+      }
+    } else if(messageType == "joined"){
       return Padding(
         padding: const EdgeInsetsDirectional.only(top: 10, bottom: 10),
         child: Text(
-          "$name left",
+          "${text.capitalize()} added ${name.capitalize()}",
           textAlign: TextAlign.center,
-          style: const TextStyle(color: Colors.red),
+          style: const TextStyle(color: Colors.green),
         ),
       );
-    } else {
+    }
+    else {
       return Container(
         // asymmetric padding
         padding: EdgeInsets.fromLTRB(
@@ -60,16 +82,16 @@ class Message extends StatelessWidget {
                       children: [
                         if (!isCurrentUser)
                           Text(
-                            name,
+                            name.capitalize(),
                             style: const TextStyle(
-                              fontSize: 12,
+                              fontSize: 11,
                               fontWeight: FontWeight.bold,
                               color: Colors.green,
                             ),
                           ),
                         Text(
                           text,
-                          style: TextStyle(color: isCurrentUser ? Colors.white : Colors.black87,fontSize: 15),
+                          style: TextStyle(color: isCurrentUser ? Colors.white : Colors.black87,fontSize: 16),
                         ),
                         Align(
                           alignment: Alignment.bottomRight,
@@ -80,7 +102,7 @@ class Message extends StatelessWidget {
                               textAlign: TextAlign.end,
                               style: TextStyle(
                                 fontSize: 9,
-                                color: isCurrentUser ? Colors.black87 : Colors.black87,
+                                color: isCurrentUser ? Colors.white : Colors.black,
                               ),
                             ),
                           ),

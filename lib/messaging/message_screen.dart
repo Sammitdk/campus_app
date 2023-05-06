@@ -18,6 +18,7 @@ class MessageScreen extends StatefulHookWidget {
   final dynamic status;
   final dynamic users;
   final dynamic data;
+  final dynamic facultyList;
 
   const MessageScreen({
     Key? key,
@@ -26,6 +27,7 @@ class MessageScreen extends StatefulHookWidget {
     this.EmailR,
     required this.data,
     required this.isGroup,
+    this.facultyList,
     required this.groupName,
     required this.imageUrl,
   }) : super(key: key);
@@ -49,14 +51,14 @@ class _MessageScreenState extends State<MessageScreen> {
 
     Stream<QuerySnapshot> stream = widget.isGroup
         ? FirebaseFirestore.instance
-        .collection("GroupMessages/${widget.groupName}/Messages")
-        .orderBy('time', descending: true)
-        .snapshots(includeMetadataChanges: true)
+            .collection("GroupMessages/${widget.groupName}/Messages")
+            .orderBy('time', descending: true)
+            .snapshots(includeMetadataChanges: true)
         : FirebaseFirestore.instance
-        .collection(
-        "Messages/${widget.data.email}/Messages/${widget.EmailR}/Messages")
-        .orderBy('time', descending: true)
-        .snapshots(includeMetadataChanges: true);
+            .collection(
+                "Messages/${widget.data.email}/Messages/${widget.EmailR}/Messages")
+            .orderBy('time', descending: true)
+            .snapshots(includeMetadataChanges: true);
 
     useEffect(() {
       StreamSubscription messageStream = stream.listen((event) {
@@ -82,398 +84,389 @@ class _MessageScreenState extends State<MessageScreen> {
       backgroundColor: Colors.white,
       appBar: widget.isGroup
           ? AppBar(
-        actions: set.isEmpty
-            ? [
-          PopupMenuButton(itemBuilder: (context) {
-            return [
-              const PopupMenuItem<int>(
-                value: 0,
-                child: Text("Group Info"),
-              ),
-              const PopupMenuItem<int>(
-                value: 1,
-                child: Text("Search"),
-              ),
-              const PopupMenuItem<int>(
-                value: 2,
-                child: Text("Leave Group"),
-              ),
-            ];
-          }, onSelected: (value) {
-            if (value == 0) {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (_) =>
-                          GroupInfo(
-                            users: widget.users,
-                            imgUrl: widget.imageUrl,
-                            groupName: widget.groupName,
-                            data: widget.data,
-                          )));
-            } else if (value == 1) {} else if (value == 2) {
-              FirebaseFirestore.instance
-                  .collection("GroupMessages")
-                  .doc(widget.groupName)
-                  .update({
-                "users":
-                FieldValue.arrayRemove([widget.data.email]),
-              });
-              FirebaseFirestore.instance
-                  .collection(
-                  "GroupMessages/${widget.groupName}/Messages")
-                  .add(
-                {
-                  "messageType": "left",
-                  "email": widget.data.email,
-                  "name": widget.data.name['First'],
-                  "time": Timestamp.now(),
-                  "users":
-                  FieldValue.arrayUnion([widget.data.email]),
-                  "message": ""
-                },
-              );
-              Navigator.pop(context);
-            }
-          })
-        ]
-            : [
-          Row(
-            children: [
-              Text(set.length.toString()),
-              IconButton(
-                icon: const Icon(Icons.delete_outline_outlined),
-                color: Colors.red,
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: const Text('Delete messages'),
-                        content: (isDelete.value <= 0)
-                            ? const Text(
-                            'Are you sure you want to delete these messages?')
-                            : const Text(
-                            'You cant delete others messages please unselect them'),
-                        actions: <Widget>[
-                          TextButton(
-                            child: const Text('Cancel'),
+              actions: set.isEmpty
+                  ? [
+                      PopupMenuButton(itemBuilder: (context) {
+                        return [
+                          const PopupMenuItem<int>(
+                            value: 0,
+                            child: Text("Group Info"),
+                          ),
+                          const PopupMenuItem<int>(
+                            value: 1,
+                            child: Text("Search"),
+                          ),
+                          const PopupMenuItem<int>(
+                            value: 2,
+                            child: Text("Leave Group"),
+                          ),
+                        ];
+                      }, onSelected: (value) {
+                        if (value == 0) {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) => GroupInfo(
+                                        users: widget.users,
+                                        imgUrl: widget.imageUrl,
+                                        groupName: widget.groupName,
+                                        data: widget.data,
+                                        facultyList: widget.facultyList,
+                                      )));
+                        } else if (value == 1) {
+                        } else if (value == 2) {
+                          FirebaseFirestore.instance
+                              .collection("GroupMessages")
+                              .doc(widget.groupName)
+                              .update({
+                            "users":
+                                FieldValue.arrayRemove([widget.data.email]),
+                          });
+                          FirebaseFirestore.instance
+                              .collection(
+                                  "GroupMessages/${widget.groupName}/Messages")
+                              .add(
+                            {
+                              "messageType": "left",
+                              "email": widget.data.email,
+                              "name": widget.data.name['First'],
+                              "time": Timestamp.now(),
+                              "users":
+                                  FieldValue.arrayUnion([widget.data.email]),
+                              "message": ""
+                            },
+                          );
+                          Navigator.pop(context);
+                        }
+                      })
+                    ]
+                  : [
+                      Row(
+                        children: [
+                          Text(set.length.toString()),
+                          IconButton(
+                            icon: const Icon(Icons.delete_outline_outlined),
+                            color: Colors.red,
                             onPressed: () {
-                              Navigator.of(context).pop();
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: const Text('Delete messages'),
+                                    content: (isDelete.value <= 0)
+                                        ? const Text(
+                                            'Are you sure you want to delete these messages?')
+                                        : const Text(
+                                            'You cant delete others messages please unselect them'),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        child: const Text('Cancel'),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                      (isDelete.value <= 0)
+                                          ? TextButton(
+                                              child: const Text(
+                                                  'Delete For Everyone'),
+                                              onPressed: () {
+                                                for (var element in set) {
+                                                  FirebaseFirestore.instance
+                                                      .doc(
+                                                          "GroupMessages/${widget.groupName}/Messages/$element")
+                                                      .delete();
+                                                }
+                                                setState(() {
+                                                  set.clear();
+                                                });
+                                                Navigator.of(context).pop();
+                                              },
+                                            )
+                                          : const SizedBox(),
+                                    ],
+                                  );
+                                },
+                              );
                             },
                           ),
-                          (isDelete.value <= 0)
-                              ? TextButton(
-                            child: const Text(
-                                'Delete For Everyone'),
-                            onPressed: () {
-                              for (var element in set) {
-                                FirebaseFirestore.instance
-                                    .doc(
-                                    "GroupMessages/${widget
-                                        .groupName}/Messages/$element")
-                                    .delete();
-                              }
-                              setState(() {
-                                set.clear();
-                              });
-                              Navigator.of(context).pop();
-                            },
-                          )
+                          (set.length == 1)
+                              ? Padding(
+                                  padding: const EdgeInsets.only(right: 8.0),
+                                  child: IconButton(
+                                    icon: const Icon(
+                                      Icons.copy,
+                                      size: 19,
+                                    ),
+                                    onPressed: () {
+                                      Clipboard.setData(
+                                          ClipboardData(text: copy.value));
+                                      isDelete.value = 0;
+                                      setState(() {
+                                        set.clear();
+                                      });
+                                    },
+                                  ),
+                                )
                               : const SizedBox(),
                         ],
-                      );
-                    },
-                  );
-                },
-              ),
-              (set.length == 1)
-                  ? Padding(
-                padding: const EdgeInsets.only(right: 8.0),
-                child: IconButton(
-                  icon: const Icon(
-                    Icons.copy,
-                    size: 19,
-                  ),
-                  onPressed: () {
-                    Clipboard.setData(
-                        ClipboardData(text: copy.value));
-                    isDelete.value = 0;
-                    setState(() {
-                      set.clear();
-                    });
-                  },
-                ),
-              )
-                  : const SizedBox(),
-            ],
-          )
-        ],
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
-        automaticallyImplyLeading: false,
-        title: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            set.isNotEmpty
-                ? IconButton(
-                onPressed: () {
-                  isDelete.value = 0;
-                  setState(() {
-                    set.clear();
-                  });
-                },
-                icon: const Icon(Icons.arrow_back))
-                : const SizedBox(),
-            Padding(
-              padding: const EdgeInsets.only(right: 8.0, left: 8),
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (_) =>
-                              GroupInfo(
-                                users: widget.users,
-                                imgUrl: widget.imageUrl,
-                                groupName: widget.groupName,
-                                data: widget.data,
-                              )));
-                },
-                child: CachedNetworkImage(
-                  imageUrl: widget.imageUrl,
-                  imageBuilder: (context, imageProvider) {
-                    return Hero(
-                      tag: "group",
-                      child: CircleAvatar(
-                        backgroundImage: imageProvider,
-                        maxRadius: 25,
-                      ),
-                    );
-                  },
-                  placeholder: (context, url) =>
-                  const CircleAvatar(
-                    backgroundColor: Colors.transparent,
-                    backgroundImage:
-                    AssetImage("assets/images/profile.gif"),
-                    maxRadius: 30,
-                  ),
-                  errorWidget: (context, url, error) =>
-                      CircleAvatar(
-                        radius: 30,
-                        child: Image.asset("assets/images/profile.gif"),
-                      ),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 5, top: 5),
-              child: Text(
-                widget.groupName,
-                style:
-                const TextStyle(fontFamily: 'Narrow', fontSize: 23),
-              ),
-            ),
-          ],
-        ),
-      )
-          : AppBar(
-          automaticallyImplyLeading: false,
-          backgroundColor: Colors.white,
-          foregroundColor: Colors.black,
-          actions: set.isNotEmpty
-              ? [
-            Row(
-              children: [
-                Text(set.length.toString()),
-                IconButton(
-                  icon: const Icon(Icons.delete_outline_outlined),
-                  color: Colors.red,
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: const Text('Delete messages'),
-                          content: const Text(
-                              'Are you sure you want to delete these messages?'),
-                          actions: <Widget>[
-                            TextButton(
-                              child: const Text('Delete For Me'),
-                              onPressed: () {
-                                for (var element in set) {
-                                  FirebaseFirestore.instance
-                                      .doc(
-                                      "Messages/${widget.data
-                                          .email}/Messages/${widget
-                                          .EmailR}/Messages/$element")
-                                      .delete();
-                                }
-                                setState(() {
-                                  set.clear();
-                                });
-                                Navigator.of(context).pop();
-                              },
-                            ),
-                            (isDelete.value <= 0)
-                                ? TextButton(
-                              child: const Text(
-                                'Delete For Everyone',
-                              ),
-                              onPressed: () {
-                                for (var element in set) {
-                                  FirebaseFirestore.instance
-                                      .doc(
-                                      "Messages/${widget.data
-                                          .email}/Messages/${widget
-                                          .EmailR}/Messages/$element")
-                                      .delete();
-                                  FirebaseFirestore.instance
-                                      .doc(
-                                      "Messages/${widget
-                                          .EmailR}/Messages/${widget.data
-                                          .email}/Messages/$element")
-                                      .delete();
-                                }
-                                setState(() {
-                                  set.clear();
-                                });
-                                Navigator.of(context).pop();
-                              },
-                            )
-                                : const SizedBox(),
-                            TextButton(
-                              child: const Text('Cancel'),
-                              onPressed: () {
-                                isDelete.value = 0;
-                                setState(() {
-                                  set.clear();
-                                });
-                                Navigator.of(context).pop();
-                              },
-                            ),
-                          ],
-                        );
+                      )
+                    ],
+              backgroundColor: Colors.white,
+              foregroundColor: Colors.black,
+              automaticallyImplyLeading: false,
+              title: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  set.isNotEmpty
+                      ? IconButton(
+                          onPressed: () {
+                            isDelete.value = 0;
+                            setState(() {
+                              set.clear();
+                            });
+                          },
+                          icon: const Icon(Icons.arrow_back))
+                      : const SizedBox(),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8.0, left: 8),
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => GroupInfo(
+                                      users: widget.users,
+                                      imgUrl: widget.imageUrl,
+                                      groupName: widget.groupName,
+                                      data: widget.data,
+                                  facultyList: widget.facultyList,
+                                    )));
                       },
-                    );
-                  },
-                ),
-                (set.length == 1)
-                    ? Padding(
-                  padding: const EdgeInsets.only(right: 8.0),
-                  child: IconButton(
-                    icon: const Icon(
-                      Icons.copy,
-                      size: 19,
-                    ),
-                    onPressed: () {
-                      Clipboard.setData(
-                          ClipboardData(text: copy.value));
-                      isDelete.value = 0;
-                      setState(() {
-                        set.clear();
-                      });
-                    },
-                  ),
-                )
-                    : const SizedBox(),
-              ],
-            )
-          ]
-              : [],
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              set.isNotEmpty
-                  ? IconButton(
-                  onPressed: () {
-                    isDelete.value = 0;
-                    setState(() {
-                      set.clear();
-                    });
-                  },
-                  icon: const Icon(Icons.arrow_back))
-                  : const SizedBox(),
-              Padding(
-                padding: const EdgeInsets.only(right: 8.0, left: 8),
-                child: GestureDetector(
-                  onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Dialog(
-                              insetAnimationCurve:
-                              Curves.fastLinearToSlowEaseIn,
-                              elevation: 0,
-                              backgroundColor: Colors.transparent,
-                              child: ClipOval(
-                                child: CachedNetworkImage(
-                                  imageUrl: widget.imageUrl,
-                                  fit: BoxFit.cover,
-                                  width: 80,
-                                  height: 285,
-                                ),
-                              ),
+                      child: CachedNetworkImage(
+                        imageUrl: widget.imageUrl,
+                        imageBuilder: (context, imageProvider) {
+                          return Hero(
+                            tag: "group",
+                            child: CircleAvatar(
+                              backgroundImage: imageProvider,
+                              maxRadius: 25,
                             ),
-                            Text(widget.groupName,
-                              style: const TextStyle(
-                                  fontSize: 25,
-                                  color: Colors.black,
-                                  decoration: TextDecoration.none),
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  },
-                  child: CachedNetworkImage(
-                    imageUrl: widget.imageUrl,
-                    imageBuilder: (context, imageProvider) {
-                      return CircleAvatar(
-                        backgroundImage: imageProvider,
-                        maxRadius: 25,
-                      );
-                    },
-                    placeholder: (context, url) =>
-                    const CircleAvatar(
-                      backgroundColor: Colors.transparent,
-                      backgroundImage:
-                      AssetImage("assets/images/profile.gif"),
-                      maxRadius: 30,
-                    ),
-                    errorWidget: (context, url, error) =>
-                        CircleAvatar(
+                          );
+                        },
+                        placeholder: (context, url) => const CircleAvatar(
+                          backgroundColor: Colors.transparent,
+                          backgroundImage:
+                              AssetImage("assets/images/profile.gif"),
+                          maxRadius: 30,
+                        ),
+                        errorWidget: (context, url, error) => CircleAvatar(
                           radius: 30,
                           child: Image.asset("assets/images/profile.gif"),
                         ),
-                    fit: BoxFit.cover,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   ),
-                ),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    widget.groupName,
-                    style:
-                    const TextStyle(fontFamily: 'Narrow', fontSize: 23),
-                    textAlign: TextAlign.center,
+                  Padding(
+                    padding: const EdgeInsets.only(left: 5, top: 5),
+                    child: Text(
+                      widget.groupName,
+                      style:
+                          const TextStyle(fontFamily: 'Narrow', fontSize: 23),
+                    ),
                   ),
-                  Text(widget.status,
-                      style: TextStyle(
-                          fontSize: 15,
-                          color: widget.status == "Online"
-                              ? Colors.green
-                              : Colors.red[500]))
                 ],
               ),
-            ],
-          )),
+            )
+          : AppBar(
+              automaticallyImplyLeading: false,
+              backgroundColor: Colors.white,
+              foregroundColor: Colors.black,
+              actions: set.isNotEmpty
+                  ? [
+                      Row(
+                        children: [
+                          Text(set.length.toString()),
+                          IconButton(
+                            icon: const Icon(Icons.delete_outline_outlined),
+                            color: Colors.red,
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: const Text('Delete messages'),
+                                    content: const Text(
+                                        'Are you sure you want to delete these messages?'),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        child: const Text('Delete For Me'),
+                                        onPressed: () {
+                                          for (var element in set) {
+                                            FirebaseFirestore.instance
+                                                .doc(
+                                                    "Messages/${widget.data.email}/Messages/${widget.EmailR}/Messages/$element")
+                                                .delete();
+                                          }
+                                          setState(() {
+                                            set.clear();
+                                          });
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                      (isDelete.value <= 0)
+                                          ? TextButton(
+                                              child: const Text(
+                                                'Delete For Everyone',
+                                              ),
+                                              onPressed: () {
+                                                for (var element in set) {
+                                                  FirebaseFirestore.instance
+                                                      .doc(
+                                                          "Messages/${widget.data.email}/Messages/${widget.EmailR}/Messages/$element")
+                                                      .delete();
+                                                  FirebaseFirestore.instance
+                                                      .doc(
+                                                          "Messages/${widget.EmailR}/Messages/${widget.data.email}/Messages/$element")
+                                                      .delete();
+                                                }
+                                                setState(() {
+                                                  set.clear();
+                                                });
+                                                Navigator.of(context).pop();
+                                              },
+                                            )
+                                          : const SizedBox(),
+                                      TextButton(
+                                        child: const Text('Cancel'),
+                                        onPressed: () {
+                                          isDelete.value = 0;
+                                          setState(() {
+                                            set.clear();
+                                          });
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            },
+                          ),
+                          (set.length == 1)
+                              ? Padding(
+                                  padding: const EdgeInsets.only(right: 8.0),
+                                  child: IconButton(
+                                    icon: const Icon(
+                                      Icons.copy,
+                                      size: 19,
+                                    ),
+                                    onPressed: () {
+                                      Clipboard.setData(
+                                          ClipboardData(text: copy.value));
+                                      isDelete.value = 0;
+                                      setState(() {
+                                        set.clear();
+                                      });
+                                    },
+                                  ),
+                                )
+                              : const SizedBox(),
+                        ],
+                      )
+                    ]
+                  : [],
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  set.isNotEmpty
+                      ? IconButton(
+                          onPressed: () {
+                            isDelete.value = 0;
+                            setState(() {
+                              set.clear();
+                            });
+                          },
+                          icon: const Icon(Icons.arrow_back))
+                      : const SizedBox(),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8.0, left: 8),
+                    child: GestureDetector(
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Dialog(
+                                  insetAnimationCurve:
+                                      Curves.fastLinearToSlowEaseIn,
+                                  elevation: 0,
+                                  backgroundColor: Colors.transparent,
+                                  child: ClipOval(
+                                    child: CachedNetworkImage(
+                                      imageUrl: widget.imageUrl,
+                                      fit: BoxFit.cover,
+                                      width: 80,
+                                      height: 285,
+                                    ),
+                                  ),
+                                ),
+                                Text(
+                                  widget.groupName,
+                                  style: const TextStyle(
+                                      fontSize: 25,
+                                      color: Colors.black,
+                                      decoration: TextDecoration.none),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                      child: CachedNetworkImage(
+                        imageUrl: widget.imageUrl,
+                        imageBuilder: (context, imageProvider) {
+                          return CircleAvatar(
+                            backgroundImage: imageProvider,
+                            maxRadius: 25,
+                          );
+                        },
+                        placeholder: (context, url) => const CircleAvatar(
+                          backgroundColor: Colors.transparent,
+                          backgroundImage:
+                              AssetImage("assets/images/profile.gif"),
+                          maxRadius: 30,
+                        ),
+                        errorWidget: (context, url, error) => CircleAvatar(
+                          radius: 30,
+                          child: Image.asset("assets/images/profile.gif"),
+                        ),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.groupName,
+                        style:
+                            const TextStyle(fontFamily: 'Narrow', fontSize: 23),
+                        textAlign: TextAlign.center,
+                      ),
+                      Text(widget.status,
+                          style: TextStyle(
+                              fontSize: 15,
+                              color: widget.status == "Online"
+                                  ? Colors.green
+                                  : Colors.red[500]))
+                    ],
+                  ),
+                ],
+              )),
       body: KeyboardVisibility(
         onChanged: (isOpened) {
           if (isOpened) {
@@ -500,6 +493,66 @@ class _MessageScreenState extends State<MessageScreen> {
                   stream: stream,
                   builder: (ctx, snapshot) {
                     if (snapshot.hasData) {
+                      if (snapshot.data!.docs.isNotEmpty) {
+                        final latestMessage = snapshot.data!.docs.first;
+                        if (widget.isGroup) {
+                          FirebaseFirestore.instance
+                              .collection("GroupMessages")
+                              .doc(widget.groupName)
+                              .update({
+                            'messageText': latestMessage['message'],
+                            'time': latestMessage['time'].toDate(),
+                            'latestMessageBy': latestMessage['name']
+                          });
+                        } else {
+                          // on sender
+                          FirebaseFirestore.instance
+                              .collection(
+                                  "Messages/${widget.data.email}/Messages")
+                              .doc(widget.EmailR)
+                              .update({
+                            'messageText': latestMessage['message'],
+                            'time': latestMessage['time'].toDate(),
+                          });
+                          // on reciver
+                          FirebaseFirestore.instance
+                              .collection("Messages/${widget.EmailR}/Messages")
+                              .doc(widget.data.email)
+                              .update({
+                            'messageText': latestMessage['message'],
+                            'time': latestMessage['time'].toDate(),
+                          });
+                        }
+                      } else {
+                        if (widget.isGroup) {
+                          FirebaseFirestore.instance
+                              .collection("GroupMessages")
+                              .doc(widget.groupName)
+                              .update({
+                            'messageText': "",
+                            'time': Timestamp.now().toDate(),
+                            'latestMessageBy': ""
+                          });
+                        } else {
+                          // on sender
+                          FirebaseFirestore.instance
+                              .collection(
+                                  "Messages/${widget.data.email}/Messages")
+                              .doc(widget.EmailR)
+                              .update({
+                            'messageText': "",
+                            'time': Timestamp.now().toDate(),
+                          });
+                          // on reciver
+                          FirebaseFirestore.instance
+                              .collection("Messages/${widget.EmailR}/Messages")
+                              .doc(widget.data.email)
+                              .update({
+                            'messageText': "",
+                            'time': Timestamp.now().toDate(),
+                          });
+                        }
+                      }
                       return ListView.builder(
                         controller: scrollController,
                         reverse: isReverse.value,
@@ -515,6 +568,12 @@ class _MessageScreenState extends State<MessageScreen> {
                                     isDelete.value--;
                                   }
                                   set.remove(x.id);
+                                } else if (!set.contains(x.id) &&
+                                    set.isNotEmpty) {
+                                  if (x['email'] != widget.data.email) {
+                                    isDelete.value++;
+                                  }
+                                  set.add(x.id);
                                 }
                               });
                             },
@@ -560,10 +619,7 @@ class _MessageScreenState extends State<MessageScreen> {
               ),
             ),
             Positioned(
-              bottom: MediaQuery
-                  .of(context)
-                  .viewInsets
-                  .bottom,
+              bottom: MediaQuery.of(context).viewInsets.bottom,
               left: 0,
               right: 0,
               child: Align(
@@ -629,18 +685,8 @@ class _MessageScreenState extends State<MessageScreen> {
                               // new message to group
                               FirebaseFirestore.instance
                                   .collection(
-                                  "GroupMessages/${widget.groupName}/Messages")
+                                      "GroupMessages/${widget.groupName}/Messages")
                                   .add(firebaseData);
-
-                              // last message user info
-                              FirebaseFirestore.instance
-                                  .collection("GroupMessages")
-                                  .doc(widget.groupName)
-                                  .update({
-                                "messageText": MessageScreen.myController.text,
-                                "time": Timestamp.now(),
-                                "latestMessageBy": widget.data.name['First']
-                              });
 
                               // notification to all users
                               // FirebaseFirestore.instance
@@ -686,40 +732,16 @@ class _MessageScreenState extends State<MessageScreen> {
                               // sender user
                               FirebaseFirestore.instance
                                   .collection(
-                                  "Messages/${widget.data
-                                      .email}/Messages/${widget
-                                      .EmailR}/Messages")
+                                      "Messages/${widget.data.email}/Messages/${widget.EmailR}/Messages")
                                   .add(firebaseUserData)
-                                  .then((value) =>
-                              {
-                                // receiver user
-                                FirebaseFirestore.instance
-                                    .collection(
-                                    "Messages/${widget.EmailR}/Messages/${widget
-                                        .data.email}/Messages")
-                                    .doc(value.id)
-                                    .set(firebaseUserData)
-                              });
-
-                              // last message info
-                              FirebaseFirestore.instance
-                                  .collection(
-                                  "Messages/${widget.data.email}/Messages")
-                                  .doc(widget.EmailR)
-                                  .update({
-                                "messageText": MessageScreen.myController.text,
-                                "time": Timestamp.now(),
-                              });
-
-                              // last message info
-                              FirebaseFirestore.instance
-                                  .collection(
-                                  "Messages/${widget.EmailR}/Messages")
-                                  .doc(widget.data.email)
-                                  .update({
-                                "messageText": MessageScreen.myController.text,
-                                "time": Timestamp.now(),
-                              });
+                                  .then((value) => {
+                                        // receiver user
+                                        FirebaseFirestore.instance
+                                            .collection(
+                                                "Messages/${widget.EmailR}/Messages/${widget.data.email}/Messages")
+                                            .doc(value.id)
+                                            .set(firebaseUserData)
+                                      });
 
                               // notification to receiver
                               // String receiver = await FirebaseFirestore
