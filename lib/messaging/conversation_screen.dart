@@ -24,7 +24,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
         .collection("Faculty_Detail")
         .get()
         .then((value) => {
-              value.docs.forEach((element){
+              value.docs.forEach((element) {
                 Map<String, dynamic> data = element.data();
                 list.add(data['Email']);
               })

@@ -70,8 +70,8 @@ void main() async {
             // 's_login_form': (context) =>
             // const KeyboardVisibilityProvider(child: StudentLogin()),
             'chat_screen': (context) => const ConversationScreen(
-                  isFaculty: false,
-                )
+              isFaculty: false,
+            )
           },
         ),
       )));
@@ -139,10 +139,10 @@ class _MainState extends State<Main> {
       Map data = event.toMap();
       data["data"]["event"] != 'true'
           ? NotificationAPI.postLocalNotification(
-              id: id,
-              title: data["notification"]['title'],
-              message: data["notification"]['body'],
-              image: data["notification"]['image'])
+          id: id,
+          title: data["notification"]['title'],
+          message: data["notification"]['body'],
+          image: data["notification"]['image'])
           : showAlert(context, data);
     });
 
@@ -176,9 +176,9 @@ class _MainState extends State<Main> {
                   ),
                   data["data"]["image"].isNotEmpty
                       ? Container(
-                          decoration: BoxDecoration(
-                              image: DecorationImage(image: NetworkImage(data["data"]["image"])), shape: BoxShape.circle),
-                        )
+                    decoration: BoxDecoration(
+                        image: DecorationImage(image: NetworkImage(data["data"]["image"])), shape: BoxShape.circle),
+                  )
                       : Container(),
                 ],
               ),

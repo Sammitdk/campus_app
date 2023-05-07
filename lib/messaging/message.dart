@@ -19,7 +19,7 @@ class Message extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (messageType == "left") {
-      if(text.isNotEmpty){
+      if (text.isNotEmpty) {
         return Padding(
           padding: const EdgeInsetsDirectional.only(top: 10, bottom: 10),
           child: Text(
@@ -28,7 +28,7 @@ class Message extends StatelessWidget {
             style: const TextStyle(color: Colors.red),
           ),
         );
-      }else{
+      } else {
         return Padding(
           padding: const EdgeInsetsDirectional.only(top: 10, bottom: 10),
           child: Text(
@@ -38,7 +38,7 @@ class Message extends StatelessWidget {
           ),
         );
       }
-    } else if(messageType == "joined"){
+    } else if (messageType == "joined") {
       return Padding(
         padding: const EdgeInsetsDirectional.only(top: 10, bottom: 10),
         child: Text(
@@ -47,8 +47,7 @@ class Message extends StatelessWidget {
           style: const TextStyle(color: Colors.green),
         ),
       );
-    }
-    else {
+    } else {
       return Container(
         // asymmetric padding
         padding: EdgeInsets.fromLTRB(
@@ -67,10 +66,15 @@ class Message extends StatelessWidget {
                 child: DecoratedBox(
                   // chat bubble decoration
                   decoration: BoxDecoration(
-                    color: isCurrentUser ? Colors.indigo[300] : Colors.grey[300],
+                    color:
+                        isCurrentUser ? Colors.indigo[300] : Colors.grey[300],
                     borderRadius: BorderRadius.only(
-                      topLeft: isCurrentUser ? const Radius.circular(20) : Radius.zero,
-                      topRight: isCurrentUser ? Radius.zero : const Radius.circular(20),
+                      topLeft: isCurrentUser
+                          ? const Radius.circular(20)
+                          : Radius.zero,
+                      topRight: isCurrentUser
+                          ? Radius.zero
+                          : const Radius.circular(20),
                       bottomRight: const Radius.circular(20),
                       bottomLeft: const Radius.circular(20),
                     ),
@@ -91,18 +95,22 @@ class Message extends StatelessWidget {
                           ),
                         Text(
                           text,
-                          style: TextStyle(color: isCurrentUser ? Colors.white : Colors.black87,fontSize: 16),
+                          style: TextStyle(
+                              color:
+                                  isCurrentUser ? Colors.white : Colors.black87,
+                              fontSize: 16),
                         ),
                         Align(
                           alignment: Alignment.bottomRight,
                           child: Container(
-                            margin: const EdgeInsets.only(top: 3,left: 10),
+                            margin: const EdgeInsets.only(top: 3, left: 10),
                             child: Text(
                               time,
                               textAlign: TextAlign.end,
                               style: TextStyle(
                                 fontSize: 9,
-                                color: isCurrentUser ? Colors.white : Colors.black,
+                                color:
+                                    isCurrentUser ? Colors.white : Colors.black,
                               ),
                             ),
                           ),
