@@ -12,6 +12,7 @@ class User extends StatelessWidget {
   final dynamic EmailR;
   final dynamic storeData;
   final dynamic facultyList;
+  final List admins;
 
   const User({
     Key? key,
@@ -19,6 +20,7 @@ class User extends StatelessWidget {
     required this.imageUrl,
     required this.name,
     required this.branch,
+    required this.admins,
     this.year,
     this.facultyList,
     required this.EmailR,
@@ -27,7 +29,7 @@ class User extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(15),
       child: Row(children: <Widget>[
         CachedNetworkImage(
           imageUrl: imageUrl,
@@ -54,6 +56,13 @@ class User extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
+                admins.contains(EmailR)
+                    ? const Text(
+                        "Group Admin",
+                        style: TextStyle(fontSize: 12, color: Colors.green),
+                        textAlign: TextAlign.end,
+                      )
+                    : const SizedBox(),
                 Text(
                   "${name['First'].toString().capitalize()} ${name['Last'].toString().capitalize()}",
                   style: const TextStyle(fontSize: 16),

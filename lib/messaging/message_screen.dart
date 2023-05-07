@@ -560,38 +560,44 @@ class _MessageScreenState extends State<MessageScreen> {
                         itemCount: snapshot.data?.docs.length,
                         itemBuilder: (ctx, index) {
                           QueryDocumentSnapshot x = snapshot.data!.docs[index];
-                          return InkWell(
+                          return GestureDetector(
                             onTap: () {
-                              setState(() {
-                                if (set.contains(x.id)) {
-                                  if (x['email'] != widget.data.email) {
-                                    isDelete.value--;
+                              if ((x['messageType'] == 'groupMessage' ||
+                                  x['messageType'] == 'userMessage')) {
+                                setState(() {
+                                  if (set.contains(x.id)) {
+                                    if (x['email'] != widget.data.email) {
+                                      isDelete.value--;
+                                    }
+                                    set.remove(x.id);
+                                  } else if (!set.contains(x.id) &&
+                                      set.isNotEmpty) {
+                                    if (x['email'] != widget.data.email) {
+                                      isDelete.value++;
+                                    }
+                                    set.add(x.id);
                                   }
-                                  set.remove(x.id);
-                                } else if (!set.contains(x.id) &&
-                                    set.isNotEmpty) {
-                                  if (x['email'] != widget.data.email) {
-                                    isDelete.value++;
-                                  }
-                                  set.add(x.id);
-                                }
-                              });
+                                });
+                              }
                             },
                             onLongPress: () {
-                              copy.value = x['message'];
-                              setState(() {
-                                if (!set.contains(x.id)) {
-                                  if (x['email'] != widget.data.email) {
-                                    isDelete.value++;
+                              if ((x['messageType'] == 'groupMessage' ||
+                                  x['messageType'] == 'userMessage')) {
+                                copy.value = x['message'];
+                                setState(() {
+                                  if (!set.contains(x.id)) {
+                                    if (x['email'] != widget.data.email) {
+                                      isDelete.value++;
+                                    }
+                                    set.add(x.id);
+                                  } else {
+                                    if (x['email'] != widget.data.email) {
+                                      isDelete.value--;
+                                    }
+                                    set.remove(x.id);
                                   }
-                                  set.add(x.id);
-                                } else {
-                                  if (x['email'] != widget.data.email) {
-                                    isDelete.value--;
-                                  }
-                                  set.remove(x.id);
-                                }
-                              });
+                                });
+                              }
                             },
                             child: Container(
                               margin: const EdgeInsets.only(top: 5, bottom: 5),

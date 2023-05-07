@@ -78,6 +78,7 @@ class NewMessage extends HookWidget {
                                     EmailR: x['Email'],
                                     storeData: data,
                                     facultyList: facultyList,
+                                    admins: const [],
                                   );
                                 } else {
                                   return const SizedBox();
@@ -155,6 +156,7 @@ class NewMessage extends HookWidget {
                                     EmailR: x['Email'],
                                     storeData: data,
                                     facultyList: facultyList,
+                                    admins: const [],
                                   );
                                 } else {
                                   return const SizedBox();
