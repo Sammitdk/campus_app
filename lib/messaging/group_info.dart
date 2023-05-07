@@ -11,12 +11,13 @@ class GroupInfo extends StatelessWidget {
   final dynamic data;
   final dynamic facultyList;
 
-  const GroupInfo({Key? key,
-    required this.data,
-    required this.groupName,
-    required this.imgUrl,
-    this.facultyList,
-    required this.users})
+  const GroupInfo(
+      {Key? key,
+      required this.data,
+      required this.groupName,
+      required this.imgUrl,
+      this.facultyList,
+      required this.users})
       : super(key: key);
 
   Stream<List<dynamic>> getInfoStream() async* {
@@ -24,12 +25,11 @@ class GroupInfo extends StatelessWidget {
 
     // listen to changes in the document
     Stream<DocumentSnapshot> snapshotStream =
-    FirebaseFirestore.instance.doc("GroupMessages/$groupName").snapshots();
+        FirebaseFirestore.instance.doc("GroupMessages/$groupName").snapshots();
 
     // fetch initial data
-    DocumentSnapshot value = await FirebaseFirestore.instance
-        .doc("GroupMessages/$groupName")
-        .get();
+    DocumentSnapshot value =
+        await FirebaseFirestore.instance.doc("GroupMessages/$groupName").get();
     Map<String, dynamic> temp = value.data() as Map<String, dynamic>;
     QuerySnapshot<Map<String, dynamic>> ans = await FirebaseFirestore.instance
         .collection("Faculty_Detail")
@@ -103,14 +103,13 @@ class GroupInfo extends StatelessWidget {
                             radius: 100,
                           );
                         },
-                        placeholder: (context, url) =>
-                        const CircleAvatar(
+                        placeholder: (context, url) => const CircleAvatar(
                           backgroundImage:
-                          AssetImage("assets/images/profile.gif"),
+                              AssetImage("assets/images/profile.gif"),
                           maxRadius: 30,
                         ),
                         errorWidget: (context, url, error) =>
-                        const Icon(Icons.error),
+                            const Icon(Icons.error),
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -137,7 +136,8 @@ class GroupInfo extends StatelessWidget {
                         ),
                       ];
                     }, onSelected: (value) {
-                      if (value == 0) {} else if (value == 1) {
+                      if (value == 0) {
+                      } else if (value == 1) {
                         FirebaseFirestore.instance
                             .collection("GroupMessages")
                             .doc(groupName)
@@ -169,7 +169,7 @@ class GroupInfo extends StatelessWidget {
                   child: ElevatedButton(
                     style: ButtonStyle(
                         backgroundColor:
-                        MaterialStateProperty.all(Colors.green[400])),
+                            MaterialStateProperty.all(Colors.green[400])),
                     onPressed: () {
                       getInfoStream();
                     },
@@ -178,11 +178,10 @@ class GroupInfo extends StatelessWidget {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (_) =>
-                                    AddToGroup(
+                                builder: (_) => AddToGroup(
                                       data: data,
-                                      users: users,
                                       groupName: groupName,
+                                      users: users,
                                     )));
                       },
                       child: Row(
@@ -209,15 +208,65 @@ class GroupInfo extends StatelessWidget {
                             itemCount: snapshot.data!.length,
                             itemBuilder: (context, i) {
                               Map<String, dynamic> x = snapshot.data![i];
-                              return User(
-                                imageUrl: x['imgUrl'],
-                                name: x['Name'],
-                                branch: x['Branch'],
-                                year: x['Year'],
-                                EmailR: x['Email'],
-                                storeData: data,
-                                facultyList: facultyList,
-
+                              return InkWell(
+                                onLongPress: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: const Text('Remove From Group'),
+                                        content: const Text(
+                                            'Are you sure you want to this person?'),
+                                        actions: [
+                                          TextButton(
+                                            child: const Text('Cancel'),
+                                            onPressed: () {
+                                              Navigator.pop(context,
+                                                  false); // Return false when cancel is pressed
+                                            },
+                                          ),
+                                          TextButton(
+                                            child: const Text('Remove'),
+                                            onPressed: () {
+                                              FirebaseFirestore.instance
+                                                  .collection("GroupMessages")
+                                                  .doc(groupName)
+                                                  .update({
+                                                "users": FieldValue.arrayRemove(
+                                                    [x['Email']]),
+                                              });
+                                              FirebaseFirestore.instance
+                                                  .collection(
+                                                      "GroupMessages/$groupName/Messages")
+                                                  .add(
+                                                {
+                                                  "messageType": "left",
+                                                  "email": data.email,
+                                                  "name": x['Name']['First'],
+                                                  "time": Timestamp.now(),
+                                                  "users":
+                                                      FieldValue.arrayUnion(
+                                                          [data.email]),
+                                                  "message": data.name['First']
+                                                },
+                                              );
+                                              Navigator.pop(context, false);
+                                            },
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                },
+                                child: User(
+                                  imageUrl: x['imgUrl'],
+                                  name: x['Name'],
+                                  branch: x['Branch'],
+                                  year: x['Year'],
+                                  EmailR: x['Email'],
+                                  storeData: data,
+                                  facultyList: facultyList,
+                                ),
                               );
                             });
                       } else {

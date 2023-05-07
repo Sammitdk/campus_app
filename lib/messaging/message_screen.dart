@@ -239,7 +239,7 @@ class _MessageScreenState extends State<MessageScreen> {
                                       imgUrl: widget.imageUrl,
                                       groupName: widget.groupName,
                                       data: widget.data,
-                                  facultyList: widget.facultyList,
+                                      facultyList: widget.facultyList,
                                     )));
                       },
                       child: CachedNetworkImage(

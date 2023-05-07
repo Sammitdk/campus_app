@@ -24,17 +24,17 @@ class ConversationList extends HookWidget {
 
   const ConversationList(
       {Key? key,
-        this.EmailR,
-        this.users,
-        required this.name,
-        required this.isGroup,
-        required this.messageText,
-        required this.imageUrl,
-        required this.time,
-        required this.isMessageRead,
-        required this.facultyList,
-        required this.latestMessageBy,
-        required this.count})
+      this.EmailR,
+      this.users,
+      required this.name,
+      required this.isGroup,
+      required this.messageText,
+      required this.imageUrl,
+      required this.time,
+      required this.isMessageRead,
+      required this.facultyList,
+      required this.latestMessageBy,
+      required this.count})
       : super(key: key);
 
   @override
@@ -54,8 +54,8 @@ class ConversationList extends HookWidget {
         });
       }
       return () => {
-        if (isGroup == false) {onlineStream.cancel()}
-      };
+            if (isGroup == false) {onlineStream.cancel()}
+          };
     }, []);
 
     if (isGroup) {
@@ -80,13 +80,13 @@ class ConversationList extends HookWidget {
                     context,
                     MaterialPageRoute(
                         builder: (_) => MessageScreen(
-                          facultyList: facultyList,
-                          users: users,
-                          groupName: name,
-                          imageUrl: imageUrl,
-                          isGroup: isGroup,
-                          data: data,
-                        )));
+                              facultyList: facultyList,
+                              users: users,
+                              groupName: name,
+                              imageUrl: imageUrl,
+                              isGroup: isGroup,
+                              data: data,
+                            )));
               } else {
                 FirebaseFirestore.instance
                     .collection("Messages/${data.email}/Messages")
@@ -100,13 +100,13 @@ class ConversationList extends HookWidget {
                     context,
                     MaterialPageRoute(
                         builder: (_) => MessageScreen(
-                          status: onlineStatus.value,
-                          groupName: name,
-                          imageUrl: imageUrl,
-                          isGroup: false,
-                          EmailR: EmailR,
-                          data: data,
-                        )));
+                              status: onlineStatus.value,
+                              groupName: name,
+                              imageUrl: imageUrl,
+                              isGroup: false,
+                              EmailR: EmailR,
+                              data: data,
+                            )));
               }
             },
             child: IgnorePointer(
@@ -128,11 +128,11 @@ class ConversationList extends HookWidget {
                             },
                             placeholder: (context, url) => const CircleAvatar(
                               backgroundImage:
-                              AssetImage("assets/images/profile.gif"),
+                                  AssetImage("assets/images/profile.gif"),
                               maxRadius: 30,
                             ),
                             errorWidget: (context, url, error) =>
-                            const Icon(Icons.error),
+                                const Icon(Icons.error),
                             fit: BoxFit.cover,
                           ),
                           const SizedBox(
@@ -155,34 +155,34 @@ class ConversationList extends HookWidget {
                                     children: [
                                       isGroup
                                           ? Text(
-                                        "$latestMessageBy : ",
-                                        style: TextStyle(
-                                            fontSize: 13,
-                                            color: Colors.grey.shade600,
-                                            fontWeight: isMessageRead
-                                                ? FontWeight.bold
-                                                : FontWeight.normal),
-                                      )
+                                              "$latestMessageBy : ",
+                                              style: TextStyle(
+                                                  fontSize: 13,
+                                                  color: Colors.grey.shade600,
+                                                  fontWeight: isMessageRead
+                                                      ? FontWeight.bold
+                                                      : FontWeight.normal),
+                                            )
                                           : const SizedBox(),
                                       messageText.length >= 10
                                           ? Text(
-                                        "${messageText.substring(0, 10)}...",
-                                        style: TextStyle(
-                                            fontSize: 15,
-                                            color: Colors.grey.shade600,
-                                            fontWeight: !isMessageRead
-                                                ? FontWeight.bold
-                                                : FontWeight.normal),
-                                      )
+                                              "${messageText.substring(0, 10)}...",
+                                              style: TextStyle(
+                                                  fontSize: 15,
+                                                  color: Colors.grey.shade600,
+                                                  fontWeight: !isMessageRead
+                                                      ? FontWeight.bold
+                                                      : FontWeight.normal),
+                                            )
                                           : Text(
-                                        messageText,
-                                        style: TextStyle(
-                                            fontSize: 15,
-                                            color: Colors.grey.shade600,
-                                            fontWeight: !isMessageRead
-                                                ? FontWeight.bold
-                                                : FontWeight.normal),
-                                      ),
+                                              messageText,
+                                              style: TextStyle(
+                                                  fontSize: 15,
+                                                  color: Colors.grey.shade600,
+                                                  fontWeight: !isMessageRead
+                                                      ? FontWeight.bold
+                                                      : FontWeight.normal),
+                                            ),
                                     ],
                                   ),
                                 ],
@@ -208,16 +208,16 @@ class ConversationList extends HookWidget {
                         countState.value == 0
                             ? const SizedBox()
                             : Container(
-                          height: 20,
-                          width: 20,
-                          decoration: BoxDecoration(
-                              color: Colors.green[400],
-                              shape: BoxShape.circle),
-                          child: Text(countState.value.toString(),
-                              textAlign: TextAlign.center,
-                              style:
-                              const TextStyle(color: Colors.white)),
-                        ),
+                                height: 20,
+                                width: 20,
+                                decoration: BoxDecoration(
+                                    color: Colors.green[400],
+                                    shape: BoxShape.circle),
+                                child: Text(countState.value.toString(),
+                                    textAlign: TextAlign.center,
+                                    style:
+                                        const TextStyle(color: Colors.white)),
+                              ),
                       ],
                     ),
                   ],
