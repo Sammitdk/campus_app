@@ -18,36 +18,7 @@ class Message extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (messageType == "left") {
-      if (text.isNotEmpty) {
-        return Padding(
-          padding: const EdgeInsetsDirectional.only(top: 10, bottom: 10),
-          child: Text(
-            "${text.capitalize()} removed ${name.capitalize()}",
-            textAlign: TextAlign.center,
-            style: const TextStyle(color: Colors.red),
-          ),
-        );
-      } else {
-        return Padding(
-          padding: const EdgeInsetsDirectional.only(top: 10, bottom: 10),
-          child: Text(
-            "${name.capitalize()} Left",
-            textAlign: TextAlign.center,
-            style: const TextStyle(color: Colors.red),
-          ),
-        );
-      }
-    } else if (messageType == "joined") {
-      return Padding(
-        padding: const EdgeInsetsDirectional.only(top: 10, bottom: 10),
-        child: Text(
-          "${text.capitalize()} added ${name.capitalize()}",
-          textAlign: TextAlign.center,
-          style: const TextStyle(color: Colors.green),
-        ),
-      );
-    } else {
+    if ((messageType == 'groupMessage' || messageType == 'userMessage')) {
       return Container(
         // asymmetric padding
         padding: EdgeInsets.fromLTRB(
@@ -124,6 +95,55 @@ class Message extends StatelessWidget {
           ),
         ),
       );
+    } else if (messageType == "left") {
+      if (text.isNotEmpty) {
+        return Padding(
+          padding: const EdgeInsetsDirectional.only(top: 10, bottom: 10),
+          child: Text(
+            "${text.capitalize()} removed ${name.capitalize()}",
+            textAlign: TextAlign.center,
+            style: const TextStyle(color: Colors.red),
+          ),
+        );
+      } else {
+        return Padding(
+          padding: const EdgeInsetsDirectional.only(top: 10, bottom: 10),
+          child: Text(
+            "${name.capitalize()} Left",
+            textAlign: TextAlign.center,
+            style: const TextStyle(color: Colors.red),
+          ),
+        );
+      }
+    } else if (messageType == "joined") {
+      return Padding(
+        padding: const EdgeInsetsDirectional.only(top: 10, bottom: 10),
+        child: Text(
+          "${text.capitalize()} added ${name.capitalize()}",
+          textAlign: TextAlign.center,
+          style: const TextStyle(color: Colors.green),
+        ),
+      );
+    } else {
+      if (messageType == "adminAdded") {
+        return Padding(
+          padding: const EdgeInsetsDirectional.only(top: 10, bottom: 10),
+          child: Text(
+            "${text.capitalize()} is now admin by ${name.capitalize()}",
+            textAlign: TextAlign.center,
+            style: const TextStyle(color: Colors.green),
+          ),
+        );
+      } else {
+        return Padding(
+          padding: const EdgeInsetsDirectional.only(top: 10, bottom: 10),
+          child: Text(
+            "${text.capitalize()} is removed from admin by ${name.capitalize()}",
+            textAlign: TextAlign.center,
+            style: const TextStyle(color: Colors.red),
+          ),
+        );
+      }
     }
   }
 }

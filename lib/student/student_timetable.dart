@@ -54,14 +54,16 @@ class _StudentTimeTableState extends State<StudentTimeTable> {
                     color: Colors.indigo[300],
                     child: Row(
                       children: [
-                        Expanded(
+                        const Expanded(
                             child: Text(
                           "Day",
                           style: TextStyle(
-                              fontSize: 25, color: Colors.indigo[400]),
+                            fontWeight: FontWeight.bold,
+                              fontSize: 25, color: Colors.white),
                           textAlign: TextAlign.center,
                         )),
                         Expanded(
+                          flex: 3,
                           child: Container(
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(15),
