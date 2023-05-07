@@ -1,5 +1,6 @@
 import 'package:campus_subsystem/messaging/conversation_screen.dart';
 import 'package:campus_subsystem/redux/store.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,7 @@ import 'firebase/signIn.dart';
 import 'firebase/wrapper.dart';
 import 'firebase_options.dart';
 import 'loading_page.dart';
+import 'no_internet.dart';
 
 extension StringExtension on String {
   String capitalize() {
@@ -38,7 +40,11 @@ void main() async {
   //   // Or Brightness.dark
   // );
 
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  try {
+    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  } catch (e) {
+    print("wwwwwwwwwwwwwwwwwwwww${e.toString()}");
+  }
 
   // notification permissions
   FlutterLocalNotificationsPlugin().initialize(const InitializationSettings(
@@ -64,8 +70,8 @@ void main() async {
             // 's_login_form': (context) =>
             // const KeyboardVisibilityProvider(child: StudentLogin()),
             'chat_screen': (context) => const ConversationScreen(
-                  isFaculty: false,
-                )
+              isFaculty: false,
+            )
           },
         ),
       )));
@@ -79,10 +85,53 @@ class Main extends StatefulWidget {
 }
 
 class _MainState extends State<Main> {
+  late ConnectivityResult _previous;
+
+  bool isinternet = true;
+
   @override
   void initState() {
     int id = 0;
     super.initState();
+
+    Connectivity().onConnectivityChanged.listen((ConnectivityResult event) {
+      print("${event} aaaaaaaaaaaaaaaaaaaaaaaaaa");
+      switch (event) {
+        case ConnectivityResult.none:
+          isinternet = false;
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            behavior: SnackBarBehavior.floating,
+            elevation: 20,
+            content: const Text("No Internet Connection"),
+            // duration: Duration(seconds: 10),
+            action: SnackBarAction(
+                label: "Try again",
+                onPressed: () {
+                  setState(() {});
+                }),
+          ));
+          // Navigator.of(context).push(MaterialPageRoute(builder: (_) => const NoInternet()));
+          break;
+        case ConnectivityResult.mobile:
+        case ConnectivityResult.wifi:
+          if (!isinternet) {
+            // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Internet")));
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              behavior: SnackBarBehavior.floating,
+              elevation: 20,
+              content: Text("Internet Connection is back"),
+              // action: SnackBarAction(
+              //     label: "Try again",
+              //     onPressed: () {
+              //       setState(() {});
+              //     }),
+            ));
+          }
+          // Navigator.of(context).ca
+
+          break;
+      }
+    });
 
     // listen notification on foreground
     FirebaseMessaging.onMessage.listen((event) {
@@ -90,10 +139,10 @@ class _MainState extends State<Main> {
       Map data = event.toMap();
       data["data"]["event"] != 'true'
           ? NotificationAPI.postLocalNotification(
-              id: id,
-              title: data["notification"]['title'],
-              message: data["notification"]['body'],
-              image: data["notification"]['image'])
+          id: id,
+          title: data["notification"]['title'],
+          message: data["notification"]['body'],
+          image: data["notification"]['image'])
           : showAlert(context, data);
     });
 
@@ -127,9 +176,9 @@ class _MainState extends State<Main> {
                   ),
                   data["data"]["image"].isNotEmpty
                       ? Container(
-                          decoration: BoxDecoration(
-                              image: DecorationImage(image: NetworkImage(data["data"]["image"])), shape: BoxShape.circle),
-                        )
+                    decoration: BoxDecoration(
+                        image: DecorationImage(image: NetworkImage(data["data"]["image"])), shape: BoxShape.circle),
+                  )
                       : Container(),
                 ],
               ),

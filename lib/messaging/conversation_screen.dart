@@ -2,20 +2,49 @@ import 'package:campus_subsystem/messaging/conversations.dart';
 import 'package:campus_subsystem/messaging/new_message_user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import '../redux/reducer.dart';
 
-class ConversationScreen extends HookWidget {
-  const ConversationScreen({Key? key, required bool isFaculty}) : super(key: key);
+class ConversationScreen extends StatefulWidget {
+  const ConversationScreen({Key? key, required bool isFaculty})
+      : super(key: key);
+
+  @override
+  State<ConversationScreen> createState() => _ConversationScreenState();
+}
+
+class _ConversationScreenState extends State<ConversationScreen> {
+  List<dynamic> facultyList = [];
+
+  void faculty() async {
+    List list = [];
+    await FirebaseFirestore.instance
+        .collection("Faculty_Detail")
+        .get()
+        .then((value) => {
+              value.docs.forEach((element) {
+                Map<String, dynamic> data = element.data();
+                list.add(data['Email']);
+              })
+            });
+    setState(() {
+      facultyList = list;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    faculty();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return  StoreConnector<AppState, AppState>(
+    return StoreConnector<AppState, AppState>(
       converter: (store) => store.state,
-      builder: (_,state){
+      builder: (_, state) {
         return DefaultTabController(
           length: 2,
           child: Scaffold(
@@ -24,8 +53,13 @@ class ConversationScreen extends HookWidget {
                   foregroundColor: Colors.black,
                   child: const Icon(Icons.messenger_outline_outlined),
                   onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (_) => NewMessage(data: state,)));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => NewMessage(
+                                  facultyList: facultyList,
+                                  data: state,
+                                )));
                   }),
               appBar: AppBar(
                 automaticallyImplyLeading: false,
@@ -66,7 +100,8 @@ class ConversationScreen extends HookWidget {
                         child: SingleChildScrollView(
                           child: StreamBuilder(
                               stream: FirebaseFirestore.instance
-                                  .collection("Messages/${state.email}/Messages")
+                                  .collection(
+                                      "Messages/${state.email}/Messages")
                                   .orderBy('time', descending: true)
                                   .snapshots(),
                               builder:
@@ -79,7 +114,7 @@ class ConversationScreen extends HookWidget {
                                       itemCount: snapshot.data?.docs.length,
                                       itemBuilder: (ctx, index) {
                                         QueryDocumentSnapshot x =
-                                        snapshot.data!.docs[index];
+                                            snapshot.data!.docs[index];
                                         return ConversationList(
                                           name: x['groupName'],
                                           messageText: x['messageText'],
@@ -92,6 +127,7 @@ class ConversationScreen extends HookWidget {
                                           isGroup: x["isGroup"],
                                           EmailR: x['email'],
                                           imageUrl: x["imgUrl"],
+                                          facultyList: facultyList,
                                         );
                                       });
                                 } else {
@@ -153,8 +189,9 @@ class ConversationScreen extends HookWidget {
                                       itemCount: snapshot.data?.docs.length,
                                       itemBuilder: (ctx, index) {
                                         QueryDocumentSnapshot x =
-                                        snapshot.data!.docs[index];
+                                            snapshot.data!.docs[index];
                                         return ConversationList(
+                                          facultyList: facultyList,
                                           users: x['users'],
                                           name: x['groupName'],
                                           messageText: x['messageText'],
@@ -170,9 +207,9 @@ class ConversationScreen extends HookWidget {
                                       });
                                 } else {
                                   return Center(
-                                      child:
-                                      LoadingAnimationWidget.staggeredDotsWave(
-                                          size: 50, color: Colors.red));
+                                      child: LoadingAnimationWidget
+                                          .staggeredDotsWave(
+                                              size: 50, color: Colors.red));
                                 }
                               }),
                         ),

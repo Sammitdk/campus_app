@@ -5,11 +5,13 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 
 class NewMessage extends HookWidget {
   final dynamic data;
-  const NewMessage({Key? key ,required this.data }) : super(key: key);
+  final List<dynamic> facultyList;
+
+  const NewMessage({Key? key, required this.data, required this.facultyList})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-
     dynamic futureDocReferenceStudent = useState(FirebaseFirestore.instance
         .collection("Student_Detail")
         .orderBy("Name.First")
@@ -18,15 +20,16 @@ class NewMessage extends HookWidget {
         .collection("Faculty_Detail")
         .orderBy("Name.First")
         .get());
+
     return DefaultTabController(
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.blueGrey[200],
-          foregroundColor: Colors.black,
+          backgroundColor: Colors.indigo[300],
+          foregroundColor: Colors.white,
           title: const TabBar(
             indicatorSize: TabBarIndicatorSize.label,
-            indicatorColor: Colors.white,
+            indicatorColor: Colors.green,
             tabs: [
               Text(
                 "Students",
@@ -34,7 +37,7 @@ class NewMessage extends HookWidget {
                 style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black),
+                    color: Colors.white),
               ),
               Text(
                 "Faculty",
@@ -42,7 +45,7 @@ class NewMessage extends HookWidget {
                 style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black),
+                    color: Colors.white),
               ),
             ],
           ),
@@ -58,14 +61,15 @@ class NewMessage extends HookWidget {
                     bottom: 60,
                     child: FutureBuilder(
                       future: futureDocReferenceStudent.value,
-                      builder:
-                          (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                      builder: (BuildContext context,
+                          AsyncSnapshot<dynamic> snapshot) {
                         if (snapshot.hasData) {
                           return ListView.builder(
                               itemCount: snapshot.data!.docs.length,
                               itemBuilder: (context, i) {
-                                QueryDocumentSnapshot x = snapshot.data!.docs[i];
-                                if(x['Email'] != data.email){
+                                QueryDocumentSnapshot x =
+                                    snapshot.data!.docs[i];
+                                if (x['Email'] != data.email) {
                                   return User(
                                     imageUrl: x['imgUrl'],
                                     name: x['Name'],
@@ -73,8 +77,9 @@ class NewMessage extends HookWidget {
                                     year: x['Year'],
                                     EmailR: x['Email'],
                                     storeData: data,
+                                    facultyList: facultyList,
                                   );
-                                }else{
+                                } else {
                                   return const SizedBox();
                                 }
                               });
@@ -90,15 +95,17 @@ class NewMessage extends HookWidget {
                   right: 0,
                   bottom: 0,
                   child: Padding(
-                    padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
+                    padding:
+                        const EdgeInsets.only(top: 16, left: 16, right: 16),
                     child: TextField(
                       onChanged: (value) {
-                        futureDocReferenceStudent.value = FirebaseFirestore.instance
+                        futureDocReferenceStudent.value = FirebaseFirestore
+                            .instance
                             .collection("Student_Detail")
                             .where("Name.First",
-                            isGreaterThanOrEqualTo: value.toLowerCase())
+                                isGreaterThanOrEqualTo: value.toLowerCase())
                             .where("Name.First",
-                            isLessThan: '${value.toLowerCase()}z')
+                                isLessThan: '${value.toLowerCase()}z')
                             .orderBy("Name.First")
                             .get();
                       },
@@ -115,7 +122,8 @@ class NewMessage extends HookWidget {
                         contentPadding: const EdgeInsets.all(8),
                         enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20),
-                            borderSide: BorderSide(color: Colors.grey.shade100)),
+                            borderSide:
+                                BorderSide(color: Colors.grey.shade100)),
                       ),
                     ),
                   ),
@@ -131,22 +139,24 @@ class NewMessage extends HookWidget {
                     bottom: 60,
                     child: FutureBuilder(
                       future: futureDocReferenceFaculty.value,
-                      builder:
-                          (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                      builder: (BuildContext context,
+                          AsyncSnapshot<dynamic> snapshot) {
                         if (snapshot.hasData) {
                           return ListView.builder(
                               itemCount: snapshot.data!.docs.length,
                               itemBuilder: (context, i) {
-                                QueryDocumentSnapshot x = snapshot.data!.docs[i];
-                                if(x['Email'] != data.email){
+                                QueryDocumentSnapshot x =
+                                    snapshot.data!.docs[i];
+                                if (x['Email'] != data.email) {
                                   return User(
                                     imageUrl: x['imgUrl'],
                                     name: x['Name'],
                                     branch: x['Branch'],
                                     EmailR: x['Email'],
                                     storeData: data,
+                                    facultyList: facultyList,
                                   );
-                                }else{
+                                } else {
                                   return const SizedBox();
                                 }
                               });
@@ -162,14 +172,17 @@ class NewMessage extends HookWidget {
                   right: 0,
                   bottom: 0,
                   child: Padding(
-                    padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
+                    padding:
+                        const EdgeInsets.only(top: 16, left: 16, right: 16),
                     child: TextField(
                       onChanged: (value) {
-                        futureDocReferenceFaculty.value = FirebaseFirestore.instance
+                        futureDocReferenceFaculty.value = FirebaseFirestore
+                            .instance
                             .collection("Faculty_Detail")
-                            .where("Name.First", isGreaterThanOrEqualTo: value.toLowerCase())
                             .where("Name.First",
-                            isLessThan: '${value.toLowerCase()}z')
+                                isGreaterThanOrEqualTo: value.toLowerCase())
+                            .where("Name.First",
+                                isLessThan: '${value.toLowerCase()}z')
                             .orderBy("Name.First")
                             .get();
                       },
@@ -186,7 +199,8 @@ class NewMessage extends HookWidget {
                         contentPadding: const EdgeInsets.all(8),
                         enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20),
-                            borderSide: BorderSide(color: Colors.grey.shade100)),
+                            borderSide:
+                                BorderSide(color: Colors.grey.shade100)),
                       ),
                     ),
                   ),
@@ -199,5 +213,3 @@ class NewMessage extends HookWidget {
     );
   }
 }
-
-

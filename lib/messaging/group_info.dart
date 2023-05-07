@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:campus_subsystem/messaging/group_addmembers.dart';
 import 'package:campus_subsystem/messaging/user_list.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -8,35 +9,72 @@ class GroupInfo extends StatelessWidget {
   final dynamic imgUrl;
   final dynamic users;
   final dynamic data;
+  final dynamic facultyList;
+
   const GroupInfo(
       {Key? key,
-        required this.data,
+      required this.data,
       required this.groupName,
       required this.imgUrl,
+      this.facultyList,
       required this.users})
       : super(key: key);
 
-
-  Future<List> getInfo() async {
+  Stream<List<dynamic>> getInfoStream() async* {
     List<dynamic> list = [];
+
+    // listen to changes in the document
+    Stream<DocumentSnapshot> snapshotStream =
+        FirebaseFirestore.instance.doc("GroupMessages/$groupName").snapshots();
+
+    // fetch initial data
+    DocumentSnapshot value =
+        await FirebaseFirestore.instance.doc("GroupMessages/$groupName").get();
+    Map<String, dynamic> temp = value.data() as Map<String, dynamic>;
     QuerySnapshot<Map<String, dynamic>> ans = await FirebaseFirestore.instance
         .collection("Faculty_Detail")
-        .where("Email", whereIn: users)
-        .orderBy("Name.First").get();
-
-    ans.docs.forEach((element) {
+        .where("Email", whereIn: temp['users'])
+        .orderBy("Name.First")
+        .get();
+    for (var element in ans.docs) {
       list.add(element.data());
-    });
+    }
 
     ans = await FirebaseFirestore.instance
         .collection("Student_Detail")
-        .where("Email", whereIn: users)
-        .orderBy("Name.First").get();
-
-    ans.docs.forEach((element) {
+        .where("Email", whereIn: temp['users'])
+        .orderBy("Name.First")
+        .get();
+    for (var element in ans.docs) {
       list.add(element.data());
-    });
-    return list;
+    }
+
+    yield list;
+
+    // listen to changes in the document and update the list accordingly
+    await for (DocumentSnapshot snapshot in snapshotStream) {
+      Map<String, dynamic> temp = snapshot.data() as Map<String, dynamic>;
+      QuerySnapshot<Map<String, dynamic>> ans = await FirebaseFirestore.instance
+          .collection("Faculty_Detail")
+          .where("Email", whereIn: temp['users'])
+          .orderBy("Name.First")
+          .get();
+      list = [];
+      for (var element in ans.docs) {
+        list.add(element.data());
+      }
+
+      ans = await FirebaseFirestore.instance
+          .collection("Student_Detail")
+          .where("Email", whereIn: temp['users'])
+          .orderBy("Name.First")
+          .get();
+      for (var element in ans.docs) {
+        list.add(element.data());
+      }
+
+      yield list;
+    }
   }
 
   @override
@@ -65,14 +103,13 @@ class GroupInfo extends StatelessWidget {
                             radius: 100,
                           );
                         },
-                        placeholder: (context, url) =>
-                        const CircleAvatar(
-                          backgroundImage: AssetImage(
-                              "assets/images/profile.gif"),
+                        placeholder: (context, url) => const CircleAvatar(
+                          backgroundImage:
+                              AssetImage("assets/images/profile.gif"),
                           maxRadius: 30,
                         ),
                         errorWidget: (context, url, error) =>
-                        const Icon(Icons.error),
+                            const Icon(Icons.error),
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -80,7 +117,9 @@ class GroupInfo extends StatelessWidget {
                   title: Text(
                     groupName,
                     style: const TextStyle(
-                        fontFamily: 'Narrow', fontSize: 23,color: Colors.black),
+                        fontFamily: 'Narrow',
+                        fontSize: 23,
+                        color: Colors.black),
                   ),
                   expandedHeight: 250,
                   backgroundColor: Colors.white,
@@ -132,38 +171,102 @@ class GroupInfo extends StatelessWidget {
                         backgroundColor:
                             MaterialStateProperty.all(Colors.green[400])),
                     onPressed: () {
-                      getInfo();
+                      getInfoStream();
                     },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: const [
-                        Padding(
-                          padding: EdgeInsets.all(20),
-                          child: Icon(Icons.add),
-                        ),
-                        Text("Add Members"),
-                      ],
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => AddToGroup(
+                                      data: data,
+                                      groupName: groupName,
+                                      users: users,
+                                    )));
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: const [
+                          Padding(
+                            padding: EdgeInsets.all(20),
+                            child: Icon(Icons.add),
+                          ),
+                          Text("Add Members"),
+                        ],
+                      ),
                     ),
                   ),
                 ),
                 Expanded(
                   flex: 8,
-                  child: FutureBuilder(
-                    future: getInfo(),
-                    builder: (BuildContext context,
-                        AsyncSnapshot<List> snapshot) {
+                  child: StreamBuilder<List<dynamic>>(
+                    stream: getInfoStream(),
+                    builder:
+                        (BuildContext context, AsyncSnapshot<List> snapshot) {
                       if (snapshot.hasData) {
                         return ListView.builder(
                             itemCount: snapshot.data!.length,
                             itemBuilder: (context, i) {
-                              Map<String,dynamic> x = snapshot.data![i];
-                              return User(
-                                imageUrl: x['imgUrl'],
-                                name: x['Name'],
-                                branch: x['Branch'],
-                                year: x['Year'],
-                                EmailR: x['Email'],
-                                storeData: data,
+                              Map<String, dynamic> x = snapshot.data![i];
+                              return InkWell(
+                                onLongPress: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: const Text('Remove From Group'),
+                                        content: const Text(
+                                            'Are you sure you want to this person?'),
+                                        actions: [
+                                          TextButton(
+                                            child: const Text('Cancel'),
+                                            onPressed: () {
+                                              Navigator.pop(context,
+                                                  false); // Return false when cancel is pressed
+                                            },
+                                          ),
+                                          TextButton(
+                                            child: const Text('Remove'),
+                                            onPressed: () {
+                                              FirebaseFirestore.instance
+                                                  .collection("GroupMessages")
+                                                  .doc(groupName)
+                                                  .update({
+                                                "users": FieldValue.arrayRemove(
+                                                    [x['Email']]),
+                                              });
+                                              FirebaseFirestore.instance
+                                                  .collection(
+                                                      "GroupMessages/$groupName/Messages")
+                                                  .add(
+                                                {
+                                                  "messageType": "left",
+                                                  "email": data.email,
+                                                  "name": x['Name']['First'],
+                                                  "time": Timestamp.now(),
+                                                  "users":
+                                                      FieldValue.arrayUnion(
+                                                          [data.email]),
+                                                  "message": data.name['First']
+                                                },
+                                              );
+                                              Navigator.pop(context, false);
+                                            },
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                },
+                                child: User(
+                                  imageUrl: x['imgUrl'],
+                                  name: x['Name'],
+                                  branch: x['Branch'],
+                                  year: x['Year'],
+                                  EmailR: x['Email'],
+                                  storeData: data,
+                                  facultyList: facultyList,
+                                ),
                               );
                             });
                       } else {
