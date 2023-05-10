@@ -1,4 +1,5 @@
 import 'package:campus_subsystem/messaging/conversations.dart';
+import 'package:campus_subsystem/messaging/group_create.dart';
 import 'package:campus_subsystem/messaging/new_message_user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -48,19 +49,6 @@ class _ConversationScreenState extends State<ConversationScreen> {
         return DefaultTabController(
           length: 2,
           child: Scaffold(
-              floatingActionButton: FloatingActionButton(
-                  backgroundColor: Colors.white,
-                  foregroundColor: Colors.black,
-                  child: const Icon(Icons.messenger_outline_outlined),
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => NewMessage(
-                                  facultyList: facultyList,
-                                  data: state,
-                                )));
-                  }),
               appBar: AppBar(
                 automaticallyImplyLeading: false,
                 backgroundColor: Colors.white,
@@ -136,6 +124,23 @@ class _ConversationScreenState extends State<ConversationScreen> {
                               }),
                         ),
                       ),
+                      Positioned(
+                        bottom: 20,
+                        right: 20,
+                        child: FloatingActionButton(
+                            backgroundColor: Colors.white,
+                            foregroundColor: Colors.black,
+                            child: const Icon(Icons.messenger_outline_outlined),
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (_) => NewMessage(
+                                            facultyList: facultyList,
+                                            data: state,
+                                          )));
+                            }),
+                      )
                       // Positioned(
                       //   bottom: 10,
                       //   left: 0,
@@ -214,6 +219,22 @@ class _ConversationScreenState extends State<ConversationScreen> {
                               }),
                         ),
                       ),
+                      Positioned(
+                        bottom: 20,
+                        right: 20,
+                        child: FloatingActionButton(
+                            backgroundColor: Colors.white,
+                            foregroundColor: Colors.black,
+                            child: const Icon(Icons.group_add_outlined),
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (_) => GroupCreateScreen(
+                                            email: state.email,
+                                          )));
+                            }),
+                      )
                       // Positioned(
                       //   bottom: 10,
                       //   left: 0,

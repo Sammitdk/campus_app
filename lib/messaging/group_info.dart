@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:campus_subsystem/main.dart';
 import 'package:campus_subsystem/messaging/group_addmembers.dart';
 import 'package:campus_subsystem/messaging/user_list.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -125,7 +126,11 @@ class GroupInfo extends HookWidget {
                           maxRadius: 30,
                         ),
                         errorWidget: (context, url, error) =>
-                            const Icon(Icons.error),
+                            const CircleAvatar(
+                          backgroundImage:
+                              AssetImage("assets/images/profile.gif"),
+                          maxRadius: 30,
+                        ),
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -249,13 +254,23 @@ class GroupInfo extends HookWidget {
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.end,
                                               children: [
-                                                TextButton(
-                                                  child: const Text('Cancel'),
-                                                  onPressed: () {
-                                                    Navigator.pop(context,
-                                                        false); // Return false when cancel is pressed
-                                                  },
-                                                ),
+                                                Align(
+                                                    alignment:
+                                                        Alignment.topLeft,
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: Text(
+                                                        x['Name']['First']
+                                                            .toString()
+                                                            .capitalize(),
+                                                        style: const TextStyle(
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                      ),
+                                                    )),
                                                 TextButton(
                                                   child: const Text('Remove'),
                                                   onPressed: () {
@@ -371,6 +386,13 @@ class GroupInfo extends HookWidget {
                                                               context, false);
                                                         },
                                                       ),
+                                                TextButton(
+                                                  child: const Text('Cancel'),
+                                                  onPressed: () {
+                                                    Navigator.pop(context,
+                                                        false); // Return false when cancel is pressed
+                                                  },
+                                                ),
                                               ],
                                             ),
                                           ],
