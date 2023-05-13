@@ -44,6 +44,20 @@ class _MessageScreenState extends State<MessageScreen> {
   Set<String> set = {};
 
   @override
+  void initState() {
+    super.initState();
+    if (widget.isGroup) {
+      readAll(
+        groupName: widget.groupName,
+        data: widget.data,
+        isGroup: true,
+      );
+    } else {
+      readAll(isGroup: false, groupName: widget.EmailR, data: widget.data);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     ScrollController scrollController = ScrollController();
     var bottom = useState(60.0);
