@@ -196,7 +196,8 @@ class _FacultySubEventState extends State<FacultySubEvent> {
                       if (formkey.currentState!.validate()) {
                         if (date.isEmpty) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text("Enter the date of event")));
+                              const SnackBar(
+                                  content: Text("Enter the date of event")));
                         } else {
                           await uploadFile();
                           await FirebaseFirestore.instance

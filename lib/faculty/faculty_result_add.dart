@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:campus_subsystem/redux/reducer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
@@ -163,7 +162,7 @@ class _FacultyResultAddState extends State<FacultyResultAdd> {
                                       ),
                                       icon: const Icon(Icons.arrow_drop_down_rounded),
                                       iconEnabledColor: Colors.green,
-                                      iconSize: 40,
+                                      iconSize: 20,
                                       alignment: AlignmentDirectional.center,
                                       value: selectedsub == "" ? selectedsub = state.subject.keys.elementAt(0) : selectedsub,
                                       items: state.subject.keys

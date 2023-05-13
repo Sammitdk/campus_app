@@ -5,6 +5,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 
 class LoadingPage extends HookWidget {
   final String? email;
+
   const LoadingPage({required this.email, Key? key}) : super(key: key);
 
   @override

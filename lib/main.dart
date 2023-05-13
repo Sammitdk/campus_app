@@ -4,11 +4,7 @@ import 'package:connectivity/connectivity.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:campus_subsystem/faculty/faculty_login.dart';
-import 'package:campus_subsystem/login_page.dart';
-import 'package:campus_subsystem/student/student_login.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -18,7 +14,6 @@ import 'firebase/signIn.dart';
 import 'firebase/wrapper.dart';
 import 'firebase_options.dart';
 import 'loading_page.dart';
-import 'no_internet.dart';
 
 extension StringExtension on String {
   String capitalize() {
@@ -95,7 +90,6 @@ class _MainState extends State<Main> {
     super.initState();
 
     Connectivity().onConnectivityChanged.listen((ConnectivityResult event) {
-      print("${event} aaaaaaaaaaaaaaaaaaaaaaaaaa");
       switch (event) {
         case ConnectivityResult.none:
           isinternet = false;

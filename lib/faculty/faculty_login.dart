@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import '../firebase/signIn.dart';
 import '../password_reset.dart';
-import '../redux/actions/fetchUserData.dart';
 
 class FacultyLogin extends StatefulWidget {
   const FacultyLogin({Key? key}) : super(key: key);
+
   @override
   State<FacultyLogin> createState() => _FacultyLoginState();
 }
@@ -138,19 +138,12 @@ class _FacultyLoginState extends State<FacultyLogin> {
                                   onPressed: () async {
                                     if (formKey.currentState!.validate()) {
                                       setState(() => isClicked = true);
-                                      await auth
-                                          .signIn(
-                                              username: emailController.text,
-                                              password: passwordController.text,
-                                              context: context,
-                                              isStudent: false,
-                                              click: unClick)
-                                          .then((value) {
-                                        fetchUserData(emailController.text)
-                                            .then((value) =>
-                                                Navigator.pushReplacementNamed(
-                                                    context, "/"));
-                                      });
+                                      await auth.signIn(
+                                          username: emailController.text,
+                                          password: passwordController.text,
+                                          context: context,
+                                          isStudent: false,
+                                          click: unClick);
                                     }
                                   },
                                 )),

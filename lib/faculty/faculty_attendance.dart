@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -11,7 +9,12 @@ class FacultyAttendance extends StatefulWidget {
 
   final String subject;
 
-  FacultyAttendance({Key? key, required this.subject, required this.date, required this.references}) : super(key: key);
+  const FacultyAttendance(
+      {Key? key,
+      required this.subject,
+      required this.date,
+      required this.references})
+      : super(key: key);
 
   @override
   State<FacultyAttendance> createState() => _FacultyAttendanceState();
@@ -41,7 +44,10 @@ class _FacultyAttendanceState extends State<FacultyAttendance> {
   // }
 
   Future<List> getStudentList() async {
-    DocumentSnapshot rolllist = await inst.doc("College/${widget.references['branch']}/${widget.references['year']}/Roll_No").get();
+    DocumentSnapshot rolllist = await inst
+        .doc(
+            "College/${widget.references['branch']}/${widget.references['year']}/Roll_No")
+        .get();
     // await widget.references[1].get();
     List t = [];
     rolls = (rolllist.data() as Map<String, dynamic>);
@@ -51,7 +57,8 @@ class _FacultyAttendanceState extends State<FacultyAttendance> {
     }
     t.sort();
     DocumentSnapshot prev = await inst
-        .doc("College/${widget.references['branch']}/${widget.references['year']}/Attendance")
+        .doc(
+            "College/${widget.references['branch']}/${widget.references['year']}/Attendance")
         .collection(widget.subject)
         .doc(widget.date)
         .get();
@@ -69,7 +76,9 @@ class _FacultyAttendanceState extends State<FacultyAttendance> {
           if (rollattend.connectionState == ConnectionState.waiting) {
             return Scaffold(
                 backgroundColor: Colors.white,
-                body: Center(child: LoadingAnimationWidget.staggeredDotsWave(size: 50, color: Colors.red)));
+                body: Center(
+                    child: LoadingAnimationWidget.staggeredDotsWave(
+                        size: 50, color: Colors.red)));
           } else {
             if (rollattend.hasData) {
               return Scaffold(
@@ -88,12 +97,15 @@ class _FacultyAttendanceState extends State<FacultyAttendance> {
                     print(rollmark);
                     String key = rollattend.data[index].toString();
                     return Container(
-                      margin: const EdgeInsetsDirectional.only(start: 15, top: 20, end: 15),
+                      margin: const EdgeInsetsDirectional.only(
+                          start: 15, top: 20, end: 15),
                       alignment: Alignment.center,
                       height: 70,
                       decoration: BoxDecoration(
                           borderRadius: const BorderRadiusDirectional.only(
-                              topStart: Radius.circular(50), topEnd: Radius.circular(50), bottomStart: Radius.circular(50)),
+                              topStart: Radius.circular(50),
+                              topEnd: Radius.circular(50),
+                              bottomStart: Radius.circular(50)),
                           color: Colors.blue[50]),
                       child: Center(
                         child: StatefulBuilder(
@@ -102,10 +114,15 @@ class _FacultyAttendanceState extends State<FacultyAttendance> {
                               activeColor: Colors.transparent,
                               checkColor: Colors.black,
                               title: Text(key),
-                              value: rollmark.containsKey(key) ? rollmark[key] : rollmark[key] = false,
-                              secondary: const Icon(Icons.checklist_rtl_outlined),
+                              value: rollmark.containsKey(key)
+                                  ? rollmark[key]
+                                  : rollmark[key] = false,
+                              secondary:
+                                  const Icon(Icons.checklist_rtl_outlined),
                               onChanged: (value) {
-                                setState(() => rollmark.containsKey(key) ? rollmark[key] = value! : rollmark[key] = true);
+                                setState(() => rollmark.containsKey(key)
+                                    ? rollmark[key] = value!
+                                    : rollmark[key] = true);
                                 print(rollmark);
                               },
                             );
@@ -131,11 +148,13 @@ class _FacultyAttendanceState extends State<FacultyAttendance> {
                         foregroundColor: Colors.black,
                         onPressed: () async {
                           clicked = true;
-                          rollmark["time"] = DateFormat('dd-MM-yyyy-hh-mm').parse(widget.date);
+                          rollmark["time"] =
+                              DateFormat('dd-MM-yyyy-hh-mm').parse(widget.date);
 
                           // mark attendance of whole class
                           await inst
-                              .doc("College/${widget.references['branch']}/${widget.references['year']}/Attendance")
+                              .doc(
+                                  "College/${widget.references['branch']}/${widget.references['year']}/Attendance")
                               .collection(widget.subject)
                               .doc(widget.date)
                               .set(rollmark, SetOptions(merge: true));
@@ -145,7 +164,9 @@ class _FacultyAttendanceState extends State<FacultyAttendance> {
                             value
                                 .collection("Attendance")
                                 .doc(widget.subject)
-                                .set(<String, bool>{widget.date: rollmark[key]!}, SetOptions(merge: true));
+                                .set(
+                                    <String, bool>{widget.date: rollmark[key]!},
+                                    SetOptions(merge: true));
                           });
 
                           clicked = false;
@@ -164,7 +185,9 @@ class _FacultyAttendanceState extends State<FacultyAttendance> {
               print("here");
               return Scaffold(
                   backgroundColor: Colors.white,
-                  body: Center(child: LoadingAnimationWidget.staggeredDotsWave(size: 50, color: Colors.red)));
+                  body: Center(
+                      child: LoadingAnimationWidget.staggeredDotsWave(
+                          size: 50, color: Colors.red)));
             }
           }
         });

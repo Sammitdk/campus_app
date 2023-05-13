@@ -162,11 +162,11 @@ class _GroupCreateScreenState extends State<GroupCreateScreen> {
                   const EdgeInsetsDirectional.only(start: 10, end: 10, top: 30),
               child: TextField(
                 decoration: InputDecoration(
-                  focusedBorder:  OutlineInputBorder(
+                  focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.indigo.shade300),
                       borderRadius: BorderRadius.circular(20)),
                   border: OutlineInputBorder(
-                    borderSide: const BorderSide(color: Colors.black),
+                      borderSide: const BorderSide(color: Colors.black),
                       borderRadius: BorderRadius.circular(20)),
                   filled: true,
                   fillColor: Colors.white,

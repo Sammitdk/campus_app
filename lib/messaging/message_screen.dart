@@ -9,7 +9,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:intl/intl.dart';
 import 'message.dart';
 import 'package:keyboard_visibility_pro/keyboard_visibility_pro.dart';
-
 import 'message_reads.dart';
 
 class MessageScreen extends StatefulHookWidget {

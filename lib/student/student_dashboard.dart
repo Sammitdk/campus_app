@@ -12,24 +12,23 @@ import 'student_home.dart';
 
 class StudentDashboard extends StatefulWidget {
   final String email;
-  const StudentDashboard({Key? key,required this.email}) : super(key: key);
+
+  const StudentDashboard({Key? key, required this.email}) : super(key: key);
 
   @override
   State<StudentDashboard> createState() => _StudentDashboardState();
 
-  static Future<File?> downloadFile(String url,String name) async {
+  static Future<File?> downloadFile(String url, String name) async {
     try {
       final appStorage = await getTemporaryDirectory();
       final file = File('${appStorage.path}/$name');
-      final response = await Dio().get(
-          url,
+      final response = await Dio().get(url,
           options: Options(
             responseType: ResponseType.bytes,
             followRedirects: false,
             receiveTimeout: const Duration(seconds: 10),
-          )
-      );
-      final raf = file.openSync(mode : FileMode.write);
+          ));
+      final raf = file.openSync(mode: FileMode.write);
       raf.writeFromSync(response.data);
       await raf.close();
       return file;
@@ -37,12 +36,12 @@ class StudentDashboard extends StatefulWidget {
       return null;
     }
   }
-  static Future<void> launchAnyURL(String url,String name) async {
+
+  static Future<void> launchAnyURL(String url, String name) async {
     final file = await downloadFile(url, name);
     if (file == null) return;
     OpenFile.open(file.path);
   }
-
 }
 
 class _StudentDashboardState extends State<StudentDashboard>
@@ -77,7 +76,9 @@ class _StudentDashboardState extends State<StudentDashboard>
   Widget build(BuildContext context) {
     final screen = [
       const StudentHome(),
-      const ConversationScreen(isFaculty: false,),
+      const ConversationScreen(
+        isFaculty: false,
+      ),
       StudentProfile(),
     ];
     final items = <Widget>[

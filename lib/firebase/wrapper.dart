@@ -21,11 +21,15 @@ class Wrapper extends HookWidget {
       return StoreConnector<AppState, AppState>(
           converter: (store) => store.state,
           builder: (_, state) {
-            if(state.isStudent != null){
+            if (state.isStudent != null) {
               if (state.isStudent) {
-                return StudentDashboard(email: state.email,);
+                return StudentDashboard(
+                  email: state.email,
+                );
               } else {
-                return FacultyDashboard(email: state.email,);
+                return FacultyDashboard(
+                  email: state.email,
+                );
               }
             } else {
               return Container();

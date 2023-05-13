@@ -15,6 +15,7 @@ class AppState {
   final dynamic isStudent;
   final dynamic imgUrl;
   final dynamic subject;
+
   AppState(
       {this.imgUrl,
       this.isStudent,
@@ -57,8 +58,7 @@ class AppState {
         isStudent: isStudent ?? this.isStudent,
         imgUrl: imgUrl ?? this.imgUrl,
         mobile: mobile ?? this.mobile,
-        subject: subject ?? this.subject
-    );
+        subject: subject ?? this.subject);
   }
 
   const AppState.initialState(
@@ -92,8 +92,7 @@ AppState FetchUserData(AppState state, dynamic action) {
         address: action.address,
         sem: action.sem,
         imgUrl: action.imgUrl,
-        subject: action.subject
-    );
+        subject: action.subject);
   }
   return state;
 }

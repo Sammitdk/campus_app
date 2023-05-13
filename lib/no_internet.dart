@@ -1,9 +1,9 @@
-import 'package:campus_subsystem/firebase/wrapper.dart';
 import 'package:flutter/material.dart';
 // import 'package:internet_connection_checker/internet_connection_checker.dart';
 
 class NoInternet extends StatelessWidget {
   const NoInternet({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     // InternetConnectionChecker().onStatusChange.listen((status) {

@@ -5,6 +5,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class StudentNotes extends StatefulWidget {
   const StudentNotes({Key? key}) : super(key: key);
+
   @override
   State<StudentNotes> createState() => _StudentNotesState();
 }
