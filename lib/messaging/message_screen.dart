@@ -10,6 +10,8 @@ import 'package:intl/intl.dart';
 import 'message.dart';
 import 'package:keyboard_visibility_pro/keyboard_visibility_pro.dart';
 
+import 'message_reads.dart';
+
 class MessageScreen extends StatefulHookWidget {
   final dynamic groupName;
   final dynamic imageUrl;
@@ -189,23 +191,57 @@ class _MessageScreenState extends State<MessageScreen> {
                               );
                             },
                           ),
-                          (set.length == 1)
-                              ? Padding(
-                                  padding: const EdgeInsets.only(right: 8.0),
-                                  child: IconButton(
-                                    icon: const Icon(
-                                      Icons.copy,
-                                      size: 19,
-                                    ),
-                                    onPressed: () {
+                          (set.length == 1 && isDelete.value == 0)
+                              ? PopupMenuButton(
+                                  itemBuilder: (context) {
+                                    return [
+                                      const PopupMenuItem<int>(
+                                        value: 0,
+                                        child: Text("Info"),
+                                      ),
+                                      const PopupMenuItem<int>(
+                                        value: 1,
+                                        child: Text("Copy"),
+                                      ),
+                                    ];
+                                  },
+                                  onSelected: (index) {
+                                    if (index == 0) {
+                                      FirebaseFirestore.instance
+                                          .doc(
+                                              "GroupMessages/${widget.groupName}/Messages/${set.first}")
+                                          .get()
+                                          .then((value) {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (_) => MessageReads(
+                                                      text: value['message'],
+                                                      name: value['name'],
+                                                      messageType:
+                                                          value['messageType'],
+                                                      time:
+                                                          DateFormat('hh:mm a')
+                                                              .format(
+                                                                  value['time']
+                                                                      .toDate())
+                                                              .toString(),
+                                                      groupName:
+                                                          widget.groupName,
+                                                      messageId: value.id,
+                                                      facultyList:
+                                                          widget.facultyList,
+                                                    )));
+                                      });
+                                    } else {
                                       Clipboard.setData(
                                           ClipboardData(text: copy.value));
                                       isDelete.value = 0;
                                       setState(() {
                                         set.clear();
                                       });
-                                    },
-                                  ),
+                                    }
+                                  },
                                 )
                               : const SizedBox(),
                         ],

@@ -132,7 +132,11 @@ class ConversationList extends HookWidget {
                               maxRadius: 30,
                             ),
                             errorWidget: (context, url, error) =>
-                                const Icon(Icons.error),
+                            const CircleAvatar(
+                              backgroundImage:
+                              AssetImage("assets/images/profile.gif"),
+                              maxRadius: 30,
+                            ),
                             fit: BoxFit.cover,
                           ),
                           const SizedBox(
