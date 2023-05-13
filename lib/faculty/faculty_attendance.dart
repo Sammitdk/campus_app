@@ -6,7 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class FacultyAttendance extends StatefulWidget {
-  final List references;
+  final Map<String, dynamic> references;
   final String date;
 
   final String subject;
@@ -21,6 +21,8 @@ class _FacultyAttendanceState extends State<FacultyAttendance> {
   Map<String, dynamic> rolls = {};
   Map<String, dynamic> rollmark = {};
   bool clicked = false;
+  FirebaseFirestore inst = FirebaseFirestore.instance;
+
   // Future markAttendance() async {
   //   Map<String,dynamic> mark = {};
   //   mark[widget.date] = rollattend;
@@ -39,7 +41,8 @@ class _FacultyAttendanceState extends State<FacultyAttendance> {
   // }
 
   Future<List> getStudentList() async {
-    DocumentSnapshot rolllist = await widget.references[1].get();
+    DocumentSnapshot rolllist = await inst.doc("College/${widget.references['branch']}/${widget.references['year']}/Roll_No").get();
+    // await widget.references[1].get();
     List t = [];
     rolls = (rolllist.data() as Map<String, dynamic>);
     print(rolls);
@@ -47,7 +50,11 @@ class _FacultyAttendanceState extends State<FacultyAttendance> {
       t.add(int.parse(element));
     }
     t.sort();
-    DocumentSnapshot prev = await widget.references[0].collection(widget.subject).doc(widget.date).get();
+    DocumentSnapshot prev = await inst
+        .doc("College/${widget.references['branch']}/${widget.references['year']}/Attendance")
+        .collection(widget.subject)
+        .doc(widget.date)
+        .get();
     if (prev.exists) {
       rollmark = prev.data() as Map<String, dynamic>;
     }
@@ -127,7 +134,8 @@ class _FacultyAttendanceState extends State<FacultyAttendance> {
                           rollmark["time"] = DateFormat('dd-MM-yyyy-hh-mm').parse(widget.date);
 
                           // mark attendance of whole class
-                          await widget.references[0]
+                          await inst
+                              .doc("College/${widget.references['branch']}/${widget.references['year']}/Attendance")
                               .collection(widget.subject)
                               .doc(widget.date)
                               .set(rollmark, SetOptions(merge: true));

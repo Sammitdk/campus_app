@@ -1,8 +1,10 @@
 import 'package:campus_subsystem/faculty/faculty_notes.dart';
+import 'package:campus_subsystem/faculty/faculty_result_history.dart';
 import 'package:campus_subsystem/faculty/faculty_subject.dart';
 import 'package:campus_subsystem/redux/reducer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import 'faculty_attendance_option.dart';
 import 'faculty_event.dart';
@@ -16,13 +18,11 @@ class FacultyHome extends StatefulWidget {
 }
 
 class _FacultyHomeState extends State<FacultyHome> {
-
-
   @override
   Widget build(BuildContext context) {
-    return StoreConnector<AppState,AppState>(
+    return StoreConnector<AppState, AppState>(
       converter: (store) => store.state,
-      builder: (_,state){
+      builder: (_, state) {
         return Padding(
           padding: const EdgeInsetsDirectional.all(20),
           child: Column(
@@ -31,7 +31,8 @@ class _FacultyHomeState extends State<FacultyHome> {
                 flex: 1,
                 child: Center(
                   child: Row(children: [
-                    Text("  Hey ${state.name['First']}. ${state.name['Middle']}. ${state.name['Last']}",
+                    Text(
+                      "  Hey ${state.name['First']}. ${state.name['Middle']}. ${state.name['Last']}",
                       style: const TextStyle(fontSize: 30, fontFamily: 'Custom'),
                     )
                   ]),
@@ -43,59 +44,56 @@ class _FacultyHomeState extends State<FacultyHome> {
                   children: [
                     Expanded(
                         child: InkWell(
-                          onTap: (){
-                            Navigator.of(context).push(MaterialPageRoute(builder: (_) => const FacultyTimeTable()));
-                          },
-                          child: Card(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12)),
-                            elevation: 5,
-                            child: Column(
-                              children: [
-                                Expanded(
-                                    flex: 4,
-                                    child: Image.asset(
-                                      "assets/images/timetable.gif",
-                                    )),
-                                const Expanded(
-                                    flex: 1,
-                                    child: Text(
-                                      textAlign: TextAlign.center,
-                                      "Time Table",
-                                      style:
-                                      TextStyle(fontFamily: 'Custom', fontSize: 20),
-                                    )),
-                              ],
-                            ),
-                          ),
-                        )),
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(builder: (_) => const FacultyTimeTable()));
+                      },
+                      child: Card(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        elevation: 5,
+                        child: Column(
+                          children: [
+                            Expanded(
+                                flex: 4,
+                                child: Image.asset(
+                                  "assets/images/timetable.gif",
+                                )),
+                            const Expanded(
+                                flex: 1,
+                                child: Text(
+                                  textAlign: TextAlign.center,
+                                  "Time Table",
+                                  style: TextStyle(fontFamily: 'Custom', fontSize: 20),
+                                )),
+                          ],
+                        ),
+                      ),
+                    )),
                     Expanded(
                         child: InkWell(
-                          onTap: (){ Navigator.push(context, MaterialPageRoute(builder: (_) => const FacultySubject()));
-                          },
-                          child: Card(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12)),
-                            elevation: 5,
-                            child: Column(
-                              children: [
-                                Expanded(
-                                  flex: 4,
-                                  child: Image.asset(
-                                    "assets/images/syllabus.gif",
-                                  ),
-                                ),
-                                const Expanded(
-                                    flex: 1,
-                                    child: Text(
-                                      "Subjects",
-                                      style:
-                                      TextStyle(fontFamily: 'Custom', fontSize: 20),
-                                    )),
-                              ],
+                      onTap: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (_) => const FacultySubject()));
+                      },
+                      child: Card(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        elevation: 5,
+                        child: Column(
+                          children: [
+                            Expanded(
+                              flex: 4,
+                              child: Image.asset(
+                                "assets/images/syllabus.gif",
+                              ),
                             ),
-                          ),
-                        )),
+                            const Expanded(
+                                flex: 1,
+                                child: Text(
+                                  "Subjects",
+                                  style: TextStyle(fontFamily: 'Custom', fontSize: 20),
+                                )),
+                          ],
+                        ),
+                      ),
+                    )),
                   ],
                 ),
               ), //TimeTable-Syllabus
@@ -105,12 +103,11 @@ class _FacultyHomeState extends State<FacultyHome> {
                   children: [
                     Expanded(
                       child: InkWell(
-                        onTap: (){
-                          Navigator.push(context,MaterialPageRoute(builder: (_) => const FacultyAttendanceOption()));
+                        onTap: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (_) => const FacultyAttendanceOption()));
                         },
                         child: Card(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12)),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                           elevation: 5,
                           child: Column(
                             children: [
@@ -123,8 +120,7 @@ class _FacultyHomeState extends State<FacultyHome> {
                                   flex: 1,
                                   child: Text(
                                     "Attendance",
-                                    style: TextStyle(
-                                        fontFamily: 'Custom', fontSize: 20),
+                                    style: TextStyle(fontFamily: 'Custom', fontSize: 20),
                                   )),
                             ],
                           ),
@@ -133,12 +129,11 @@ class _FacultyHomeState extends State<FacultyHome> {
                     ),
                     Expanded(
                       child: InkWell(
-                        onTap: (){
+                        onTap: () {
                           Navigator.push(context, MaterialPageRoute(builder: (_) => const FacultyNotes()));
                         },
                         child: Card(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12)),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                           elevation: 5,
                           child: Column(
                             children: [
@@ -152,8 +147,7 @@ class _FacultyHomeState extends State<FacultyHome> {
                                   flex: 1,
                                   child: Text(
                                     "Notes",
-                                    style:
-                                    TextStyle(fontFamily: 'Custom', fontSize: 20),
+                                    style: TextStyle(fontFamily: 'Custom', fontSize: 20),
                                   )),
                             ],
                           ),
@@ -169,31 +163,52 @@ class _FacultyHomeState extends State<FacultyHome> {
                   children: [
                     Expanded(
                         child: InkWell(
-                          onTap: (){
-                            Navigator.push(context, MaterialPageRoute(builder: (_) => FacultyEvent()));
-                          },
-                          child: Card(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12)),
-                            elevation: 5,
-                            child: Column(
-                              children: [
-                                Expanded(
-                                    flex: 4,
-                                    child: Image.asset(
-                                      "assets/images/events.gif",
-                                    )),
-                                const Expanded(
-                                    flex: 1,
-                                    child: Text(
-                                      "Events",
-                                      style:
-                                      TextStyle(fontFamily: 'Custom', fontSize: 20),
-                                    )),
-                              ],
-                            ),
-                          ),
-                        )),
+                      onTap: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (_) => FacultyEvent()));
+                      },
+                      child: Card(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        elevation: 5,
+                        child: Column(
+                          children: [
+                            Expanded(
+                                flex: 4,
+                                child: Image.asset(
+                                  "assets/images/events.gif",
+                                )),
+                            const Expanded(
+                                flex: 1,
+                                child: Text(
+                                  "Events",
+                                  style: TextStyle(fontFamily: 'Custom', fontSize: 20),
+                                )),
+                          ],
+                        ),
+                      ),
+                    )),
+                    Expanded(
+                        child: InkWell(
+                      onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => FacultyResultHistory())),
+                      child: Card(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        elevation: 5,
+                        child: Column(
+                          children: [
+                            Expanded(
+                                flex: 4,
+                                child: Image.asset(
+                                  "assets/images/result.gif",
+                                )),
+                            const Expanded(
+                                flex: 1,
+                                child: Text(
+                                  "Result",
+                                  style: TextStyle(fontFamily: 'Custom', fontSize: 20),
+                                )),
+                          ],
+                        ),
+                      ),
+                    ))
                   ],
                 ),
               ), //Events-Result

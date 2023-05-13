@@ -22,8 +22,11 @@ class _FacultyAttendanceHistoryState extends State<FacultyAttendanceHistory> {
   List rolls = [];
 
   Future<void> getDateAndAttendance(Map<String, dynamic> subject) async {
-    QuerySnapshot attendanceSnap =
-        await subject[selectedsubject][0].collection(selectedsubject).orderBy('time', descending: true).get();
+    QuerySnapshot attendanceSnap = await FirebaseFirestore.instance
+        .collection("College/${subject['branch']}/${subject['year']}/Attendance/$selectedsubject")
+        .orderBy('time', descending: true)
+        .get();
+    // await subject[0].collection(selectedsubject).get();
     dates = attendanceSnap.docs.map((e) {
       Map temp = (e.data() as Map<String, dynamic>);
       temp.remove('time');
@@ -34,12 +37,12 @@ class _FacultyAttendanceHistoryState extends State<FacultyAttendanceHistory> {
     }).toList();
     if (dates.isNotEmpty) {
       selecteddate = dates[0];
-      rolls = getRolls(selecteddate);
+      rolls = getRolls();
       rolls.sort();
     }
   }
 
-  List getRolls(String date) {
+  List getRolls() {
     return attendance[selecteddate].keys.toList();
   }
 
@@ -89,7 +92,7 @@ class _FacultyAttendanceHistoryState extends State<FacultyAttendanceHistory> {
                                 child: DropdownButtonHideUnderline(
                                   child: DropdownButton<String>(
                                     hint: const Text('Select.'),
-                                    style: TextStyle(fontSize: 20, color: Colors.indigo[300]),
+                                    style: TextStyle(fontSize: 20, color: Colors.indigo[300], overflow: TextOverflow.ellipsis),
                                     icon: const Icon(Icons.arrow_drop_down_rounded),
                                     iconSize: 40,
                                     elevation: 0,
@@ -97,19 +100,19 @@ class _FacultyAttendanceHistoryState extends State<FacultyAttendanceHistory> {
                                     iconEnabledColor: Colors.green,
                                     alignment: AlignmentDirectional.center,
                                     items: state.subject.keys
-                                        .toList()
                                         .map<DropdownMenuItem<String>>((value) => DropdownMenuItem<String>(
                                               value: value,
                                               child: Text(value),
                                             ))
                                         .toList(),
                                     onChanged: (String? value) async {
-                                      rolls = [];
-                                      selecteddate = '';
-                                      selectedsubject = value!;
-                                      await getDateAndAttendance(state.subject);
-                                      setState(() {});
-                                      // print("$dates,$attendance");
+                                      if (value != selectedsubject) {
+                                        rolls = [];
+                                        selecteddate = '';
+                                        selectedsubject = value!;
+                                        await getDateAndAttendance(state.subject[selectedsubject]);
+                                        setState(() {});
+                                      }
                                     },
                                   ),
                                 ),
@@ -139,7 +142,7 @@ class _FacultyAttendanceHistoryState extends State<FacultyAttendanceHistory> {
                                       child: DropdownButtonHideUnderline(
                                         child: DropdownButton(
                                             elevation: 0,
-                                            style: TextStyle(fontSize: 20, color: Colors.indigo[200]),
+                                            style: TextStyle(fontSize: 20, color: Colors.indigo[200], overflow: TextOverflow.ellipsis),
                                             icon: const Icon(Icons.arrow_drop_down_rounded),
                                             iconSize: 40,
                                             iconEnabledColor: Colors.green,
@@ -161,11 +164,13 @@ class _FacultyAttendanceHistoryState extends State<FacultyAttendanceHistory> {
                                                     );
                                                   }).toList()
                                                 : null,
-                                            onChanged: (String? value) => setState(() {
-                                                  selecteddate = value!;
-                                                  rolls = getRolls(selecteddate);
-                                                  rolls.sort();
-                                                })),
+                                            onChanged: (String? value) => value != selecteddate
+                                                ? setState(() {
+                                                    selecteddate = value!;
+                                                    rolls = getRolls();
+                                                    rolls.sort();
+                                                  })
+                                                : null),
                                       ),
                                     ),
                                   )
@@ -179,7 +184,8 @@ class _FacultyAttendanceHistoryState extends State<FacultyAttendanceHistory> {
                                         child: DropdownButtonHideUnderline(
                                           child: DropdownButton(
                                               elevation: 0,
-                                              style: TextStyle(fontSize: 20, color: Colors.indigo[200]),
+                                              style:
+                                                  TextStyle(fontSize: 20, color: Colors.indigo[200], overflow: TextOverflow.ellipsis),
                                               icon: const Icon(Icons.arrow_drop_down_rounded),
                                               iconSize: 40,
                                               iconDisabledColor: Colors.red,

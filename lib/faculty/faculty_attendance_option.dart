@@ -15,7 +15,7 @@ class FacultyAttendanceOption extends StatefulWidget {
 
 class _FacultyAttendanceOptionState extends State<FacultyAttendanceOption> {
   String selectedsub = '';
-  String date = 'Select Date and Time';
+  String date = '';
   final fkey = GlobalKey<FormState>();
   List<String> subjects = [];
 
@@ -99,6 +99,7 @@ class _FacultyAttendanceOptionState extends State<FacultyAttendanceOption> {
                                 decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: Colors.white),
                                 margin: const EdgeInsets.all(20),
                                 child: ButtonTheme(
+                                  alignedDropdown: true,
                                   child: DropdownButtonFormField<String>(
                                     decoration: const InputDecoration(border: InputBorder.none),
                                     validator: (value) {
@@ -111,26 +112,28 @@ class _FacultyAttendanceOptionState extends State<FacultyAttendanceOption> {
                                       fontSize: 20,
                                       color: Colors.indigo[300],
                                     ),
+                                    hint: const Text("Select."),
                                     icon: const Icon(Icons.arrow_drop_down_rounded),
                                     iconEnabledColor: Colors.green,
                                     iconSize: 40,
                                     alignment: AlignmentDirectional.center,
-                                    value: selectedsub == "" ? subjects[0] : selectedsub,
-                                    items: state.subject.keys.map<DropdownMenuItem<String>>((value) {
-                                      // print(value);
-                                      return DropdownMenuItem<String>(
-                                        value: value,
-                                        child: Text(
-                                          value,
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      );
-                                    }).toList(),
+                                    value: selectedsub.isEmpty ? null : selectedsub,
+                                    items: state.subject.keys
+                                        .map<DropdownMenuItem<String>>((value) => DropdownMenuItem<String>(
+                                              value: value,
+                                              child: Text(
+                                                value,
+                                                textAlign: TextAlign.center,
+                                              ),
+                                            ))
+                                        .toList(),
                                     onChanged: (newvalue) {
                                       print(newvalue);
-                                      setState(() {
-                                        selectedsub = newvalue!;
-                                      });
+                                      if (newvalue != selectedsub) {
+                                        setState(() {
+                                          selectedsub = newvalue!;
+                                        });
+                                      }
                                     },
                                   ),
                                 ),
@@ -156,8 +159,8 @@ class _FacultyAttendanceOptionState extends State<FacultyAttendanceOption> {
                             onPressed: () {
                               timePicker();
                             },
-                            child: Text(date == 'Select Date and Time'
-                                ? date
+                            child: Text(date.isEmpty
+                                ? 'Select Date and Time'
                                 : DateFormat('dd MMM yyyy HH:mm').format(DateFormat('dd-MM-yyyy-HH-mm').parse(date))),
                           ),
                           const SizedBox(
@@ -173,8 +176,8 @@ class _FacultyAttendanceOptionState extends State<FacultyAttendanceOption> {
                             ),
                             onPressed: () {
                               if (fkey.currentState!.validate()) {
-                                // print(selectedsub);
-                                (date != 'Select Date and Time')
+                                print("qqqqqqqqq${state.subject}");
+                                (date.isNotEmpty)
                                     ? Navigator.of(context).push(MaterialPageRoute(
                                         builder: (_) => FacultyAttendance(
                                               references: state.subject[selectedsub],
