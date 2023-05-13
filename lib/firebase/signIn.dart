@@ -2,7 +2,6 @@ import 'package:campus_subsystem/faculty/faculty_dashboard.dart';
 import 'package:campus_subsystem/student/student_dashboard.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
 import '../redux/actions/fetchUserData.dart';
 
 class Auth {
@@ -35,11 +34,19 @@ class Auth {
       User? user = result.user;
 
       await fetchUserData(result.user?.email);
-      if(isStudent){
+      if (isStudent) {
         // await fetchUserData(result.user?.email);
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) =>  StudentDashboard(email: username,)));
-      }else{
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) =>  FacultyDashboard(email: username)));
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (_) => StudentDashboard(
+                      email: username,
+                    )));
+      } else {
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (_) => FacultyDashboard(email: username)));
       }
 
       return _userFromCredUser(user);
@@ -57,7 +64,7 @@ class Auth {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(e.code.toString())));
       }
-    }finally{
+    } finally {
       click();
     }
   }

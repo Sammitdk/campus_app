@@ -9,7 +9,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:intl/intl.dart';
 import 'message.dart';
 import 'package:keyboard_visibility_pro/keyboard_visibility_pro.dart';
-
 import 'message_reads.dart';
 
 class MessageScreen extends StatefulHookWidget {
@@ -42,6 +41,20 @@ class MessageScreen extends StatefulHookWidget {
 
 class _MessageScreenState extends State<MessageScreen> {
   Set<String> set = {};
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.isGroup) {
+      readAll(
+        groupName: widget.groupName,
+        data: widget.data,
+        isGroup: true,
+      );
+    } else {
+      readAll(isGroup: false, groupName: widget.EmailR, data: widget.data);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

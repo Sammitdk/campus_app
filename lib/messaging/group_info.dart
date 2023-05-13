@@ -1,19 +1,21 @@
+import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:campus_subsystem/main.dart';
 import 'package:campus_subsystem/messaging/group_addmembers.dart';
 import 'package:campus_subsystem/messaging/user_list.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:image_picker/image_picker.dart';
 
-class GroupInfo extends HookWidget {
+class GroupInfo extends StatefulWidget {
   final dynamic groupName;
-  final dynamic imgUrl;
+  String imgUrl;
   final dynamic users;
   final dynamic data;
   final dynamic facultyList;
 
-  const GroupInfo(
+  GroupInfo(
       {Key? key,
       required this.data,
       required this.groupName,
@@ -22,16 +24,35 @@ class GroupInfo extends HookWidget {
       required this.users})
       : super(key: key);
 
+  @override
+  State<GroupInfo> createState() => _GroupInfoState();
+}
+
+class _GroupInfoState extends State<GroupInfo> {
+  List admins = [];
+
+  @override
+  void initState() {
+    super.initState();
+    getAdmins().then((value) {
+      setState(() {
+        admins = value;
+      });
+    });
+  }
+
   Stream<List<dynamic>> getInfoStream() async* {
     List<dynamic> list = [];
 
     // listen to changes in the document
-    Stream<DocumentSnapshot> snapshotStream =
-        FirebaseFirestore.instance.doc("GroupMessages/$groupName").snapshots();
+    Stream<DocumentSnapshot> snapshotStream = FirebaseFirestore.instance
+        .doc("GroupMessages/${widget.groupName}")
+        .snapshots();
 
     // fetch initial data
-    DocumentSnapshot value =
-        await FirebaseFirestore.instance.doc("GroupMessages/$groupName").get();
+    DocumentSnapshot value = await FirebaseFirestore.instance
+        .doc("GroupMessages/${widget.groupName}")
+        .get();
     Map<String, dynamic> temp = value.data() as Map<String, dynamic>;
     QuerySnapshot<Map<String, dynamic>> ans = await FirebaseFirestore.instance
         .collection("Faculty_Detail")
@@ -81,7 +102,7 @@ class GroupInfo extends HookWidget {
   Future<List<dynamic>> getAdmins() async {
     DocumentSnapshot value = await FirebaseFirestore.instance
         .collection("GroupMessages")
-        .doc(groupName)
+        .doc(widget.groupName)
         .get();
     Map<String, dynamic> temp = value.data() as Map<String, dynamic>;
     return temp['admins'];
@@ -89,13 +110,6 @@ class GroupInfo extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    var admins = useState([]);
-    useEffect(() {
-      getAdmins().then((value) {
-        admins.value = value;
-      });
-      return null;
-    }, []);
     return Scaffold(
         body: NestedScrollView(
             floatHeaderSlivers: true,
@@ -112,31 +126,63 @@ class GroupInfo extends HookWidget {
                     centerTitle: true,
                     background: Hero(
                       tag: "group",
-                      child: CachedNetworkImage(
-                        imageUrl: imgUrl,
-                        imageBuilder: (context, imageProvider) {
-                          return CircleAvatar(
-                            backgroundImage: imageProvider,
-                            radius: 100,
-                          );
+                      child: GestureDetector(
+                        onTap: () async {
+                          final picked = await ImagePicker.platform
+                              .pickImage(source: ImageSource.gallery);
+                          if (picked == null) {
+                            return;
+                          }
+                          final path = picked.path;
+                          File result = File(path);
+                          File pick = File(result!.path.toString());
+                          var file = pick.readAsBytesSync();
+                          //uploading
+                          var pdfFile = FirebaseStorage.instance
+                              .ref()
+                              .child("Images")
+                              .child(widget.groupName);
+                          UploadTask task = pdfFile.putData(file);
+                          task.whenComplete(() {
+                            pdfFile.getDownloadURL().then((value) {
+                              setState(() {
+                                widget.imgUrl = value;
+                              });
+                              FirebaseFirestore.instance
+                                  .collection("GroupMessages")
+                                  .doc(widget.groupName)
+                                  .set({
+                                'imgUrl': value,
+                              }, SetOptions(merge: true));
+                            });
+                          });
                         },
-                        placeholder: (context, url) => const CircleAvatar(
-                          backgroundImage:
-                              AssetImage("assets/images/profile.gif"),
-                          maxRadius: 30,
+                        child: CachedNetworkImage(
+                          imageUrl: widget.imgUrl,
+                          imageBuilder: (context, imageProvider) {
+                            return CircleAvatar(
+                              backgroundImage: imageProvider,
+                              radius: 100,
+                            );
+                          },
+                          placeholder: (context, url) => const CircleAvatar(
+                            backgroundImage:
+                                AssetImage("assets/images/profile.gif"),
+                            maxRadius: 30,
+                          ),
+                          errorWidget: (context, url, error) =>
+                              const CircleAvatar(
+                            backgroundImage:
+                                AssetImage("assets/images/profile.gif"),
+                            maxRadius: 30,
+                          ),
+                          fit: BoxFit.cover,
                         ),
-                        errorWidget: (context, url, error) =>
-                            const CircleAvatar(
-                          backgroundImage:
-                              AssetImage("assets/images/profile.gif"),
-                          maxRadius: 30,
-                        ),
-                        fit: BoxFit.cover,
                       ),
                     ),
                   ),
                   title: Text(
-                    groupName,
+                    widget.groupName,
                     style: const TextStyle(
                         fontFamily: 'Narrow',
                         fontSize: 23,
@@ -161,19 +207,20 @@ class GroupInfo extends HookWidget {
                       } else if (value == 1) {
                         FirebaseFirestore.instance
                             .collection("GroupMessages")
-                            .doc(groupName)
+                            .doc(widget.groupName)
                             .update({
-                          "users": FieldValue.arrayRemove([data.email]),
+                          "users": FieldValue.arrayRemove([widget.data.email]),
                         });
                         FirebaseFirestore.instance
-                            .collection("GroupMessages/$groupName/Messages")
+                            .collection(
+                                "GroupMessages/${widget.groupName}/Messages")
                             .add(
                           {
                             "messageType": "left",
-                            "email": data.email,
-                            "name": data.name['First'],
+                            "email": widget.data.email,
+                            "name": widget.data.name['First'],
                             "time": Timestamp.now(),
-                            "users": FieldValue.arrayUnion([data.email]),
+                            "users": FieldValue.arrayUnion([widget.data.email]),
                             "message": ""
                           },
                         );
@@ -192,14 +239,14 @@ class GroupInfo extends HookWidget {
                         backgroundColor:
                             MaterialStateProperty.all(Colors.green[400])),
                     onPressed: () {
-                      if (admins.value.contains(data.email)) {
+                      if (admins.contains(widget.data.email)) {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (_) => AddToGroup(
-                                      data: data,
-                                      groupName: groupName,
-                                      users: users,
+                                      data: widget.data,
+                                      groupName: widget.groupName,
+                                      users: widget.users,
                                     )));
                       } else {
                         ScaffoldMessenger.of(context)
@@ -237,8 +284,8 @@ class GroupInfo extends HookWidget {
                               Map<String, dynamic> x = snapshot.data![i];
                               return GestureDetector(
                                 onLongPress: () {
-                                  if (admins.value.contains(data.email) &&
-                                      x['Email'] != data.email) {
+                                  if (admins.contains(widget.data.email) &&
+                                      x['Email'] != widget.data.email) {
                                     showDialog(
                                       context: context,
                                       builder: (BuildContext context) {
@@ -277,7 +324,7 @@ class GroupInfo extends HookWidget {
                                                     FirebaseFirestore.instance
                                                         .collection(
                                                             "GroupMessages")
-                                                        .doc(groupName)
+                                                        .doc(widget.groupName)
                                                         .update({
                                                       "users": FieldValue
                                                           .arrayRemove(
@@ -285,27 +332,28 @@ class GroupInfo extends HookWidget {
                                                     });
                                                     FirebaseFirestore.instance
                                                         .collection(
-                                                            "GroupMessages/$groupName/Messages")
+                                                            "GroupMessages/${widget.groupName}/Messages")
                                                         .add(
                                                       {
                                                         "messageType": "left",
-                                                        "email": data.email,
+                                                        "email":
+                                                            widget.data.email,
                                                         "name": x['Name']
                                                             ['First'],
                                                         "time": Timestamp.now(),
                                                         "users": FieldValue
-                                                            .arrayUnion(
-                                                                [data.email]),
-                                                        "message":
-                                                            data.name['First']
+                                                            .arrayUnion([
+                                                          widget.data.email
+                                                        ]),
+                                                        "message": widget
+                                                            .data.name['First']
                                                       },
                                                     );
                                                     Navigator.pop(
                                                         context, false);
                                                   },
                                                 ),
-                                                (!admins.value
-                                                        .contains(x['Email']))
+                                                (!admins.contains(x['Email']))
                                                     ? TextButton(
                                                         child: const Text(
                                                             'Make Admin'),
@@ -314,7 +362,8 @@ class GroupInfo extends HookWidget {
                                                               .instance
                                                               .collection(
                                                                   "GroupMessages")
-                                                              .doc(groupName)
+                                                              .doc(widget
+                                                                  .groupName)
                                                               .update({
                                                             "admins": FieldValue
                                                                 .arrayUnion([
@@ -324,23 +373,24 @@ class GroupInfo extends HookWidget {
                                                           FirebaseFirestore
                                                               .instance
                                                               .collection(
-                                                                  "GroupMessages/$groupName/Messages")
+                                                                  "GroupMessages/${widget.groupName}/Messages")
                                                               .add({
                                                             "messageType":
                                                                 "adminAdded",
-                                                            "email": data.email,
-                                                            "name": data
+                                                            "email": widget
+                                                                .data.email,
+                                                            "name": widget.data
                                                                 .name['First'],
                                                             "time":
                                                                 Timestamp.now(),
                                                             "users": FieldValue
                                                                 .arrayUnion([
-                                                              data.email
+                                                              widget.data.email
                                                             ]),
                                                             "message": x['Name']
                                                                 ['First'],
                                                           });
-                                                          admins.value
+                                                          admins
                                                               .add(x['Email']);
                                                           Navigator.pop(
                                                               context, false);
@@ -354,7 +404,8 @@ class GroupInfo extends HookWidget {
                                                               .instance
                                                               .collection(
                                                                   "GroupMessages")
-                                                              .doc(groupName)
+                                                              .doc(widget
+                                                                  .groupName)
                                                               .update({
                                                             "admins": FieldValue
                                                                 .arrayRemove([
@@ -364,23 +415,24 @@ class GroupInfo extends HookWidget {
                                                           FirebaseFirestore
                                                               .instance
                                                               .collection(
-                                                                  "GroupMessages/$groupName/Messages")
+                                                                  "GroupMessages/${widget.groupName}/Messages")
                                                               .add({
                                                             "messageType":
                                                                 "adminRemoved",
-                                                            "email": data.email,
-                                                            "name": data
+                                                            "email": widget
+                                                                .data.email,
+                                                            "name": widget.data
                                                                 .name['First'],
                                                             "time":
                                                                 Timestamp.now(),
                                                             "users": FieldValue
                                                                 .arrayUnion([
-                                                              data.email
+                                                              widget.data.email
                                                             ]),
                                                             "message": x['Name']
                                                                 ['First'],
                                                           });
-                                                          admins.value.remove(
+                                                          admins.remove(
                                                               x['Email']);
                                                           Navigator.pop(
                                                               context, false);
@@ -407,9 +459,9 @@ class GroupInfo extends HookWidget {
                                   branch: x['Branch'],
                                   year: x['Year'],
                                   EmailR: x['Email'],
-                                  storeData: data,
-                                  facultyList: facultyList,
-                                  admins: admins.value,
+                                  storeData: widget.data,
+                                  facultyList: widget.facultyList,
+                                  admins: admins,
                                 ),
                               );
                             });

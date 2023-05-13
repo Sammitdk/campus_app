@@ -10,32 +10,45 @@ class StudentSyllabus extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     var data = StoreProvider.of<AppState>(context).state;
 
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text("Syllabus",style: TextStyle(fontFamily: 'Narrow', fontSize: 30),textAlign: TextAlign.center,),
+        title: const Text(
+          "Syllabus",
+          style: TextStyle(fontFamily: 'Narrow', fontSize: 30),
+          textAlign: TextAlign.center,
+        ),
         backgroundColor: Colors.indigo[300],
       ),
       body: StreamBuilder(
-          stream: FirebaseFirestore.instance.collection('College/${data.branch}/${data.year}/Syllabus/Subject').snapshots(),
-          builder: (context ,AsyncSnapshot<QuerySnapshot> snapshot) {
-            if(snapshot.hasData){
+          stream: FirebaseFirestore.instance
+              .collection(
+                  'College/${data.branch}/${data.year}/Syllabus/Subject')
+              .snapshots(),
+          builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            if (snapshot.hasData) {
               return ListView.builder(
                   itemCount: snapshot.data!.docs.length,
-                  itemBuilder: (context,i){
+                  itemBuilder: (context, i) {
                     QueryDocumentSnapshot x = snapshot.data!.docs[i];
                     return InkWell(
-                      onTap: ()  {
-                        Navigator.push(context, MaterialPageRoute(builder: (_) => LoadPdf( url:x["url"],)));
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => LoadPdf(
+                                      url: x["url"],
+                                    )));
                       },
                       child: Padding(
-                        padding:  const EdgeInsetsDirectional.only(start: 20,end: 20,top: 30),
+                        padding: const EdgeInsetsDirectional.only(
+                            start: 20, end: 20, top: 30),
                         child: Card(
                           elevation: 5,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(50)),
                           color: Colors.white,
                           child: Row(
                             children: [
@@ -46,7 +59,9 @@ class StudentSyllabus extends StatelessWidget {
                                   alignment: Alignment.centerLeft,
                                   height: 80,
                                   child: Text(
-                                    (x["num"]),textAlign: TextAlign.center,style: const TextStyle(fontSize: 25),
+                                    (x["num"]),
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(fontSize: 25),
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
@@ -59,12 +74,9 @@ class StudentSyllabus extends StatelessWidget {
                   });
             }
             return Center(
-                child: LoadingAnimationWidget.staggeredDotsWave(size: 50, color: Colors.red));
-          }
-      ),
+                child: LoadingAnimationWidget.staggeredDotsWave(
+                    size: 50, color: Colors.red));
+          }),
     );
   }
 }
-
-
-

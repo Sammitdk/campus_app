@@ -97,11 +97,10 @@ class FacultyTimeTable extends HookWidget {
                                   child: Row(
                                     children: [
                                       const Expanded(
-                                          child:
-                                              Padding(
-                                                padding: EdgeInsets.all(8.0),
-                                                child: Icon(Icons.access_time),
-                                              )),
+                                          child: Padding(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: Icon(Icons.access_time),
+                                      )),
                                       Expanded(
                                         flex: 5,
                                         child: Container(

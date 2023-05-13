@@ -40,7 +40,8 @@ class _FacultyResultHistoryState extends State<FacultyResultHistory> {
               heroTag: "tag",
               backgroundColor: Colors.indigo[200],
               foregroundColor: Colors.black,
-              onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const FacultyResultAdd())),
+              onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const FacultyResultAdd())),
               icon: const Icon(Icons.add),
               label: const Text(
                 "Add New Result",
@@ -65,31 +66,44 @@ class _FacultyResultHistoryState extends State<FacultyResultHistory> {
                             const Expanded(
                                 child: Text(
                               "Subject",
-                              style: TextStyle(fontSize: 25, color: Colors.white, fontWeight: FontWeight.bold),
+                              style: TextStyle(
+                                  fontSize: 25,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
                               textAlign: TextAlign.center,
                             )),
                             Expanded(
                               flex: 2,
                               child: Container(
-                                decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: Colors.white),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(15),
+                                    color: Colors.white),
                                 margin: const EdgeInsets.all(20),
                                 child: ButtonTheme(
                                   alignedDropdown: true,
                                   child: DropdownButtonHideUnderline(
                                     child: DropdownButton<String>(
                                       hint: const Text('Select.'),
-                                      style: TextStyle(fontSize: 20, color: Colors.indigo[300], overflow: TextOverflow.ellipsis),
-                                      icon: const Icon(Icons.arrow_drop_down_rounded),
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          color: Colors.indigo[300],
+                                          overflow: TextOverflow.ellipsis),
+                                      icon: const Icon(
+                                          Icons.arrow_drop_down_rounded),
                                       iconSize: 40,
                                       elevation: 0,
-                                      value: selectedsubject.isEmpty ? null : selectedsubject,
+                                      value: selectedsubject.isEmpty
+                                          ? null
+                                          : selectedsubject,
                                       iconEnabledColor: Colors.green,
                                       alignment: AlignmentDirectional.center,
                                       items: state.subject.keys
-                                          .map<DropdownMenuItem<String>>((value) => DropdownMenuItem<String>(
-                                                value: value,
-                                                child: Text(value),
-                                              ))
+                                          .map<DropdownMenuItem<String>>(
+                                              (value) =>
+                                                  DropdownMenuItem<String>(
+                                                    value: value,
+                                                    child: Text(value),
+                                                  ))
                                           .toList(),
                                       onChanged: (String? value) async {
                                         if (value != selectedsubject) {
@@ -97,7 +111,8 @@ class _FacultyResultHistoryState extends State<FacultyResultHistory> {
                                           result.clear();
                                           selectedtest = '';
                                           selectedsubject = value!;
-                                          await getResult(state.subject[selectedsubject]);
+                                          await getResult(
+                                              state.subject[selectedsubject]);
                                           print(result);
                                           setState(() {});
                                         }
@@ -116,14 +131,20 @@ class _FacultyResultHistoryState extends State<FacultyResultHistory> {
                             const Expanded(
                                 child: Text(
                               "Date",
-                              style: TextStyle(fontSize: 25, color: Colors.white, fontWeight: FontWeight.bold),
+                              style: TextStyle(
+                                  fontSize: 25,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
                               textAlign: TextAlign.center,
                             )),
                             Expanded(
                               flex: 2,
                               child: selectedsubject.isNotEmpty
                                   ? Container(
-                                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: Colors.white),
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(15),
+                                          color: Colors.white),
                                       margin: const EdgeInsets.all(20),
                                       child: ButtonTheme(
                                         alignedDropdown: true,
@@ -131,39 +152,58 @@ class _FacultyResultHistoryState extends State<FacultyResultHistory> {
                                           child: DropdownButton(
                                               elevation: 0,
                                               isExpanded: true,
-                                              style:
-                                                  TextStyle(fontSize: 20, color: Colors.indigo[200], overflow: TextOverflow.ellipsis),
-                                              icon: const Icon(Icons.arrow_drop_down_rounded),
+                                              style: TextStyle(
+                                                  fontSize: 20,
+                                                  color: Colors.indigo[200],
+                                                  overflow:
+                                                      TextOverflow.ellipsis),
+                                              icon: const Icon(Icons
+                                                  .arrow_drop_down_rounded),
                                               iconSize: 40,
                                               iconEnabledColor: Colors.green,
                                               iconDisabledColor: Colors.red,
                                               value: selectedtest,
-                                              alignment: AlignmentDirectional.center,
-                                              hint: Text(tests.isNotEmpty ? "Select." : "No Records added."),
+                                              alignment:
+                                                  AlignmentDirectional.center,
+                                              hint: Text(tests.isNotEmpty
+                                                  ? "Select."
+                                                  : "No Records added."),
                                               items: tests.isNotEmpty
-                                                  ? tests.map<DropdownMenuItem<String>>((value) {
-                                                      return DropdownMenuItem<String>(
+                                                  ? tests.map<
+                                                      DropdownMenuItem<
+                                                          String>>((value) {
+                                                      return DropdownMenuItem<
+                                                          String>(
                                                         value: value.toString(),
                                                         child: Text(value,
-                                                            style: const TextStyle(fontSize: 20, overflow: TextOverflow.ellipsis),
-                                                            textAlign: TextAlign.center),
+                                                            style: const TextStyle(
+                                                                fontSize: 20,
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis),
+                                                            textAlign: TextAlign
+                                                                .center),
                                                       );
                                                     }).toList()
                                                   : null,
-                                              onChanged: (String? value) => value != selectedtest
-                                                  ? setState(() {
-                                                      selectedtest = value!;
-                                                      rolls = getRolls();
-                                                      rolls.sort();
-                                                    })
-                                                  : null),
+                                              onChanged: (String? value) =>
+                                                  value != selectedtest
+                                                      ? setState(() {
+                                                          selectedtest = value!;
+                                                          rolls = getRolls();
+                                                          rolls.sort();
+                                                        })
+                                                      : null),
                                         ),
                                       ),
                                     )
                                   : Container(
                                       color: Colors.indigo[300],
                                       child: Container(
-                                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: Colors.white),
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(15),
+                                            color: Colors.white),
                                         margin: const EdgeInsets.all(20),
                                         child: ButtonTheme(
                                           alignedDropdown: true,
@@ -171,11 +211,16 @@ class _FacultyResultHistoryState extends State<FacultyResultHistory> {
                                             child: DropdownButton(
                                                 elevation: 0,
                                                 style: TextStyle(
-                                                    fontSize: 20, color: Colors.indigo[200], overflow: TextOverflow.ellipsis),
-                                                icon: const Icon(Icons.arrow_drop_down_rounded),
+                                                    fontSize: 20,
+                                                    color: Colors.indigo[200],
+                                                    overflow:
+                                                        TextOverflow.ellipsis),
+                                                icon: const Icon(Icons
+                                                    .arrow_drop_down_rounded),
                                                 iconSize: 40,
                                                 iconDisabledColor: Colors.red,
-                                                alignment: AlignmentDirectional.center,
+                                                alignment:
+                                                    AlignmentDirectional.center,
                                                 // hint: const Text("Select date."),
                                                 items: null,
                                                 onChanged: null),
@@ -202,7 +247,8 @@ class _FacultyResultHistoryState extends State<FacultyResultHistory> {
                                   textAlign: TextAlign.center),
                             ),
                             IconButton(
-                                onPressed: () => showDialogDelete(state.subject),
+                                onPressed: () =>
+                                    showDialogDelete(state.subject),
                                 icon: const Icon(
                                   Icons.delete_forever_rounded,
                                   size: 30,
@@ -213,17 +259,26 @@ class _FacultyResultHistoryState extends State<FacultyResultHistory> {
                       : Container(),
 
                   Expanded(
-                    child: result.isNotEmpty && selectedtest.isNotEmpty && result[selectedtest].isNotEmpty
+                    child: result.isNotEmpty &&
+                            selectedtest.isNotEmpty &&
+                            result[selectedtest].isNotEmpty
                         ? GridView.builder(
                             scrollDirection: Axis.vertical,
-                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4, childAspectRatio: 2),
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 4, childAspectRatio: 2),
                             itemCount: rolls.length,
                             itemBuilder: (context, int index) {
                               int key = rolls[index];
                               return Container(
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(15),
-                                    color: (result[selectedtest][key]) * 100 / total >= 35 ? Colors.green[200] : Colors.red[200]),
+                                    color: (result[selectedtest][key]) *
+                                                100 /
+                                                total >=
+                                            35
+                                        ? Colors.green[200]
+                                        : Colors.red[200]),
                                 margin: const EdgeInsets.all(10),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -232,7 +287,9 @@ class _FacultyResultHistoryState extends State<FacultyResultHistory> {
                                     Text(
                                       "$key :  ",
                                       textAlign: TextAlign.center,
-                                      style: const TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
+                                      style: const TextStyle(
+                                          fontSize: 23,
+                                          fontWeight: FontWeight.bold),
                                     ),
                                     Text(
                                       "${result[selectedtest][key]}",
@@ -262,7 +319,8 @@ class _FacultyResultHistoryState extends State<FacultyResultHistory> {
 
   Future<void> getResult(Map<String, dynamic> subject) async {
     QuerySnapshot resultSnap = await FirebaseFirestore.instance
-        .collection("College/${subject['branch']}/${subject['year']}/Results/$selectedsubject")
+        .collection(
+            "College/${subject['branch']}/${subject['year']}/Results/$selectedsubject")
         .orderBy('time', descending: true)
         .get();
     tests = resultSnap.docs.map((e) {
@@ -289,7 +347,8 @@ class _FacultyResultHistoryState extends State<FacultyResultHistory> {
     showDialog(
         context: context,
         builder: (_) => AlertDialog(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30)),
               alignment: Alignment.center,
               title: const Text(
                 "Delete",
@@ -301,12 +360,16 @@ class _FacultyResultHistoryState extends State<FacultyResultHistory> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(margin: const EdgeInsets.all(5), child: const Text("Do you want to delete Test Result of ")),
+                    Container(
+                        margin: const EdgeInsets.all(5),
+                        child: const Text(
+                            "Do you want to delete Test Result of ")),
                     Container(
                         margin: const EdgeInsets.all(5),
                         child: Text(
                           "$selectedtest ?",
-                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 20),
                         ))
                   ],
                 ),
@@ -314,15 +377,18 @@ class _FacultyResultHistoryState extends State<FacultyResultHistory> {
               actions: [
                 ElevatedButton(
                     style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(Colors.indigo[300]),
-                        shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)))),
+                        backgroundColor:
+                            MaterialStateProperty.all(Colors.indigo[300]),
+                        shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(50)))),
                     onPressed: () async {
                       Navigator.of(context).pop();
                       await FirebaseFirestore.instance
                           .doc(
                               "College/${subject[selectedsubject]['branch']}/${subject[selectedsubject]['year']}/Results/$selectedsubject/$selectedtest")
                           .delete()
-                          .onError((error, stackTrace) => print("$error   $stackTrace"))
+                          .onError((error, stackTrace) =>
+                              print("$error   $stackTrace"))
                           .then((value) {
                         setState(() {
                           selectedsubject = '';
@@ -337,8 +403,10 @@ class _FacultyResultHistoryState extends State<FacultyResultHistory> {
                     child: const Text("Yes")),
                 ElevatedButton(
                     style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(Colors.indigo[300]),
-                        shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)))),
+                        backgroundColor:
+                            MaterialStateProperty.all(Colors.indigo[300]),
+                        shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(50)))),
                     onPressed: () => Navigator.of(context).pop(),
                     child: const Text("No"))
               ],

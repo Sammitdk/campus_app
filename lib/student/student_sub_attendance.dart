@@ -8,7 +8,8 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 class StudentSubAttendance extends StatelessWidget {
   final String subject;
 
-  const StudentSubAttendance({Key? key, required this.subject}) : super(key: key);
+  const StudentSubAttendance({Key? key, required this.subject})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +25,9 @@ class StudentSubAttendance extends StatelessWidget {
         ),
       ),
       body: StreamBuilder(
-        stream: FirebaseFirestore.instance.doc("Student_Detail/${state.prn}/Attendance/$subject").snapshots(),
+        stream: FirebaseFirestore.instance
+            .doc("Student_Detail/${state.prn}/Attendance/$subject")
+            .snapshots(),
         builder: (context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
             Map attendance = snapshot.data.data() as Map<String, dynamic>;
@@ -45,7 +48,8 @@ class StudentSubAttendance extends StatelessWidget {
                       children: [
                         Card(
                           elevation: 5,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(50)),
                           color: Colors.white,
                           child: Row(
                             children: [
@@ -54,16 +58,25 @@ class StudentSubAttendance extends StatelessWidget {
                                   child: Container(
                                     height: 80,
                                     alignment: Alignment.center,
-                                    child: Text(DateFormat('dd  MMM  yyyy hh:mm').format(DateFormat('dd-MM-yyyy-hh-mm').parse(key)),
-                                        style: const TextStyle(fontSize: 20, fontFamily: 'Custom'), textAlign: TextAlign.center),
+                                    child: Text(
+                                        DateFormat('dd  MMM  yyyy hh:mm')
+                                            .format(
+                                                DateFormat('dd-MM-yyyy-hh-mm')
+                                                    .parse(key)),
+                                        style: const TextStyle(
+                                            fontSize: 20, fontFamily: 'Custom'),
+                                        textAlign: TextAlign.center),
                                   )),
                               Expanded(
                                 flex: 2,
-                                child: Text(attendance[key] ? '  Present' : '  Absent',
+                                child: Text(
+                                    attendance[key] ? '  Present' : '  Absent',
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 18,
-                                        color: attendance[key] ? Colors.green[800] : Colors.red)),
+                                        color: attendance[key]
+                                            ? Colors.green[800]
+                                            : Colors.red)),
                               ),
                             ],
                           ),
@@ -75,7 +88,9 @@ class StudentSubAttendance extends StatelessWidget {
               );
             }
           } else {
-            return Center(child: LoadingAnimationWidget.staggeredDotsWave(size: 50, color: Colors.red));
+            return Center(
+                child: LoadingAnimationWidget.staggeredDotsWave(
+                    size: 50, color: Colors.red));
           }
         },
       ),
