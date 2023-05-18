@@ -20,25 +20,23 @@ class Wrapper extends HookWidget {
     if (auth!.getUser() == null) {
       return const Login();
     } else {
-      return StoreProvider(
-          store: store,
-          child: StoreConnector<AppState, AppState>(
-              converter: (store) => store.state,
-              builder: (_, state) {
-                if (state.isStudent != null) {
-                  if (state.isStudent) {
-                    return StudentDashboard(
-                      email: state.email,
-                    );
-                  } else {
-                    return FacultyDashboard(
-                      email: state.email,
-                    );
-                  }
-                } else {
-                  return Container();
-                }
-              }));
+      return StoreConnector<AppState, AppState>(
+          converter: (store) => store.state,
+          builder: (_, state) {
+            if (state.isStudent != null) {
+              if (state.isStudent) {
+                return StudentDashboard(
+                  email: state.email,
+                );
+              } else {
+                return FacultyDashboard(
+                  email: state.email,
+                );
+              }
+            } else {
+              return Container();
+            }
+          });
     }
   }
 }

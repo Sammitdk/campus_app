@@ -94,6 +94,11 @@ class User extends StatelessWidget {
         storeData.email != EmailR
             ? IconButton(
                 onPressed: () {
+                  try{
+
+                  }catch(e){
+
+                  }
                   final data = {
                     'groupName': name['First'],
                     'imgUrl': imageUrl,
@@ -122,6 +127,7 @@ class User extends StatelessWidget {
                       .then((value) => {
                             if (value.exists)
                               {
+                                print(imageUrl),
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
