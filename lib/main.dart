@@ -1,9 +1,7 @@
 import 'dart:async';
-
 import 'package:campus_subsystem/messaging/conversation_screen.dart';
 import 'package:campus_subsystem/redux/store.dart';
 import 'package:connectivity/connectivity.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -26,7 +24,9 @@ extension StringExtension on String {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIMode(
-    SystemUiMode.manual, overlays: SystemUiOverlay.values, //This line is used for showing the bottom bar
+    SystemUiMode.manual,
+    overlays:
+        SystemUiOverlay.values, //This line is used for showing the bottom bar
   );
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
@@ -38,7 +38,8 @@ void main() async {
   // );
 
   try {
-    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+    await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform);
   } catch (e) {
     print("wwwwwwwwwwwwwwwwwwwww${e.toString()}");
   }
@@ -48,24 +49,27 @@ void main() async {
     android: AndroidInitializationSettings("notification_icon"),
   ));
 
-  runApp(MaterialApp(
-    theme: ThemeData(fontFamily: "Muli"),
-    color: Colors.transparent,
-    debugShowCheckedModeBanner: false,
-    initialRoute: 'loading_page',
-    routes: {
-      '/': (context) => const Main(),
-      'loading_page': (context) => LoadingPage(email: Auth().auth.currentUser?.email),
-      // 'login_page': (context) => const Login(),
-      // 't_login_form': (context) =>
-      // const KeyboardVisibilityProvider(child: FacultyLogin()),
-      // 's_login_form': (context) =>
-      // const KeyboardVisibilityProvider(child: StudentLogin()),
-      'chat_screen': (context) => const ConversationScreen(
-            isFaculty: false,
-          )
-    },
-  ));
+  runApp(StoreProvider(
+      store: store,
+      child: MaterialApp(
+        theme: ThemeData(fontFamily: "Muli"),
+        color: Colors.transparent,
+        debugShowCheckedModeBanner: false,
+        initialRoute: 'loading_page',
+        routes: {
+          '/': (context) => const Main(),
+          'loading_page': (context) =>
+              LoadingPage(email: Auth().auth.currentUser?.email),
+          // 'login_page': (context) => const Login(),
+          // 't_login_form': (context) =>
+          // const KeyboardVisibilityProvider(child: FacultyLogin()),
+          // 's_login_form': (context) =>
+          // const KeyboardVisibilityProvider(child: StudentLogin()),
+          'chat_screen': (context) => const ConversationScreen(
+                isFaculty: false,
+              )
+        },
+      )));
 }
 
 class Main extends StatefulWidget {
@@ -110,7 +114,8 @@ class _MainState extends State<Main> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     super.initState();
 
-    internet = Connectivity().onConnectivityChanged.listen((ConnectivityResult event) {
+    internet =
+        Connectivity().onConnectivityChanged.listen((ConnectivityResult event) {
       switch (event) {
         case ConnectivityResult.none:
           isinternet = false;
@@ -168,7 +173,8 @@ class _MainState extends State<Main> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(create: (context) => Auth(), child: const Wrapper());
+    return ChangeNotifierProvider(
+        create: (context) => Auth(), child: const Wrapper());
   }
 
   showAlert(BuildContext context, Map data) {
@@ -176,7 +182,8 @@ class _MainState extends State<Main> with WidgetsBindingObserver {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
             alignment: Alignment.center,
             title: Text(data["notification"]['title']),
             content: Padding(
@@ -192,7 +199,9 @@ class _MainState extends State<Main> with WidgetsBindingObserver {
                   data["data"]["image"].isNotEmpty
                       ? Container(
                           decoration: BoxDecoration(
-                              image: DecorationImage(image: NetworkImage(data["data"]["image"])), shape: BoxShape.circle),
+                              image: DecorationImage(
+                                  image: NetworkImage(data["data"]["image"])),
+                              shape: BoxShape.circle),
                         )
                       : Container(),
                 ],
@@ -201,8 +210,10 @@ class _MainState extends State<Main> with WidgetsBindingObserver {
             actions: [
               ElevatedButton(
                   style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(Colors.deepPurpleAccent),
-                      shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)))),
+                      backgroundColor:
+                          MaterialStateProperty.all(Colors.deepPurpleAccent),
+                      shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(50)))),
                   onPressed: () => Navigator.of(context).pop(),
                   child: const Text("OK"))
             ],
