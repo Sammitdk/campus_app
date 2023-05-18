@@ -2,80 +2,78 @@ import 'package:campus_subsystem/faculty/faculty_dashboard.dart';
 import 'package:campus_subsystem/student/student_dashboard.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../redux/actions/fetchUserData.dart';
 
-class Auth {
+class Auth extends ChangeNotifier {
   final FirebaseAuth auth = FirebaseAuth.instance;
+  User? _user;
+  // bool isLogged = false;
 
-  User? _userFromCredUser(User? user) {
-    return user;
-  }
-
-  // String? getMail(User? user) {
-  //   return user?.email;
+  // User? _userFromCredUser(User? user) {
+  //   return user;
   // }
 
-  Stream<User?> get user {
-    return auth.authStateChanges().map(_userFromCredUser);
+  User? getUser() {
+    return _user;
   }
 
-  Future signIn({
+  Auth() {
+    auth.authStateChanges().listen((user) {
+      print("aaaaaaaaaaaa  $user");
+      _user = user;
+      notifyListeners();
+    });
+  }
+
+  Future<void> signIn({
     required String username,
     required String password,
-    required dynamic context,
     required bool isStudent,
-    required dynamic click,
   }) async {
     try {
-      final UserCredential result = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: username, password: password);
+      await FirebaseAuth.instance.signInWithEmailAndPassword(email: username, password: password).then((result) async {
+        _user = result.user;
+        // isLogged = true;
+        print(result.user);
+        await FetchData().fetchUserData(result.user!.email);
+        // Provider.of<Auth>(context, listen: false)._user = result.user;
+        notifyListeners();
+      });
       //we got user
 
-      User? user = result.user;
-
-      await fetchUserData(result.user?.email);
-      if (isStudent) {
-        // await fetchUserData(result.user?.email);
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (_) => StudentDashboard(
-                      email: username,
-                    )));
-      } else {
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (_) => FacultyDashboard(email: username)));
-      }
-
-      return _userFromCredUser(user);
+      // if (isStudent) {
+      //   // await fetchUserData(result.user?.email);
+      //   Navigator.pushReplacement(
+      //       context,
+      //       MaterialPageRoute(
+      //           builder: (_) => StudentDashboard(
+      //                 email: username,
+      //               )));
+      // } else {
+      //   Navigator.pushReplacement(
+      //       context,
+      //       MaterialPageRoute(
+      //           builder: (_) => FacultyDashboard(email: username)));
+      // }
+      notifyListeners();
+      // return _userFromCredUser(user);
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("Invalid Email Address.")));
-      } else if (e.code == 'wrong-password') {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text("Incorrect Password.")));
-      } else if (e.code == 'network-request-failed') {
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("Check Internet Connection.")));
-      } else {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(e.code.toString())));
-      }
-    } finally {
-      click();
+      rethrow;
     }
   }
 
-  Future<Stream?> signOut() async {
+  Future<void> signOut() async {
     try {
-      await FirebaseAuth.instance.signOut();
+      await auth.signOut().then((_) {
+        _user = null;
+        notifyListeners();
+      });
     } catch (e) {
-      return null;
+      print(e);
+      // return null;
     }
-    return null;
+    // return null;
   }
 
   Future resetPassword(email) async {

@@ -1,6 +1,8 @@
 import 'package:campus_subsystem/password_reset.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
+import 'package:provider/provider.dart';
 import '../firebase/signIn.dart';
 
 class StudentLogin extends StatefulWidget {
@@ -15,20 +17,12 @@ class _StudentLoginState extends State<StudentLogin> {
   final formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-  final Auth auth = Auth();
   bool isVisible = false;
   bool isClicked = false;
 
-  void unClick() {
-    setState(() {
-      isClicked = false;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    final bool isKeyboardVisible =
-        KeyboardVisibilityProvider.isKeyboardVisible(context);
+    final bool isKeyboardVisible = KeyboardVisibilityProvider.isKeyboardVisible(context);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
@@ -74,8 +68,7 @@ class _StudentLoginState extends State<StudentLogin> {
                   child: Column(
                     children: [
                       Container(
-                        padding: const EdgeInsets.only(
-                            left: 40, right: 40, bottom: 20),
+                        padding: const EdgeInsets.only(left: 40, right: 40, bottom: 20),
                         child: TextFormField(
                           controller: emailController,
                           validator: (name) {
@@ -90,8 +83,7 @@ class _StudentLoginState extends State<StudentLogin> {
                         ),
                       ), //Email TextField
                       Container(
-                        padding: const EdgeInsets.only(
-                            left: 40, right: 40, bottom: 20),
+                        padding: const EdgeInsets.only(left: 40, right: 40, bottom: 20),
                         child: TextFormField(
                           obscureText: !isVisible,
                           validator: (pswd) {
@@ -122,16 +114,9 @@ class _StudentLoginState extends State<StudentLogin> {
                                 )
                               : ElevatedButton(
                                   style: ButtonStyle(
-                                    backgroundColor:
-                                        MaterialStateColor.resolveWith(
-                                            (states) => Colors.white),
-                                    foregroundColor:
-                                        MaterialStateColor.resolveWith(
-                                            (states) => Colors.black),
-                                    shape: MaterialStateProperty.all(
-                                        RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(15))),
+                                    backgroundColor: MaterialStateColor.resolveWith((states) => Colors.white),
+                                    foregroundColor: MaterialStateColor.resolveWith((states) => Colors.black),
+                                    shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))),
                                   ),
                                   child: const Text(
                                     'Log In',
@@ -139,15 +124,28 @@ class _StudentLoginState extends State<StudentLogin> {
                                   ),
                                   onPressed: () async {
                                     if (formKey.currentState!.validate()) {
-                                      setState(() {
-                                        isClicked = true;
-                                      });
-                                      await auth.signIn(
-                                          username: emailController.text.trim(),
-                                          password: passwordController.text,
-                                          context: context,
-                                          isStudent: true,
-                                          click: unClick);
+                                      setState(() => isClicked = true);
+                                      await Auth()
+                                          .signIn(
+                                        username: emailController.text.trim(),
+                                        password: passwordController.text,
+                                        isStudent: true,
+                                      )
+                                          .onError((FirebaseException e, stackTrace) {
+                                        if (e.code == 'user-not-found') {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(const SnackBar(content: Text("Invalid Email Address.")));
+                                        } else if (e.code == 'wrong-password') {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(const SnackBar(content: Text("Incorrect Password.")));
+                                        } else if (e.code == 'network-request-failed') {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(const SnackBar(content: Text("Check Internet Connection.")));
+                                        } else {
+                                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.code.toString())));
+                                        }
+                                      }).then((value) => Navigator.of(context).pop());
+                                      setState(() => isClicked = false);
                                     }
                                   })),
                       Container(
@@ -155,25 +153,16 @@ class _StudentLoginState extends State<StudentLogin> {
                           padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
                           child: ElevatedButton(
                               style: ButtonStyle(
-                                backgroundColor: MaterialStateColor.resolveWith(
-                                    (states) => Colors.white),
-                                foregroundColor: MaterialStateColor.resolveWith(
-                                    (states) => Colors.black),
-                                shape: MaterialStateProperty.all(
-                                    RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(15))),
+                                backgroundColor: MaterialStateColor.resolveWith((states) => Colors.white),
+                                foregroundColor: MaterialStateColor.resolveWith((states) => Colors.black),
+                                shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))),
                               ),
                               child: const Text(
                                 'Reset Password',
-                                style: TextStyle(
-                                    fontSize: 17, color: Colors.black),
+                                style: TextStyle(fontSize: 17, color: Colors.black),
                               ),
                               onPressed: () async {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (_) => const ResetPassword()));
+                                Navigator.push(context, MaterialPageRoute(builder: (_) => const ResetPassword()));
                               })),
                     ],
                   ),

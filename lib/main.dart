@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:campus_subsystem/messaging/conversation_screen.dart';
 import 'package:campus_subsystem/redux/store.dart';
 import 'package:connectivity/connectivity.dart';
@@ -46,30 +48,24 @@ void main() async {
     android: AndroidInitializationSettings("notification_icon"),
   ));
 
-  runApp(StoreProvider(
-      store: store,
-      child: StreamProvider<User?>.value(
-        value: Auth().user,
-        initialData: null,
-        child: MaterialApp(
-          theme: ThemeData(fontFamily: "Muli"),
-          color: Colors.transparent,
-          debugShowCheckedModeBanner: false,
-          initialRoute: 'loading_page',
-          routes: {
-            '/': (context) => const Main(),
-            'loading_page': (context) => LoadingPage(email: Auth().auth.currentUser?.email),
-            // 'login_page': (context) => const Login(),
-            // 't_login_form': (context) =>
-            // const KeyboardVisibilityProvider(child: FacultyLogin()),
-            // 's_login_form': (context) =>
-            // const KeyboardVisibilityProvider(child: StudentLogin()),
-            'chat_screen': (context) => const ConversationScreen(
-              isFaculty: false,
-            )
-          },
-        ),
-      )));
+  runApp(MaterialApp(
+    theme: ThemeData(fontFamily: "Muli"),
+    color: Colors.transparent,
+    debugShowCheckedModeBanner: false,
+    initialRoute: 'loading_page',
+    routes: {
+      '/': (context) => const Main(),
+      'loading_page': (context) => LoadingPage(email: Auth().auth.currentUser?.email),
+      // 'login_page': (context) => const Login(),
+      // 't_login_form': (context) =>
+      // const KeyboardVisibilityProvider(child: FacultyLogin()),
+      // 's_login_form': (context) =>
+      // const KeyboardVisibilityProvider(child: StudentLogin()),
+      'chat_screen': (context) => const ConversationScreen(
+            isFaculty: false,
+          )
+    },
+  ));
 }
 
 class Main extends StatefulWidget {
@@ -79,17 +75,42 @@ class Main extends StatefulWidget {
   State<Main> createState() => _MainState();
 }
 
-class _MainState extends State<Main> {
+class _MainState extends State<Main> with WidgetsBindingObserver {
   late ConnectivityResult _previous;
-
+  late StreamSubscription internet;
   bool isinternet = true;
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // TODO: implement didChangeAppLifecycleState
+    print("${state.index}   ${state.name}");
+
+    switch (state.index) {
+      case 0:
+        internet.resume();
+        break;
+      case 1:
+      case 3:
+      case 2:
+        internet.pause();
+    }
+    super.didChangeAppLifecycleState(state);
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    internet.cancel();
+  }
 
   @override
   void initState() {
     int id = 0;
+    WidgetsBinding.instance.addObserver(this);
     super.initState();
 
-    Connectivity().onConnectivityChanged.listen((ConnectivityResult event) {
+    internet = Connectivity().onConnectivityChanged.listen((ConnectivityResult event) {
       switch (event) {
         case ConnectivityResult.none:
           isinternet = false;
@@ -133,10 +154,10 @@ class _MainState extends State<Main> {
       Map data = event.toMap();
       data["data"]["event"] != 'true'
           ? NotificationAPI.postLocalNotification(
-          id: id,
-          title: data["notification"]['title'],
-          message: data["notification"]['body'],
-          image: data["notification"]['image'])
+              id: id,
+              title: data["notification"]['title'],
+              message: data["notification"]['body'],
+              image: data["notification"]['image'])
           : showAlert(context, data);
     });
 
@@ -147,7 +168,7 @@ class _MainState extends State<Main> {
 
   @override
   Widget build(BuildContext context) {
-    return const Wrapper();
+    return ChangeNotifierProvider(create: (context) => Auth(), child: const Wrapper());
   }
 
   showAlert(BuildContext context, Map data) {
@@ -170,9 +191,9 @@ class _MainState extends State<Main> {
                   ),
                   data["data"]["image"].isNotEmpty
                       ? Container(
-                    decoration: BoxDecoration(
-                        image: DecorationImage(image: NetworkImage(data["data"]["image"])), shape: BoxShape.circle),
-                  )
+                          decoration: BoxDecoration(
+                              image: DecorationImage(image: NetworkImage(data["data"]["image"])), shape: BoxShape.circle),
+                        )
                       : Container(),
                 ],
               ),

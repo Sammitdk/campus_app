@@ -12,13 +12,11 @@ class LoadingPage extends HookWidget {
   Widget build(BuildContext context) {
     useEffect(() {
       if (email != null) {
-        fetchUserData(email).then((value) => {
-              Future.delayed(const Duration(milliseconds: 3000)).then(
-                  (value) => {Navigator.pushReplacementNamed(context, "/")})
+        FetchData().fetchUserData(email).then((value) => {
+              Future.delayed(const Duration(milliseconds: 3000)).then((value) => {Navigator.pushReplacementNamed(context, "/")})
             });
       } else {
-        Future.delayed(const Duration(milliseconds: 3000))
-            .then((value) => Navigator.pushReplacementNamed(context, "/"));
+        Future.delayed(const Duration(milliseconds: 3000)).then((value) => Navigator.pushReplacementNamed(context, "/"));
       }
       return null;
     }, const []);
