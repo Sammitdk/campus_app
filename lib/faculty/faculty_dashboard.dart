@@ -14,15 +14,12 @@ class FacultyDashboard extends StatefulWidget {
   State<FacultyDashboard> createState() => _FacultyDashboardState();
 }
 
-class _FacultyDashboardState extends State<FacultyDashboard>
-    with WidgetsBindingObserver {
+class _FacultyDashboardState extends State<FacultyDashboard> with WidgetsBindingObserver {
   final navigationKey = GlobalKey<CurvedNavigationBarState>();
   int index = 0;
 
   void setStatus(String status) {
-    FirebaseFirestore.instance
-        .doc("Messages/${widget.email}")
-        .set({'status': status}, SetOptions(merge: true));
+    FirebaseFirestore.instance.doc("Messages/${widget.email}").set({'status': status}, SetOptions(merge: true));
   }
 
   @override
@@ -48,7 +45,7 @@ class _FacultyDashboardState extends State<FacultyDashboard>
       const ConversationScreen(
         isFaculty: true,
       ),
-      const FacultyProfile(),
+      FacultyProfile(),
     ];
     final items = <Widget>[
       const Icon(

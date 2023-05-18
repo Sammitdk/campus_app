@@ -13,6 +13,8 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:pie_chart/pie_chart.dart';
+import 'package:provider/provider.dart';
+import '../firebase/signIn.dart';
 import '../redux/reducer.dart';
 
 class StudentProfile extends HookWidget {
@@ -51,8 +53,7 @@ class StudentProfile extends HookWidget {
     var progress = useState(0.0);
 
     Future selectFiles() async {
-      final result =
-          await ImagePicker.platform.pickImage(source: ImageSource.gallery);
+      final result = await ImagePicker.platform.pickImage(source: ImageSource.gallery);
       if (result == null) return;
       final path = result.path;
       file = File(path);
@@ -67,8 +68,7 @@ class StudentProfile extends HookWidget {
       storageRef.snapshotEvents.listen((event) async {
         switch (event.state) {
           case TaskState.running:
-            progress.value =
-                event.bytesTransferred.toDouble() / event.totalBytes.toDouble();
+            progress.value = event.bytesTransferred.toDouble() / event.totalBytes.toDouble();
             break;
           case TaskState.paused:
             clicked.value = false;
@@ -82,10 +82,7 @@ class StudentProfile extends HookWidget {
           case TaskState.success:
             String url = await ref.getDownloadURL();
             stateUrl.value = url;
-            await FirebaseFirestore.instance
-                .collection("Student_Detail")
-                .doc("${state.prn}")
-                .update({'imgUrl': url});
+            await FirebaseFirestore.instance.collection("Student_Detail").doc("${state.prn}").update({'imgUrl': url});
             clicked.value = false;
             storageRef.cancel();
             break;
@@ -118,8 +115,7 @@ class StudentProfile extends HookWidget {
                   );
                 },
                 placeholder: (context, url) => CircleAvatar(
-                  backgroundImage:
-                      const AssetImage("assets/images/profile.gif"),
+                  backgroundImage: const AssetImage("assets/images/profile.gif"),
                   maxRadius: MediaQuery.of(context).size.height * 0.1,
                 ),
                 errorWidget: (context, url, error) => const Icon(Icons.error),
@@ -136,13 +132,11 @@ class StudentProfile extends HookWidget {
                         percent: progress.value,
                         center: Text(
                           progress.value.toStringAsFixed(2),
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 18.0),
+                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0),
                         ),
                         header: const Text(
                           "Uploading",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 14.0),
+                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.0),
                         ),
                         circularStrokeCap: CircularStrokeCap.round,
                         progressColor: Colors.purple,
@@ -196,12 +190,8 @@ class StudentProfile extends HookWidget {
                   //     Text(state.mobile, style: const TextStyle(fontSize: 18, color: Colors.black)),
                   //   ],
                   // ),
-                  Text(state.email,
-                      style:
-                          const TextStyle(fontSize: 18, color: Colors.black)),
-                  Text(state.mobile,
-                      style:
-                          const TextStyle(fontSize: 18, color: Colors.black)),
+                  Text(state.email, style: const TextStyle(fontSize: 18, color: Colors.black)),
+                  Text(state.mobile, style: const TextStyle(fontSize: 18, color: Colors.black)),
                 ],
               ),
               Expanded(
@@ -209,9 +199,7 @@ class StudentProfile extends HookWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     FutureBuilder(
-                      future: FirebaseFirestore.instance
-                          .doc("College/${state.branch}/${state.year}/Subjects")
-                          .get(),
+                      future: FirebaseFirestore.instance.doc("College/${state.branch}/${state.year}/Subjects").get(),
                       builder: (BuildContext context, AsyncSnapshot list) {
                         if (list.connectionState == ConnectionState.waiting) {
                           return Container(
@@ -219,65 +207,39 @@ class StudentProfile extends HookWidget {
                             child: const Center(child: SizedBox()),
                           );
                         } else {
-                          subjectList =
-                              list.data.data()[state.sem].values.toList();
+                          subjectList = list.data.data()[state.sem].values.toList();
                           return StreamBuilder(
-                              stream: FirebaseFirestore.instance
-                                  .collection(
-                                      "Student_Detail/${state.prn}/Attendance")
-                                  .snapshots(),
+                              stream: FirebaseFirestore.instance.collection("Student_Detail/${state.prn}/Attendance").snapshots(),
                               builder: (context, AsyncSnapshot data) {
-                                if (data.connectionState !=
-                                    ConnectionState.waiting) {
+                                if (data.connectionState != ConnectionState.waiting) {
                                   if (data.hasData) {
                                     return Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 20,
-                                          right: 20,
-                                          top: 10,
-                                          bottom: 10),
+                                      padding: const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
                                       child: Card(
                                         elevation: 5,
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(20)),
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                                         child: InkWell(
-                                          onTap: () => Navigator.of(context)
-                                              .push(MaterialPageRoute(
-                                                  builder: (_) =>
-                                                      StudentAttendance())),
+                                          onTap: () =>
+                                              Navigator.of(context).push(MaterialPageRoute(builder: (_) => StudentAttendance())),
                                           child: Container(
-                                            margin: EdgeInsets.all(
-                                                MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.01),
+                                            margin: EdgeInsets.all(MediaQuery.of(context).size.height * 0.01),
                                             child: PieChart(
                                               centerText: "Attendance",
                                               initialAngleInDegree: 270,
                                               chartType: ChartType.ring,
-                                              chartValuesOptions:
-                                                  const ChartValuesOptions(
-                                                      showChartValuesInPercentage:
-                                                          true,
-                                                      showChartValuesOutside:
-                                                          true,
-                                                      showChartValues: true),
-                                              legendOptions:
-                                                  const LegendOptions(
+                                              chartValuesOptions: const ChartValuesOptions(
+                                                  showChartValuesInPercentage: true,
+                                                  showChartValuesOutside: true,
+                                                  showChartValues: true),
+                                              legendOptions: const LegendOptions(
                                                 legendShape: BoxShape.circle,
                                                 legendTextStyle: TextStyle(
                                                   fontSize: 10,
                                                   fontWeight: FontWeight.bold,
                                                 ),
                                               ),
-                                              animationDuration:
-                                                  const Duration(seconds: 1),
-                                              chartRadius:
-                                                  MediaQuery.of(context)
-                                                          .size
-                                                          .height *
-                                                      0.1,
+                                              animationDuration: const Duration(seconds: 1),
+                                              chartRadius: MediaQuery.of(context).size.height * 0.1,
                                               ringStrokeWidth: 20,
                                               dataMap: getChartValues(data),
                                             ),
@@ -287,15 +249,10 @@ class StudentProfile extends HookWidget {
                                     );
                                   } else {
                                     return const Align(
-                                        alignment:
-                                            AlignmentDirectional.centerStart,
-                                        child: CircularProgressIndicator());
+                                        alignment: AlignmentDirectional.centerStart, child: CircularProgressIndicator());
                                   }
                                 } else {
-                                  return const Align(
-                                      alignment:
-                                          AlignmentDirectional.centerStart,
-                                      child: CircularProgressIndicator());
+                                  return const Align(alignment: AlignmentDirectional.centerStart, child: CircularProgressIndicator());
                                 }
                               });
                         }
@@ -319,12 +276,9 @@ class StudentProfile extends HookWidget {
                               children: [
                                 const Text(
                                   "Address",
-                                  style: TextStyle(
-                                      fontSize: 15, color: Colors.black),
+                                  style: TextStyle(fontSize: 15, color: Colors.black),
                                 ),
-                                Text(state.address ?? "--",
-                                    style: const TextStyle(
-                                        fontSize: 18, color: Colors.black)),
+                                Text(state.address ?? "--", style: const TextStyle(fontSize: 18, color: Colors.black)),
                               ],
                             ),
                           )
@@ -349,12 +303,9 @@ class StudentProfile extends HookWidget {
                               children: [
                                 const Text(
                                   "Trade",
-                                  style: TextStyle(
-                                      fontSize: 15, color: Colors.black),
+                                  style: TextStyle(fontSize: 15, color: Colors.black),
                                 ),
-                                Text(state.branch ?? "--",
-                                    style: const TextStyle(
-                                        fontSize: 18, color: Colors.black)),
+                                Text(state.branch ?? "--", style: const TextStyle(fontSize: 18, color: Colors.black)),
                               ],
                             ),
                           )
@@ -379,12 +330,9 @@ class StudentProfile extends HookWidget {
                               children: [
                                 const Text(
                                   "Birth Date",
-                                  style: TextStyle(
-                                      fontSize: 15, color: Colors.black),
+                                  style: TextStyle(fontSize: 15, color: Colors.black),
                                 ),
-                                Text(state.dob ?? "--",
-                                    style: const TextStyle(
-                                        fontSize: 18, color: Colors.black)),
+                                Text(state.dob ?? "--", style: const TextStyle(fontSize: 18, color: Colors.black)),
                               ],
                             ),
                           )
@@ -409,12 +357,9 @@ class StudentProfile extends HookWidget {
                               children: [
                                 const Text(
                                   "PRN",
-                                  style: TextStyle(
-                                      fontSize: 15, color: Colors.black),
+                                  style: TextStyle(fontSize: 15, color: Colors.black),
                                 ),
-                                Text(state.prn ?? "--",
-                                    style: const TextStyle(
-                                        fontSize: 18, color: Colors.black)),
+                                Text(state.prn ?? "--", style: const TextStyle(fontSize: 18, color: Colors.black)),
                               ],
                             ),
                           )
@@ -439,12 +384,9 @@ class StudentProfile extends HookWidget {
                               children: [
                                 const Text(
                                   "Semester",
-                                  style: TextStyle(
-                                      fontSize: 15, color: Colors.black),
+                                  style: TextStyle(fontSize: 15, color: Colors.black),
                                 ),
-                                Text(state.sem ?? "--",
-                                    style: const TextStyle(
-                                        fontSize: 18, color: Colors.black)),
+                                Text(state.sem ?? "--", style: const TextStyle(fontSize: 18, color: Colors.black)),
                               ],
                             ),
                           )
@@ -467,8 +409,7 @@ class StudentProfile extends HookWidget {
           SpeedDialChild(
             label: 'Forget Password',
             onTap: () async {
-              Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (_) => const ResetPassword()));
+              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const ResetPassword()));
             },
             backgroundColor: Colors.white,
             foregroundColor: Colors.black,
@@ -479,27 +420,23 @@ class StudentProfile extends HookWidget {
             foregroundColor: Colors.black,
             child: const Icon(Icons.logout),
             label: 'Log Out',
-            onTap: () async {
+            onTap: () {
               // todo internet connection check before delete(Token)
               try {
                 // remove student device token
-                await FirebaseFirestore.instance
-                    .doc("Student_Detail/${state.prn}")
-                    .update({"Token": FieldValue.delete()}).then(
-                        (value) => FirebaseAuth.instance.signOut());
-
                 FirebaseFirestore.instance
-                    .doc("Messages/${state.email}")
-                    .set({'status': 'Offline'}, SetOptions(merge: true));
+                    .doc("Student_Detail/${state.prn}")
+                    .update({"Token": FieldValue.delete()}).then((value) => FirebaseAuth.instance.signOut());
 
-                FirebaseAuth.instance.signOut().then((value) =>
-                    Navigator.pushReplacementNamed(context, "loading_page"));
+                FirebaseFirestore.instance.doc("Messages/${state.email}").set({'status': 'Offline'}, SetOptions(merge: true));
+
+                Auth().signOut();
+                // .then((value) => Navigator.of(context).pop());
 
                 // FirebaseAuth.instance.signOut();
               } on FirebaseAuthException catch (e) {
                 if (e.code == 'network-request-failed') {
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      content: Text("Check Internet Connection.")));
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Check Internet Connection.")));
                 }
               }
             },
@@ -520,8 +457,7 @@ class CurvePainter extends CustomPainter {
     var path = Path();
 
     path.moveTo(0, size.height / 1.9);
-    path.quadraticBezierTo(
-        size.height / 3, size.height * 0.100, size.width, size.height * 0.200);
+    path.quadraticBezierTo(size.height / 3, size.height * 0.100, size.width, size.height * 0.200);
     path.lineTo(size.width, 0);
     path.lineTo(0, 0);
 
