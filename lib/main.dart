@@ -25,7 +25,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIMode(
     SystemUiMode.manual,
-    overlays: SystemUiOverlay.values, //This line is used for showing the bottom bar
+    overlays:
+        SystemUiOverlay.values, //This line is used for showing the bottom bar
   );
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
@@ -76,6 +77,7 @@ class _MainState extends State<Main> with WidgetsBindingObserver {
   late ConnectivityResult _previous;
   late StreamSubscription internet;
   bool isinternet = true;
+  SnackBar? offlineSnackbar;
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
@@ -106,40 +108,42 @@ class _MainState extends State<Main> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     super.initState();
 
-    internet = Connectivity().onConnectivityChanged.listen((ConnectivityResult event) {
+    internet =
+        Connectivity().onConnectivityChanged.listen((ConnectivityResult event) {
       switch (event) {
         case ConnectivityResult.none:
           isinternet = false;
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            behavior: SnackBarBehavior.floating,
-            elevation: 20,
-            content: const Text("No Internet Connection"),
-            // duration: Duration(seconds: 10),
-            action: SnackBarAction(
-                label: "Try again",
-                onPressed: () {
-                  setState(() {});
-                }),
-          ));
-          // Navigator.of(context).push(MaterialPageRoute(builder: (_) => const NoInternet()));
+          offlineSnackbar = SnackBar(
+            behavior: SnackBarBehavior.fixed,
+            duration: const Duration(days: 69),
+            elevation: 10,
+            content: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                Padding(
+                  padding: EdgeInsets.only(right: 10),
+                  child: Icon(Icons.cloud_off_outlined, color: Colors.white),
+                ),
+                Text(
+                  "Offline - Showing limited content",
+                  textAlign: TextAlign.end,
+                ),
+              ],
+            ),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(offlineSnackbar!);
           break;
         case ConnectivityResult.mobile:
         case ConnectivityResult.wifi:
           if (!isinternet) {
-            // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Internet")));
+            ScaffoldMessenger.of(context).hideCurrentSnackBar();
             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
               behavior: SnackBarBehavior.floating,
+              duration: Duration(seconds: 1),
               elevation: 20,
               content: Text("Internet Connection is back"),
-              // action: SnackBarAction(
-              //     label: "Try again",
-              //     onPressed: () {
-              //       setState(() {});
-              //     }),
             ));
           }
-          // Navigator.of(context).ca
-
           break;
       }
     });
@@ -164,7 +168,8 @@ class _MainState extends State<Main> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(create: (context) => Auth(), child: const Wrapper());
+    return ChangeNotifierProvider(
+        create: (context) => Auth(), child: const Wrapper());
   }
 
   showAlert(BuildContext context, Map data) {
@@ -172,7 +177,8 @@ class _MainState extends State<Main> with WidgetsBindingObserver {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
             alignment: Alignment.center,
             title: Text(data["notification"]['title']),
             content: Padding(
@@ -188,7 +194,9 @@ class _MainState extends State<Main> with WidgetsBindingObserver {
                   data["data"]["image"].isNotEmpty
                       ? Container(
                           decoration: BoxDecoration(
-                              image: DecorationImage(image: NetworkImage(data["data"]["image"])), shape: BoxShape.circle),
+                              image: DecorationImage(
+                                  image: NetworkImage(data["data"]["image"])),
+                              shape: BoxShape.circle),
                         )
                       : Container(),
                 ],
@@ -197,8 +205,10 @@ class _MainState extends State<Main> with WidgetsBindingObserver {
             actions: [
               ElevatedButton(
                   style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(Colors.deepPurpleAccent),
-                      shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)))),
+                      backgroundColor:
+                          MaterialStateProperty.all(Colors.deepPurpleAccent),
+                      shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(50)))),
                   onPressed: () => Navigator.of(context).pop(),
                   child: const Text("OK"))
             ],
