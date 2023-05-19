@@ -1,26 +1,41 @@
 import 'dart:async';
+import 'package:campus_subsystem/firebase/wrapper.dart';
 import 'package:campus_subsystem/redux/actions/fetchUserData.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
-class LoadingPage extends HookWidget {
-  final String? email;
+import 'firebase_options.dart';
 
-  const LoadingPage({required this.email, Key? key}) : super(key: key);
+class LoadingPage extends StatefulWidget {
+  // final String? email;
+
+  LoadingPage({Key? key}) : super(key: key);
+
+  @override
+  State<LoadingPage> createState() => _LoadingPageState();
+}
+
+class _LoadingPageState extends State<LoadingPage> {
+  FirebaseAuth auth = FirebaseAuth.instance;
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (auth.currentUser?.email != null) {
+        await FetchData().fetchUserData(auth.currentUser?.email).onError((error, stackTrace) {
+          print("$error   $stackTrace");
+        });
+      }
+      Future.delayed(const Duration(milliseconds: 3000), () => {Navigator.pushReplacementNamed(context, 'main')});
+    });
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    useEffect(() {
-      if (email != null) {
-        FetchData().fetchUserData(email).then((value) => {
-              Future.delayed(const Duration(milliseconds: 3000)).then((value) => {Navigator.pushReplacementNamed(context, "/")})
-            });
-      } else {
-        Future.delayed(const Duration(milliseconds: 3000)).then((value) => Navigator.pushReplacementNamed(context, "/"));
-      }
-      return null;
-    }, const []);
-
     double screenheight = MediaQuery.of(context).size.height;
     double screenwidth = MediaQuery.of(context).size.width;
     return Scaffold(
