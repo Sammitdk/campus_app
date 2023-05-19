@@ -25,8 +25,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIMode(
     SystemUiMode.manual,
-    overlays:
-        SystemUiOverlay.values, //This line is used for showing the bottom bar
+    overlays: SystemUiOverlay.values, //This line is used for showing the bottom bar
   );
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
@@ -37,12 +36,7 @@ void main() async {
   //   // Or Brightness.dark
   // );
 
-  try {
-    await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform);
-  } catch (e) {
-    print("wwwwwwwwwwwwwwwwwwwww${e.toString()}");
-  }
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   // notification permissions
   FlutterLocalNotificationsPlugin().initialize(const InitializationSettings(
@@ -55,11 +49,10 @@ void main() async {
         theme: ThemeData(fontFamily: "Muli"),
         color: Colors.transparent,
         debugShowCheckedModeBanner: false,
-        initialRoute: 'loading_page',
+        initialRoute: '/',
         routes: {
-          '/': (context) => const Main(),
-          'loading_page': (context) =>
-              LoadingPage(email: Auth().auth.currentUser?.email),
+          'main': (context) => const Main(),
+          '/': (context) => LoadingPage(),
           // 'login_page': (context) => const Login(),
           // 't_login_form': (context) =>
           // const KeyboardVisibilityProvider(child: FacultyLogin()),
@@ -86,7 +79,6 @@ class _MainState extends State<Main> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    // TODO: implement didChangeAppLifecycleState
     print("${state.index}   ${state.name}");
 
     switch (state.index) {
@@ -94,16 +86,16 @@ class _MainState extends State<Main> with WidgetsBindingObserver {
         internet.resume();
         break;
       case 1:
-      case 3:
       case 2:
         internet.pause();
+        break;
+      case 3:
     }
     super.didChangeAppLifecycleState(state);
   }
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     internet.cancel();
   }
@@ -114,8 +106,7 @@ class _MainState extends State<Main> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     super.initState();
 
-    internet =
-        Connectivity().onConnectivityChanged.listen((ConnectivityResult event) {
+    internet = Connectivity().onConnectivityChanged.listen((ConnectivityResult event) {
       switch (event) {
         case ConnectivityResult.none:
           isinternet = false;
@@ -173,8 +164,7 @@ class _MainState extends State<Main> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-        create: (context) => Auth(), child: const Wrapper());
+    return ChangeNotifierProvider(create: (context) => Auth(), child: const Wrapper());
   }
 
   showAlert(BuildContext context, Map data) {
@@ -182,8 +172,7 @@ class _MainState extends State<Main> with WidgetsBindingObserver {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
             alignment: Alignment.center,
             title: Text(data["notification"]['title']),
             content: Padding(
@@ -199,9 +188,7 @@ class _MainState extends State<Main> with WidgetsBindingObserver {
                   data["data"]["image"].isNotEmpty
                       ? Container(
                           decoration: BoxDecoration(
-                              image: DecorationImage(
-                                  image: NetworkImage(data["data"]["image"])),
-                              shape: BoxShape.circle),
+                              image: DecorationImage(image: NetworkImage(data["data"]["image"])), shape: BoxShape.circle),
                         )
                       : Container(),
                 ],
@@ -210,10 +197,8 @@ class _MainState extends State<Main> with WidgetsBindingObserver {
             actions: [
               ElevatedButton(
                   style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all(Colors.deepPurpleAccent),
-                      shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(50)))),
+                      backgroundColor: MaterialStateProperty.all(Colors.deepPurpleAccent),
+                      shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)))),
                   onPressed: () => Navigator.of(context).pop(),
                   child: const Text("OK"))
             ],

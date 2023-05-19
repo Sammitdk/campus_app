@@ -17,7 +17,7 @@ class Wrapper extends HookWidget {
   Widget build(BuildContext context) {
     final auth = Provider.of<Auth?>(context);
     print("$auth?.isLogged}   ${auth?.getUser()}");
-    if (auth!.getUser() == null) {
+    if (auth == null || auth.getUser() == null) {
       return const Login();
     } else {
       return StoreConnector<AppState, AppState>(
