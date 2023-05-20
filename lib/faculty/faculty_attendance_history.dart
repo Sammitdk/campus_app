@@ -9,8 +9,7 @@ class FacultyAttendanceHistory extends StatefulWidget {
   const FacultyAttendanceHistory({Key? key}) : super(key: key);
 
   @override
-  State<FacultyAttendanceHistory> createState() =>
-      _FacultyAttendanceHistoryState();
+  State<FacultyAttendanceHistory> createState() => _FacultyAttendanceHistoryState();
 }
 
 class _FacultyAttendanceHistoryState extends State<FacultyAttendanceHistory> {
@@ -22,8 +21,7 @@ class _FacultyAttendanceHistoryState extends State<FacultyAttendanceHistory> {
 
   Future<void> getDateAndAttendance(Map<String, dynamic> subject) async {
     QuerySnapshot attendanceSnap = await FirebaseFirestore.instance
-        .collection(
-            "College/${subject['branch']}/${subject['year']}/Attendance/$selectedsubject")
+        .collection("College/${subject['branch']}/${subject['year']}/Attendance/$selectedsubject")
         .orderBy('time', descending: true)
         .get();
     // await subject[0].collection(selectedsubject).get();
@@ -79,51 +77,38 @@ class _FacultyAttendanceHistoryState extends State<FacultyAttendanceHistory> {
                           const Expanded(
                               child: Text(
                             "Subject",
-                            style: TextStyle(
-                                fontSize: 25,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
+                            style: TextStyle(fontSize: 25, color: Colors.white, fontWeight: FontWeight.bold),
                             textAlign: TextAlign.center,
                           )),
                           Expanded(
                             flex: 2,
                             child: Container(
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(15),
-                                  color: Colors.white),
+                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: Colors.white),
                               margin: const EdgeInsets.all(20),
                               child: ButtonTheme(
                                 alignedDropdown: true,
                                 child: DropdownButtonHideUnderline(
                                   child: DropdownButton<String>(
                                     hint: const Text('Select.'),
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        color: Colors.indigo[300],
-                                        overflow: TextOverflow.ellipsis),
-                                    icon: const Icon(
-                                        Icons.arrow_drop_down_rounded),
-                                    iconSize: 40,
+                                    style: TextStyle(fontSize: 20, color: Colors.indigo[300], overflow: TextOverflow.ellipsis),
+                                    icon: const Icon(Icons.arrow_drop_down_rounded),
+                                    // iconSize: 40,
                                     elevation: 0,
-                                    value: selectedsubject.isEmpty
-                                        ? null
-                                        : selectedsubject,
+                                    value: selectedsubject.isEmpty ? null : selectedsubject,
                                     iconEnabledColor: Colors.green,
                                     alignment: AlignmentDirectional.center,
                                     items: state.subject.keys
-                                        .map<DropdownMenuItem<String>>(
-                                            (value) => DropdownMenuItem<String>(
-                                                  value: value,
-                                                  child: Text(value),
-                                                ))
+                                        .map<DropdownMenuItem<String>>((value) => DropdownMenuItem<String>(
+                                              value: value,
+                                              child: Text(value),
+                                            ))
                                         .toList(),
                                     onChanged: (String? value) async {
                                       if (value != selectedsubject) {
                                         rolls = [];
                                         selecteddate = '';
                                         selectedsubject = value!;
-                                        await getDateAndAttendance(
-                                            state.subject[selectedsubject]);
+                                        await getDateAndAttendance(state.subject[selectedsubject]);
                                         setState(() {});
                                       }
                                     },
@@ -141,99 +126,68 @@ class _FacultyAttendanceHistoryState extends State<FacultyAttendanceHistory> {
                           const Expanded(
                               child: Text(
                             "Date",
-                            style: TextStyle(
-                                fontSize: 25,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
+                            style: TextStyle(fontSize: 25, color: Colors.white, fontWeight: FontWeight.bold),
                             textAlign: TextAlign.center,
                           )),
                           Expanded(
                             flex: 2,
                             child: selectedsubject.isNotEmpty
                                 ? Container(
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(15),
-                                        color: Colors.white),
+                                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: Colors.white),
                                     margin: const EdgeInsets.all(20),
                                     child: ButtonTheme(
                                       alignedDropdown: true,
                                       child: DropdownButtonHideUnderline(
                                         child: DropdownButton(
                                             elevation: 0,
-                                            style: TextStyle(
-                                                fontSize: 20,
-                                                color: Colors.indigo[200],
-                                                overflow:
-                                                    TextOverflow.ellipsis),
-                                            icon: const Icon(
-                                                Icons.arrow_drop_down_rounded),
-                                            iconSize: 40,
+                                            style: TextStyle(fontSize: 20, color: Colors.indigo[200], overflow: TextOverflow.ellipsis),
+                                            icon: const Icon(Icons.arrow_drop_down_rounded),
+                                            // iconSize: 40,
                                             iconEnabledColor: Colors.green,
                                             iconDisabledColor: Colors.red,
                                             value: selecteddate,
-                                            alignment:
-                                                AlignmentDirectional.center,
-                                            hint: Text(dates.isNotEmpty
-                                                ? "Select."
-                                                : "No Records added."),
+                                            alignment: AlignmentDirectional.center,
+                                            hint: Text(dates.isNotEmpty ? "Select." : "No Records added."),
                                             items: dates.isNotEmpty
-                                                ? dates.map<
-                                                    DropdownMenuItem<
-                                                        String>>((value) {
-                                                    return DropdownMenuItem<
-                                                        String>(
+                                                ? dates.map<DropdownMenuItem<String>>((value) {
+                                                    return DropdownMenuItem<String>(
                                                       value: value.toString(),
                                                       child: Text(
-                                                          DateFormat(
-                                                                  'dd  MMM  yyyy hh:mm')
-                                                              .format(DateFormat(
-                                                                      'dd-MM-yyyy-hh-mm')
-                                                                  .parse(
-                                                                      value)),
-                                                          style:
-                                                              const TextStyle(
+                                                          DateFormat('dd  MMM  yyyy hh:mm')
+                                                              .format(DateFormat('dd-MM-yyyy-hh-mm').parse(value)),
+                                                          style: const TextStyle(
                                                             fontSize: 20,
                                                           ),
-                                                          textAlign:
-                                                              TextAlign.center),
+                                                          textAlign: TextAlign.center),
                                                     );
                                                   }).toList()
                                                 : null,
-                                            onChanged: (String? value) =>
-                                                value != selecteddate
-                                                    ? setState(() {
-                                                        selecteddate = value!;
-                                                        rolls = getRolls();
-                                                        rolls.sort();
-                                                      })
-                                                    : null),
+                                            onChanged: (String? value) => value != selecteddate
+                                                ? setState(() {
+                                                    selecteddate = value!;
+                                                    rolls = getRolls();
+                                                    rolls.sort();
+                                                  })
+                                                : null),
                                       ),
                                     ),
                                   )
                                 : Container(
                                     color: Colors.indigo[300],
                                     child: Container(
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(15),
-                                          color: Colors.white),
+                                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: Colors.white),
                                       margin: const EdgeInsets.all(20),
                                       child: ButtonTheme(
                                         alignedDropdown: true,
                                         child: DropdownButtonHideUnderline(
                                           child: DropdownButton(
                                               elevation: 0,
-                                              style: TextStyle(
-                                                  fontSize: 20,
-                                                  color: Colors.indigo[200],
-                                                  overflow:
-                                                      TextOverflow.ellipsis),
-                                              icon: const Icon(Icons
-                                                  .arrow_drop_down_rounded),
-                                              iconSize: 40,
+                                              style:
+                                                  TextStyle(fontSize: 20, color: Colors.indigo[200], overflow: TextOverflow.ellipsis),
+                                              icon: const Icon(Icons.arrow_drop_down_rounded),
+                                              // iconSize: 40,
                                               iconDisabledColor: Colors.red,
-                                              alignment:
-                                                  AlignmentDirectional.center,
+                                              alignment: AlignmentDirectional.center,
                                               // hint: const Text("Select date."),
                                               items: null,
                                               onChanged: null),
@@ -249,9 +203,7 @@ class _FacultyAttendanceHistoryState extends State<FacultyAttendanceHistory> {
                 ),
 
                 selecteddate.isNotEmpty
-                    ? Text(
-                        DateFormat('dd  MMM  yyyy hh:mm').format(
-                            DateFormat('dd-MM-yyyy-hh-mm').parse(selecteddate)),
+                    ? Text(DateFormat('dd  MMM  yyyy hh:mm').format(DateFormat('dd-MM-yyyy-hh-mm').parse(selecteddate)),
                         style: const TextStyle(
                           fontSize: 20,
                         ),
@@ -260,13 +212,10 @@ class _FacultyAttendanceHistoryState extends State<FacultyAttendanceHistory> {
 
                 // attendance grid
                 Expanded(
-                  child: attendance.isNotEmpty &&
-                          selecteddate.isNotEmpty &&
-                          attendance[selecteddate].isNotEmpty
+                  child: attendance.isNotEmpty && selecteddate.isNotEmpty && attendance[selecteddate].isNotEmpty
                       ? GridView.builder(
                           scrollDirection: Axis.vertical,
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
+                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 6,
                           ),
                           itemCount: rolls.length,
@@ -276,12 +225,9 @@ class _FacultyAttendanceHistoryState extends State<FacultyAttendanceHistory> {
                               child: Container(
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
-                                  color: attendance[selecteddate][rolls[index]]
-                                      ? Colors.green[200]
-                                      : Colors.red[200],
+                                  color: attendance[selecteddate][rolls[index]] ? Colors.green[200] : Colors.red[200],
                                 ),
-                                child: Center(
-                                    child: Text(rolls[index].toString())),
+                                child: Center(child: Text(rolls[index].toString())),
                               ),
                             );
                           },
