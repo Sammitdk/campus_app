@@ -1,7 +1,7 @@
+import 'dart:async';
 import 'package:campus_subsystem/messaging/conversation_screen.dart';
 import 'package:campus_subsystem/redux/store.dart';
 import 'package:connectivity/connectivity.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -24,7 +24,9 @@ extension StringExtension on String {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIMode(
-    SystemUiMode.manual, overlays: SystemUiOverlay.values, //This line is used for showing the bottom bar
+    SystemUiMode.manual,
+    overlays:
+        SystemUiOverlay.values, //This line is used for showing the bottom bar
   );
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
@@ -35,11 +37,7 @@ void main() async {
   //   // Or Brightness.dark
   // );
 
-  try {
-    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  } catch (e) {
-    print("wwwwwwwwwwwwwwwwwwwww${e.toString()}");
-  }
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   // notification permissions
   FlutterLocalNotificationsPlugin().initialize(const InitializationSettings(
@@ -48,27 +46,23 @@ void main() async {
 
   runApp(StoreProvider(
       store: store,
-      child: StreamProvider<User?>.value(
-        value: Auth().user,
-        initialData: null,
-        child: MaterialApp(
-          theme: ThemeData(fontFamily: "Muli"),
-          color: Colors.transparent,
-          debugShowCheckedModeBanner: false,
-          initialRoute: 'loading_page',
-          routes: {
-            '/': (context) => const Main(),
-            'loading_page': (context) => LoadingPage(email: Auth().auth.currentUser?.email),
-            // 'login_page': (context) => const Login(),
-            // 't_login_form': (context) =>
-            // const KeyboardVisibilityProvider(child: FacultyLogin()),
-            // 's_login_form': (context) =>
-            // const KeyboardVisibilityProvider(child: StudentLogin()),
-            'chat_screen': (context) => const ConversationScreen(
-              isFaculty: false,
-            )
-          },
-        ),
+      child: MaterialApp(
+        theme: ThemeData(fontFamily: "Muli"),
+        color: Colors.transparent,
+        debugShowCheckedModeBanner: false,
+        initialRoute: '/',
+        routes: {
+          'main': (context) => const Main(),
+          '/': (context) => LoadingPage(),
+          // 'login_page': (context) => const Login(),
+          // 't_login_form': (context) =>
+          // const KeyboardVisibilityProvider(child: FacultyLogin()),
+          // 's_login_form': (context) =>
+          // const KeyboardVisibilityProvider(child: StudentLogin()),
+          'chat_screen': (context) => const ConversationScreen(
+                isFaculty: false,
+              )
+        },
       )));
 }
 
@@ -79,50 +73,77 @@ class Main extends StatefulWidget {
   State<Main> createState() => _MainState();
 }
 
-class _MainState extends State<Main> {
+class _MainState extends State<Main> with WidgetsBindingObserver {
   late ConnectivityResult _previous;
-
+  late StreamSubscription internet;
   bool isinternet = true;
+  SnackBar? offlineSnackbar;
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    print("${state.index}   ${state.name}");
+
+    switch (state.index) {
+      case 0:
+        internet.resume();
+        break;
+      case 1:
+      case 2:
+        internet.pause();
+        break;
+      case 3:
+    }
+    super.didChangeAppLifecycleState(state);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    internet.cancel();
+  }
 
   @override
   void initState() {
     int id = 0;
+    WidgetsBinding.instance.addObserver(this);
     super.initState();
 
-    Connectivity().onConnectivityChanged.listen((ConnectivityResult event) {
+    internet =
+        Connectivity().onConnectivityChanged.listen((ConnectivityResult event) {
       switch (event) {
         case ConnectivityResult.none:
           isinternet = false;
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            behavior: SnackBarBehavior.floating,
-            elevation: 20,
-            content: const Text("No Internet Connection"),
-            // duration: Duration(seconds: 10),
-            action: SnackBarAction(
-                label: "Try again",
-                onPressed: () {
-                  setState(() {});
-                }),
-          ));
-          // Navigator.of(context).push(MaterialPageRoute(builder: (_) => const NoInternet()));
+          offlineSnackbar = SnackBar(
+            behavior: SnackBarBehavior.fixed,
+            duration: const Duration(days: 69),
+            elevation: 10,
+            content: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                Padding(
+                  padding: EdgeInsets.only(right: 10),
+                  child: Icon(Icons.cloud_off_outlined, color: Colors.white),
+                ),
+                Text(
+                  "Offline - Showing limited content",
+                  textAlign: TextAlign.end,
+                ),
+              ],
+            ),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(offlineSnackbar!);
           break;
         case ConnectivityResult.mobile:
         case ConnectivityResult.wifi:
           if (!isinternet) {
-            // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Internet")));
+            ScaffoldMessenger.of(context).hideCurrentSnackBar();
             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
               behavior: SnackBarBehavior.floating,
+              duration: Duration(seconds: 1),
               elevation: 20,
               content: Text("Internet Connection is back"),
-              // action: SnackBarAction(
-              //     label: "Try again",
-              //     onPressed: () {
-              //       setState(() {});
-              //     }),
             ));
           }
-          // Navigator.of(context).ca
-
           break;
       }
     });
@@ -133,10 +154,10 @@ class _MainState extends State<Main> {
       Map data = event.toMap();
       data["data"]["event"] != 'true'
           ? NotificationAPI.postLocalNotification(
-          id: id,
-          title: data["notification"]['title'],
-          message: data["notification"]['body'],
-          image: data["notification"]['image'])
+              id: id,
+              title: data["notification"]['title'],
+              message: data["notification"]['body'],
+              image: data["notification"]['image'])
           : showAlert(context, data);
     });
 
@@ -147,7 +168,8 @@ class _MainState extends State<Main> {
 
   @override
   Widget build(BuildContext context) {
-    return const Wrapper();
+    return ChangeNotifierProvider(
+        create: (context) => Auth(), child: const Wrapper());
   }
 
   showAlert(BuildContext context, Map data) {
@@ -155,7 +177,8 @@ class _MainState extends State<Main> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
             alignment: Alignment.center,
             title: Text(data["notification"]['title']),
             content: Padding(
@@ -170,9 +193,11 @@ class _MainState extends State<Main> {
                   ),
                   data["data"]["image"].isNotEmpty
                       ? Container(
-                    decoration: BoxDecoration(
-                        image: DecorationImage(image: NetworkImage(data["data"]["image"])), shape: BoxShape.circle),
-                  )
+                          decoration: BoxDecoration(
+                              image: DecorationImage(
+                                  image: NetworkImage(data["data"]["image"])),
+                              shape: BoxShape.circle),
+                        )
                       : Container(),
                 ],
               ),
@@ -180,8 +205,10 @@ class _MainState extends State<Main> {
             actions: [
               ElevatedButton(
                   style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(Colors.deepPurpleAccent),
-                      shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)))),
+                      backgroundColor:
+                          MaterialStateProperty.all(Colors.deepPurpleAccent),
+                      shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(50)))),
                   onPressed: () => Navigator.of(context).pop(),
                   child: const Text("OK"))
             ],
