@@ -23,6 +23,7 @@ class _FacultyResultAddState extends State<FacultyResultAdd> {
   final fkey = GlobalKey<FormState>();
 
   Map<int, double> marks = {};
+  double total = 0;
   bool clicked = false;
   String filename = '';
 
@@ -49,11 +50,12 @@ class _FacultyResultAddState extends State<FacultyResultAdd> {
                     foregroundColor: Colors.black,
                     onPressed: () async {
                       print(marks);
+                      setState(() => clicked = true);
                       if (fkey.currentState!.validate()) {
                         // marks['time'] = DateTime.now();
                         print("valid");
                         Map<String, dynamic> temp = marks.map((key, value) => MapEntry(key.toString(), value));
-                        temp['total'] = double.parse(markscontroller.text);
+                        temp['total'] = total = double.parse(markscontroller.text);
                         temp['time'] = DateTime.now();
                         if (marks.isNotEmpty) {
                           CollectionReference branchyear = FirebaseFirestore.instance
@@ -65,6 +67,8 @@ class _FacultyResultAddState extends State<FacultyResultAdd> {
                           addForStudents(branchyear, namecontroller.text);
                         }
                       }
+
+                      setState(() => clicked = false);
                     },
                     icon: const Icon(Icons.done_outline_rounded),
                     label: const Text(
@@ -633,11 +637,13 @@ class _FacultyResultAddState extends State<FacultyResultAdd> {
   // }
 
   void addForStudents(CollectionReference reference, name) async {
+    print(marks);
+
     reference.doc("Roll_No").get().then((docsnap) {
       (docsnap.data()! as Map<String, dynamic>).forEach((roll, ref) {
         marks.containsKey(int.parse(roll))
             ? ref.collection("Result").doc(selectedsub).set({
-                namecontroller.text: marks[int.parse(roll)],
+                namecontroller.text: {"mark": marks[int.parse(roll)], "total": total, 'time': DateTime.now()},
               }, SetOptions(merge: true))
             : null;
       });

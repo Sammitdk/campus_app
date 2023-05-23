@@ -48,6 +48,7 @@ dependencies:
   connectivity: ^3.0.6
   multiselect_scope: ^0.2.0
   excel: ^2.1.0
+  permission_handler: ^10.2.0
 
 dev_dependencies:
   flutter_test:

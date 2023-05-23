@@ -138,7 +138,7 @@ class _FacultyResultHistoryState extends State<FacultyResultHistory> {
                                               iconEnabledColor: Colors.green,
                                               iconDisabledColor: Colors.red,
                                               value: selectedtest,
-                                              alignment: AlignmentDirectional.center,
+                                              alignment: AlignmentDirectional.centerStart,
                                               hint: Text(
                                                 tests.isNotEmpty ? "Select." : "No Records added.",
                                                 textAlign: TextAlign.start,
@@ -322,14 +322,16 @@ class _FacultyResultHistoryState extends State<FacultyResultHistory> {
                         shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)))),
                     onPressed: () async {
                       Navigator.of(context).pop();
-                      await FirebaseFirestore.instance
-                          .doc(
-                              "College/${subject[selectedsubject]['branch']}/${subject[selectedsubject]['year']}/Results/$selectedsubject/$selectedtest")
+                      CollectionReference ref = await FirebaseFirestore.instance
+                          .collection("College/${subject[selectedsubject]['branch']}/${subject[selectedsubject]['year']}");
+                      ref
+                          .doc("Results/$selectedsubject/$selectedtest")
                           .delete()
                           .onError((error, stackTrace) => print("$error   $stackTrace"))
-                          .then((value) {
+                          .then((_) {
+                        deleteForEveryStudent(ref);
                         setState(() {
-                          selectedsubject = '';
+                          // selectedsubject = '';
                           selectedtest = '';
                           tests = [];
                           result = {};
@@ -347,5 +349,15 @@ class _FacultyResultHistoryState extends State<FacultyResultHistory> {
                     child: const Text("No"))
               ],
             ));
+  }
+
+  void deleteForEveryStudent(CollectionReference reference) {
+    reference.doc("Roll_No").get().then((docsnap) {
+      (docsnap.data()! as Map<String, dynamic>).forEach((roll, ref) {
+        try {
+          ref.collection('Result').doc(selectedsubject).update({selectedtest: FieldValue.delete()});
+        } on FirebaseException catch (e) {}
+      });
+    });
   }
 }
