@@ -1,10 +1,13 @@
 import 'dart:async';
+import 'package:campus_subsystem/firebase/auth.dart';
 import 'package:campus_subsystem/firebase/wrapper.dart';
 import 'package:campus_subsystem/redux/actions/fetchUserData.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:provider/provider.dart';
 
 import 'firebase_options.dart';
 
@@ -24,8 +27,25 @@ class _LoadingPageState extends State<LoadingPage> {
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (auth.currentUser?.email != null) {
-        await FetchData().fetchUserData(auth.currentUser?.email).onError((error, stackTrace) {
-          print("$error   $stackTrace");
+        // print(Provider.of<Auth>(context, listen: false).getUserType());
+        FirebaseFirestore.instance
+            .collection("Student_Detail")
+            .where('Email', isEqualTo: auth.currentUser?.email)
+            .limit(1)
+            .count()
+            .get()
+            .then((value) async {
+          if (value.count == 1) {
+            await FetchData().fetchStudentData(auth.currentUser?.email).onError((error, stackTrace) {
+              print("$error   $stackTrace");
+              return null;
+            });
+          } else {
+            await FetchData().fetchFacultyData(auth.currentUser?.email).onError((error, stackTrace) {
+              print("$error   $stackTrace");
+              return null;
+            });
+          }
         });
       }
       Future.delayed(const Duration(milliseconds: 3000), () => {Navigator.pushReplacementNamed(context, 'main')});

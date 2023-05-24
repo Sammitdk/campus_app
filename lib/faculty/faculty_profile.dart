@@ -10,7 +10,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
-import '../firebase/signIn.dart';
+import '../firebase/auth.dart';
 import '../password_reset.dart';
 import '../redux/reducer.dart';
 
@@ -467,6 +467,7 @@ class FacultyProfile extends HookWidget with ChangeNotifier {
               try {
                 // remove faculty device token
                 FirebaseFirestore.instance.doc("Faculty_Detail/${state.email}").update({"Token": FieldValue.delete()});
+
                 FirebaseFirestore.instance.doc("Messages/${state.email}").set({'status': 'Offline'}, SetOptions(merge: true));
                 await Auth().signOut();
                 // .then((_) {

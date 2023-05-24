@@ -1,4 +1,4 @@
-import 'package:campus_subsystem/firebase/signIn.dart';
+import 'package:campus_subsystem/firebase/auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -16,7 +16,7 @@ class Wrapper extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final auth = Provider.of<Auth?>(context);
-    print("$auth?.isLogged}   ${auth?.getUser()}");
+    // print("${auth?.getUserType()}   ${auth?.getUser()}");
     if (auth == null || auth.getUser() == null) {
       return const Login();
     } else {

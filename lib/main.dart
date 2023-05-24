@@ -11,7 +11,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'firebase/notification.dart';
-import 'firebase/signIn.dart';
+import 'firebase/auth.dart';
 import 'firebase/wrapper.dart';
 import 'firebase_options.dart';
 import 'loading_page.dart';

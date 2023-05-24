@@ -7,7 +7,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:open_file_plus/open_file_plus.dart';
 import 'package:path_provider/path_provider.dart';
-import '../firebase/signIn.dart';
+import '../firebase/auth.dart';
 import 'student_home.dart';
 
 class StudentDashboard extends StatefulWidget {
@@ -44,16 +44,13 @@ class StudentDashboard extends StatefulWidget {
   }
 }
 
-class _StudentDashboardState extends State<StudentDashboard>
-    with WidgetsBindingObserver {
+class _StudentDashboardState extends State<StudentDashboard> with WidgetsBindingObserver {
   final navigationKey = GlobalKey<CurvedNavigationBarState>();
   final Auth auth = Auth();
   int index = 0;
 
   void setStatus(String status) {
-    FirebaseFirestore.instance
-        .doc("Messages/${widget.email}")
-        .set({'status': status}, SetOptions(merge: true));
+    FirebaseFirestore.instance.doc("Messages/${widget.email}").set({'status': status}, SetOptions(merge: true));
   }
 
   @override

@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:provider/provider.dart';
-import '../firebase/signIn.dart';
+import '../firebase/auth.dart';
 
 class StudentLogin extends StatefulWidget {
   const StudentLogin({Key? key}) : super(key: key);
@@ -144,7 +144,13 @@ class _StudentLoginState extends State<StudentLogin> {
                                         } else {
                                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.code.toString())));
                                         }
-                                      }).then((value) => Navigator.of(context).pop());
+                                        return null;
+                                        // return false;
+                                      }).then((value) {
+                                        if (value != null && value) {
+                                          Navigator.of(context).pop();
+                                        }
+                                      });
                                       setState(() => isClicked = false);
                                     }
                                   })),
