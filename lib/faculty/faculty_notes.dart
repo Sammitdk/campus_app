@@ -32,21 +32,19 @@ class _FacultyNotesState extends State<FacultyNotes> {
       setState(() {
         uploading = true;
       });
-      File pick = File(result!.files.single.path.toString());
+      File pick = File(result.files.single.path.toString());
       var file = pick.readAsBytesSync();
       String fileName = pick.path.split('/').last;
 
       //uploading
-      var pdfFile =
-          FirebaseStorage.instance.ref().child("notes").child(fileName);
+      var pdfFile = FirebaseStorage.instance.ref().child("notes").child(fileName);
       UploadTask task = pdfFile.putData(file);
 
       uploadListner = task.snapshotEvents.listen((event) async {
         switch (event.state) {
           case TaskState.running:
             setState(() {
-              progress = event.bytesTransferred.toDouble() /
-                  event.totalBytes.toDouble();
+              progress = event.bytesTransferred.toDouble() / event.totalBytes.toDouble();
             });
             break;
           case TaskState.paused:
@@ -110,8 +108,7 @@ class _FacultyNotesState extends State<FacultyNotes> {
                 percent: progress,
                 center: Text(
                   "${(progress * 100).toStringAsFixed(0)}%",
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 18.0),
+                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0),
                 ),
                 circularStrokeCap: CircularStrokeCap.round,
                 progressColor: Colors.orange,
@@ -137,10 +134,7 @@ class _FacultyNotesState extends State<FacultyNotes> {
                         padding: const EdgeInsetsDirectional.all(20),
                         child: InkWell(
                           onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) => LoadPdf(url: x["url"])));
+                            Navigator.push(context, MaterialPageRoute(builder: (_) => LoadPdf(url: x["url"])));
                           },
                           child: Slidable(
                             key: ValueKey(i),
@@ -151,16 +145,8 @@ class _FacultyNotesState extends State<FacultyNotes> {
                                 SlidableAction(
                                   borderRadius: BorderRadius.circular(30),
                                   onPressed: (v) async {
-                                    FirebaseFirestore.instance
-                                        .collection("notes")
-                                        .where('num', isEqualTo: x['num'])
-                                        .get()
-                                        .then((value) => {
-                                              FirebaseFirestore.instance
-                                                  .collection("notes")
-                                                  .doc(value.docs.first.id)
-                                                  .delete()
-                                            });
+                                    FirebaseFirestore.instance.collection("notes").where('num', isEqualTo: x['num']).get().then(
+                                        (value) => {FirebaseFirestore.instance.collection("notes").doc(value.docs.first.id).delete()});
                                   },
                                   backgroundColor: Colors.white,
                                   foregroundColor: const Color(0xFFFE4A49),
@@ -171,8 +157,7 @@ class _FacultyNotesState extends State<FacultyNotes> {
                             ),
                             child: Card(
                               elevation: 5,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(50)),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
                               color: Colors.white,
                               child: Container(
                                 alignment: Alignment.center,
@@ -192,8 +177,7 @@ class _FacultyNotesState extends State<FacultyNotes> {
               }
             } else {
               return Center(
-                child: LoadingAnimationWidget.staggeredDotsWave(
-                    size: 50, color: Colors.red),
+                child: LoadingAnimationWidget.staggeredDotsWave(size: 50, color: Colors.red),
               );
             }
           }),

@@ -109,72 +109,66 @@ class _FacultyLoginState extends State<FacultyLogin> {
                                   icon: const Icon(Icons.remove_red_eye))),
                         ),
                       ), //Password TextField
-                      Container(
-                          height: 50,
-                          padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                          child: isClicked
-                              ? const Center(
-                                  child: CircularProgressIndicator(),
-                                )
-                              : ElevatedButton(
-                                  style: ButtonStyle(
-                                    backgroundColor: MaterialStateColor.resolveWith((states) => Colors.white),
-                                    foregroundColor: MaterialStateColor.resolveWith((states) => Colors.black),
-                                    shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))),
-                                  ),
-                                  child: const Text(
-                                    'Log In',
-                                    style: TextStyle(fontSize: 17),
-                                  ),
-                                  onPressed: () async {
-                                    if (formKey.currentState!.validate()) {
-                                      setState(() => isClicked = true);
-                                      await Auth()
-                                          .signIn(
-                                        username: emailController.text.trim(),
-                                        password: passwordController.text,
-                                        isStudent: false,
-                                      )
-                                          .onError((FirebaseException e, stackTrace) {
-                                        if (e.code == 'user-not-found') {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(const SnackBar(content: Text("Invalid Email Address.")));
-                                        } else if (e.code == 'wrong-password') {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(const SnackBar(content: Text("Incorrect Password.")));
-                                        } else if (e.code == 'network-request-failed') {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(const SnackBar(content: Text("Check Internet Connection.")));
-                                        } else {
-                                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.code.toString())));
-                                        }
-                                        return null;
-                                      }).then((value) {
-                                        if (value != null && value) {
-                                          Navigator.of(context).pop();
-                                        }
-                                      });
-                                      setState(() => isClicked = false);
+                      isClicked
+                          ? FloatingActionButton(
+                              heroTag: null,
+                              onPressed: null,
+                              backgroundColor: Colors.indigo[300],
+                              child: const CircularProgressIndicator(
+                                color: Colors.white,
+                              ),
+                            )
+                          : FloatingActionButton.extended(
+                              heroTag: null,
+                              backgroundColor: Colors.indigo[300],
+                              label: const Text(
+                                'Log In',
+                                style: TextStyle(fontSize: 17),
+                              ),
+                              onPressed: () async {
+                                if (formKey.currentState!.validate()) {
+                                  setState(() => isClicked = true);
+                                  await Auth()
+                                      .signIn(
+                                    username: emailController.text.trim(),
+                                    password: passwordController.text,
+                                    isStudent: false,
+                                  )
+                                      .onError((FirebaseException e, stackTrace) {
+                                    if (e.code == 'user-not-found') {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(const SnackBar(content: Text("Invalid Email Address.")));
+                                    } else if (e.code == 'wrong-password') {
+                                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Incorrect Password.")));
+                                    } else if (e.code == 'network-request-failed') {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(const SnackBar(content: Text("Check Internet Connection.")));
+                                    } else {
+                                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.code.toString())));
                                     }
-                                  },
-                                )),
-                      Container(
-                        height: 50,
-                        padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                        child: ElevatedButton(
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateColor.resolveWith((states) => Colors.white),
-                            foregroundColor: MaterialStateColor.resolveWith((states) => Colors.black),
-                            shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))),
-                          ),
-                          child: const Text(
-                            'Forgot Password',
-                            style: TextStyle(fontSize: 17, color: Colors.black),
-                          ),
-                          onPressed: () async {
-                            Navigator.push(context, MaterialPageRoute(builder: (_) => const ResetPassword()));
-                          },
+                                    return null;
+                                  }).then((value) {
+                                    if (value != null && value) {
+                                      Navigator.of(context).pop();
+                                    }
+                                  });
+                                  setState(() => isClicked = false);
+                                }
+                              },
+                            ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      FloatingActionButton.extended(
+                        label: const Text(
+                          'Forgot Password',
+                          // style: TextStyle(fontSize: 17, color: Colors.black),
                         ),
+                        heroTag: null,
+                        backgroundColor: Colors.indigo[300],
+                        onPressed: () async {
+                          Navigator.push(context, MaterialPageRoute(builder: (_) => const ResetPassword()));
+                        },
                       ),
                     ],
                   ),

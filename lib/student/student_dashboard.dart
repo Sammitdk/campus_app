@@ -73,9 +73,7 @@ class _StudentDashboardState extends State<StudentDashboard> with WidgetsBinding
   Widget build(BuildContext context) {
     final screen = [
       const StudentHome(),
-      const ConversationScreen(
-        isFaculty: false,
-      ),
+      const ConversationScreen(),
       StudentProfile(),
     ];
     final items = <Widget>[

@@ -39,6 +39,19 @@ class FetchData extends ChangeNotifier {
       this.subject});
 
   Future<bool?> getUserType(email) async {
+    [
+      {
+        'doc': {
+          'add': "",
+          "name": {
+            "first": "",
+            "middle": "",
+            "last": "",
+          },
+        }
+      },
+      {}
+    ];
     return await firestoreinst.collection('Student_Detail').where('Email', isEqualTo: "$email").limit(1).count().get().then((value) {
       if (value.count == 1) {
         return true;
@@ -93,10 +106,7 @@ class FetchData extends ChangeNotifier {
             isStudent: false,
             imgUrl: value.docs[0].data().containsKey("imgUrl") ? value.docs[0]["imgUrl"] : null,
             subject: value.docs[0]["Subjects"]));
-        // return true;
       });
-      // notifyListeners();
-      // return success;
     } on FirebaseException {
       rethrow;
     }

@@ -210,7 +210,7 @@ class _FacultyResultHistoryState extends State<FacultyResultHistory> {
                                 icon: const Icon(
                                   Icons.delete_forever_rounded,
                                   size: 30,
-                                  color: Colors.red,
+                                  color: Colors.redAccent,
                                 ))
                           ],
                         )
@@ -310,7 +310,7 @@ class _FacultyResultHistoryState extends State<FacultyResultHistory> {
                         margin: const EdgeInsets.all(5),
                         child: Text(
                           "$selectedtest ?",
-                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                         ))
                   ],
                 ),

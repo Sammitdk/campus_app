@@ -320,7 +320,9 @@ class _FacultyResultAddState extends State<FacultyResultAdd> {
                     shrinkWrap: true,
                     itemCount: marks.keys.length + 1,
                     itemBuilder: (context, index) {
-                      int key = index == marks.keys.length ? -1 : marks.keys.elementAt(index);
+                      List temp = marks.keys.toList();
+                      temp.sort();
+                      int key = index == marks.keys.length ? -1 : temp.elementAt(index);
                       // int prev = marks[index]!;
                       if (key == -1) {
                         int? r;
@@ -362,8 +364,10 @@ class _FacultyResultAddState extends State<FacultyResultAdd> {
                                         labelStyle: const TextStyle(fontSize: 15)),
                                     onChanged: (value) {
                                       print(value);
-                                      if (value.isNotEmpty && !marks.containsKey(int.parse(value))) {
+                                      if (value.isNotEmpty) {
                                         r = int.parse(value);
+                                      } else {
+                                        r = null;
                                       }
                                     },
                                   ),

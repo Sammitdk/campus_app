@@ -402,8 +402,7 @@ class StudentProfile extends HookWidget {
       ]),
       floatingActionButton: SpeedDial(
         closeManually: true,
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
+        backgroundColor: Colors.indigo[300],
         animatedIcon: AnimatedIcons.menu_close,
         children: [
           SpeedDialChild(
