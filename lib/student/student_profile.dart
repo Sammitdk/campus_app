@@ -429,7 +429,6 @@ class StudentProfile extends HookWidget {
 
                 FirebaseFirestore.instance.doc("Messages/${state.email}").set({'status': 'Offline'}, SetOptions(merge: true));
 
-                Provider.of<Auth>(context, listen: false).signOut();
                 // .then((value) => Navigator.of(context).pop());
 
                 // FirebaseAuth.instance.signOut();

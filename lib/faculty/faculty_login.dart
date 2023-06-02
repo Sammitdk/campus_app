@@ -134,10 +134,20 @@ class _FacultyLoginState extends State<FacultyLogin> {
                                     password: passwordController.text,
                                     isStudent: false,
                                   )
-                                      .onError((FirebaseException e, stackTrace) {
+                                      .onError((FirebaseException e, stackTrace) async {
                                     if (e.code == 'user-not-found') {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(const SnackBar(content: Text("Invalid Email Address.")));
+                                      return await Auth()
+                                          .createUser(
+                                        username: emailController.text.trim(),
+                                        password: passwordController.text,
+                                        isStudent: false,
+                                      )
+                                          .onError((FirebaseException error, stackTrace) {
+                                        print("mmmmmmmm${error.code}");
+                                        return null;
+                                      }).then((value) => true);
+                                      // ScaffoldMessenger.of(context)
+                                      //     .showSnackBar(const SnackBar(content: Text("Invalid Email Address.")));
                                     } else if (e.code == 'wrong-password') {
                                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Incorrect Password.")));
                                     } else if (e.code == 'network-request-failed') {
@@ -150,6 +160,12 @@ class _FacultyLoginState extends State<FacultyLogin> {
                                   }).then((value) {
                                     if (value != null && value) {
                                       Navigator.of(context).pop();
+                                    } else {
+                                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                          content: Text(
+                                        "Don't use Student Login in Faculty section.",
+                                        maxLines: 2,
+                                      )));
                                     }
                                   });
                                   setState(() => isClicked = false);

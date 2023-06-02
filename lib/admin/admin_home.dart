@@ -1,3 +1,4 @@
+import 'package:campus_subsystem/admin/student_records_add.dart';
 import 'package:flutter/material.dart';
 
 class AdminHome extends StatefulWidget {
@@ -16,10 +17,13 @@ class _AdminHomeState extends State<AdminHome> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Expanded(
-              child: Card(
-                child: Image.asset(
-                  'assets/icons/add_student.gif',
-                  fit: BoxFit.fill,
+              child: InkWell(
+                onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const StudentRecordAdd())),
+                child: Card(
+                  child: Image.asset(
+                    'assets/icons/add_student.gif',
+                    fit: BoxFit.fill,
+                  ),
                 ),
               ),
             ),

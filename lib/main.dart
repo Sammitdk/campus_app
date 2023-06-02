@@ -149,8 +149,6 @@ class _MainState extends State<Main> with WidgetsBindingObserver {
           : showAlert(context, data);
     });
 
-    FirebaseMessaging.instance.sendMessage();
-
     FirebaseMessaging.onMessageOpenedApp.listen((event) {
       print("aaaaaaaaaaaa${event.toMap()}");
       Navigator.of(context).pushNamed("chat_screen");

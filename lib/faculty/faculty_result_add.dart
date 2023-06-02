@@ -70,10 +70,13 @@ class _FacultyResultAddState extends State<FacultyResultAdd> {
 
                       setState(() => clicked = false);
                     },
-                    icon: const Icon(Icons.done_outline_rounded),
+                    icon: const Icon(
+                      Icons.done,
+                      color: Colors.white,
+                    ),
                     label: const Text(
                       "Submit",
-                      style: TextStyle(fontFamily: 'MuliBold', fontSize: 20),
+                      style: TextStyle(fontFamily: 'MuliBold', fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
                     ),
                   ),
             appBar: AppBar(
@@ -459,10 +462,14 @@ class _FacultyResultAddState extends State<FacultyResultAdd> {
                               child: IconButton(
                                 highlightColor: Colors.transparent,
                                 splashColor: Colors.transparent,
-                                icon: Icon(
-                                  Icons.close_rounded,
-                                  color: Colors.red[300],
-                                  // size: 15,
+                                icon: CircleAvatar(
+                                  backgroundColor: Colors.white,
+                                  radius: 8,
+                                  child: Icon(
+                                    Icons.close_rounded,
+                                    color: Colors.red[300],
+                                    size: 15,
+                                  ),
                                 ),
                                 onPressed: () => setState(() {
                                   marks.remove(key);

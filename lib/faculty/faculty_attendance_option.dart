@@ -25,7 +25,9 @@ class _FacultyAttendanceOptionState extends State<FacultyAttendanceOption> {
     final DateTime? selecteddate =
         await showDatePicker(context: context, initialDate: date, lastDate: DateTime.now(), firstDate: DateTime(2010))
             .then((value) async {
-      selectedtime = await showTimePicker(context: context, initialTime: time);
+      if (value != null) {
+        selectedtime = await showTimePicker(context: context, initialTime: time);
+      }
       return value;
     });
     print("$selectedtime  $selecteddate");

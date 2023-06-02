@@ -16,7 +16,7 @@ import '../password_reset.dart';
 import '../redux/reducer.dart';
 
 class FacultyProfile extends HookWidget with ChangeNotifier {
-  FacultyProfile({super.key});
+  // FacultyProfile({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -472,13 +472,15 @@ class FacultyProfile extends HookWidget with ChangeNotifier {
             onTap: () async {
               try {
                 // remove faculty device token
-                FirebaseFirestore.instance.doc("Faculty_Detail/${state.email}").update({"Token": FieldValue.delete()});
+                FirebaseFirestore.instance
+                    .doc("Faculty_Detail/${state.email}")
+                    .update({"Token": FieldValue.delete()}).then((value) => FirebaseAuth.instance.signOut());
 
                 FirebaseFirestore.instance.doc("Messages/${state.email}").set({'status': 'Offline'}, SetOptions(merge: true));
-                await Auth().signOut();
+                // await FirebaseAuth.instance.signOut();
                 // .then((_) {
                 //   notifyListeners();
-                Navigator.of(context).pop();
+                // Navigator.of(context).pop();
                 // });
               } on FirebaseAuthException catch (e) {
                 if (e.code == 'network-request-failed') {

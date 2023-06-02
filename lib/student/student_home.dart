@@ -60,8 +60,8 @@ class _StudentHomeState extends State<StudentHome> {
                               const Expanded(
                                   flex: 1,
                                   child: Text(
-                                    textAlign: TextAlign.center,
                                     "Time Table",
+                                    textAlign: TextAlign.center,
                                     style: TextStyle(fontFamily: 'Custom', fontSize: 20),
                                   )),
                             ],

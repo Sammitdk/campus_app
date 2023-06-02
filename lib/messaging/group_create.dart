@@ -7,7 +7,7 @@ import 'package:image_picker/image_picker.dart';
 class GroupCreateScreen extends StatefulWidget {
   final String email;
 
-  const GroupCreateScreen({super.key, required this.email});
+  const GroupCreateScreen({Key? key, required this.email}) : super(key: key);
 
   @override
   State<GroupCreateScreen> createState() => _GroupCreateScreenState();
