@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:provider/provider.dart';
-import '../firebase/signIn.dart';
+import '../firebase/auth.dart';
 
 class StudentLogin extends StatefulWidget {
   const StudentLogin({Key? key}) : super(key: key);
@@ -131,10 +131,22 @@ class _StudentLoginState extends State<StudentLogin> {
                                         password: passwordController.text,
                                         isStudent: true,
                                       )
-                                          .onError((FirebaseException e, stackTrace) {
+                                          .onError((FirebaseException e, stackTrace) async {
+                                        print(e);
                                         if (e.code == 'user-not-found') {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(const SnackBar(content: Text("Invalid Email Address.")));
+                                          print("askalsad");
+                                          return await Auth()
+                                              .createUser(
+                                            username: emailController.text.trim(),
+                                            password: passwordController.text,
+                                            isStudent: true,
+                                          )
+                                              .onError((FirebaseException error, stackTrace) {
+                                            print("mmmmmmmm${error.code}");
+                                            return null;
+                                          }).then((value) => true);
+                                          // ScaffoldMessenger.of(context)
+                                          //     .showSnackBar(const SnackBar(content: Text("Invalid Email Address.")));
                                         } else if (e.code == 'wrong-password') {
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(const SnackBar(content: Text("Incorrect Password.")));
@@ -144,7 +156,19 @@ class _StudentLoginState extends State<StudentLogin> {
                                         } else {
                                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.code.toString())));
                                         }
-                                      }).then((value) => Navigator.of(context).pop());
+                                        return null;
+                                        // return false;
+                                      }).then((value) {
+                                        if (value != null && value) {
+                                          Navigator.of(context).pop();
+                                        } else {
+                                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                              content: Text(
+                                            "Don't use Faculty Login in Student section.",
+                                            maxLines: 2,
+                                          )));
+                                        }
+                                      });
                                       setState(() => isClicked = false);
                                     }
                                   })),

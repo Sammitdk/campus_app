@@ -15,13 +15,7 @@ class GroupInfo extends StatefulWidget {
   final dynamic data;
   final dynamic facultyList;
 
-  GroupInfo(
-      {Key? key,
-      required this.data,
-      required this.groupName,
-      required this.imgUrl,
-      this.facultyList,
-      required this.users})
+  GroupInfo({Key? key, required this.data, required this.groupName, required this.imgUrl, this.facultyList, required this.users})
       : super(key: key);
 
   @override
@@ -45,14 +39,10 @@ class _GroupInfoState extends State<GroupInfo> {
     List<dynamic> list = [];
 
     // listen to changes in the document
-    Stream<DocumentSnapshot> snapshotStream = FirebaseFirestore.instance
-        .doc("GroupMessages/${widget.groupName}")
-        .snapshots();
+    Stream<DocumentSnapshot> snapshotStream = FirebaseFirestore.instance.doc("GroupMessages/${widget.groupName}").snapshots();
 
     // fetch initial data
-    DocumentSnapshot value = await FirebaseFirestore.instance
-        .doc("GroupMessages/${widget.groupName}")
-        .get();
+    DocumentSnapshot value = await FirebaseFirestore.instance.doc("GroupMessages/${widget.groupName}").get();
     Map<String, dynamic> temp = value.data() as Map<String, dynamic>;
     QuerySnapshot<Map<String, dynamic>> ans = await FirebaseFirestore.instance
         .collection("Faculty_Detail")
@@ -100,10 +90,7 @@ class _GroupInfoState extends State<GroupInfo> {
   }
 
   Future<List<dynamic>> getAdmins() async {
-    DocumentSnapshot value = await FirebaseFirestore.instance
-        .collection("GroupMessages")
-        .doc(widget.groupName)
-        .get();
+    DocumentSnapshot value = await FirebaseFirestore.instance.collection("GroupMessages").doc(widget.groupName).get();
     Map<String, dynamic> temp = value.data() as Map<String, dynamic>;
     return temp['admins'];
   }
@@ -113,8 +100,7 @@ class _GroupInfoState extends State<GroupInfo> {
     return Scaffold(
         body: NestedScrollView(
             floatHeaderSlivers: true,
-            headerSliverBuilder:
-                (BuildContext context, bool innerBoxIsScrolled) {
+            headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
               return <Widget>[
                 SliverAppBar(
                   automaticallyImplyLeading: false,
@@ -128,30 +114,23 @@ class _GroupInfoState extends State<GroupInfo> {
                       tag: "group",
                       child: GestureDetector(
                         onTap: () async {
-                          final picked = await ImagePicker.platform
-                              .pickImage(source: ImageSource.gallery);
+                          final picked = await ImagePicker.platform.pickImage(source: ImageSource.gallery);
                           if (picked == null) {
                             return;
                           }
                           final path = picked.path;
                           File result = File(path);
-                          File pick = File(result!.path.toString());
+                          File pick = File(result.path.toString());
                           var file = pick.readAsBytesSync();
                           //uploading
-                          var pdfFile = FirebaseStorage.instance
-                              .ref()
-                              .child("Images")
-                              .child(widget.groupName);
+                          var pdfFile = FirebaseStorage.instance.ref().child("Images").child(widget.groupName);
                           UploadTask task = pdfFile.putData(file);
                           task.whenComplete(() {
                             pdfFile.getDownloadURL().then((value) {
                               setState(() {
                                 widget.imgUrl = value;
                               });
-                              FirebaseFirestore.instance
-                                  .collection("GroupMessages")
-                                  .doc(widget.groupName)
-                                  .set({
+                              FirebaseFirestore.instance.collection("GroupMessages").doc(widget.groupName).set({
                                 'imgUrl': value,
                               }, SetOptions(merge: true));
                             });
@@ -166,14 +145,11 @@ class _GroupInfoState extends State<GroupInfo> {
                             );
                           },
                           placeholder: (context, url) => const CircleAvatar(
-                            backgroundImage:
-                                AssetImage("assets/images/profile.gif"),
+                            backgroundImage: AssetImage("assets/images/profile.gif"),
                             maxRadius: 30,
                           ),
-                          errorWidget: (context, url, error) =>
-                              const CircleAvatar(
-                            backgroundImage:
-                                AssetImage("assets/images/profile.gif"),
+                          errorWidget: (context, url, error) => const CircleAvatar(
+                            backgroundImage: AssetImage("assets/images/profile.gif"),
                             maxRadius: 30,
                           ),
                           fit: BoxFit.cover,
@@ -183,10 +159,7 @@ class _GroupInfoState extends State<GroupInfo> {
                   ),
                   title: Text(
                     widget.groupName,
-                    style: const TextStyle(
-                        fontFamily: 'Narrow',
-                        fontSize: 23,
-                        color: Colors.black),
+                    style: const TextStyle(fontFamily: 'Narrow', fontSize: 23, color: Colors.black),
                   ),
                   expandedHeight: 250,
                   backgroundColor: Colors.white,
@@ -205,16 +178,10 @@ class _GroupInfoState extends State<GroupInfo> {
                     }, onSelected: (value) {
                       if (value == 0) {
                       } else if (value == 1) {
-                        FirebaseFirestore.instance
-                            .collection("GroupMessages")
-                            .doc(widget.groupName)
-                            .update({
+                        FirebaseFirestore.instance.collection("GroupMessages").doc(widget.groupName).update({
                           "users": FieldValue.arrayRemove([widget.data.email]),
                         });
-                        FirebaseFirestore.instance
-                            .collection(
-                                "GroupMessages/${widget.groupName}/Messages")
-                            .add(
+                        FirebaseFirestore.instance.collection("GroupMessages/${widget.groupName}/Messages").add(
                           {
                             "messageType": "left",
                             "email": widget.data.email,
@@ -235,9 +202,7 @@ class _GroupInfoState extends State<GroupInfo> {
               children: [
                 Expanded(
                   child: ElevatedButton(
-                    style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all(Colors.green[400])),
+                    style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.green[400])),
                     onPressed: () {
                       if (admins.contains(widget.data.email)) {
                         Navigator.push(
@@ -249,14 +214,13 @@ class _GroupInfoState extends State<GroupInfo> {
                                       users: widget.users,
                                     )));
                       } else {
-                        ScaffoldMessenger.of(context)
-                            .showSnackBar(const SnackBar(
-                                duration: Duration(milliseconds: 500),
-                                backgroundColor: Colors.black,
-                                content: Text(
-                                  "Only admins can add",
-                                  style: TextStyle(color: Colors.white),
-                                )));
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                            duration: Duration(milliseconds: 500),
+                            backgroundColor: Colors.black,
+                            content: Text(
+                              "Only admins can add",
+                              style: TextStyle(color: Colors.white),
+                            )));
                       }
                     },
                     child: Row(
@@ -275,8 +239,7 @@ class _GroupInfoState extends State<GroupInfo> {
                   flex: 8,
                   child: StreamBuilder<List<dynamic>>(
                     stream: getInfoStream(),
-                    builder:
-                        (BuildContext context, AsyncSnapshot<List> snapshot) {
+                    builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
                       if (snapshot.hasData) {
                         return ListView.builder(
                             itemCount: snapshot.data!.length,
@@ -284,165 +247,103 @@ class _GroupInfoState extends State<GroupInfo> {
                               Map<String, dynamic> x = snapshot.data![i];
                               return GestureDetector(
                                 onLongPress: () {
-                                  if (admins.contains(widget.data.email) &&
-                                      x['Email'] != widget.data.email) {
+                                  if (admins.contains(widget.data.email) && x['Email'] != widget.data.email) {
                                     showDialog(
                                       context: context,
                                       builder: (BuildContext context) {
                                         return AlertDialog(
-                                          contentPadding:
-                                              const EdgeInsets.all(16.0),
+                                          contentPadding: const EdgeInsets.all(16.0),
                                           buttonPadding: EdgeInsets.zero,
                                           elevation: 0,
-                                          insetPadding: const EdgeInsets.only(
-                                              right: 10, left: 180),
+                                          insetPadding: const EdgeInsets.only(right: 10, left: 180),
                                           actions: [
                                             Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.end,
+                                              crossAxisAlignment: CrossAxisAlignment.end,
                                               children: [
                                                 Align(
-                                                    alignment:
-                                                        Alignment.topLeft,
+                                                    alignment: Alignment.topLeft,
                                                     child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
+                                                      padding: const EdgeInsets.all(8.0),
                                                       child: Text(
-                                                        x['Name']['First']
-                                                            .toString()
-                                                            .capitalize(),
-                                                        style: const TextStyle(
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
+                                                        x['Name']['First'].toString().capitalize(),
+                                                        style: const TextStyle(fontWeight: FontWeight.bold),
                                                       ),
                                                     )),
                                                 TextButton(
                                                   child: const Text('Remove'),
                                                   onPressed: () {
                                                     FirebaseFirestore.instance
-                                                        .collection(
-                                                            "GroupMessages")
+                                                        .collection("GroupMessages")
                                                         .doc(widget.groupName)
                                                         .update({
-                                                      "users": FieldValue
-                                                          .arrayRemove(
-                                                              [x['Email']]),
+                                                      "users": FieldValue.arrayRemove([x['Email']]),
                                                     });
                                                     FirebaseFirestore.instance
-                                                        .collection(
-                                                            "GroupMessages/${widget.groupName}/Messages")
+                                                        .collection("GroupMessages/${widget.groupName}/Messages")
                                                         .add(
                                                       {
                                                         "messageType": "left",
-                                                        "email":
-                                                            widget.data.email,
-                                                        "name": x['Name']
-                                                            ['First'],
+                                                        "email": widget.data.email,
+                                                        "name": x['Name']['First'],
                                                         "time": Timestamp.now(),
-                                                        "users": FieldValue
-                                                            .arrayUnion([
-                                                          widget.data.email
-                                                        ]),
-                                                        "message": widget
-                                                            .data.name['First']
+                                                        "users": FieldValue.arrayUnion([widget.data.email]),
+                                                        "message": widget.data.name['First']
                                                       },
                                                     );
-                                                    Navigator.pop(
-                                                        context, false);
+                                                    Navigator.pop(context, false);
                                                   },
                                                 ),
                                                 (!admins.contains(x['Email']))
                                                     ? TextButton(
-                                                        child: const Text(
-                                                            'Make Admin'),
+                                                        child: const Text('Make Admin'),
                                                         onPressed: () {
-                                                          FirebaseFirestore
-                                                              .instance
-                                                              .collection(
-                                                                  "GroupMessages")
-                                                              .doc(widget
-                                                                  .groupName)
+                                                          FirebaseFirestore.instance
+                                                              .collection("GroupMessages")
+                                                              .doc(widget.groupName)
                                                               .update({
-                                                            "admins": FieldValue
-                                                                .arrayUnion([
-                                                              x['Email']
-                                                            ]),
+                                                            "admins": FieldValue.arrayUnion([x['Email']]),
                                                           });
-                                                          FirebaseFirestore
-                                                              .instance
-                                                              .collection(
-                                                                  "GroupMessages/${widget.groupName}/Messages")
+                                                          FirebaseFirestore.instance
+                                                              .collection("GroupMessages/${widget.groupName}/Messages")
                                                               .add({
-                                                            "messageType":
-                                                                "adminAdded",
-                                                            "email": widget
-                                                                .data.email,
-                                                            "name": widget.data
-                                                                .name['First'],
-                                                            "time":
-                                                                Timestamp.now(),
-                                                            "users": FieldValue
-                                                                .arrayUnion([
-                                                              widget.data.email
-                                                            ]),
-                                                            "message": x['Name']
-                                                                ['First'],
+                                                            "messageType": "adminAdded",
+                                                            "email": widget.data.email,
+                                                            "name": widget.data.name['First'],
+                                                            "time": Timestamp.now(),
+                                                            "users": FieldValue.arrayUnion([widget.data.email]),
+                                                            "message": x['Name']['First'],
                                                           });
-                                                          admins
-                                                              .add(x['Email']);
-                                                          Navigator.pop(
-                                                              context, false);
+                                                          admins.add(x['Email']);
+                                                          Navigator.pop(context, false);
                                                         },
                                                       )
                                                     : TextButton(
-                                                        child: const Text(
-                                                            'Remove Admin'),
+                                                        child: const Text('Remove Admin'),
                                                         onPressed: () {
-                                                          FirebaseFirestore
-                                                              .instance
-                                                              .collection(
-                                                                  "GroupMessages")
-                                                              .doc(widget
-                                                                  .groupName)
+                                                          FirebaseFirestore.instance
+                                                              .collection("GroupMessages")
+                                                              .doc(widget.groupName)
                                                               .update({
-                                                            "admins": FieldValue
-                                                                .arrayRemove([
-                                                              x['Email']
-                                                            ]),
+                                                            "admins": FieldValue.arrayRemove([x['Email']]),
                                                           });
-                                                          FirebaseFirestore
-                                                              .instance
-                                                              .collection(
-                                                                  "GroupMessages/${widget.groupName}/Messages")
+                                                          FirebaseFirestore.instance
+                                                              .collection("GroupMessages/${widget.groupName}/Messages")
                                                               .add({
-                                                            "messageType":
-                                                                "adminRemoved",
-                                                            "email": widget
-                                                                .data.email,
-                                                            "name": widget.data
-                                                                .name['First'],
-                                                            "time":
-                                                                Timestamp.now(),
-                                                            "users": FieldValue
-                                                                .arrayUnion([
-                                                              widget.data.email
-                                                            ]),
-                                                            "message": x['Name']
-                                                                ['First'],
+                                                            "messageType": "adminRemoved",
+                                                            "email": widget.data.email,
+                                                            "name": widget.data.name['First'],
+                                                            "time": Timestamp.now(),
+                                                            "users": FieldValue.arrayUnion([widget.data.email]),
+                                                            "message": x['Name']['First'],
                                                           });
-                                                          admins.remove(
-                                                              x['Email']);
-                                                          Navigator.pop(
-                                                              context, false);
+                                                          admins.remove(x['Email']);
+                                                          Navigator.pop(context, false);
                                                         },
                                                       ),
                                                 TextButton(
                                                   child: const Text('Cancel'),
                                                   onPressed: () {
-                                                    Navigator.pop(context,
-                                                        false); // Return false when cancel is pressed
+                                                    Navigator.pop(context, false); // Return false when cancel is pressed
                                                   },
                                                 ),
                                               ],

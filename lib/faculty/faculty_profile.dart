@@ -10,12 +10,13 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
-import '../firebase/signIn.dart';
+import '../admin/admin_home.dart';
+import '../firebase/auth.dart';
 import '../password_reset.dart';
 import '../redux/reducer.dart';
 
 class FacultyProfile extends HookWidget with ChangeNotifier {
-  FacultyProfile({super.key});
+  // FacultyProfile({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -411,35 +412,31 @@ class FacultyProfile extends HookWidget with ChangeNotifier {
                     ),
                     Padding(
                       padding: const EdgeInsets.all(10.0),
-                      child: Column(
-                        children: [
-                          ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: state.subject.keys.length,
-                              itemBuilder: (context, index) {
-                                return Row(children: [
-                                  const Expanded(
-                                    flex: 1,
-                                    child: Icon(
-                                      Icons.book_outlined,
-                                      size: 50,
-                                      color: Colors.blue,
+                      child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: state.subject.keys.length,
+                          itemBuilder: (context, index) {
+                            return Row(children: [
+                              const Expanded(
+                                flex: 1,
+                                child: Icon(
+                                  Icons.book_outlined,
+                                  size: 50,
+                                  color: Colors.blue,
+                                ),
+                              ),
+                              Expanded(
+                                  flex: 2,
+                                  child: Text(
+                                    state.subject.keys.elementAt(index),
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      color: Colors.black,
                                     ),
-                                  ),
-                                  Expanded(
-                                      flex: 2,
-                                      child: Text(
-                                        state.subject.keys.elementAt(index),
-                                        style: const TextStyle(
-                                          fontSize: 18,
-                                          color: Colors.black,
-                                        ),
-                                        textAlign: TextAlign.center,
-                                      )),
-                                ]);
-                              }),
-                        ],
-                      ),
+                                    textAlign: TextAlign.center,
+                                  )),
+                            ]);
+                          }),
                     ),
                   ],
                 ),
@@ -450,11 +447,20 @@ class FacultyProfile extends HookWidget with ChangeNotifier {
       ]),
       floatingActionButton: SpeedDial(
         animatedIcon: AnimatedIcons.menu_close,
+        backgroundColor: Colors.indigo[300],
         children: [
+          SpeedDialChild(
+            label: 'Open Admin',
+            onTap: () async {
+              Navigator.of(context).push(MaterialPageRoute(builder: (_) => const AdminHome()));
+            },
+            backgroundColor: Colors.white,
+            foregroundColor: Colors.black,
+            child: const Icon(Icons.password),
+          ),
           SpeedDialChild(
             label: 'Forget Password',
             onTap: () async {
-              Navigator.of(context).push(MaterialPageRoute(builder: (_) => ResetPassword()));
               Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ResetPassword()));
             },
             backgroundColor: Colors.white,
@@ -466,12 +472,15 @@ class FacultyProfile extends HookWidget with ChangeNotifier {
             onTap: () async {
               try {
                 // remove faculty device token
-                FirebaseFirestore.instance.doc("Faculty_Detail/${state.email}").update({"Token": FieldValue.delete()});
+                FirebaseFirestore.instance
+                    .doc("Faculty_Detail/${state.email}")
+                    .update({"Token": FieldValue.delete()}).then((value) => FirebaseAuth.instance.signOut());
+
                 FirebaseFirestore.instance.doc("Messages/${state.email}").set({'status': 'Offline'}, SetOptions(merge: true));
-                await Auth().signOut();
+                // await FirebaseAuth.instance.signOut();
                 // .then((_) {
                 //   notifyListeners();
-                //   Navigator.of(context).pop();
+                // Navigator.of(context).pop();
                 // });
               } on FirebaseAuthException catch (e) {
                 if (e.code == 'network-request-failed') {

@@ -9,8 +9,7 @@ class FacultyAttendanceOption extends StatefulWidget {
   const FacultyAttendanceOption({Key? key}) : super(key: key);
 
   @override
-  State<FacultyAttendanceOption> createState() =>
-      _FacultyAttendanceOptionState();
+  State<FacultyAttendanceOption> createState() => _FacultyAttendanceOptionState();
 }
 
 class _FacultyAttendanceOptionState extends State<FacultyAttendanceOption> {
@@ -22,15 +21,18 @@ class _FacultyAttendanceOptionState extends State<FacultyAttendanceOption> {
   void timePicker() async {
     TimeOfDay time = const TimeOfDay(hour: 9, minute: 0);
     DateTime date = DateUtils.dateOnly(DateTime.now());
-    final DateTime? selecteddate = await showDatePicker(
-        context: context,
-        initialDate: date,
-        lastDate: DateTime(2030),
-        firstDate: DateTime(2010));
-    final TimeOfDay? selectedtime =
-        await showTimePicker(context: context, initialTime: time);
+    TimeOfDay? selectedtime;
+    final DateTime? selecteddate =
+        await showDatePicker(context: context, initialDate: date, lastDate: DateTime.now(), firstDate: DateTime(2010))
+            .then((value) async {
+      if (value != null) {
+        selectedtime = await showTimePicker(context: context, initialTime: time);
+      }
+      return value;
+    });
+    print("$selectedtime  $selecteddate");
     if (selecteddate != null && selectedtime != null) {
-      time = selectedtime;
+      time = selectedtime!;
       date = selecteddate;
       this.date =
           "${DateFormat('dd-MM-yyyy').format(date)}-${DateFormat('HH-mm').format(DateFormat('H:mm a').parse(time.format(context)))}";
@@ -67,8 +69,7 @@ class _FacultyAttendanceOptionState extends State<FacultyAttendanceOption> {
                   children: [
                     FloatingActionButton.extended(
                       onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (_) => const FacultyAttendanceHistory()));
+                        Navigator.of(context).push(MaterialPageRoute(builder: (_) => const FacultyAttendanceHistory()));
                       },
                       icon: const Icon(
                         Icons.history,
@@ -83,9 +84,7 @@ class _FacultyAttendanceOptionState extends State<FacultyAttendanceOption> {
                     Expanded(
                       flex: 2,
                       child: Container(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
-                            color: Colors.indigo[200]),
+                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: Colors.indigo[300]),
                         margin: const EdgeInsets.only(top: 20, bottom: 20),
                         // padding: const EdgeInsets.all(20),
                         alignment: Alignment.center,
@@ -97,22 +96,24 @@ class _FacultyAttendanceOptionState extends State<FacultyAttendanceOption> {
                             const Expanded(
                                 child: Text(
                               "Subject",
-                              style:
-                                  TextStyle(fontSize: 20, color: Colors.white),
+                              style: TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
                               textAlign: TextAlign.center,
                             )),
                             Expanded(
-                              flex: 3,
+                              flex: 2,
                               child: Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(15),
-                                    color: Colors.white),
+                                decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: Colors.white),
                                 margin: const EdgeInsets.all(20),
                                 child: ButtonTheme(
                                   alignedDropdown: true,
                                   child: DropdownButtonFormField<String>(
-                                    decoration: const InputDecoration(
-                                        border: InputBorder.none),
+                                    decoration:
+                                        const InputDecoration(border: InputBorder.none, errorStyle: TextStyle(color: Colors.white)),
+                                    icon: const Icon(Icons.arrow_drop_down_rounded),
+                                    iconEnabledColor: Colors.green,
+                                    iconSize: 20,
+                                    alignment: AlignmentDirectional.center,
+                                    value: selectedsub == "" ? selectedsub = state.subject.keys.elementAt(0) : selectedsub,
                                     validator: (value) {
                                       if (value == null || value.isEmpty) {
                                         return 'Select Subject.';
@@ -125,25 +126,16 @@ class _FacultyAttendanceOptionState extends State<FacultyAttendanceOption> {
                                       color: Colors.indigo[300],
                                     ),
                                     hint: const Text(
-                                      "Select",
+                                      "Select.",
                                     ),
-                                    icon: const Icon(
-                                        Icons.arrow_drop_down_rounded),
-                                    iconEnabledColor: Colors.green,
-                                    iconSize: 20,
-                                    alignment: AlignmentDirectional.center,
-                                    value: selectedsub.isEmpty
-                                        ? null
-                                        : selectedsub,
                                     items: state.subject.keys
-                                        .map<DropdownMenuItem<String>>(
-                                            (value) => DropdownMenuItem<String>(
-                                                  value: value,
-                                                  child: Text(
-                                                    value,
-                                                    textAlign: TextAlign.center,
-                                                  ),
-                                                ))
+                                        .map<DropdownMenuItem<String>>((value) => DropdownMenuItem<String>(
+                                              value: value,
+                                              child: Text(
+                                                value,
+                                                textAlign: TextAlign.center,
+                                              ),
+                                            ))
                                         .toList(),
                                     onChanged: (newvalue) {
                                       print(newvalue);
@@ -166,68 +158,49 @@ class _FacultyAttendanceOptionState extends State<FacultyAttendanceOption> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              foregroundColor: Colors.black,
-                              backgroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30.0)),
-                              textStyle: const TextStyle(
-                                  fontFamily: 'MiliBold', fontSize: 18),
-                              padding: const EdgeInsets.only(
-                                  top: 12, bottom: 12, left: 15, right: 15),
-                            ),
+                          FloatingActionButton.extended(
                             onPressed: () {
                               timePicker();
                             },
-                            child: Text(date.isEmpty
+                            heroTag: null,
+                            backgroundColor: Colors.indigo[300],
+                            icon: const Icon(Icons.calendar_month),
+                            label: Text(date.isEmpty
                                 ? 'Select Date and Time'
-                                : DateFormat('dd MMM yyyy HH:mm').format(
-                                    DateFormat('dd-MM-yyyy-HH-mm')
-                                        .parse(date))),
+                                : DateFormat('dd MMM yyyy HH:mm').format(DateFormat('dd-MM-yyyy-HH-mm').parse(date))),
                           ),
                           const SizedBox(
                             width: 30,
                           ),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30.0)),
-                              textStyle: const TextStyle(
-                                  fontFamily: 'MiliBold', fontSize: 18),
-                              onPrimary: Colors.black,
-                              primary: Colors.white,
-                              padding: const EdgeInsets.only(
-                                  top: 12, bottom: 12, left: 15, right: 15),
-                            ),
+                          FloatingActionButton.extended(
+                            heroTag: null,
+                            backgroundColor: Colors.indigo[300],
                             onPressed: () {
                               if (fkey.currentState!.validate()) {
                                 print("qqqqqqqqq${state.subject}");
                                 (date.isNotEmpty)
-                                    ? Navigator.of(context)
-                                        .push(MaterialPageRoute(
-                                            builder: (_) => FacultyAttendance(
-                                                  references: state
-                                                      .subject[selectedsub],
-                                                  date: date,
-                                                  subject: selectedsub,
-                                                )))
-                                    : ScaffoldMessenger.of(context)
-                                        .showSnackBar(const SnackBar(
+                                    ? Navigator.of(context).push(MaterialPageRoute(
+                                        builder: (_) => FacultyAttendance(
+                                              references: state.subject[selectedsub],
+                                              date: date,
+                                              subject: selectedsub,
+                                            )))
+                                    : ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                                         content: Text('Select Date and Time'),
                                       ));
                               }
                             },
-                            child: const Text('Next'),
+                            label: const Text(
+                              'Next',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
                           )
                         ],
                       ),
                     ),
                     Expanded(
                       flex: 7,
-                      child: Card(
-                          color: Colors.white,
-                          child: Image.asset("assets/images/attendance.gif")),
+                      child: Card(color: Colors.white, child: Image.asset("assets/images/attendance.gif")),
                     )
                   ],
                 ),

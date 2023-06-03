@@ -14,7 +14,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:pie_chart/pie_chart.dart';
 import 'package:provider/provider.dart';
-import '../firebase/signIn.dart';
+import '../firebase/auth.dart';
 import '../redux/reducer.dart';
 
 class StudentProfile extends HookWidget {
@@ -402,8 +402,7 @@ class StudentProfile extends HookWidget {
       ]),
       floatingActionButton: SpeedDial(
         closeManually: true,
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
+        backgroundColor: Colors.indigo[300],
         animatedIcon: AnimatedIcons.menu_close,
         children: [
           SpeedDialChild(
@@ -430,7 +429,6 @@ class StudentProfile extends HookWidget {
 
                 FirebaseFirestore.instance.doc("Messages/${state.email}").set({'status': 'Offline'}, SetOptions(merge: true));
 
-                Auth().signOut();
                 // .then((value) => Navigator.of(context).pop());
 
                 // FirebaseAuth.instance.signOut();

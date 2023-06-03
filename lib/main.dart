@@ -8,9 +8,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'firebase/notification.dart';
-import 'firebase/signIn.dart';
+import 'firebase/auth.dart';
 import 'firebase/wrapper.dart';
 import 'firebase_options.dart';
 import 'loading_page.dart';
@@ -25,17 +26,16 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIMode(
     SystemUiMode.manual,
-    overlays:
-        SystemUiOverlay.values, //This line is used for showing the bottom bar
+    overlays: SystemUiOverlay.values, //This line is used for showing the bottom bar
   );
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
     statusBarIconBrightness: Brightness.dark,
   ));
-  // SystemChrome.setSystemUIOverlayStyle(
-  //     const SystemUiOverlayStyle(statusBarBrightness: Brightness.light),
-  //   // Or Brightness.dark
-  // );
+  if (await Permission.notification.status.isDenied) {
+    print("asasa");
+    Permission.notification.request();
+  }
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
@@ -52,16 +52,9 @@ void main() async {
         debugShowCheckedModeBanner: false,
         initialRoute: '/',
         routes: {
-          'main': (context) => const Main(),
           '/': (context) => LoadingPage(),
-          // 'login_page': (context) => const Login(),
-          // 't_login_form': (context) =>
-          // const KeyboardVisibilityProvider(child: FacultyLogin()),
-          // 's_login_form': (context) =>
-          // const KeyboardVisibilityProvider(child: StudentLogin()),
-          'chat_screen': (context) => const ConversationScreen(
-                isFaculty: false,
-              )
+          'main': (context) => const Main(),
+          'chat_screen': (context) => const ConversationScreen()
         },
       )));
 }
@@ -74,15 +67,11 @@ class Main extends StatefulWidget {
 }
 
 class _MainState extends State<Main> with WidgetsBindingObserver {
-  late ConnectivityResult _previous;
   late StreamSubscription internet;
-  bool isinternet = true;
-  SnackBar? offlineSnackbar;
+  bool isInternet = true;
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    print("${state.index}   ${state.name}");
-
     switch (state.index) {
       case 0:
         internet.resume();
@@ -108,12 +97,12 @@ class _MainState extends State<Main> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     super.initState();
 
-    internet =
-        Connectivity().onConnectivityChanged.listen((ConnectivityResult event) {
+    internet = Connectivity().onConnectivityChanged.listen((ConnectivityResult event) {
       switch (event) {
         case ConnectivityResult.none:
-          isinternet = false;
-          offlineSnackbar = SnackBar(
+          isInternet = false;
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            dismissDirection: DismissDirection.none,
             behavior: SnackBarBehavior.fixed,
             duration: const Duration(days: 69),
             elevation: 10,
@@ -130,13 +119,12 @@ class _MainState extends State<Main> with WidgetsBindingObserver {
                 ),
               ],
             ),
-          );
-          ScaffoldMessenger.of(context).showSnackBar(offlineSnackbar!);
+          ));
           break;
         case ConnectivityResult.mobile:
         case ConnectivityResult.wifi:
-          if (!isinternet) {
-            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          if (!isInternet) {
+            ScaffoldMessenger.of(context).deactivate();
             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
               behavior: SnackBarBehavior.floating,
               duration: Duration(seconds: 1),
@@ -162,14 +150,14 @@ class _MainState extends State<Main> with WidgetsBindingObserver {
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((event) {
+      print("aaaaaaaaaaaa${event.toMap()}");
       Navigator.of(context).pushNamed("chat_screen");
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-        create: (context) => Auth(), child: const Wrapper());
+    return ChangeNotifierProvider(create: (context) => Auth(), child: const Wrapper());
   }
 
   showAlert(BuildContext context, Map data) {
@@ -177,8 +165,7 @@ class _MainState extends State<Main> with WidgetsBindingObserver {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
             alignment: Alignment.center,
             title: Text(data["notification"]['title']),
             content: Padding(
@@ -194,9 +181,7 @@ class _MainState extends State<Main> with WidgetsBindingObserver {
                   data["data"]["image"].isNotEmpty
                       ? Container(
                           decoration: BoxDecoration(
-                              image: DecorationImage(
-                                  image: NetworkImage(data["data"]["image"])),
-                              shape: BoxShape.circle),
+                              image: DecorationImage(image: NetworkImage(data["data"]["image"])), shape: BoxShape.circle),
                         )
                       : Container(),
                 ],
@@ -205,10 +190,8 @@ class _MainState extends State<Main> with WidgetsBindingObserver {
             actions: [
               ElevatedButton(
                   style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all(Colors.deepPurpleAccent),
-                      shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(50)))),
+                      backgroundColor: MaterialStateProperty.all(Colors.deepPurpleAccent),
+                      shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)))),
                   onPressed: () => Navigator.of(context).pop(),
                   child: const Text("OK"))
             ],

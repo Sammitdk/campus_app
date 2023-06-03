@@ -7,7 +7,7 @@ import 'package:image_picker/image_picker.dart';
 class GroupCreateScreen extends StatefulWidget {
   final String email;
 
-  const GroupCreateScreen({super.key, required this.email});
+  const GroupCreateScreen({Key? key, required this.email}) : super(key: key);
 
   @override
   State<GroupCreateScreen> createState() => _GroupCreateScreenState();
@@ -19,8 +19,7 @@ class _GroupCreateScreenState extends State<GroupCreateScreen> {
   late File pickedFile;
 
   Future selectFiles() async {
-    final result =
-        await ImagePicker.platform.pickImage(source: ImageSource.gallery);
+    final result = await ImagePicker.platform.pickImage(source: ImageSource.gallery);
     if (result == null) {
       setState(() {
         picked = false;
@@ -36,21 +35,15 @@ class _GroupCreateScreenState extends State<GroupCreateScreen> {
 
   uploadDataToFirebase() async {
     File result = pickedFile;
-    File pick = File(result!.path.toString());
+    File pick = File(result.path.toString());
     var file = pick.readAsBytesSync();
 
     //uploading
-    var pdfFile = FirebaseStorage.instance
-        .ref()
-        .child("Images")
-        .child(groupNameController.text.trim());
+    var pdfFile = FirebaseStorage.instance.ref().child("Images").child(groupNameController.text.trim());
     UploadTask task = pdfFile.putData(file);
     task.whenComplete(() {
       pdfFile.getDownloadURL().then((value) => {
-            FirebaseFirestore.instance
-                .collection("GroupMessages")
-                .doc(groupNameController.text.trim())
-                .set({
+            FirebaseFirestore.instance.collection("GroupMessages").doc(groupNameController.text.trim()).set({
               'imgUrl': value,
             }, SetOptions(merge: true))
           });
@@ -75,37 +68,29 @@ class _GroupCreateScreenState extends State<GroupCreateScreen> {
             ));
           } else {
             uploadDataToFirebase();
-            FirebaseFirestore.instance
-                .collection("GroupMessages")
-                .doc(groupNameController.text.trim())
-                .get()
-                .then((doc) => {
-                      if (doc.exists)
-                        {
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(const SnackBar(
-                            content: Text('Group Already Present'),
-                          ))
-                        }
-                      else
-                        {
-                          FirebaseFirestore.instance
-                              .collection("GroupMessages")
-                              .doc(groupNameController.text.trim())
-                              .set({
-                            'imgUrl': '',
-                            'admins': FieldValue.arrayUnion([widget.email]),
-                            'users': FieldValue.arrayUnion([widget.email]),
-                            'groupName': groupNameController.text.trim(),
-                            'isGroup': true,
-                            'messageText': '',
-                            'latestMessageBy': '',
-                            'time': DateTime.now(),
-                            'isMessageRead': true
-                          }),
-                          Navigator.pop(context)
-                        }
-                    });
+            FirebaseFirestore.instance.collection("GroupMessages").doc(groupNameController.text.trim()).get().then((doc) => {
+                  if (doc.exists)
+                    {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text('Group Already Present'),
+                      ))
+                    }
+                  else
+                    {
+                      FirebaseFirestore.instance.collection("GroupMessages").doc(groupNameController.text.trim()).set({
+                        'imgUrl': '',
+                        'admins': FieldValue.arrayUnion([widget.email]),
+                        'users': FieldValue.arrayUnion([widget.email]),
+                        'groupName': groupNameController.text.trim(),
+                        'isGroup': true,
+                        'messageText': '',
+                        'latestMessageBy': '',
+                        'time': DateTime.now(),
+                        'isMessageRead': true
+                      }),
+                      Navigator.pop(context)
+                    }
+                });
           }
         },
       ),
@@ -158,16 +143,13 @@ class _GroupCreateScreenState extends State<GroupCreateScreen> {
               ],
             ),
             Container(
-              margin:
-                  const EdgeInsetsDirectional.only(start: 10, end: 10, top: 30),
+              margin: const EdgeInsetsDirectional.only(start: 10, end: 10, top: 30),
               child: TextField(
                 decoration: InputDecoration(
                   focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.indigo.shade300),
-                      borderRadius: BorderRadius.circular(20)),
-                  border: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Colors.black),
-                      borderRadius: BorderRadius.circular(20)),
+                      borderSide: BorderSide(color: Colors.indigo.shade300), borderRadius: BorderRadius.circular(20)),
+                  border:
+                      OutlineInputBorder(borderSide: const BorderSide(color: Colors.black), borderRadius: BorderRadius.circular(20)),
                   filled: true,
                   fillColor: Colors.white,
                   labelText: 'Group Name',

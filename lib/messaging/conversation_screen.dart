@@ -9,8 +9,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import '../redux/reducer.dart';
 
 class ConversationScreen extends StatefulWidget {
-  const ConversationScreen({Key? key, required bool isFaculty})
-      : super(key: key);
+  const ConversationScreen({Key? key}) : super(key: key);
 
   @override
   State<ConversationScreen> createState() => _ConversationScreenState();
@@ -21,15 +20,12 @@ class _ConversationScreenState extends State<ConversationScreen> {
 
   void faculty() async {
     List list = [];
-    await FirebaseFirestore.instance
-        .collection("Faculty_Detail")
-        .get()
-        .then((value) => {
-              value.docs.forEach((element) {
-                Map<String, dynamic> data = element.data();
-                list.add(data['Email']);
-              })
-            });
+    await FirebaseFirestore.instance.collection("Faculty_Detail").get().then((value) => {
+          value.docs.forEach((element) {
+            Map<String, dynamic> data = element.data();
+            list.add(data['Email']);
+          })
+        });
     setState(() {
       facultyList = list;
     });
@@ -60,18 +56,12 @@ class _ConversationScreenState extends State<ConversationScreen> {
                     Text(
                       "Chat",
                       textAlign: TextAlign.start,
-                      style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black),
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
                     ),
                     Text(
                       "Groups",
                       textAlign: TextAlign.start,
-                      style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black),
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
                     ),
                   ],
                 ),
@@ -88,12 +78,10 @@ class _ConversationScreenState extends State<ConversationScreen> {
                         child: SingleChildScrollView(
                           child: StreamBuilder(
                               stream: FirebaseFirestore.instance
-                                  .collection(
-                                      "Messages/${state.email}/Messages")
+                                  .collection("Messages/${state.email}/Messages")
                                   .orderBy('time', descending: true)
                                   .snapshots(),
-                              builder:
-                                  (ctx, AsyncSnapshot<QuerySnapshot> snapshot) {
+                              builder: (ctx, AsyncSnapshot<QuerySnapshot> snapshot) {
                                 if (snapshot.hasData) {
                                   return ListView.builder(
                                       scrollDirection: Axis.vertical,
@@ -101,14 +89,11 @@ class _ConversationScreenState extends State<ConversationScreen> {
                                       shrinkWrap: true,
                                       itemCount: snapshot.data?.docs.length,
                                       itemBuilder: (ctx, index) {
-                                        QueryDocumentSnapshot x =
-                                            snapshot.data!.docs[index];
+                                        QueryDocumentSnapshot x = snapshot.data!.docs[index];
                                         return ConversationList(
                                           name: x['groupName'],
                                           messageText: x['messageText'],
-                                          time: DateFormat('hh:mm a')
-                                              .format(x['time'].toDate())
-                                              .toString(),
+                                          time: DateFormat('hh:mm a').format(x['time'].toDate()).toString(),
                                           isMessageRead: x['isMessageRead'],
                                           latestMessageBy: "ok",
                                           count: 0,
@@ -184,8 +169,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                                   .where("users", arrayContains: state.email)
                                   .orderBy('time', descending: true)
                                   .snapshots(),
-                              builder:
-                                  (ctx, AsyncSnapshot<QuerySnapshot> snapshot) {
+                              builder: (ctx, AsyncSnapshot<QuerySnapshot> snapshot) {
                                 if (snapshot.hasData) {
                                   return ListView.builder(
                                       scrollDirection: Axis.vertical,
@@ -193,17 +177,14 @@ class _ConversationScreenState extends State<ConversationScreen> {
                                       shrinkWrap: true,
                                       itemCount: snapshot.data?.docs.length,
                                       itemBuilder: (ctx, index) {
-                                        QueryDocumentSnapshot x =
-                                            snapshot.data!.docs[index];
+                                        QueryDocumentSnapshot x = snapshot.data!.docs[index];
                                         return ConversationList(
                                           facultyList: facultyList,
                                           users: x['users'],
                                           name: x['groupName'],
                                           messageText: x['messageText'],
                                           imageUrl: x['imgUrl'],
-                                          time: DateFormat('hh:mm a')
-                                              .format(x['time'].toDate())
-                                              .toString(),
+                                          time: DateFormat('hh:mm a').format(x['time'].toDate()).toString(),
                                           isMessageRead: x['isMessageRead'],
                                           latestMessageBy: x['latestMessageBy'],
                                           isGroup: x["isGroup"],
@@ -211,10 +192,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                                         );
                                       });
                                 } else {
-                                  return Center(
-                                      child: LoadingAnimationWidget
-                                          .staggeredDotsWave(
-                                              size: 50, color: Colors.red));
+                                  return Center(child: LoadingAnimationWidget.staggeredDotsWave(size: 50, color: Colors.red));
                                 }
                               }),
                         ),

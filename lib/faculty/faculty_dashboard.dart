@@ -42,9 +42,7 @@ class _FacultyDashboardState extends State<FacultyDashboard> with WidgetsBinding
   Widget build(BuildContext context) {
     final screen = [
       const FacultyHome(),
-      const ConversationScreen(
-        isFaculty: true,
-      ),
+      const ConversationScreen(),
       FacultyProfile(),
     ];
     final items = <Widget>[
