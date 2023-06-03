@@ -414,126 +414,124 @@ class _StudentRecordAddState extends State<StudentRecordAdd> {
                 ),
               ),
             ),
-            records.isNotEmpty
-                ? Card(
-                    shadowColor: Colors.indigo[300],
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-                    elevation: 10,
-                    margin: const EdgeInsets.all(10),
-                    child: Column(
-                      children: [
-                        Text(
-                          "Records : ${records.length}",
-                          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.indigo[300], fontSize: 20),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        ListView.builder(
-                          physics: const NeverScrollableScrollPhysics(),
-                          // scrollDirection: Axis.vertical,
-                          shrinkWrap: true,
-                          itemCount: records.length + 1,
-                          itemBuilder: (context, index) {
-                            List temp = records.keys.toList();
-                            temp.sort();
-                            //int key = index == b.length ? -1 : temp.elementAt(index);
+            Card(
+              shadowColor: Colors.indigo[300],
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+              elevation: 10,
+              margin: const EdgeInsets.all(10),
+              child: Column(
+                children: [
+                  Text(
+                    "Records : ${records.length}",
+                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.indigo[300], fontSize: 20),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  ListView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    // scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    itemCount: records.length + 1,
+                    itemBuilder: (context, index) {
+                      List temp = records.keys.toList();
+                      temp.sort();
+                      //int key = index == b.length ? -1 : temp.elementAt(index);
 
-                            if (index == records.length) {
-                              int? r;
-                              return Container(
+                      if (index == records.length) {
+                        int? r;
+                        return Container(
+                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: Colors.indigo[200]),
+                          margin: const EdgeInsets.all(10),
+                          child: Center(
+                            child: IconButton(
+                              color: Colors.white,
+                              highlightColor: Colors.transparent,
+                              splashColor: Colors.transparent,
+                              icon: const Icon(Icons.add),
+                              onPressed: () async {
+                                if (fkey.currentState!.validate()) {
+                                  await showDialogAddNew();
+                                  setState(() {});
+                                }
+
+                                // if (r != null) {
+                                //   setState(() {
+                                //     records[r!] = 0;
+                                //   });
+                                // }
+                                // showDialogAddNew();
+                              },
+                            ),
+                          ),
+                        );
+                      } else {
+                        return Stack(
+                          children: [
+                            InkWell(
+                              child: Container(
                                 decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: Colors.indigo[200]),
                                 margin: const EdgeInsets.all(10),
-                                child: Center(
-                                  child: IconButton(
-                                    color: Colors.white,
-                                    highlightColor: Colors.transparent,
-                                    splashColor: Colors.transparent,
-                                    icon: const Icon(Icons.add),
-                                    onPressed: () async {
-                                      if (fkey.currentState!.validate()) {
-                                        await showDialogAddNew();
-                                        setState(() {});
-                                      }
-
-                                      // if (r != null) {
-                                      //   setState(() {
-                                      //     records[r!] = 0;
-                                      //   });
-                                      // }
-                                      // showDialogAddNew();
-                                    },
-                                  ),
-                                ),
-                              );
-                            } else {
-                              return Stack(
-                                children: [
-                                  InkWell(
-                                    child: Container(
-                                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: Colors.indigo[200]),
-                                      margin: const EdgeInsets.all(10),
-                                      padding: const EdgeInsets.all(10),
-                                      height: 50,
-                                      child: Row(
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: [
-                                          Expanded(
-                                            flex: 1,
-                                            child: Text(
-                                              "${records[temp[index]]["PRN"].toString()} :",
-                                              // textAlign: TextAlign.center,
-                                              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                                            ),
-                                          ),
-                                          Expanded(
-                                            flex: 2,
-                                            child: Text(
-                                              getName(records[temp[index]]["Name"]).toString(),
-                                              maxLines: 3,
-                                              overflow: TextOverflow.ellipsis,
-                                              // textAlign: TextAlign.center,
-                                              style: const TextStyle(
-                                                fontSize: 20,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
+                                padding: const EdgeInsets.all(10),
+                                height: 50,
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Expanded(
+                                      flex: 1,
+                                      child: Text(
+                                        "${records[temp[index]]["PRN"].toString()} :",
+                                        // textAlign: TextAlign.center,
+                                        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                                       ),
                                     ),
-                                    onTap: () {
-                                      showDialogDetail(temp[index]);
-                                    },
-                                  ),
-                                  Align(
-                                    alignment: Alignment.topRight,
-                                    child: IconButton(
-                                      highlightColor: Colors.transparent,
-                                      splashColor: Colors.transparent,
-                                      icon: CircleAvatar(
-                                        backgroundColor: Colors.white,
-                                        radius: 8,
-                                        child: Icon(
-                                          Icons.close_rounded,
-                                          color: Colors.red[300],
-                                          size: 15,
+                                    Expanded(
+                                      flex: 2,
+                                      child: Text(
+                                        getName(records[temp[index]]["Name"]).toString(),
+                                        maxLines: 3,
+                                        overflow: TextOverflow.ellipsis,
+                                        // textAlign: TextAlign.center,
+                                        style: const TextStyle(
+                                          fontSize: 20,
                                         ),
                                       ),
-                                      onPressed: () => setState(() {
-                                        records.remove(temp[index]);
-                                      }),
                                     ),
-                                  )
-                                ],
-                              );
-                            }
-                          },
-                          // gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: 2.3),
-                        ),
-                      ],
-                    ),
-                  )
-                : Container(),
+                                  ],
+                                ),
+                              ),
+                              onTap: () {
+                                showDialogDetail(temp[index]);
+                              },
+                            ),
+                            Align(
+                              alignment: Alignment.topRight,
+                              child: IconButton(
+                                highlightColor: Colors.transparent,
+                                splashColor: Colors.transparent,
+                                icon: CircleAvatar(
+                                  backgroundColor: Colors.white,
+                                  radius: 8,
+                                  child: Icon(
+                                    Icons.close_rounded,
+                                    color: Colors.red[300],
+                                    size: 15,
+                                  ),
+                                ),
+                                onPressed: () => setState(() {
+                                  records.remove(temp[index]);
+                                }),
+                              ),
+                            )
+                          ],
+                        );
+                      }
+                    },
+                    // gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: 2.3),
+                  ),
+                ],
+              ),
+            )
           ],
         ),
       ),

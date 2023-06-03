@@ -1,3 +1,4 @@
+import 'package:campus_subsystem/admin/faculty_records_add.dart';
 import 'package:campus_subsystem/admin/student_records_add.dart';
 import 'package:flutter/material.dart';
 
@@ -28,8 +29,11 @@ class _AdminHomeState extends State<AdminHome> {
               ),
             ),
             Expanded(
-              child: Card(
-                child: Image.asset('assets/icons/add_teacher.gif', fit: BoxFit.fill),
+              child: InkWell(
+                onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const FacultyRecordsAdd())),
+                child: Card(
+                  child: Image.asset('assets/icons/add_teacher.gif', fit: BoxFit.fill),
+                ),
               ),
             ),
           ],
