@@ -456,7 +456,7 @@ class FacultyProfile extends HookWidget with ChangeNotifier {
             },
             backgroundColor: Colors.white,
             foregroundColor: Colors.black,
-            child: const Icon(Icons.password),
+            child: const Icon(Icons.admin_panel_settings),
           ),
           SpeedDialChild(
             label: 'Forget Password',

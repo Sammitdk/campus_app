@@ -24,8 +24,6 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
 
   final fkey = GlobalKey<FormState>();
 
-  // Map<String, dynamic> facultyDetail = {};
-
   Map<String, dynamic> records = {};
   double total = 0;
   bool clicked = false;
@@ -40,7 +38,6 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
           ? FloatingActionButton(
               onPressed: null,
               backgroundColor: Colors.indigo[200],
-              // foregroundColor: Colors.black,
               child: const Center(
                   child: CircularProgressIndicator(
                 color: Colors.white,
@@ -52,36 +49,28 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
               backgroundColor: Colors.indigo[200],
               foregroundColor: Colors.black,
               onPressed: () async {
-                // a.addAll(b);
                 print("hello:::::::: ${records.length} $records");
                 setState(() => clicked = true);
                 if (fkey.currentState!.validate()) {
-                  // marks['time'] = DateTime.now();
-                  if (await showDialogConfirmation()) {
-                    FirebaseFirestore inst = FirebaseFirestore.instance;
-                    print("valid");
-                    // DocumentReference branchref = inst.collection("Faculty)").doc(branchcontroller.text);
-                    // await branchref.set({'exist': true});
-                    // await branchref.collection(selectedyear).doc("Syllabus").set({'exist': true});
-                    // await branchref.collection(selectedyear).doc("Attendance").set({'exist': true});
-                    // await branchref.collection(selectedyear).doc("Result").set({'exist': true});
-                    records.forEach((key, value) {
-                      print(key + value.toString());
-                      inst.collection("Faculty_Detail").doc(key).set(value, SetOptions(merge: true));
-                      // print(branchcontroller.text + selectedyear);
-                      // branchref
-                      //     .collection(selectedyear)
-                      //     .doc("Roll_No")
-                      //     .set({value["Roll_No"]: inst.doc("Student_Detail/${value['PRN']}")}, SetOptions(merge: true));
-                    });
-                    records.clear();
-                    filename = '';
-                    print(records);
+                  if (records.isNotEmpty) {
+                    if (await showDialogConfirmation()) {
+                      FirebaseFirestore inst = FirebaseFirestore.instance;
+                      print("valid");
+                      records.forEach((key, value) {
+                        value.addAll({'Branch': batchcontroller.text.trim()});
+                        print(key + value.toString());
+                        inst.collection("Faculty_Detail").doc(key).set(value, SetOptions(merge: true));
+                      });
+                      records.clear();
+                      filename = '';
+                      print(records);
+                    }
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("No Records found to Upload")));
                   }
                 }
 
                 setState(() => clicked = false);
-                // Navigator.of(context).pop();
               },
               icon: const Icon(
                 Icons.done,
@@ -95,7 +84,7 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
       appBar: AppBar(
         centerTitle: true,
         title: const Text(
-          "Add Result",
+          "Add Faculty User",
           style: TextStyle(fontFamily: 'Narrow', fontSize: 30),
           textAlign: TextAlign.center,
         ),
@@ -135,23 +124,7 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
                                 }
                                 return null;
                               },
-                              onChanged: (value) {
-                                if (value.isNotEmpty) {
-                                  records.forEach((key, map) {
-                                    map["Branch"] = batchcontroller.text.trim();
-                                    if (map.containsKey('Subjects')) {
-                                      map['Subjects'].forEach((sub, info) {
-                                        info['Branch'] = batchcontroller.text.trim();
-                                        map['Subjects'][sub] = info;
-                                      });
-                                      records[key] = map;
-                                    }
-                                    print(map);
-                                  });
-                                }
-                              },
                               decoration: InputDecoration(
-                                // focusColor: Colors.black,
                                 errorStyle: const TextStyle(color: Colors.white),
                                 floatingLabelBehavior: FloatingLabelBehavior.never,
                                 focusedBorder:
@@ -175,7 +148,6 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
                           child: FloatingActionButton.extended(
                             heroTag: null,
                             onPressed: () {
-                              // FilePickerResult? result =
                               int count = 0;
                               Map<String, int> m = {};
                               FilePicker.platform.pickFiles(
@@ -205,11 +177,8 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
                                                 .hasMatch(row[i]!.value.toString())) {
                                               m['Mobile'] = i;
                                             }
-                                            // print(RegExp("\\b('Last')\\b", caseSensitive: false).hasMatch(row[i]!.value.toString()));
-                                            //
-                                            // print(row[i]!.value.toString());
                                           }
-                                          // print(m.keys.length);
+
                                           count += 1;
                                         } else {
                                           Map<String, dynamic> facultyDetail = {};
@@ -226,25 +195,20 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
                                             String? email = row[m['Email']!]?.value.toString();
 
                                             facultyDetail["Mobile"] = mobile;
-                                            facultyDetail['Branch'] = batchcontroller.text.trim();
+
                                             facultyDetail["Name"] = {"First": fName, "Middle": mName, "Last": lName};
-                                            //facultyDetail['Branch'] = ;
+
                                             facultyDetail["Email"] = email;
-                                            // b.add(facultyDetail);
+
                                             records[facultyDetail['Email']] = facultyDetail;
                                           }
-                                          //address != null && DOB != null && email != null
                                         }
                                       }
                                       print(records);
-
-                                      // todo show to user
                                       setState(() => filename = result.files.single.name);
-
-                                      // todo add to firebase
                                     } else {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(const SnackBar(content: Text("More or less than 2 columns present.")));
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                          const SnackBar(content: Text("More or less than 5 columns present.\nSee HELP")));
                                       print("Columns more or less");
                                     }
                                   } else {
@@ -302,13 +266,11 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
                   ),
                   ListView.builder(
                     physics: const NeverScrollableScrollPhysics(),
-                    // scrollDirection: Axis.vertical,
                     shrinkWrap: true,
                     itemCount: records.length + 1,
                     itemBuilder: (context, index) {
                       List temp = records.keys.toList();
                       temp.sort();
-                      //int key = index == b.length ? -1 : temp.elementAt(index);
 
                       if (index == records.length) {
                         int? r;
@@ -327,13 +289,6 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
                                   print(records);
                                   setState(() {});
                                 }
-
-                                // if (r != null) {
-                                //   setState(() {
-                                //     records[r!] = 0;
-                                //   });
-                                // }
-                                // showDialogAddNew();
                               },
                             ),
                           ),
@@ -346,7 +301,6 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
                                 decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: Colors.indigo[200]),
                                 margin: const EdgeInsets.all(10),
                                 padding: const EdgeInsets.all(10),
-                                // height: 50,
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -357,7 +311,6 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
                                           flex: 1,
                                           child: Text(
                                             "${records[temp[index]]["Email"].toString()} :",
-                                            // textAlign: TextAlign.center,
                                             style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                                           ),
                                         ),
@@ -367,7 +320,7 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
                                             getName(records[temp[index]]["Name"]).toString(),
                                             maxLines: 3,
                                             // overflow: TextOverflow.ellipsis,
-                                            // textAlign: TextAlign.center,
+
                                             style: const TextStyle(
                                               fontSize: 15,
                                             ),
@@ -394,9 +347,7 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
                                           onPressed: () async {
                                             if (await showDialogAddNewSubject(temp[index])) {
                                               print(records[temp[index]]);
-                                              setState(() {
-                                                // todo new sub
-                                              });
+                                              setState(() {});
                                             }
                                           },
                                         ),
@@ -436,7 +387,6 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
                         );
                       }
                     },
-                    // gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: 2.3),
                   ),
                 ],
               ),
@@ -463,11 +413,11 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Image.asset("assets/images/excelDemo.png"),
+                    Image.asset("assets/images/faculty_excel.png"),
                     Container(
                         margin: const EdgeInsets.all(5),
                         child: const Text(
-                            "Add two columns, one for 'Rolls' and one for 'facultyDetail'.\nThe facultyDetail will be uploaded to roll numbers only in 'Rolls' column."))
+                            "1. Add 5 column as shown in image.\n2. All columns are required as it will be used to fill data in database.\n3. Don't provide empty cells otherwise row will get ignored."))
                   ],
                 ),
               ),
@@ -500,7 +450,10 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
                   children: [
                     Container(
                         margin: const EdgeInsets.all(5),
-                        child: Text("Name : ${records[name]['Name'].toString()}\nEmail : ${records[name]['Email'].toString()}\n")),
+                        child: Text("Name : ${getName(records[name]['Name'])}"
+                            "\nEmail : ${records[name]['Email'].toString()}"
+                            "\nMobile : ${records[name]['Mobile'].toString()}"
+                            "${records[name].containsKey('Subjects') ? "\nSubjects : ${records[name]['Subjects'].keys.join(',')}" : ""}")),
                   ],
                 ),
               ),
@@ -511,13 +464,6 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
                         shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)))),
                     onPressed: () => Navigator.of(context).pop(),
                     child: const Text("OK")),
-                ElevatedButton(
-                    style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(Colors.indigo[300]),
-                        shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)))),
-                    // onPressed: () => showDialogAddNew(index),
-                    onPressed: () {},
-                    child: const Text("Add"))
               ],
             ));
   }
@@ -534,13 +480,6 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
 
     String selectedyear = years.keys.elementAt(0);
     String selectedsem = years[selectedyear]![0];
-    // onYearChanged(String? value) {
-    //   //dont change second dropdown if 1st item didnt change
-    //   if (value != selectedyear) selectedsem = null;
-    //   setState(() {
-    //     selectedyear = value;
-    //   });
-    // }
 
     final rec = GlobalKey<FormState>();
     return await showDialog<bool>(
@@ -565,15 +504,11 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
                         children: [
                           Container(
                             margin: const EdgeInsets.all(10),
-                            // decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white),
                             child: TextFormField(
                               controller: subjectNamecontroller,
                               textAlignVertical: TextAlignVertical.center,
                               textAlign: TextAlign.center,
-                              // keyboardType: TextInputType.number,
-                              // initialValue: facultyDetail[key].toString(),
                               decoration: InputDecoration(
-                                // focusColor: Colors.black,
                                 errorStyle: const TextStyle(color: Colors.white),
                                 floatingLabelBehavior: FloatingLabelBehavior.never,
                                 focusedBorder:
@@ -585,14 +520,9 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
                               ),
                               validator: (key) {
                                 if (key == null || key.isEmpty) {
-                                  return "Add name";
+                                  return "Enter subject name";
                                 }
                                 return null;
-                              },
-                              onChanged: (key) {
-                                // facultyDetail[key] = double.parse(value);
-
-                                // todo
                               },
                             ),
                           ),
@@ -607,7 +537,6 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
                                 padding: const EdgeInsets.only(left: 15, right: 10),
                                 child: DropdownButtonFormField<String?>(
                                   hint: const Text("Select Year"),
-                                  //underline: Container(),
                                   isExpanded: true,
                                   value: selectedyear,
                                   items: years.keys.map((e) {
@@ -617,7 +546,6 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
                                     );
                                   }).toList(),
                                   onChanged: (String? value) {
-                                    //dont change second dropdown if 1st item didnt change
                                     if (value != selectedyear) {
                                       setState(() {
                                         selectedyear = value!;
@@ -641,7 +569,6 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
                                 child: DropdownButtonFormField<String?>(
                                     hint: const Text("Select Sem"),
                                     isExpanded: true,
-                                    //underline: Container(),
                                     value: selectedsem,
                                     items: (years[selectedyear] ?? []).map((e) {
                                       return DropdownMenuItem<String?>(
@@ -650,9 +577,11 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
                                       );
                                     }).toList(),
                                     onChanged: (val) {
-                                      setState(() {
-                                        selectedsem = val!;
-                                      });
+                                      if (val != selectedsem) {
+                                        setState(() {
+                                          selectedsem = val!;
+                                        });
+                                      }
                                     }),
                               ),
                             ),
@@ -674,7 +603,6 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
                           backgroundColor: MaterialStateProperty.all(Colors.white),
                           shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)))),
                       onPressed: () {
-                        // todo
                         if (rec.currentState!.validate()) {
                           if (!records[name].containsKey('Subjects')) {
                             records[name]['Subjects'] = {};
@@ -726,15 +654,12 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
                       children: [
                         Container(
                           margin: const EdgeInsets.all(10),
-                          // decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white),
                           child: TextFormField(
                             controller: firstcontroller,
                             textAlignVertical: TextAlignVertical.center,
                             textAlign: TextAlign.center,
                             keyboardType: TextInputType.text,
-                            // initialValue: marks[key].toString(),
                             decoration: InputDecoration(
-                              // focusColor: Colors.black,
                               errorStyle: const TextStyle(color: Colors.white),
                               floatingLabelBehavior: FloatingLabelBehavior.never,
                               focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
@@ -745,29 +670,20 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
                             ),
                             validator: (key) {
                               if (key == null || key.isEmpty) {
-                                return "Add first name";
+                                return "Enter first name";
                               }
                               return null;
-                            },
-                            onChanged: (key) {
-                              // marks[key] = double.parse(value);
-
-                              // todo
                             },
                           ),
                         ),
                         Container(
                           margin: const EdgeInsets.all(10),
-                          // decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white),
                           child: TextFormField(
                             controller: middlecontroller,
                             textAlignVertical: TextAlignVertical.center,
                             textAlign: TextAlign.center,
                             keyboardType: TextInputType.text,
-
-                            // initialValue: marks[key].toString(),
                             decoration: InputDecoration(
-                              // focusColor: Colors.black,
                               errorStyle: const TextStyle(color: Colors.white),
                               floatingLabelBehavior: FloatingLabelBehavior.never,
                               focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
@@ -777,29 +693,21 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
                               labelText: 'Middle Name',
                             ),
                             validator: (key) {
-                              // if (key == null || key.isEmpty) {
-                              //   return "Add roll";
-                              // }
+                              if (key == null || key.isEmpty) {
+                                return "Enter Middle name";
+                              }
                               return null;
-                            },
-                            onChanged: (key) {
-                              // marks[key] = double.parse(value);
-
-                              // todo
                             },
                           ),
                         ),
                         Container(
                           margin: const EdgeInsets.all(10),
-                          // decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white),
                           child: TextFormField(
                             controller: lastcontroller,
                             textAlignVertical: TextAlignVertical.center,
                             textAlign: TextAlign.center,
                             keyboardType: TextInputType.text,
-                            // initialValue: marks[key].toString(),
                             decoration: InputDecoration(
-                              // focusColor: Colors.black,
                               errorStyle: const TextStyle(color: Colors.white),
                               floatingLabelBehavior: FloatingLabelBehavior.never,
                               focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
@@ -810,28 +718,20 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
                             ),
                             validator: (key) {
                               if (key == null || key.isEmpty) {
-                                return "Add Last Name";
+                                return "Enter Last Name";
                               }
                               return null;
-                            },
-                            onChanged: (key) {
-                              // marks[key] = double.parse(value);
-
-                              // todo
                             },
                           ),
                         ),
                         Container(
                           margin: const EdgeInsets.all(10),
-                          // decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white),
                           child: TextFormField(
                             controller: emailcontroller,
                             textAlignVertical: TextAlignVertical.center,
                             textAlign: TextAlign.center,
                             keyboardType: TextInputType.emailAddress,
-                            // initialValue: marks[key].toString(),
                             decoration: InputDecoration(
-                              // focusColor: Colors.black,
                               errorStyle: const TextStyle(color: Colors.white),
                               floatingLabelBehavior: FloatingLabelBehavior.never,
                               focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
@@ -841,50 +741,40 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
                               labelText: 'Email',
                             ),
                             validator: (key) {
-                              if (key != null) {
-                                if (key.length > 5 && key.contains('@') && key.endsWith('.com')) {
+                              if (key != null && key.isNotEmpty) {
+                                if (key.length < 7 && !key.startsWith('@') && !key.contains('@') && !key.endsWith('.com')) {
+                                  return 'Enter a Valid Email Address';
+                                } else {
                                   return null;
                                 }
-                                return 'Enter a Valid Email Address';
+                              } else {
+                                return 'Enter Email';
                               }
-                            },
-                            onChanged: (key) {
-                              // marks[key] = double.parse(value);
-
-                              // todo
                             },
                           ),
                         ),
                         Container(
                           margin: const EdgeInsets.all(10),
-                          // decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white),
                           child: TextFormField(
                             controller: mobilecontroller,
                             textAlignVertical: TextAlignVertical.center,
                             textAlign: TextAlign.center,
                             keyboardType: TextInputType.number,
                             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                            // initialValue: marks[key].toString(),
                             decoration: InputDecoration(
-                              // focusColor: Colors.black,
                               errorStyle: const TextStyle(color: Colors.white),
                               floatingLabelBehavior: FloatingLabelBehavior.never,
                               focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
                               border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
                               filled: true,
                               fillColor: Colors.white,
-                              labelText: 'Mobile No.',
+                              labelText: 'Mobile',
                             ),
                             validator: (key) {
-                              // if (key == null || key.isEmpty) {
-                              //   return "Add roll";
-                              // }
+                              if (key == null || key.isEmpty) {
+                                return "Enter Mobile number";
+                              }
                               return null;
-                            },
-                            onChanged: (key) {
-                              // marks[key] = double.parse(value);
-
-                              // todo
                             },
                           ),
                         ),
@@ -905,12 +795,10 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
                         backgroundColor: MaterialStateProperty.all(Colors.white),
                         shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)))),
                     onPressed: () {
-                      // todo
                       if (rec.currentState!.validate()) {
                         if (!records.containsKey(emailcontroller.text.trim())) {
                           records[emailcontroller.text.trim()] = <String, dynamic>{};
                         }
-                        records[emailcontroller.text.trim()]["Branch"] = batchcontroller.text.trim();
                         records[emailcontroller.text.trim()]["Email"] = emailcontroller.text.trim();
                         records[emailcontroller.text.trim()]["Mobile"] = mobilecontroller.text.trim();
                         records[emailcontroller.text.trim()]["Name"] = {
@@ -974,18 +862,4 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
   getName(Map<String, String?> name) {
     return "${name['First'].toString().capitalize()} ${name['Middle'].toString().capitalize()} ${name['Last'].toString().capitalize()}";
   }
-
-// void addForStudents(CollectionReference reference, name) async {
-//   print(facultyDetail);
-//
-//   reference.doc("Roll_No").get().then((docsnap) {
-//     (docsnap.data()! as Map<String, dynamic>).forEach((roll, ref) {
-//       facultyDetail.containsKey(int.parse(roll))
-//           ? ref.collection("Result").doc(selectedsub).set({
-//               namecontroller.text: {"mark": facultyDetail[int.parse(roll)], "total": total, 'time': DateTime.now()},
-//             }, SetOptions(merge: true))
-//           : null;
-//     });
-//   });
-// }
 }

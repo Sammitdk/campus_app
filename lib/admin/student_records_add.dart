@@ -1,5 +1,3 @@
-// ignore: import_of_legacy_library_into_null_safe
-
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -28,7 +26,6 @@ class _StudentRecordAddState extends State<StudentRecordAdd> {
 
   TextEditingController branchcontroller = TextEditingController();
   TextEditingController markscontroller = TextEditingController();
-  // List<Map<String, dynamic>> b = [];
 
   String selectedyear = '';
   String selectedsem = '';
@@ -40,15 +37,6 @@ class _StudentRecordAddState extends State<StudentRecordAdd> {
     'BE': ['7', '8'],
   };
 
-  // onYearChanged(String? value) {
-  //   //dont change second dropdown if 1st item didnt change
-  //   if (value != selectedyear) {
-  //     setState(() {
-  //       selectedyear = value!;
-  //     });
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,7 +44,6 @@ class _StudentRecordAddState extends State<StudentRecordAdd> {
           ? FloatingActionButton(
               onPressed: null,
               backgroundColor: Colors.indigo[200],
-              // foregroundColor: Colors.black,
               child: const Center(
                   child: CircularProgressIndicator(
                 color: Colors.white,
@@ -68,36 +55,38 @@ class _StudentRecordAddState extends State<StudentRecordAdd> {
               backgroundColor: Colors.indigo[200],
               foregroundColor: Colors.black,
               onPressed: () async {
-                // a.addAll(b);
                 print("hello:::::::: ${records.length} $records");
                 setState(() => clicked = true);
                 if (fkey.currentState!.validate()) {
-                  // marks['time'] = DateTime.now();
-                  if (await showDialogConfirmation()) {
-                    FirebaseFirestore inst = FirebaseFirestore.instance;
-                    print("valid");
-                    DocumentReference branchref = inst.collection("College").doc(branchcontroller.text);
-                    await branchref.set({'exist': true});
-                    await branchref.collection(selectedyear).doc("Syllabus").set({'exist': true});
-                    await branchref.collection(selectedyear).doc("Attendance").set({'exist': true});
-                    await branchref.collection(selectedyear).doc("Result").set({'exist': true});
-                    records.forEach((key, value) {
-                      print(key + value.toString());
-                      inst.collection("Student_Detail").doc(key).set(value, SetOptions(merge: true));
-                      print(branchcontroller.text + selectedyear);
-                      branchref
-                          .collection(selectedyear)
-                          .doc("Roll_No")
-                          .set({value["Roll_No"]: inst.doc("Student_Detail/${value['PRN']}")}, SetOptions(merge: true));
-                    });
-                    records.clear();
-                    filename = '';
-                    print(records);
+                  if (records.isNotEmpty) {
+                    if (await showDialogConfirmation()) {
+                      FirebaseFirestore inst = FirebaseFirestore.instance;
+                      print("valid");
+                      DocumentReference branchref = inst.collection("College").doc(branchcontroller.text);
+                      await branchref.set({'exist': true});
+                      await branchref.collection(selectedyear).doc("Syllabus").set({'exist': true});
+                      await branchref.collection(selectedyear).doc("Attendance").set({'exist': true});
+                      await branchref.collection(selectedyear).doc("Result").set({'exist': true});
+                      records.forEach((key, value) {
+                        value.addAll({'Sem': selectedsem, "Year": selectedyear, "Branch": branchcontroller.text.trim()});
+                        print(key + value.toString());
+                        inst.collection("Student_Detail").doc(key).set(value, SetOptions(merge: true));
+                        print(branchcontroller.text + selectedyear);
+                        branchref
+                            .collection(selectedyear)
+                            .doc("Roll_No")
+                            .set({value["Roll_No"]: inst.doc("Student_Detail/${value['PRN']}")}, SetOptions(merge: true));
+                      });
+                      records.clear();
+                      filename = '';
+                      print(records);
+                    }
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("No Records found to Upload")));
                   }
                 }
 
                 setState(() => clicked = false);
-                // Navigator.of(context).pop();
               },
               icon: const Icon(
                 Icons.done,
@@ -111,7 +100,7 @@ class _StudentRecordAddState extends State<StudentRecordAdd> {
       appBar: AppBar(
         centerTitle: true,
         title: const Text(
-          "Add Result",
+          "Add Student User",
           style: TextStyle(fontFamily: 'Narrow', fontSize: 30),
           textAlign: TextAlign.center,
         ),
@@ -145,12 +134,6 @@ class _StudentRecordAddState extends State<StudentRecordAdd> {
                             margin: const EdgeInsets.all(10),
                             child: TextFormField(
                               controller: branchcontroller,
-                              onTapOutside: (_) async {
-                                records.forEach((key, value) {
-                                  records[key]['Branch'] = branchcontroller.text;
-                                });
-                                setState(() {});
-                              },
                               validator: (name) {
                                 if (name == null || name.isEmpty) {
                                   return '* Enter Branch';
@@ -158,7 +141,6 @@ class _StudentRecordAddState extends State<StudentRecordAdd> {
                                 return null;
                               },
                               decoration: InputDecoration(
-                                // focusColor: Colors.black,
                                 errorStyle: const TextStyle(color: Colors.white),
                                 floatingLabelBehavior: FloatingLabelBehavior.never,
                                 focusedBorder:
@@ -197,16 +179,12 @@ class _StudentRecordAddState extends State<StudentRecordAdd> {
                                     //underline: Container(),
                                     isExpanded: true,
                                     value: selectedyear.isNotEmpty ? selectedyear : selectedyear = years.keys.elementAt(0),
-                                    // hint: const Text('Select.'),
                                     decoration:
                                         const InputDecoration(border: InputBorder.none, errorStyle: TextStyle(color: Colors.white)),
                                     style: TextStyle(fontSize: 20, color: Colors.indigo[300], overflow: TextOverflow.ellipsis),
                                     icon: const Icon(Icons.arrow_drop_down_rounded),
-                                    // iconSize: 40,
                                     elevation: 0,
-                                    // value: selectedsubject.isEmpty ? null : selectedsubject,
                                     iconEnabledColor: Colors.green,
-                                    // alignment: AlignmentDirectional.center,
                                     items: years.keys.map((e) {
                                       return DropdownMenuItem<String?>(
                                         value: e,
@@ -285,7 +263,6 @@ class _StudentRecordAddState extends State<StudentRecordAdd> {
                           child: FloatingActionButton.extended(
                             heroTag: null,
                             onPressed: () {
-                              // FilePickerResult? result =
                               int count = 0;
                               Map<String, int> m = {};
                               FilePicker.platform.pickFiles(
@@ -295,7 +272,7 @@ class _StudentRecordAddState extends State<StudentRecordAdd> {
                                 if (result != null) {
                                   filename = '';
                                   File file = File(result.files.single.path.toString());
-                                  // print(file.readAsBytesSync().toList().runtimeType.toString());
+
                                   var ex = Excel.decodeBytes(file.readAsBytesSync().toList());
                                   if (ex.tables.isNotEmpty) {
                                     String sheet = ex.tables.keys.single;
@@ -325,11 +302,8 @@ class _StudentRecordAddState extends State<StudentRecordAdd> {
                                                 .hasMatch(row[i]!.value.toString())) {
                                               m['Mobile'] = i;
                                             }
-
-                                            // print(RegExp(".*last.*", caseSensitive: false).hasMatch(row[i]!.value.toString()));
                                           }
                                           count += 1;
-                                          // print(m);
                                         } else {
                                           if (m.length == 9) {
                                             Map<String, dynamic> studentDetail = {};
@@ -353,7 +327,7 @@ class _StudentRecordAddState extends State<StudentRecordAdd> {
                                               studentDetail["PRN"] = row[m['PRN']!]?.value.toString();
                                               studentDetail["DOB"] =
                                                   DateFormat('dd MMM yyyy').format(DateTime.parse(row[m['DOB']!]!.value.toString()));
-                                              studentDetail['Branch'] = branchcontroller.text.toString();
+
                                               studentDetail["Email"] = row[m['Email']!]?.value.toString();
                                               records[studentDetail["PRN"]] = studentDetail;
                                             }
@@ -372,8 +346,8 @@ class _StudentRecordAddState extends State<StudentRecordAdd> {
 
                                       setState(() => filename = result.files.single.name);
                                     } else {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(const SnackBar(content: Text("More or less than 9 columns present.")));
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                          const SnackBar(content: Text("More or less than 9 columns present.\nSee HELP")));
                                     }
                                   } else {
                                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("No table found")));
@@ -430,7 +404,6 @@ class _StudentRecordAddState extends State<StudentRecordAdd> {
                   ),
                   ListView.builder(
                     physics: const NeverScrollableScrollPhysics(),
-                    // scrollDirection: Axis.vertical,
                     shrinkWrap: true,
                     itemCount: records.length + 1,
                     itemBuilder: (context, index) {
@@ -439,30 +412,18 @@ class _StudentRecordAddState extends State<StudentRecordAdd> {
                       //int key = index == b.length ? -1 : temp.elementAt(index);
 
                       if (index == records.length) {
-                        int? r;
                         return Container(
+                          height: 50,
                           decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: Colors.indigo[200]),
                           margin: const EdgeInsets.all(10),
-                          child: Center(
-                            child: IconButton(
-                              color: Colors.white,
-                              highlightColor: Colors.transparent,
-                              splashColor: Colors.transparent,
-                              icon: const Icon(Icons.add),
-                              onPressed: () async {
-                                if (fkey.currentState!.validate()) {
-                                  await showDialogAddNew();
-                                  setState(() {});
-                                }
-
-                                // if (r != null) {
-                                //   setState(() {
-                                //     records[r!] = 0;
-                                //   });
-                                // }
-                                // showDialogAddNew();
-                              },
-                            ),
+                          child: InkWell(
+                            child: const Center(child: Icon(Icons.add)),
+                            onTap: () async {
+                              if (fkey.currentState!.validate()) {
+                                await showDialogAddNew();
+                                setState(() {});
+                              }
+                            },
                           ),
                         );
                       } else {
@@ -481,7 +442,6 @@ class _StudentRecordAddState extends State<StudentRecordAdd> {
                                       flex: 1,
                                       child: Text(
                                         "${records[temp[index]]["PRN"].toString()} :",
-                                        // textAlign: TextAlign.center,
                                         style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                                       ),
                                     ),
@@ -491,7 +451,6 @@ class _StudentRecordAddState extends State<StudentRecordAdd> {
                                         getName(records[temp[index]]["Name"]).toString(),
                                         maxLines: 3,
                                         overflow: TextOverflow.ellipsis,
-                                        // textAlign: TextAlign.center,
                                         style: const TextStyle(
                                           fontSize: 20,
                                         ),
@@ -527,7 +486,6 @@ class _StudentRecordAddState extends State<StudentRecordAdd> {
                         );
                       }
                     },
-                    // gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: 2.3),
                   ),
                 ],
               ),
@@ -586,8 +544,11 @@ class _StudentRecordAddState extends State<StudentRecordAdd> {
               content: Container(
                   padding: const EdgeInsets.all(8.0),
                   margin: const EdgeInsets.all(5),
-                  child: Text(
-                      "Name : ${getName(records[index]['Name'])}\nBranch : ${records[index]['Branch'].toString()}\nRoll.no : ${records[index]['Roll_No'].toString()}\nEmail : ${records[index]['Email'].toString()}\nAddress : ${records[index]['Address'].toString()}\nDOB : ${records[index]['DOB'].toString()}")),
+                  child: Text("Name : ${getName(records[index]['Name'])}"
+                      "\nRoll.no : ${records[index]['Roll_No'].toString()}"
+                      "\nEmail : ${records[index]['Email'].toString()}"
+                      "\nAddress : ${records[index]['Address'].toString()}"
+                      "\nDOB : ${records[index]['DOB'].toString()}")),
               actions: [
                 ElevatedButton(
                     style: ButtonStyle(
@@ -670,16 +631,13 @@ class _StudentRecordAddState extends State<StudentRecordAdd> {
                         children: [
                           Container(
                             margin: const EdgeInsets.all(10),
-                            // decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white),
                             child: TextFormField(
                               controller: prncontroller,
                               textAlignVertical: TextAlignVertical.center,
                               textAlign: TextAlign.center,
                               keyboardType: TextInputType.number,
                               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                              // initialValue: marks[key].toString(),
                               decoration: InputDecoration(
-                                // focusColor: Colors.black,
                                 errorStyle: const TextStyle(color: Colors.white),
                                 floatingLabelBehavior: FloatingLabelBehavior.never,
                                 focusedBorder:
@@ -690,25 +648,22 @@ class _StudentRecordAddState extends State<StudentRecordAdd> {
                                 labelText: 'PRN',
                               ),
                               validator: (key) {
-                                // if (key == null || key.isEmpty) {
-                                //   return "Add roll";
-                                // }
+                                if (key == null || key.isEmpty) {
+                                  return "* Enter PRN of Student";
+                                }
                                 return null;
                               },
                             ),
                           ),
                           Container(
                             margin: const EdgeInsets.all(10),
-                            // decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white),
                             child: TextFormField(
                               controller: rollcontroller,
                               textAlignVertical: TextAlignVertical.center,
                               textAlign: TextAlign.center,
-                              keyboardType: TextInputType.number,
+                              keyboardType: const TextInputType.numberWithOptions(decimal: false),
                               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                              // initialValue: marks[key].toString(),
                               decoration: InputDecoration(
-                                // focusColor: Colors.black,
                                 errorStyle: const TextStyle(color: Colors.white),
                                 floatingLabelBehavior: FloatingLabelBehavior.never,
                                 focusedBorder:
@@ -719,24 +674,21 @@ class _StudentRecordAddState extends State<StudentRecordAdd> {
                                 labelText: 'Roll',
                               ),
                               validator: (key) {
-                                // if (key == null || key.isEmpty) {
-                                //   return "Add roll";
-                                // }
+                                if (key == null || key.isEmpty) {
+                                  return "Enter roll number";
+                                }
                                 return null;
                               },
                             ),
                           ),
                           Container(
                             margin: const EdgeInsets.all(10),
-                            // decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white),
                             child: TextFormField(
                               controller: namecontroller1,
                               textAlignVertical: TextAlignVertical.center,
                               textAlign: TextAlign.center,
                               keyboardType: TextInputType.text,
-                              // initialValue: marks[key].toString(),
                               decoration: InputDecoration(
-                                // focusColor: Colors.black,
                                 errorStyle: const TextStyle(color: Colors.white),
                                 floatingLabelBehavior: FloatingLabelBehavior.never,
                                 focusedBorder:
@@ -748,7 +700,7 @@ class _StudentRecordAddState extends State<StudentRecordAdd> {
                               ),
                               validator: (key) {
                                 if (key == null || key.isEmpty) {
-                                  return "Add first name";
+                                  return "Enter first name";
                                 }
                                 return null;
                               },
@@ -756,15 +708,12 @@ class _StudentRecordAddState extends State<StudentRecordAdd> {
                           ),
                           Container(
                             margin: const EdgeInsets.all(10),
-                            // decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white),
                             child: TextFormField(
                               controller: namecontroller2,
                               textAlignVertical: TextAlignVertical.center,
                               textAlign: TextAlign.center,
                               keyboardType: TextInputType.text,
-                              // initialValue: marks[key].toString(),
                               decoration: InputDecoration(
-                                // focusColor: Colors.black,
                                 errorStyle: const TextStyle(color: Colors.white),
                                 floatingLabelBehavior: FloatingLabelBehavior.never,
                                 focusedBorder:
@@ -776,7 +725,7 @@ class _StudentRecordAddState extends State<StudentRecordAdd> {
                               ),
                               validator: (key) {
                                 if (key == null || key.isEmpty) {
-                                  return "Add middle name";
+                                  return "Enter middle name";
                                 }
                                 return null;
                               },
@@ -784,15 +733,12 @@ class _StudentRecordAddState extends State<StudentRecordAdd> {
                           ),
                           Container(
                             margin: const EdgeInsets.all(10),
-                            // decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white),
                             child: TextFormField(
                               controller: namecontroller3,
                               textAlignVertical: TextAlignVertical.center,
                               textAlign: TextAlign.center,
                               keyboardType: TextInputType.text,
-                              // initialValue: marks[key].toString(),
                               decoration: InputDecoration(
-                                // focusColor: Colors.black,
                                 errorStyle: const TextStyle(color: Colors.white),
                                 floatingLabelBehavior: FloatingLabelBehavior.never,
                                 focusedBorder:
@@ -804,7 +750,7 @@ class _StudentRecordAddState extends State<StudentRecordAdd> {
                               ),
                               validator: (key) {
                                 if (key == null || key.isEmpty) {
-                                  return "Add last name";
+                                  return "Enter last name";
                                 }
                                 return null;
                               },
@@ -812,15 +758,12 @@ class _StudentRecordAddState extends State<StudentRecordAdd> {
                           ),
                           Container(
                             margin: const EdgeInsets.all(10),
-                            // decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white),
                             child: TextFormField(
                               controller: addresscontroller,
                               textAlignVertical: TextAlignVertical.center,
                               textAlign: TextAlign.center,
                               keyboardType: TextInputType.text,
-                              // initialValue: marks[key].toString(),
                               decoration: InputDecoration(
-                                // focusColor: Colors.black,
                                 errorStyle: const TextStyle(color: Colors.white),
                                 floatingLabelBehavior: FloatingLabelBehavior.never,
                                 focusedBorder:
@@ -832,7 +775,7 @@ class _StudentRecordAddState extends State<StudentRecordAdd> {
                               ),
                               validator: (key) {
                                 if (key == null || key.isEmpty) {
-                                  return "Add roll";
+                                  return "Enter Address of student";
                                 }
                                 return null;
                               },
@@ -840,16 +783,13 @@ class _StudentRecordAddState extends State<StudentRecordAdd> {
                           ),
                           Container(
                             margin: const EdgeInsets.all(10),
-                            // decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white),
                             child: TextFormField(
                               controller: emailcontroller,
                               textAlignVertical: TextAlignVertical.center,
                               textAlign: TextAlign.center,
                               keyboardType: TextInputType.emailAddress,
                               autovalidateMode: AutovalidateMode.onUserInteraction,
-                              // initialValue: marks[key].toString(),
                               decoration: InputDecoration(
-                                // focusColor: Colors.black,
                                 errorStyle: const TextStyle(color: Colors.white),
                                 floatingLabelBehavior: FloatingLabelBehavior.never,
                                 focusedBorder:
@@ -860,18 +800,20 @@ class _StudentRecordAddState extends State<StudentRecordAdd> {
                                 labelText: 'Email',
                               ),
                               validator: (key) {
-                                if (key != null) {
-                                  if (key.length > 5 && key.contains('@') && key.endsWith('.com')) {
+                                if (key != null && key.isNotEmpty) {
+                                  if (key.length < 7 && !key.startsWith('@') && !key.contains('@') && !key.endsWith('.com')) {
+                                    return 'Enter a Valid Email Address';
+                                  } else {
                                     return null;
                                   }
-                                  return 'Enter a Valid Email Address';
+                                } else {
+                                  return 'Enter Email';
                                 }
                               },
                             ),
                           ),
                           Container(
                             margin: const EdgeInsets.all(10),
-                            // decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white),
                             child: FloatingActionButton.extended(
                                 backgroundColor: Colors.white,
                                 icon: Icon(
@@ -916,9 +858,6 @@ class _StudentRecordAddState extends State<StudentRecordAdd> {
                       onPressed: () {
                         if (rec.currentState!.validate()) {
                           record = {};
-                          record["Branch"] = branchcontroller.text.toString();
-                          record["Year"] = selectedyear;
-                          record["Sem"] = selectedsem;
                           record["Roll"] = rollcontroller.text.toString();
                           record["Name"] = {};
                           record["Name"]['First'] = namecontroller1.text.toString();
@@ -928,9 +867,7 @@ class _StudentRecordAddState extends State<StudentRecordAdd> {
                           record["Address"] = addresscontroller.text.toString();
                           record["Email"] = emailcontroller.text.toString();
                           record["DOB"] = date;
-                          // Map<String, dynamic> t = {};
                           records[record["PRN"]] = record;
-                          // b.add(t);
 
                           print(records);
                           setState(() {
@@ -950,18 +887,4 @@ class _StudentRecordAddState extends State<StudentRecordAdd> {
   getName(Map<String, String?> name) {
     return "${name['First'].toString().capitalize()} ${name['Middle'].toString().capitalize()} ${name['Last'].toString().capitalize()}";
   }
-
-  // void addForStudents(CollectionReference reference, name) async {
-  //   print(marks);
-  //
-  //   reference.doc("Roll_No").get().then((docsnap) {
-  //     (docsnap.data()! as Map<String, dynamic>).forEach((roll, ref) {
-  //       marks.containsKey(int.parse(roll))
-  //           ? ref.collection("Result").doc(selectedsub).set({
-  //               namecontroller.text: {"mark": marks[int.parse(roll)], "total": total, 'time': DateTime.now()},
-  //             }, SetOptions(merge: true))
-  //           : null;
-  //     });
-  //   });
-  // }
 }

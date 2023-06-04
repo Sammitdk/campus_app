@@ -268,8 +268,8 @@ class _FacultyResultAddState extends State<FacultyResultAdd> {
 
                                               // todo add to firebase
                                             } else {
-                                              ScaffoldMessenger.of(context)
-                                                  .showSnackBar(const SnackBar(content: Text("More or less than 2 columns present.")));
+                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                  const SnackBar(content: Text("More or less than 2 columns present.\nSee HELP")));
                                               print("Columns more or less");
                                             }
                                           } else {

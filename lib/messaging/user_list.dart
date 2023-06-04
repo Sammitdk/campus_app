@@ -17,7 +17,7 @@ class User extends StatelessWidget {
   const User({
     Key? key,
     required this.storeData,
-    required this.imageUrl,
+    this.imageUrl,
     required this.name,
     required this.branch,
     required this.admins,
