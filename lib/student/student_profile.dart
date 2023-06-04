@@ -102,65 +102,6 @@ class StudentProfile extends HookWidget {
             child: CustomPaint(
               painter: CurvePainter(),
             )),
-        Positioned(
-          top: MediaQuery.of(context).size.height * 0.05,
-          left: MediaQuery.of(context).size.width * 0.55,
-          child: Stack(
-            alignment: AlignmentDirectional.topEnd,
-            children: [
-              CachedNetworkImage(
-                key: UniqueKey(),
-                imageUrl: stateUrl.value,
-                imageBuilder: (context, imageProvider) {
-                  return CircleAvatar(
-                    backgroundImage: imageProvider,
-                    maxRadius: MediaQuery.of(context).size.height * 0.1,
-                  );
-                },
-                placeholder: (context, url) => CircleAvatar(
-                  backgroundImage:
-                      const AssetImage("assets/images/profile.gif"),
-                  maxRadius: MediaQuery.of(context).size.height * 0.1,
-                ),
-                errorWidget: (context, url, error) => const Icon(Icons.error),
-                fit: BoxFit.cover,
-              ),
-              clicked.value
-                  ? Align(
-                      heightFactor: 0.1,
-                      widthFactor: 0.7,
-                      child: CircularPercentIndicator(
-                        radius: 28.0,
-                        lineWidth: 8.0,
-                        animation: true,
-                        percent: progress.value,
-                        center: Text(
-                          progress.value.toStringAsFixed(2),
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 18.0),
-                        ),
-                        header: const Text(
-                          "Uploading",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 14.0),
-                        ),
-                        circularStrokeCap: CircularStrokeCap.round,
-                        progressColor: Colors.purple,
-                      ),
-                    )
-                  : IconButton(
-                      // elevation: 0,
-                      // backgroundColor: Colors.transparent,
-                      // foregroundColor: Colors.black,
-                      onPressed: () async {
-                        await selectFiles();
-                        await uploadFile();
-                      },
-                      icon: const Icon(Icons.add_photo_alternate_outlined),
-                    ),
-            ],
-          ),
-        ),
         Padding(
           padding: const EdgeInsets.only(top: 30.0, left: 5),
           child: Column(
@@ -456,7 +397,66 @@ class StudentProfile extends HookWidget {
               ),
             ],
           ),
-        )
+        ),
+        Positioned(
+          top: MediaQuery.of(context).size.height * 0.05,
+          left: MediaQuery.of(context).size.width * 0.55,
+          child: Stack(
+            alignment: AlignmentDirectional.topEnd,
+            children: [
+              CachedNetworkImage(
+                key: UniqueKey(),
+                imageUrl: stateUrl.value,
+                imageBuilder: (context, imageProvider) {
+                  return CircleAvatar(
+                    backgroundImage: imageProvider,
+                    maxRadius: MediaQuery.of(context).size.height * 0.1,
+                  );
+                },
+                placeholder: (context, url) => CircleAvatar(
+                  backgroundImage:
+                      const AssetImage("assets/images/profile.gif"),
+                  maxRadius: MediaQuery.of(context).size.height * 0.1,
+                ),
+                errorWidget: (context, url, error) => const Icon(Icons.error),
+                fit: BoxFit.cover,
+              ),
+              clicked.value
+                  ? Align(
+                      heightFactor: 0.1,
+                      widthFactor: 0.7,
+                      child: CircularPercentIndicator(
+                        radius: 28.0,
+                        lineWidth: 8.0,
+                        animation: true,
+                        percent: progress.value,
+                        center: Text(
+                          progress.value.toStringAsFixed(2),
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 18.0),
+                        ),
+                        header: const Text(
+                          "Uploading",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 14.0),
+                        ),
+                        circularStrokeCap: CircularStrokeCap.round,
+                        progressColor: Colors.purple,
+                      ),
+                    )
+                  : IconButton(
+                      // elevation: 0,
+                      // backgroundColor: Colors.transparent,
+                      // foregroundColor: Colors.black,
+                      onPressed: () async {
+                        await selectFiles();
+                        await uploadFile();
+                      },
+                      icon: const Icon(Icons.add_photo_alternate_outlined),
+                    ),
+            ],
+          ),
+        ),
       ]),
       floatingActionButton: SpeedDial(
         closeManually: true,
