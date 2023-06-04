@@ -109,16 +109,18 @@ class _StudentLoginState extends State<StudentLogin> {
                           height: 50,
                           padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                           child: isClicked
-                              ? const Center(
-                                  child: CircularProgressIndicator(),
-                                )
-                              : ElevatedButton(
-                                  style: ButtonStyle(
-                                    backgroundColor: MaterialStateColor.resolveWith((states) => Colors.white),
-                                    foregroundColor: MaterialStateColor.resolveWith((states) => Colors.black),
-                                    shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))),
+                              ? FloatingActionButton(
+                                  heroTag: null,
+                                  onPressed: null,
+                                  backgroundColor: Colors.indigo[300],
+                                  child: const CircularProgressIndicator(
+                                    color: Colors.white,
                                   ),
-                                  child: const Text(
+                                )
+                              : FloatingActionButton.extended(
+                                  heroTag: null,
+                                  backgroundColor: Colors.indigo[300],
+                                  label: const Text(
                                     'Log In',
                                     style: TextStyle(fontSize: 17),
                                   ),

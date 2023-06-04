@@ -21,9 +21,14 @@ class _AdminHomeState extends State<AdminHome> {
               child: InkWell(
                 onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const StudentRecordAdd())),
                 child: Card(
-                  child: Image.asset(
-                    'assets/icons/add_student.gif',
-                    fit: BoxFit.fill,
+                  child: Column(
+                    children: [
+                      Image.asset(
+                        'assets/icons/add_student.gif',
+                        fit: BoxFit.fill,
+                      ),
+                      const Text("Add Students")
+                    ],
                   ),
                 ),
               ),
