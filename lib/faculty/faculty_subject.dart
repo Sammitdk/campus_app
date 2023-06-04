@@ -6,13 +6,80 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import '../redux/reducer.dart';
 
 class FacultySubject extends StatefulWidget {
-  const FacultySubject({Key? key}) : super(key: key);
+  final String email;
+  final String branch;
+
+  const FacultySubject({Key? key, required this.email, required this.branch})
+      : super(key: key);
 
   @override
   State<FacultySubject> createState() => _FacultySubjectState();
 }
 
 class _FacultySubjectState extends State<FacultySubject> {
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  Future<List> fetchData() async {
+    List ans = [];
+    DocumentSnapshot value = await FirebaseFirestore.instance
+        .doc('Faculty_Detail/${widget.email}')
+        .get();
+
+    Map<String, dynamic> map = value.data() as Map<String, dynamic>;
+    List<String> subjects = map['Subjects'].keys.toList();
+
+    await FirebaseFirestore.instance
+        .collection('College/${widget.branch}/FY/Syllabus/Subject')
+        .get()
+        .then((value) {
+      for (var element in value.docs) {
+        var data = element.data();
+        if (subjects.contains(data['num'])) {
+          ans.add(data);
+        }
+      }
+    });
+    await FirebaseFirestore.instance
+        .collection('College/${widget.branch}/SY/Syllabus/Subject')
+        .get()
+        .then((value) {
+      for (var element in value.docs) {
+        var data = element.data();
+        if (subjects.contains(data['num'])) {
+          ans.add(data);
+        }
+      }
+    });
+
+    await FirebaseFirestore.instance
+        .collection('College/${widget.branch}/TY/Syllabus/Subject')
+        .get()
+        .then((value) {
+      for (var element in value.docs) {
+        var data = element.data();
+        if (subjects.contains(data['num'])) {
+          ans.add(data);
+        }
+      }
+    });
+    await FirebaseFirestore.instance
+        .collection('College/${widget.branch}/BE/Syllabus/Subject')
+        .get()
+        .then((value) {
+      for (var element in value.docs) {
+        var data = element.data();
+        if (subjects.contains(data['num'])) {
+          ans.add(data);
+        }
+      }
+    });
+    return ans;
+  }
+
   @override
   Widget build(BuildContext context) {
     var state = StoreProvider.of<AppState>(context).state;
@@ -26,16 +93,14 @@ class _FacultySubjectState extends State<FacultySubject> {
         ),
         backgroundColor: Colors.indigo[300],
       ),
-      body: StreamBuilder(
-          stream: FirebaseFirestore.instance
-              .collection('/Faculty_Detail/${state.email}/Subjects')
-              .snapshots(),
-          builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+      body: FutureBuilder(
+          future: fetchData(),
+          builder: (context, AsyncSnapshot<List> snapshot) {
             if (snapshot.hasData) {
               return ListView.builder(
-                  itemCount: snapshot.data!.docs.length,
+                  itemCount: snapshot.data!.length,
                   itemBuilder: (context, i) {
-                    QueryDocumentSnapshot x = snapshot.data!.docs[i];
+                    Map<String, dynamic> x = snapshot.data![i];
                     return InkWell(
                       onTap: () {
                         Navigator.push(
@@ -50,14 +115,15 @@ class _FacultySubjectState extends State<FacultySubject> {
                           elevation: 5,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(50)),
-                          color: Colors.blue[100],
+                          color: Colors.white,
                           child: Container(
                             alignment: Alignment.center,
                             height: 80,
                             child: Text(
                               (x["num"]),
                               textAlign: TextAlign.center,
-                              style: const TextStyle(fontSize: 25),
+                              style: const TextStyle(
+                                  fontSize: 25, color: Colors.black),
                             ),
                           ),
                         ),

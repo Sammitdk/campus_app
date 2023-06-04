@@ -179,13 +179,13 @@ class _StudentLoginState extends State<StudentLogin> {
                           padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
                           child: ElevatedButton(
                               style: ButtonStyle(
-                                backgroundColor: MaterialStateColor.resolveWith((states) => Colors.white),
-                                foregroundColor: MaterialStateColor.resolveWith((states) => Colors.black),
+                                elevation: MaterialStateProperty.all(5),
+                                backgroundColor: MaterialStateColor.resolveWith((states) => Colors.indigo.shade300),
                                 shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))),
                               ),
                               child: const Text(
                                 'Reset Password',
-                                style: TextStyle(fontSize: 17, color: Colors.black),
+                                style: TextStyle(fontSize: 17, color: Colors.white),
                               ),
                               onPressed: () async {
                                 Navigator.push(context, MaterialPageRoute(builder: (_) => const ResetPassword()));

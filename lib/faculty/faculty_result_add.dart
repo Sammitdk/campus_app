@@ -169,7 +169,6 @@ class _FacultyResultAddState extends State<FacultyResultAdd> {
                                       ),
                                       icon: const Icon(Icons.arrow_drop_down_rounded),
                                       iconEnabledColor: Colors.green,
-                                      iconSize: 20,
                                       alignment: AlignmentDirectional.center,
                                       value: selectedsub == "" ? selectedsub = state.subject.keys.elementAt(0) : selectedsub,
                                       items: state.subject.keys

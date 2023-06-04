@@ -126,7 +126,6 @@ class User extends StatelessWidget {
                                 MaterialPageRoute(
                                     builder: (_) => MessageScreen(
                                           //TODO staus fetch
-                                          status: "Offline",
                                           groupName: name['First'],
                                           imageUrl: imageUrl,
                                           isGroup: false,
@@ -152,7 +151,6 @@ class User extends StatelessWidget {
                                 context,
                                 MaterialPageRoute(
                                     builder: (_) => MessageScreen(
-                                          status: "Offline",
                                           groupName: name['First'],
                                           imageUrl: imageUrl,
                                           isGroup: false,

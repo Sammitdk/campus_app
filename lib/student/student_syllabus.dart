@@ -22,11 +22,11 @@ class StudentSyllabus extends StatelessWidget {
         ),
         backgroundColor: Colors.indigo[300],
       ),
-      body: StreamBuilder(
-          stream: FirebaseFirestore.instance
+      body: FutureBuilder(
+          future: FirebaseFirestore.instance
               .collection(
                   'College/${data.branch}/${data.year}/Syllabus/Subject')
-              .snapshots(),
+              .get(),
           builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (snapshot.hasData) {
               return ListView.builder(

@@ -51,27 +51,56 @@ class FacultyTimeTable extends HookWidget {
               ),
               body: Column(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: ButtonTheme(
-                      alignedDropdown: true,
-                      child: DropdownButtonFormField<String>(
-                        elevation: 0,
-                        iconEnabledColor: Colors.red,
-                        alignment: AlignmentDirectional.center,
-                        value: selectedDay.value,
-                        items: weekdays
-                            .map<DropdownMenuItem<String>>(
-                                (value) => DropdownMenuItem<String>(
-                                      value: value,
-                                      child: Text(value),
-                                    ))
-                            .toList(),
-                        onChanged: (newvalue) {
-                          selectedDay.value = newvalue!;
-                          // setState((){});
-                        },
-                      ),
+                  Container(
+                    color: Colors.indigo[300],
+                    child: Row(
+                      children: [
+                        const Expanded(
+                            child: Text(
+                          "Day",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 25,
+                              color: Colors.white),
+                          textAlign: TextAlign.center,
+                        )),
+                        Expanded(
+                          flex: 3,
+                          child: Container(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15),
+                                color: Colors.white),
+                            margin: const EdgeInsets.all(20),
+                            child: ButtonTheme(
+                              alignedDropdown: true,
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownButton<String>(
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      color: Colors.indigo[300],
+                                      overflow: TextOverflow.ellipsis),
+                                  icon:
+                                      const Icon(Icons.arrow_drop_down_rounded),
+                                  // iconSize: 40,
+                                  iconEnabledColor: Colors.green,
+                                  alignment: AlignmentDirectional.center,
+                                  value: selectedDay.value,
+                                  items: weekdays
+                                      .map<DropdownMenuItem<String>>(
+                                          (value) => DropdownMenuItem<String>(
+                                                value: value,
+                                                child: Text(value),
+                                              ))
+                                      .toList(),
+                                  onChanged: (newvalue) {
+                                    selectedDay.value = newvalue!;
+                                  },
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   Expanded(

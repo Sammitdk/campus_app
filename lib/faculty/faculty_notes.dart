@@ -8,6 +8,8 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
+import '../student/student_dashboard.dart';
+
 class FacultyNotes extends StatefulWidget {
   const FacultyNotes({Key? key}) : super(key: key);
 
@@ -19,6 +21,7 @@ class _FacultyNotesState extends State<FacultyNotes> {
   String url = "";
   int? num;
   bool uploading = false;
+  bool clicked = false;
   double progress = 0.0;
   dynamic uploadListner;
 
@@ -37,14 +40,16 @@ class _FacultyNotesState extends State<FacultyNotes> {
       String fileName = pick.path.split('/').last;
 
       //uploading
-      var pdfFile = FirebaseStorage.instance.ref().child("notes").child(fileName);
+      var pdfFile =
+          FirebaseStorage.instance.ref().child("notes").child(fileName);
       UploadTask task = pdfFile.putData(file);
 
       uploadListner = task.snapshotEvents.listen((event) async {
         switch (event.state) {
           case TaskState.running:
             setState(() {
-              progress = event.bytesTransferred.toDouble() / event.totalBytes.toDouble();
+              progress = event.bytesTransferred.toDouble() /
+                  event.totalBytes.toDouble();
             });
             break;
           case TaskState.paused:
@@ -108,79 +113,121 @@ class _FacultyNotesState extends State<FacultyNotes> {
                 percent: progress,
                 center: Text(
                   "${(progress * 100).toStringAsFixed(0)}%",
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0),
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 18.0),
                 ),
                 circularStrokeCap: CircularStrokeCap.round,
                 progressColor: Colors.orange,
               )
             : const Icon(Icons.add),
       ),
-      body: StreamBuilder(
-          stream: FirebaseFirestore.instance.collection("notes").snapshots(),
-          builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-            if (snapshot.hasData) {
-              if (snapshot.data!.docs.isEmpty) {
-                return const Center(
-                    child: Text(
-                  'Files Not Added.',
-                  style: TextStyle(color: Colors.grey, fontSize: 20),
-                ));
-              } else {
-                return ListView.builder(
-                    itemCount: snapshot.data!.docs.length,
-                    itemBuilder: (context, i) {
-                      QueryDocumentSnapshot x = snapshot.data!.docs[i];
-                      return Padding(
-                        padding: const EdgeInsetsDirectional.all(20),
-                        child: InkWell(
-                          onTap: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (_) => LoadPdf(url: x["url"])));
-                          },
-                          child: Slidable(
-                            key: ValueKey(i),
-                            endActionPane: ActionPane(
-                              extentRatio: 0.23,
-                              motion: const ScrollMotion(),
-                              children: [
-                                SlidableAction(
-                                  borderRadius: BorderRadius.circular(30),
-                                  onPressed: (v) async {
-                                    FirebaseFirestore.instance.collection("notes").where('num', isEqualTo: x['num']).get().then(
-                                        (value) => {FirebaseFirestore.instance.collection("notes").doc(value.docs.first.id).delete()});
-                                  },
-                                  backgroundColor: Colors.white,
-                                  foregroundColor: const Color(0xFFFE4A49),
-                                  icon: Icons.delete,
-                                  label: 'Delete',
+      body: clicked
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : StreamBuilder(
+              stream:
+                  FirebaseFirestore.instance.collection("notes").snapshots(),
+              builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.hasData) {
+                  if (snapshot.data!.docs.isEmpty) {
+                    return const Center(
+                        child: Text(
+                      'Files Not Added.',
+                      style: TextStyle(color: Colors.grey, fontSize: 20),
+                    ));
+                  } else {
+                    return ListView.builder(
+                        itemCount: snapshot.data!.docs.length,
+                        itemBuilder: (context, i) {
+                          QueryDocumentSnapshot x = snapshot.data!.docs[i];
+                          return Padding(
+                            padding: const EdgeInsetsDirectional.all(20),
+                            child: InkWell(
+                              onTap: () {
+                                if (!x['num'].toString().endsWith('.pdf')) {
+                                  setState(() {
+                                    clicked = true;
+                                  });
+                                  StudentDashboard.launchAnyURL(
+                                          x["url"], x["num"])
+                                      .then((value) => {
+                                            setState(() {
+                                              clicked = false;
+                                            })
+                                          })
+                                      .onError((error, stackTrace) => {
+                                            setState(() {
+                                              clicked = false;
+                                            }),
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(const SnackBar(
+                                                    content: Text(
+                                                        "Install Proper App to view"))),
+                                          });
+                                } else {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (_) =>
+                                              LoadPdf(url: x["url"])));
+                                }
+                              },
+                              child: Slidable(
+                                key: ValueKey(i),
+                                endActionPane: ActionPane(
+                                  extentRatio: 0.23,
+                                  motion: const ScrollMotion(),
+                                  children: [
+                                    SlidableAction(
+                                      borderRadius: BorderRadius.circular(30),
+                                      onPressed: (v) async {
+                                        FirebaseFirestore.instance
+                                            .collection("notes")
+                                            .where('num', isEqualTo: x['num'])
+                                            .get()
+                                            .then((value) => {
+                                                  FirebaseFirestore.instance
+                                                      .collection("notes")
+                                                      .doc(value.docs.first.id)
+                                                      .delete()
+                                                });
+                                      },
+                                      backgroundColor: Colors.white,
+                                      foregroundColor: const Color(0xFFFE4A49),
+                                      icon: Icons.delete,
+                                      label: 'Delete',
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                            child: Card(
-                              elevation: 5,
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-                              color: Colors.white,
-                              child: Container(
-                                alignment: Alignment.center,
-                                height: 80,
-                                child: Text(
-                                  (x["num"]),
-                                  textAlign: TextAlign.center,
-                                  style: const TextStyle(fontSize: 20),
-                                  overflow: TextOverflow.ellipsis,
+                                child: Card(
+                                  elevation: 5,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(50)),
+                                  color: Colors.white,
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    height: 80,
+                                    child: Text(
+                                      (x["num"]),
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(fontSize: 20),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        ),
-                      );
-                    });
-              }
-            } else {
-              return Center(
-                child: LoadingAnimationWidget.staggeredDotsWave(size: 50, color: Colors.red),
-              );
-            }
-          }),
+                          );
+                        });
+                  }
+                } else {
+                  return Center(
+                    child: LoadingAnimationWidget.staggeredDotsWave(
+                        size: 50, color: Colors.red),
+                  );
+                }
+              }),
     );
   }
 }

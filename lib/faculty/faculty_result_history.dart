@@ -69,7 +69,7 @@ class _FacultyResultHistoryState extends State<FacultyResultHistory> {
                               textAlign: TextAlign.center,
                             )),
                             Expanded(
-                              flex: 2,
+                              flex: 3,
                               child: Container(
                                 decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: Colors.white),
                                 margin: const EdgeInsets.all(20),
@@ -120,7 +120,7 @@ class _FacultyResultHistoryState extends State<FacultyResultHistory> {
                               textAlign: TextAlign.center,
                             )),
                             Expanded(
-                              flex: 2,
+                              flex: 3,
                               child: selectedsubject.isNotEmpty
                                   ? Container(
                                       decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: Colors.white),

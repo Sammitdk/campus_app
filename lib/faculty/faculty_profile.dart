@@ -11,7 +11,6 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import '../admin/admin_home.dart';
-import '../firebase/auth.dart';
 import '../password_reset.dart';
 import '../redux/reducer.dart';
 
@@ -77,7 +76,7 @@ class FacultyProfile extends HookWidget with ChangeNotifier {
               painter: CurvePainter(),
             )),
         Positioned(
-          top: MediaQuery.of(context).size.height * 0.10,
+          top: MediaQuery.of(context).size.height * 0.05,
           left: MediaQuery.of(context).size.width * 0.55,
           child: Stack(
             alignment: AlignmentDirectional.topEnd,
@@ -474,9 +473,13 @@ class FacultyProfile extends HookWidget with ChangeNotifier {
                 // remove faculty device token
                 FirebaseFirestore.instance
                     .doc("Faculty_Detail/${state.email}")
-                    .update({"Token": FieldValue.delete()}).then((value) => FirebaseAuth.instance.signOut());
+                    .update({"Token": FieldValue.delete()}).then((value) {
+                  FirebaseFirestore.instance.doc("Messages/${state.email}").set({'status': 'Offline'}, SetOptions(merge: true));
+                  StoreProvider.of<AppState>(context).dispatch(Clear());
+                  FirebaseAuth.instance.signOut();
+                });
 
-                FirebaseFirestore.instance.doc("Messages/${state.email}").set({'status': 'Offline'}, SetOptions(merge: true));
+
                 // await FirebaseAuth.instance.signOut();
                 // .then((_) {
                 //   notifyListeners();
@@ -503,7 +506,7 @@ class CurvePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     var paint = Paint();
-    paint.color = Colors.blueGrey;
+    paint.color = Colors.blueGrey[200]!;
     paint.style = PaintingStyle.fill;
 
     var path = Path();

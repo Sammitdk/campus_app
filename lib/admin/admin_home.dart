@@ -13,36 +13,65 @@ class _AdminHomeState extends State<AdminHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Expanded(
-              child: InkWell(
-                onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const StudentRecordAdd())),
-                child: Card(
-                  child: Column(
-                    children: [
-                      Image.asset(
+      body: Column(
+        children: [
+          Expanded(
+            child: InkWell(
+              onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                  builder: (_) => const StudentRecordAdd())),
+              child: Card(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+                elevation: 1,
+                child: Column(
+                  children: [
+                    Expanded(
+                      flex: 5,
+                      child: Image.asset(
                         'assets/icons/add_student.gif',
-                        fit: BoxFit.fill,
                       ),
-                      const Text("Add Students")
-                    ],
-                  ),
+                    ),
+                    const Expanded(
+                        flex: 1,
+                        child: Text(
+                          "Add Students",
+                          style:
+                              TextStyle(fontFamily: 'Custom', fontSize: 20),
+                        )),
+                  ],
                 ),
               ),
             ),
-            Expanded(
-              child: InkWell(
-                onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const FacultyRecordsAdd())),
-                child: Card(
-                  child: Image.asset('assets/icons/add_teacher.gif', fit: BoxFit.fill),
+          ),
+          Expanded(
+            child: InkWell(
+              onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                  builder: (_) => const FacultyRecordsAdd())),
+              child: Card(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+                elevation: 1,
+                child: Column(
+                  children: [
+                    Expanded(
+                      flex: 5,
+                      child: Image.asset(
+                        'assets/icons/add_teacher.gif',
+                      ),
+                    ),
+                    const Expanded(
+                        flex: 1,
+                        child: Text(
+                          "Add Faculty",
+                          style:
+                              TextStyle(fontFamily: 'Custom', fontSize: 20),
+                        )),
+                  ],
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

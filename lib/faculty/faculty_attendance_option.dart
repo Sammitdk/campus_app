@@ -100,7 +100,7 @@ class _FacultyAttendanceOptionState extends State<FacultyAttendanceOption> {
                               textAlign: TextAlign.center,
                             )),
                             Expanded(
-                              flex: 2,
+                              flex: 3,
                               child: Container(
                                 decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: Colors.white),
                                 margin: const EdgeInsets.all(20),

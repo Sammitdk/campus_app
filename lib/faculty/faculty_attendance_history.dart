@@ -80,7 +80,7 @@ class _FacultyAttendanceHistoryState extends State<FacultyAttendanceHistory> {
                             textAlign: TextAlign.center,
                           )),
                           Expanded(
-                            flex: 2,
+                            flex: 3,
                             child: Container(
                               decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: Colors.white),
                               margin: const EdgeInsets.all(20),
@@ -129,7 +129,7 @@ class _FacultyAttendanceHistoryState extends State<FacultyAttendanceHistory> {
                             textAlign: TextAlign.center,
                           )),
                           Expanded(
-                            flex: 2,
+                            flex: 3,
                             child: Container(
                               decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: Colors.white),
                               margin: const EdgeInsets.all(20),

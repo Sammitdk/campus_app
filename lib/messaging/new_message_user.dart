@@ -56,7 +56,7 @@ class NewMessage extends HookWidget {
                                 QueryDocumentSnapshot x = snapshot.data!.docs[i];
                                 if (x['Email'] != data.email) {
                                   return User(
-                                    // imageUrl: x['imgUrl'],
+                                    imageUrl: x['imgUrl'],
                                     name: x['Name'],
                                     branch: x['Branch'],
                                     year: x['Year'],
