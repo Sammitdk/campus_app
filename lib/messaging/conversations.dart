@@ -40,23 +40,6 @@ class ConversationList extends HookWidget {
   @override
   Widget build(BuildContext context) {
     var countState = useState(count);
-    var onlineStatus = useState("Offline");
-    dynamic onlineStream;
-
-    useEffect(() {
-      if (isGroup == false) {
-        onlineStream = FirebaseFirestore.instance
-            .doc("Messages/$EmailR")
-            .snapshots()
-            .listen((event) {
-          dynamic data = event.data();
-          onlineStatus.value = data['status'];
-        });
-      }
-      return () => {
-            if (isGroup == false) {onlineStream.cancel()}
-          };
-    }, []);
 
     if (isGroup) {
       getMessageReads(store.state, name, isGroup)
@@ -100,7 +83,6 @@ class ConversationList extends HookWidget {
                     context,
                     MaterialPageRoute(
                         builder: (_) => MessageScreen(
-                              status: onlineStatus.value,
                               groupName: name,
                               imageUrl: imageUrl,
                               isGroup: false,

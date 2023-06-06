@@ -3,6 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
+import '../loadpdf.dart';
+
 class StudentNotes extends StatefulWidget {
   const StudentNotes({Key? key}) : super(key: key);
 
@@ -49,22 +51,25 @@ class _StudentNotesState extends State<StudentNotes> {
                             QueryDocumentSnapshot x = snapshot.data!.docs[i];
                             return InkWell(
                               onTap: () {
-                                print(i);
-                                setState(() {
-                                  clicked = true;
-                                });
-                                StudentDashboard.launchAnyURL(
-                                        x["url"], x["num"])
-                                    .then((value) => {
-                                          setState(() {
-                                            clicked = false;
-                                          })
-                                        })
-                                    .onError((error, stackTrace) => {
-                                          setState(() {
-                                            clicked = false;
-                                          })
-                                        });
+                                if(!x['num'].toString().endsWith('.pdf')){
+                                  setState(() {
+                                    clicked = true;
+                                  });
+                                  StudentDashboard.launchAnyURL(
+                                      x["url"], x["num"])
+                                      .then((value) => {
+                                    setState(() {
+                                      clicked = false;
+                                    })
+                                  })
+                                      .onError((error, stackTrace) => {
+                                    setState(() {
+                                      clicked = false;
+                                    })
+                                  });
+                                }else{
+                                  Navigator.push(context, MaterialPageRoute(builder: (_) => LoadPdf(url: x["url"])));
+                                }
                               },
                               child: Padding(
                                 padding: const EdgeInsets.all(10),

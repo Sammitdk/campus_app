@@ -1,4 +1,5 @@
 import 'package:campus_subsystem/redux/actions/fetchUserData.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:redux/redux.dart';
 
 class AppState {
@@ -93,8 +94,13 @@ AppState FetchUserData(AppState state, dynamic action) {
         sem: action.sem,
         imgUrl: action.imgUrl,
         subject: action.subject);
+  } else if (action is Clear) {
+    return const AppState.initialState(null, null, null, null, null, null, null,
+        null, null, null, null, null, null);
   }
   return state;
 }
+
+class Clear extends ChangeNotifier {}
 
 final reducers = combineReducers<AppState>([FetchUserData]);

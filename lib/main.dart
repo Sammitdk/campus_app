@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:campus_subsystem/messaging/conversation_screen.dart';
 import 'package:campus_subsystem/redux/store.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +27,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIMode(
     SystemUiMode.manual,
-    overlays: SystemUiOverlay.values, //This line is used for showing the bottom bar
+    overlays:
+        SystemUiOverlay.values, //This line is used for showing the bottom bar
   );
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
@@ -96,8 +98,8 @@ class _MainState extends State<Main> with WidgetsBindingObserver {
     int id = 0;
     WidgetsBinding.instance.addObserver(this);
     super.initState();
-
-    internet = Connectivity().onConnectivityChanged.listen((ConnectivityResult event) {
+    internet =
+        Connectivity().onConnectivityChanged.listen((ConnectivityResult event) {
       switch (event) {
         case ConnectivityResult.none:
           isInternet = false;
@@ -124,13 +126,14 @@ class _MainState extends State<Main> with WidgetsBindingObserver {
         case ConnectivityResult.mobile:
         case ConnectivityResult.wifi:
           if (!isInternet) {
-            ScaffoldMessenger.of(context).deactivate();
+            ScaffoldMessenger.of(context).removeCurrentSnackBar();
             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
               behavior: SnackBarBehavior.floating,
               duration: Duration(seconds: 1),
               elevation: 20,
               content: Text("Internet Connection is back"),
             ));
+            isInternet = false;
           }
           break;
       }
@@ -150,14 +153,14 @@ class _MainState extends State<Main> with WidgetsBindingObserver {
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((event) {
-      print("aaaaaaaaaaaa${event.toMap()}");
       Navigator.of(context).pushNamed("chat_screen");
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(create: (context) => Auth(), child: const Wrapper());
+    return ChangeNotifierProvider(
+        create: (context) => Auth(), child: const Wrapper());
   }
 
   showAlert(BuildContext context, Map data) {
@@ -165,7 +168,8 @@ class _MainState extends State<Main> with WidgetsBindingObserver {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
             alignment: Alignment.center,
             title: Text(data["notification"]['title']),
             content: Padding(
@@ -181,7 +185,9 @@ class _MainState extends State<Main> with WidgetsBindingObserver {
                   data["data"]["image"].isNotEmpty
                       ? Container(
                           decoration: BoxDecoration(
-                              image: DecorationImage(image: NetworkImage(data["data"]["image"])), shape: BoxShape.circle),
+                              image: DecorationImage(
+                                  image: NetworkImage(data["data"]["image"])),
+                              shape: BoxShape.circle),
                         )
                       : Container(),
                 ],
@@ -190,8 +196,10 @@ class _MainState extends State<Main> with WidgetsBindingObserver {
             actions: [
               ElevatedButton(
                   style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(Colors.deepPurpleAccent),
-                      shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)))),
+                      backgroundColor:
+                          MaterialStateProperty.all(Colors.deepPurpleAccent),
+                      shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(50)))),
                   onPressed: () => Navigator.of(context).pop(),
                   child: const Text("OK"))
             ],

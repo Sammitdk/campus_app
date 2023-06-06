@@ -1,9 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
-import 'package:redux/redux.dart';
-import 'package:redux_thunk/redux_thunk.dart';
-import '../reducer.dart';
 import "./../store.dart";
 
 class FetchData extends ChangeNotifier {
@@ -39,19 +36,6 @@ class FetchData extends ChangeNotifier {
       this.subject});
 
   Future<bool?> getUserType(email) async {
-    [
-      {
-        'doc': {
-          'add': "",
-          "name": {
-            "first": "",
-            "middle": "",
-            "last": "",
-          },
-        }
-      },
-      {}
-    ];
     return await firestoreinst.collection('Student_Detail').where('Email', isEqualTo: "$email").limit(1).count().get().then((value) {
       if (value.count == 1) {
         return true;

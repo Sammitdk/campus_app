@@ -31,7 +31,8 @@ class _FacultyHomeState extends State<FacultyHome> {
                   child: Row(children: [
                     Text(
                       "  Hey ${state.name['First']}. ${state.name['Middle']}. ${state.name['Last']}",
-                      style: const TextStyle(fontSize: 30, fontFamily: 'Custom'),
+                      style:
+                          const TextStyle(fontSize: 30, fontFamily: 'Custom'),
                     )
                   ]),
                 ),
@@ -43,10 +44,12 @@ class _FacultyHomeState extends State<FacultyHome> {
                     Expanded(
                         child: InkWell(
                       onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(builder: (_) => const FacultyTimeTable()));
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (_) => const FacultyTimeTable()));
                       },
                       child: Card(
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
                         elevation: 5,
                         child: Column(
                           children: [
@@ -60,7 +63,8 @@ class _FacultyHomeState extends State<FacultyHome> {
                                 child: Text(
                                   "Time Table",
                                   textAlign: TextAlign.center,
-                                  style: TextStyle(fontFamily: 'Custom', fontSize: 20),
+                                  style: TextStyle(
+                                      fontFamily: 'Custom', fontSize: 20),
                                 )),
                           ],
                         ),
@@ -69,10 +73,14 @@ class _FacultyHomeState extends State<FacultyHome> {
                     Expanded(
                         child: InkWell(
                       onTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (_) => const FacultySubject()));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => FacultySubject(email: state.email,branch: state.branch,)));
                       },
                       child: Card(
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
                         elevation: 5,
                         child: Column(
                           children: [
@@ -86,7 +94,8 @@ class _FacultyHomeState extends State<FacultyHome> {
                                 flex: 1,
                                 child: Text(
                                   "Subjects",
-                                  style: TextStyle(fontFamily: 'Custom', fontSize: 20),
+                                  style: TextStyle(
+                                      fontFamily: 'Custom', fontSize: 20),
                                 )),
                           ],
                         ),
@@ -102,10 +111,15 @@ class _FacultyHomeState extends State<FacultyHome> {
                     Expanded(
                       child: InkWell(
                         onTap: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (_) => const FacultyAttendanceOption()));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) =>
+                                      const FacultyAttendanceOption()));
                         },
                         child: Card(
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12)),
                           elevation: 5,
                           child: Column(
                             children: [
@@ -118,7 +132,8 @@ class _FacultyHomeState extends State<FacultyHome> {
                                   flex: 1,
                                   child: Text(
                                     "Attendance",
-                                    style: TextStyle(fontFamily: 'Custom', fontSize: 20),
+                                    style: TextStyle(
+                                        fontFamily: 'Custom', fontSize: 20),
                                   )),
                             ],
                           ),
@@ -128,10 +143,14 @@ class _FacultyHomeState extends State<FacultyHome> {
                     Expanded(
                       child: InkWell(
                         onTap: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (_) => const FacultyNotes()));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) => const FacultyNotes()));
                         },
                         child: Card(
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12)),
                           elevation: 5,
                           child: Column(
                             children: [
@@ -145,7 +164,8 @@ class _FacultyHomeState extends State<FacultyHome> {
                                   flex: 1,
                                   child: Text(
                                     "Notes",
-                                    style: TextStyle(fontFamily: 'Custom', fontSize: 20),
+                                    style: TextStyle(
+                                        fontFamily: 'Custom', fontSize: 20),
                                   )),
                             ],
                           ),
@@ -162,10 +182,14 @@ class _FacultyHomeState extends State<FacultyHome> {
                     Expanded(
                         child: InkWell(
                       onTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (_) => FacultyEvent()));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => const FacultyEvent()));
                       },
                       child: Card(
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
                         elevation: 5,
                         child: Column(
                           children: [
@@ -178,7 +202,8 @@ class _FacultyHomeState extends State<FacultyHome> {
                                 flex: 1,
                                 child: Text(
                                   "Events",
-                                  style: TextStyle(fontFamily: 'Custom', fontSize: 20),
+                                  style: TextStyle(
+                                      fontFamily: 'Custom', fontSize: 20),
                                 )),
                           ],
                         ),
@@ -186,9 +211,11 @@ class _FacultyHomeState extends State<FacultyHome> {
                     )),
                     Expanded(
                         child: InkWell(
-                      onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => FacultyResultHistory())),
+                      onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                          builder: (_) => const FacultyResultHistory())),
                       child: Card(
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
                         elevation: 5,
                         child: Column(
                           children: [
@@ -201,7 +228,8 @@ class _FacultyHomeState extends State<FacultyHome> {
                                 flex: 1,
                                 child: Text(
                                   "Result",
-                                  style: TextStyle(fontFamily: 'Custom', fontSize: 20),
+                                  style: TextStyle(
+                                      fontFamily: 'Custom', fontSize: 20),
                                 )),
                           ],
                         ),

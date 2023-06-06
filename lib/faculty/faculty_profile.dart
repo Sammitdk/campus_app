@@ -11,7 +11,6 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import '../admin/admin_home.dart';
-import '../firebase/auth.dart';
 import '../password_reset.dart';
 import '../redux/reducer.dart';
 
@@ -76,147 +75,80 @@ class FacultyProfile extends HookWidget with ChangeNotifier {
             child: CustomPaint(
               painter: CurvePainter(),
             )),
-        Positioned(
-          top: MediaQuery.of(context).size.height * 0.10,
-          left: MediaQuery.of(context).size.width * 0.55,
-          child: Stack(
-            alignment: AlignmentDirectional.topEnd,
-            children: [
-              Align(
-                // alignment: AlignmentDirectional.centerEnd,
-                child: clicked.value && file != null
-                    ? CircleAvatar(
-                        maxRadius: MediaQuery.of(context).size.height * 0.1,
-                        backgroundImage: FileImage(file!),
-                      )
-                    : stateUrl.value != "" && stateUrl.value != null
-                        ? CachedNetworkImage(
-                            imageUrl: stateUrl.value,
-                            imageBuilder: (context, imageProvider) {
-                              return CircleAvatar(
-                                backgroundImage: imageProvider,
-                                maxRadius: MediaQuery.of(context).size.height * 0.1,
-                              );
-                            },
-                            placeholder: (context, url) => CircleAvatar(
-                              backgroundColor: Colors.transparent,
-                              backgroundImage: const AssetImage("assets/images/profile.gif"),
-                              maxRadius: MediaQuery.of(context).size.height * 0.1,
-                            ),
-                            errorWidget: (context, url, error) => const Icon(Icons.error),
-                            fit: BoxFit.cover,
-                          )
-                        : CircleAvatar(
-                            backgroundImage: const AssetImage("assets/images/profile.gif"),
-                            maxRadius: MediaQuery.of(context).size.height * 0.1,
-                            backgroundColor: Colors.transparent,
-                          ),
-              ),
-              clicked.value
-                  ? Align(
-                      heightFactor: 0.1,
-                      widthFactor: 0.7,
-                      child: CircularPercentIndicator(
-                        radius: 28.0,
-                        lineWidth: 8.0,
-                        animation: true,
-                        percent: progress.value,
-                        center: Text(
-                          progress.value.toStringAsFixed(2),
-                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0),
-                        ),
-                        header: const Text(
-                          "Uploading",
-                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.0),
-                        ),
-                        circularStrokeCap: CircularStrokeCap.round,
-                        progressColor: Colors.purple,
-                      ),
-                    )
-                  : IconButton(
-                      // elevation: 0,
-                      // backgroundColor: Colors.transparent,
-                      // foregroundColor: Colors.black,
-                      onPressed: () async {
-                        await selectFiles();
-                        await uploadFile();
-                      },
-                      icon: const Icon(Icons.add_photo_alternate_outlined),
-                    ),
-            ],
-          ),
-        ),
         Padding(
           padding: const EdgeInsets.all(10.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "${state.name['First'].toString().capitalize()}.${state.name['Middle'].substring(0, 1).toString().capitalize()}.${state.name['Last'].toString().capitalize()}",
-                    style: const TextStyle(
-                      fontSize: 30,
-                      color: Colors.white,
-                      fontFamily: 'MuliBold',
+              Padding(
+                padding: const EdgeInsets.only(top: 30.0, left: 5),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "${state.name['First'].toString().capitalize()}.${state.name['Middle'].substring(0, 1).toString().capitalize()}.${state.name['Last'].toString().capitalize()}",
+                      style: const TextStyle(
+                        fontSize: 30,
+                        color: Colors.black,
+                        fontFamily: 'MuliBold',
+                      ),
                     ),
-                  ),
-                  Text(state.email ?? "--", style: const TextStyle(fontSize: 20, color: Colors.white)),
-                  Text(state.mobile ?? '--', style: const TextStyle(fontSize: 20, color: Colors.white)),
-                  // Stack(
-                  //   children: [
-                  //     Align(
-                  //       alignment: AlignmentDirectional.centerEnd,
-                  //       child: clicked.value && file != null
-                  //           ? CircleAvatar(
-                  //         maxRadius: 80,
-                  //         backgroundImage: FileImage(file!),
-                  //       )
-                  //           : stateUrl.value != "" && stateUrl.value != null
-                  //           ? CachedNetworkImage(
-                  //         imageUrl: stateUrl.value,
-                  //         imageBuilder: (context, imageProvider) {
-                  //           return CircleAvatar(
-                  //             backgroundImage: imageProvider,
-                  //             maxRadius: 80,
-                  //           );
-                  //         },
-                  //         placeholder: (context, url) =>
-                  //         const CircleAvatar(
-                  //           backgroundColor: Colors.transparent,
-                  //           backgroundImage:
-                  //           AssetImage("assets/images/profile.gif"),
-                  //           maxRadius: 80,
-                  //         ),
-                  //         errorWidget: (context, url, error) =>
-                  //         const Icon(Icons.error),
-                  //         fit: BoxFit.cover,
-                  //       )
-                  //           : const CircleAvatar(
-                  //         backgroundImage:
-                  //         AssetImage("assets/images/profile.gif"),
-                  //         maxRadius: 80,
-                  //         backgroundColor: Colors.transparent,
-                  //       ),
-                  //     ),
-                  //     Align(
-                  //       alignment: AlignmentDirectional.bottomEnd,
-                  //       child: IconButton(
-                  //         // elevation: 0,
-                  //         // backgroundColor: Colors.transparent,
-                  //         // foregroundColor: Colors.black,
-                  //         onPressed: () async {
-                  //           await selectFiles();
-                  //           await uploadFile();
-                  //         },
-                  //         icon: const Icon(Icons.add_photo_alternate_outlined),
-                  //       ),
-                  //     ),
-                  //   ],
-                  // )
-                ],
+                    Text(state.email ?? "--", style: const TextStyle(fontSize: 18, color: Colors.black)),
+                    Text(state.mobile ?? '--', style: const TextStyle(fontSize: 18, color: Colors.black)),
+                    // Stack(
+                    //   children: [
+                    //     Align(
+                    //       alignment: AlignmentDirectional.centerEnd,
+                    //       child: clicked.value && file != null
+                    //           ? CircleAvatar(
+                    //         maxRadius: 80,
+                    //         backgroundImage: FileImage(file!),
+                    //       )
+                    //           : stateUrl.value != "" && stateUrl.value != null
+                    //           ? CachedNetworkImage(
+                    //         imageUrl: stateUrl.value,
+                    //         imageBuilder: (context, imageProvider) {
+                    //           return CircleAvatar(
+                    //             backgroundImage: imageProvider,
+                    //             maxRadius: 80,
+                    //           );
+                    //         },
+                    //         placeholder: (context, url) =>
+                    //         const CircleAvatar(
+                    //           backgroundColor: Colors.transparent,
+                    //           backgroundImage:
+                    //           AssetImage("assets/images/profile.gif"),
+                    //           maxRadius: 80,
+                    //         ),
+                    //         errorWidget: (context, url, error) =>
+                    //         const Icon(Icons.error),
+                    //         fit: BoxFit.cover,
+                    //       )
+                    //           : const CircleAvatar(
+                    //         backgroundImage:
+                    //         AssetImage("assets/images/profile.gif"),
+                    //         maxRadius: 80,
+                    //         backgroundColor: Colors.transparent,
+                    //       ),
+                    //     ),
+                    //     Align(
+                    //       alignment: AlignmentDirectional.bottomEnd,
+                    //       child: IconButton(
+                    //         // elevation: 0,
+                    //         // backgroundColor: Colors.transparent,
+                    //         // foregroundColor: Colors.black,
+                    //         onPressed: () async {
+                    //           await selectFiles();
+                    //           await uploadFile();
+                    //         },
+                    //         icon: const Icon(Icons.add_photo_alternate_outlined),
+                    //       ),
+                    //     ),
+                    //   ],
+                    // )
+                  ],
+                ),
               ),
               Expanded(
                 child: Column(
@@ -443,7 +375,77 @@ class FacultyProfile extends HookWidget with ChangeNotifier {
               ),
             ],
           ),
-        )
+        ),
+        Positioned(
+          top: MediaQuery.of(context).size.height * 0.05,
+          left: MediaQuery.of(context).size.width * 0.55,
+          child: Stack(
+            alignment: AlignmentDirectional.topEnd,
+            children: [
+              Align(
+                // alignment: AlignmentDirectional.centerEnd,
+                child: clicked.value && file != null
+                    ? CircleAvatar(
+                        maxRadius: MediaQuery.of(context).size.height * 0.1,
+                        backgroundImage: FileImage(file!),
+                      )
+                    : stateUrl.value != "" && stateUrl.value != null
+                        ? CachedNetworkImage(
+                            imageUrl: stateUrl.value,
+                            imageBuilder: (context, imageProvider) {
+                              return CircleAvatar(
+                                backgroundImage: imageProvider,
+                                maxRadius: MediaQuery.of(context).size.height * 0.1,
+                              );
+                            },
+                            placeholder: (context, url) => CircleAvatar(
+                              backgroundColor: Colors.transparent,
+                              backgroundImage: const AssetImage("assets/images/profile.gif"),
+                              maxRadius: MediaQuery.of(context).size.height * 0.1,
+                            ),
+                            errorWidget: (context, url, error) => const Icon(Icons.error),
+                            fit: BoxFit.cover,
+                          )
+                        : CircleAvatar(
+                            backgroundImage: const AssetImage("assets/images/profile.gif"),
+                            maxRadius: MediaQuery.of(context).size.height * 0.1,
+                            backgroundColor: Colors.transparent,
+                          ),
+              ),
+              clicked.value
+                  ? Align(
+                      heightFactor: 0.1,
+                      widthFactor: 0.7,
+                      child: CircularPercentIndicator(
+                        radius: 28.0,
+                        lineWidth: 8.0,
+                        animation: true,
+                        percent: progress.value,
+                        center: Text(
+                          progress.value.toStringAsFixed(2),
+                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0),
+                        ),
+                        header: const Text(
+                          "Uploading",
+                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.0),
+                        ),
+                        circularStrokeCap: CircularStrokeCap.round,
+                        progressColor: Colors.purple,
+                      ),
+                    )
+                  : IconButton(
+                      // elevation: 0,
+                      // backgroundColor: Colors.transparent,
+                      // foregroundColor: Colors.black,
+                      onPressed: () async {
+                        await selectFiles();
+                        await uploadFile();
+                      },
+                      icon: const Icon(Icons.add_photo_alternate_outlined),
+                    ),
+            ],
+          ),
+        ),
       ]),
       floatingActionButton: SpeedDial(
         animatedIcon: AnimatedIcons.menu_close,
@@ -474,9 +476,13 @@ class FacultyProfile extends HookWidget with ChangeNotifier {
                 // remove faculty device token
                 FirebaseFirestore.instance
                     .doc("Faculty_Detail/${state.email}")
-                    .update({"Token": FieldValue.delete()}).then((value) => FirebaseAuth.instance.signOut());
+                    .update({"Token": FieldValue.delete()}).then((value) {
+                  FirebaseFirestore.instance.doc("Messages/${state.email}").set({'status': 'Offline'}, SetOptions(merge: true));
+                  StoreProvider.of<AppState>(context).dispatch(Clear());
+                  FirebaseAuth.instance.signOut();
+                });
 
-                FirebaseFirestore.instance.doc("Messages/${state.email}").set({'status': 'Offline'}, SetOptions(merge: true));
+
                 // await FirebaseAuth.instance.signOut();
                 // .then((_) {
                 //   notifyListeners();
@@ -503,7 +509,7 @@ class CurvePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     var paint = Paint();
-    paint.color = Colors.blueGrey;
+    paint.color = Colors.blueGrey[200]!;
     paint.style = PaintingStyle.fill;
 
     var path = Path();
