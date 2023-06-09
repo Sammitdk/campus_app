@@ -1,4 +1,5 @@
 import 'package:campus_subsystem/firebase/auth.dart';
+import 'package:campus_subsystem/no_internet.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -35,7 +36,7 @@ class Wrapper extends HookWidget {
                 );
               }
             } else {
-              return Container();
+              return const NoInternet();
             }
           });
     }

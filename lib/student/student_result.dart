@@ -35,11 +35,19 @@ class _StudentResultState extends State<StudentResult> {
       appBar: AppBar(
         centerTitle: true,
         title: const Text(
-          "Attendance",
+          "Result",
           style: TextStyle(fontFamily: 'Narrow', fontSize: 30),
           textAlign: TextAlign.center,
         ),
         backgroundColor: Colors.indigo[300],
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        elevation: 1,
+        heroTag: "tag",
+        foregroundColor: Colors.white,
+        backgroundColor: Colors.indigo[300],
+        onPressed: () => launchBrowser(),
+        label: const Text("University Result"),
       ),
       body: StoreConnector<AppState, AppState>(
           converter: (store) => store.state,

@@ -21,6 +21,7 @@ class StudentSubAttendance extends StatelessWidget {
           subject,
           style: const TextStyle(fontFamily: 'Narrow', fontSize: 30),
           textAlign: TextAlign.center,
+          overflow: TextOverflow.ellipsis,
         ),
       ),
       body: StreamBuilder(

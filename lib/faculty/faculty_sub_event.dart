@@ -25,8 +25,7 @@ class _FacultySubEventState extends State<FacultySubEvent> {
   String? url;
 
   Future selectFiles() async {
-    final result =
-        await ImagePicker.platform.pickImage(source: ImageSource.gallery);
+    final result = await ImagePicker.platform.pickImage(source: ImageSource.gallery);
     if (result == null) return;
     final path = result.path;
     setState(() => file = File(path));
@@ -46,11 +45,36 @@ class _FacultySubEventState extends State<FacultySubEvent> {
     final DateTime? selecteddate = await showDatePicker(
       context: context,
       initialDate: date,
-      lastDate: DateTime(2030),
+      builder: (context, child) {
+        return Theme(
+            data: Theme.of(context).copyWith(
+              colorScheme: ColorScheme.light(primary: Colors.indigo[300]!, onPrimary: Colors.white, onSurface: Colors.black54),
+              textButtonTheme: TextButtonThemeData(
+                style: TextButton.styleFrom(
+                  foregroundColor: Colors.indigo[300], // button text color
+                ),
+              ),
+            ),
+            child: child!);
+      },
+      lastDate: DateTime(DateTime.now().year + 5),
       firstDate: DateTime(2010),
     );
-    final TimeOfDay? selectedtime =
-        await showTimePicker(context: context, initialTime: time);
+    final TimeOfDay? selectedtime = await showTimePicker(
+        context: context,
+        initialTime: time,
+        builder: (context, child) {
+          return Theme(
+              data: Theme.of(context).copyWith(
+                colorScheme: ColorScheme.light(primary: Colors.indigo[300]!, onPrimary: Colors.white, onSurface: Colors.black54),
+                textButtonTheme: TextButtonThemeData(
+                  style: TextButton.styleFrom(
+                    foregroundColor: Colors.indigo[300], // button text color
+                  ),
+                ),
+              ),
+              child: child!);
+        });
     if (selecteddate != null && selectedtime != null) {
       time = selectedtime;
       date = selecteddate;
@@ -62,22 +86,15 @@ class _FacultySubEventState extends State<FacultySubEvent> {
   }
 
   void sendNotificationToAll() {
-    FirebaseFirestore.instance
-        .collection("Student_Detail")
-        .where("Token", isNull: false)
-        .get()
-        .then((students) => {
-              students.docs.forEach((student) {
-                Map studentdata = student.data();
-                if (studentdata["Token"].isNotEmpty) {
-                  NotificationAPI.postNotification(
-                      title: "Event : ${title.text}",
-                      message: "  ${description.text}",
-                      event: true,
-                      receiver: studentdata["Token"]);
-                }
-              })
-            });
+    FirebaseFirestore.instance.collection("Student_Detail").where("Token", isNull: false).get().then((students) => {
+          students.docs.forEach((student) {
+            Map studentdata = student.data();
+            if (studentdata["Token"].isNotEmpty) {
+              NotificationAPI.postNotification(
+                  title: "Event : ${title.text}", message: "  ${description.text}", event: true, receiver: studentdata["Token"]);
+            }
+          })
+        });
   }
 
   @override
@@ -103,8 +120,7 @@ class _FacultySubEventState extends State<FacultySubEvent> {
             child: Column(
               children: [
                 Container(
-                  padding:
-                      const EdgeInsets.only(left: 40, right: 40, bottom: 50),
+                  padding: const EdgeInsets.only(left: 40, right: 40, bottom: 50),
                   child: TextFormField(
                     controller: title,
                     validator: (name) {
@@ -135,29 +151,24 @@ class _FacultySubEventState extends State<FacultySubEvent> {
                     },
                     decoration: const InputDecoration(
                       alignLabelWithHint: true,
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
                       labelText: 'Description',
                     ),
                   ),
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0)),
-                    textStyle:
-                        const TextStyle(fontFamily: 'MiliBold', fontSize: 18),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
+                    textStyle: const TextStyle(fontFamily: 'MiliBold', fontSize: 18),
                     onPrimary: Colors.black,
                     primary: Colors.white,
-                    padding: const EdgeInsets.only(
-                        top: 12, bottom: 12, left: 15, right: 15),
+                    padding: const EdgeInsets.only(top: 12, bottom: 12, left: 15, right: 15),
                   ),
                   onPressed: () {
                     timePicker();
                   },
                   child: Text(date.isNotEmpty
-                      ? DateFormat('dd/MM/yyyy HH:mm')
-                          .format(DateFormat('dd-MM-yyyy-HH-mm').parse(date))
+                      ? DateFormat('dd/MM/yyyy HH:mm').format(DateFormat('dd-MM-yyyy-HH-mm').parse(date))
                       : 'Select Date and Time of Event'),
                 ),
                 Padding(
@@ -165,13 +176,11 @@ class _FacultySubEventState extends State<FacultySubEvent> {
                   child: file == null
                       ? const Text(
                           "Upload Image",
-                          style:
-                              TextStyle(fontFamily: 'MuliBold', fontSize: 20),
+                          style: TextStyle(fontFamily: 'MuliBold', fontSize: 20),
                         )
                       : const Text(
                           "Image Added",
-                          style:
-                              TextStyle(fontFamily: 'MuliBold', fontSize: 20),
+                          style: TextStyle(fontFamily: 'MuliBold', fontSize: 20),
                         ),
                 ),
                 FloatingActionButton(
@@ -185,30 +194,21 @@ class _FacultySubEventState extends State<FacultySubEvent> {
                   padding: const EdgeInsets.only(top: 40),
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      textStyle:
-                          const TextStyle(fontFamily: 'MuliBold', fontSize: 22),
+                      textStyle: const TextStyle(fontFamily: 'MuliBold', fontSize: 22),
                       onPrimary: Colors.black,
                       primary: Colors.white,
-                      padding: const EdgeInsets.only(
-                          top: 12, bottom: 12, left: 15, right: 15),
+                      padding: const EdgeInsets.only(top: 12, bottom: 12, left: 15, right: 15),
                     ),
                     onPressed: () async {
                       if (formkey.currentState!.validate()) {
                         if (date.isEmpty) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text("Enter the date of event")));
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Enter the date of event")));
                         } else {
                           await uploadFile();
                           await FirebaseFirestore.instance
                               .collection("Events")
                               .doc(date)
-                              .set({
-                            'Title': title.text,
-                            'Description': description.text,
-                            'Date': date,
-                            'urlEvent': url
-                          });
+                              .set({'Title': title.text, 'Description': description.text, 'Date': date, 'urlEvent': url});
                           sendNotificationToAll();
                         }
                       }

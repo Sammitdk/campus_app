@@ -126,8 +126,8 @@ class _FacultyLoginState extends State<FacultyLogin> {
                                 style: TextStyle(fontSize: 17),
                               ),
                               onPressed: () async {
+                                setState(() => isClicked = true);
                                 if (formKey.currentState!.validate()) {
-                                  setState(() => isClicked = true);
                                   await Auth()
                                       .signIn(
                                     username: emailController.text.trim(),
@@ -135,6 +135,7 @@ class _FacultyLoginState extends State<FacultyLogin> {
                                     isStudent: false,
                                   )
                                       .onError((FirebaseException e, stackTrace) async {
+                                    print(e.code);
                                     if (e.code == 'user-not-found') {
                                       return await Auth()
                                           .createUser(
@@ -149,7 +150,8 @@ class _FacultyLoginState extends State<FacultyLogin> {
                                       // ScaffoldMessenger.of(context)
                                       //     .showSnackBar(const SnackBar(content: Text("Invalid Email Address.")));
                                     } else if (e.code == 'wrong-password') {
-                                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Incorrect Password.")));
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(const SnackBar(content: Text("Incorrect 4 Password.")));
                                     } else if (e.code == 'network-request-failed') {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(const SnackBar(content: Text("Check Internet Connection.")));
@@ -161,15 +163,17 @@ class _FacultyLoginState extends State<FacultyLogin> {
                                     if (value != null && value) {
                                       Navigator.of(context).pop();
                                     } else {
-                                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                          content: Text(
-                                        "Don't use Student Login in Faculty section.",
-                                        maxLines: 2,
-                                      )));
+                                      if (value != null && !value) {
+                                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                            content: Text(
+                                          "Don't use Student Login in Faculty section.",
+                                          maxLines: 2,
+                                        )));
+                                      }
                                     }
                                   });
-                                  setState(() => isClicked = false);
                                 }
+                                setState(() => isClicked = false);
                               },
                             ),
                       const SizedBox(

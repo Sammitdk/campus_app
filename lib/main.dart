@@ -27,9 +27,9 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIMode(
     SystemUiMode.manual,
-    overlays:
-        SystemUiOverlay.values, //This line is used for showing the bottom bar
+    overlays: SystemUiOverlay.values, //This line is used for showing the bottom bar
   );
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
     statusBarIconBrightness: Brightness.dark,
@@ -98,8 +98,7 @@ class _MainState extends State<Main> with WidgetsBindingObserver {
     int id = 0;
     WidgetsBinding.instance.addObserver(this);
     super.initState();
-    internet =
-        Connectivity().onConnectivityChanged.listen((ConnectivityResult event) {
+    internet = Connectivity().onConnectivityChanged.listen((ConnectivityResult event) {
       switch (event) {
         case ConnectivityResult.none:
           isInternet = false;
@@ -159,8 +158,7 @@ class _MainState extends State<Main> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-        create: (context) => Auth(), child: const Wrapper());
+    return ChangeNotifierProvider(create: (context) => Auth(), child: const Wrapper());
   }
 
   showAlert(BuildContext context, Map data) {
@@ -168,8 +166,7 @@ class _MainState extends State<Main> with WidgetsBindingObserver {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
             alignment: Alignment.center,
             title: Text(data["notification"]['title']),
             content: Padding(
@@ -185,9 +182,7 @@ class _MainState extends State<Main> with WidgetsBindingObserver {
                   data["data"]["image"].isNotEmpty
                       ? Container(
                           decoration: BoxDecoration(
-                              image: DecorationImage(
-                                  image: NetworkImage(data["data"]["image"])),
-                              shape: BoxShape.circle),
+                              image: DecorationImage(image: NetworkImage(data["data"]["image"])), shape: BoxShape.circle),
                         )
                       : Container(),
                 ],
@@ -196,10 +191,8 @@ class _MainState extends State<Main> with WidgetsBindingObserver {
             actions: [
               ElevatedButton(
                   style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all(Colors.deepPurpleAccent),
-                      shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(50)))),
+                      backgroundColor: MaterialStateProperty.all(Colors.deepPurpleAccent),
+                      shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)))),
                   onPressed: () => Navigator.of(context).pop(),
                   child: const Text("OK"))
             ],

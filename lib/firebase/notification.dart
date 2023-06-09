@@ -9,8 +9,7 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {}
 class NotificationAPI {
   static final _noti = FlutterLocalNotificationsPlugin();
 
-  static NotificationDetails? get notificationDetails =>
-      const NotificationDetails(
+  static NotificationDetails? get notificationDetails => const NotificationDetails(
         android: AndroidNotificationDetails(
           "id",
           "name",
@@ -26,9 +25,6 @@ class NotificationAPI {
     String? image,
   }) async {
     _noti.show(id, title, message, notificationDetails, payload: "chat_screen");
-    // _noti.getNotificationAppLaunchDetails().asStream().listen((value){
-    //   // Navigator.of(context).pushNamed("chat_screen");
-    // });
   }
 
   static Future postNotification({
