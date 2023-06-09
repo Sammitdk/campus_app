@@ -18,14 +18,13 @@ class _StudentEventState extends State<StudentEvent> {
       appBar: AppBar(
         centerTitle: true,
         title: const Text(
-          "Event",
+          "Events",
           style: TextStyle(fontFamily: 'Narrow', fontSize: 30),
           textAlign: TextAlign.center,
         ),
         backgroundColor: Colors.indigo[300],
       ),
-      body: Padding(
-          padding: const EdgeInsets.all(15), child: Event(data.isStudent)),
+      body: Padding(padding: const EdgeInsets.all(15), child: Event(data.isStudent)),
     );
   }
 }

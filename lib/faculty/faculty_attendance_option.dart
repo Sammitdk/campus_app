@@ -22,11 +22,40 @@ class _FacultyAttendanceOptionState extends State<FacultyAttendanceOption> {
     TimeOfDay time = const TimeOfDay(hour: 9, minute: 0);
     DateTime date = DateUtils.dateOnly(DateTime.now());
     TimeOfDay? selectedtime;
-    final DateTime? selecteddate =
-        await showDatePicker(context: context, initialDate: date, lastDate: DateTime.now(), firstDate: DateTime(2010))
-            .then((value) async {
+    final DateTime? selecteddate = await showDatePicker(
+      context: context,
+      initialDate: date,
+      builder: (context, child) {
+        return Theme(
+            data: Theme.of(context).copyWith(
+              colorScheme: ColorScheme.light(primary: Colors.indigo[300]!, onPrimary: Colors.white, onSurface: Colors.black54),
+              textButtonTheme: TextButtonThemeData(
+                style: TextButton.styleFrom(
+                  foregroundColor: Colors.indigo[300], // button text color
+                ),
+              ),
+            ),
+            child: child!);
+      },
+      lastDate: DateTime.now(),
+      firstDate: DateTime(2010),
+    ).then((value) async {
       if (value != null) {
-        selectedtime = await showTimePicker(context: context, initialTime: time);
+        selectedtime = await showTimePicker(
+            context: context,
+            initialTime: time,
+            builder: (context, child) {
+              return Theme(
+                  data: Theme.of(context).copyWith(
+                    colorScheme: ColorScheme.light(primary: Colors.indigo[300]!, onPrimary: Colors.white, onSurface: Colors.black54),
+                    textButtonTheme: TextButtonThemeData(
+                      style: TextButton.styleFrom(
+                        foregroundColor: Colors.indigo[300], // button text color
+                      ),
+                    ),
+                  ),
+                  child: child!);
+            });
       }
       return value;
     });

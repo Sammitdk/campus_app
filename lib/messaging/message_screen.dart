@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:campus_subsystem/main.dart';
 import 'package:campus_subsystem/messaging/group_info.dart';
 import 'package:campus_subsystem/messaging/read_message-fetch.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -7,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:intl/intl.dart';
+import '../firebase/notification.dart';
 import 'message.dart';
 import 'package:keyboard_visibility_pro/keyboard_visibility_pro.dart';
 import 'message_reads.dart';
@@ -44,10 +46,7 @@ class _MessageScreenState extends State<MessageScreen> {
   @override
   void initState() {
     super.initState();
-    FirebaseFirestore.instance
-        .doc("Messages/${widget.EmailR}")
-        .snapshots()
-        .listen((event) {
+    FirebaseFirestore.instance.doc("Messages/${widget.EmailR}").snapshots().listen((event) {
       dynamic data = event.data();
       setState(() {
         status = data['status'];
@@ -78,8 +77,7 @@ class _MessageScreenState extends State<MessageScreen> {
             .orderBy('time', descending: true)
             .snapshots(includeMetadataChanges: true)
         : FirebaseFirestore.instance
-            .collection(
-                "Messages/${widget.data.email}/Messages/${widget.EmailR}/Messages")
+            .collection("Messages/${widget.data.email}/Messages/${widget.EmailR}/Messages")
             .orderBy('time', descending: true)
             .snapshots(includeMetadataChanges: true);
 
@@ -138,24 +136,16 @@ class _MessageScreenState extends State<MessageScreen> {
                                       )));
                         } else if (value == 1) {
                         } else if (value == 2) {
-                          FirebaseFirestore.instance
-                              .collection("GroupMessages")
-                              .doc(widget.groupName)
-                              .update({
-                            "users":
-                                FieldValue.arrayRemove([widget.data.email]),
+                          FirebaseFirestore.instance.collection("GroupMessages").doc(widget.groupName).update({
+                            "users": FieldValue.arrayRemove([widget.data.email]),
                           });
-                          FirebaseFirestore.instance
-                              .collection(
-                                  "GroupMessages/${widget.groupName}/Messages")
-                              .add(
+                          FirebaseFirestore.instance.collection("GroupMessages/${widget.groupName}/Messages").add(
                             {
                               "messageType": "left",
                               "email": widget.data.email,
                               "name": widget.data.name['First'],
                               "time": Timestamp.now(),
-                              "users":
-                                  FieldValue.arrayUnion([widget.data.email]),
+                              "users": FieldValue.arrayUnion([widget.data.email]),
                               "message": ""
                             },
                           );
@@ -177,10 +167,8 @@ class _MessageScreenState extends State<MessageScreen> {
                                   return AlertDialog(
                                     title: const Text('Delete messages'),
                                     content: (isDelete.value <= 0)
-                                        ? const Text(
-                                            'Are you sure you want to delete these messages?')
-                                        : const Text(
-                                            'You cant delete others messages please unselect them'),
+                                        ? const Text('Are you sure you want to delete these messages?')
+                                        : const Text('You cant delete others messages please unselect them'),
                                     actions: <Widget>[
                                       TextButton(
                                         child: const Text('Cancel'),
@@ -190,13 +178,11 @@ class _MessageScreenState extends State<MessageScreen> {
                                       ),
                                       (isDelete.value <= 0)
                                           ? TextButton(
-                                              child: const Text(
-                                                  'Delete For Everyone'),
+                                              child: const Text('Delete For Everyone'),
                                               onPressed: () {
                                                 for (var element in set) {
                                                   FirebaseFirestore.instance
-                                                      .doc(
-                                                          "GroupMessages/${widget.groupName}/Messages/$element")
+                                                      .doc("GroupMessages/${widget.groupName}/Messages/$element")
                                                       .delete();
                                                 }
                                                 setState(() {
@@ -229,8 +215,7 @@ class _MessageScreenState extends State<MessageScreen> {
                                   onSelected: (index) {
                                     if (index == 0) {
                                       FirebaseFirestore.instance
-                                          .doc(
-                                              "GroupMessages/${widget.groupName}/Messages/${set.first}")
+                                          .doc("GroupMessages/${widget.groupName}/Messages/${set.first}")
                                           .get()
                                           .then((value) {
                                         Navigator.push(
@@ -239,24 +224,15 @@ class _MessageScreenState extends State<MessageScreen> {
                                                 builder: (_) => MessageReads(
                                                       text: value['message'],
                                                       name: value['name'],
-                                                      messageType:
-                                                          value['messageType'],
-                                                      time:
-                                                          DateFormat('hh:mm a')
-                                                              .format(
-                                                                  value['time']
-                                                                      .toDate())
-                                                              .toString(),
-                                                      groupName:
-                                                          widget.groupName,
+                                                      messageType: value['messageType'],
+                                                      time: DateFormat('hh:mm a').format(value['time'].toDate()).toString(),
+                                                      groupName: widget.groupName,
                                                       messageId: value.id,
-                                                      facultyList:
-                                                          widget.facultyList,
+                                                      facultyList: widget.facultyList,
                                                     )));
                                       });
                                     } else {
-                                      Clipboard.setData(
-                                          ClipboardData(text: copy.value));
+                                      Clipboard.setData(ClipboardData(text: copy.value));
                                       isDelete.value = 0;
                                       setState(() {
                                         set.clear();
@@ -312,8 +288,7 @@ class _MessageScreenState extends State<MessageScreen> {
                         },
                         placeholder: (context, url) => const CircleAvatar(
                           backgroundColor: Colors.transparent,
-                          backgroundImage:
-                              AssetImage("assets/images/profile.gif"),
+                          backgroundImage: AssetImage("assets/images/profile.gif"),
                           maxRadius: 30,
                         ),
                         errorWidget: (context, url, error) => CircleAvatar(
@@ -328,8 +303,7 @@ class _MessageScreenState extends State<MessageScreen> {
                     padding: const EdgeInsets.only(left: 5, top: 5),
                     child: Text(
                       widget.groupName,
-                      style:
-                          const TextStyle(fontFamily: 'Narrow', fontSize: 23),
+                      style: const TextStyle(fontFamily: 'Narrow', fontSize: 23),
                     ),
                   ),
                 ],
@@ -353,16 +327,14 @@ class _MessageScreenState extends State<MessageScreen> {
                                 builder: (BuildContext context) {
                                   return AlertDialog(
                                     title: const Text('Delete messages'),
-                                    content: const Text(
-                                        'Are you sure you want to delete these messages?'),
+                                    content: const Text('Are you sure you want to delete these messages?'),
                                     actions: <Widget>[
                                       TextButton(
                                         child: const Text('Delete For Me'),
                                         onPressed: () {
                                           for (var element in set) {
                                             FirebaseFirestore.instance
-                                                .doc(
-                                                    "Messages/${widget.data.email}/Messages/${widget.EmailR}/Messages/$element")
+                                                .doc("Messages/${widget.data.email}/Messages/${widget.EmailR}/Messages/$element")
                                                 .delete();
                                           }
                                           setState(() {
@@ -379,12 +351,10 @@ class _MessageScreenState extends State<MessageScreen> {
                                               onPressed: () {
                                                 for (var element in set) {
                                                   FirebaseFirestore.instance
-                                                      .doc(
-                                                          "Messages/${widget.data.email}/Messages/${widget.EmailR}/Messages/$element")
+                                                      .doc("Messages/${widget.data.email}/Messages/${widget.EmailR}/Messages/$element")
                                                       .delete();
                                                   FirebaseFirestore.instance
-                                                      .doc(
-                                                          "Messages/${widget.EmailR}/Messages/${widget.data.email}/Messages/$element")
+                                                      .doc("Messages/${widget.EmailR}/Messages/${widget.data.email}/Messages/$element")
                                                       .delete();
                                                 }
                                                 setState(() {
@@ -419,8 +389,7 @@ class _MessageScreenState extends State<MessageScreen> {
                                       size: 19,
                                     ),
                                     onPressed: () {
-                                      Clipboard.setData(
-                                          ClipboardData(text: copy.value));
+                                      Clipboard.setData(ClipboardData(text: copy.value));
                                       isDelete.value = 0;
                                       setState(() {
                                         set.clear();
@@ -458,8 +427,7 @@ class _MessageScreenState extends State<MessageScreen> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Dialog(
-                                  insetAnimationCurve:
-                                      Curves.fastLinearToSlowEaseIn,
+                                  insetAnimationCurve: Curves.fastLinearToSlowEaseIn,
                                   elevation: 0,
                                   backgroundColor: Colors.transparent,
                                   child: ClipOval(
@@ -473,10 +441,7 @@ class _MessageScreenState extends State<MessageScreen> {
                                 ),
                                 Text(
                                   widget.groupName,
-                                  style: const TextStyle(
-                                      fontSize: 25,
-                                      color: Colors.black,
-                                      decoration: TextDecoration.none),
+                                  style: const TextStyle(fontSize: 25, color: Colors.black, decoration: TextDecoration.none),
                                 ),
                               ],
                             );
@@ -493,8 +458,7 @@ class _MessageScreenState extends State<MessageScreen> {
                         },
                         placeholder: (context, url) => const CircleAvatar(
                           backgroundColor: Colors.transparent,
-                          backgroundImage:
-                              AssetImage("assets/images/profile.gif"),
+                          backgroundImage: AssetImage("assets/images/profile.gif"),
                           maxRadius: 30,
                         ),
                         errorWidget: (context, url, error) => CircleAvatar(
@@ -510,16 +474,10 @@ class _MessageScreenState extends State<MessageScreen> {
                     children: [
                       Text(
                         widget.groupName,
-                        style:
-                            const TextStyle(fontFamily: 'Narrow', fontSize: 23),
+                        style: const TextStyle(fontFamily: 'Narrow', fontSize: 23),
                         textAlign: TextAlign.center,
                       ),
-                      Text(status,
-                          style: TextStyle(
-                              fontSize: 15,
-                              color: status == "Online"
-                                  ? Colors.green
-                                  : Colors.red[500]))
+                      Text(status, style: TextStyle(fontSize: 15, color: status == "Online" ? Colors.green : Colors.red[500]))
                     ],
                   ),
                 ],
@@ -528,9 +486,7 @@ class _MessageScreenState extends State<MessageScreen> {
         onChanged: (isOpened) {
           if (isOpened) {
             bottom.value = 350.0;
-            scrollController.animateTo(0,
-                duration: const Duration(milliseconds: 1),
-                curve: Curves.easeInOut);
+            scrollController.animateTo(0, duration: const Duration(milliseconds: 1), curve: Curves.easeInOut);
           } else {
             bottom.value = 60.0;
           }
@@ -553,29 +509,19 @@ class _MessageScreenState extends State<MessageScreen> {
                       if (snapshot.data!.docs.isNotEmpty) {
                         final latestMessage = snapshot.data!.docs.first;
                         if (widget.isGroup) {
-                          FirebaseFirestore.instance
-                              .collection("GroupMessages")
-                              .doc(widget.groupName)
-                              .update({
+                          FirebaseFirestore.instance.collection("GroupMessages").doc(widget.groupName).update({
                             'messageText': latestMessage['message'],
                             'time': latestMessage['time'].toDate(),
                             'latestMessageBy': latestMessage['name']
                           });
                         } else {
                           // on sender
-                          FirebaseFirestore.instance
-                              .collection(
-                                  "Messages/${widget.data.email}/Messages")
-                              .doc(widget.EmailR)
-                              .update({
+                          FirebaseFirestore.instance.collection("Messages/${widget.data.email}/Messages").doc(widget.EmailR).update({
                             'messageText': latestMessage['message'],
                             'time': latestMessage['time'].toDate(),
                           });
                           // on reciver
-                          FirebaseFirestore.instance
-                              .collection("Messages/${widget.EmailR}/Messages")
-                              .doc(widget.data.email)
-                              .update({
+                          FirebaseFirestore.instance.collection("Messages/${widget.EmailR}/Messages").doc(widget.data.email).update({
                             'messageText': latestMessage['message'],
                             'time': latestMessage['time'].toDate(),
                           });
@@ -585,26 +531,15 @@ class _MessageScreenState extends State<MessageScreen> {
                           FirebaseFirestore.instance
                               .collection("GroupMessages")
                               .doc(widget.groupName)
-                              .update({
-                            'messageText': "",
-                            'time': Timestamp.now().toDate(),
-                            'latestMessageBy': ""
-                          });
+                              .update({'messageText': "", 'time': Timestamp.now().toDate(), 'latestMessageBy': ""});
                         } else {
                           // on sender
-                          FirebaseFirestore.instance
-                              .collection(
-                                  "Messages/${widget.data.email}/Messages")
-                              .doc(widget.EmailR)
-                              .update({
+                          FirebaseFirestore.instance.collection("Messages/${widget.data.email}/Messages").doc(widget.EmailR).update({
                             'messageText': "",
                             'time': Timestamp.now().toDate(),
                           });
                           // on reciver
-                          FirebaseFirestore.instance
-                              .collection("Messages/${widget.EmailR}/Messages")
-                              .doc(widget.data.email)
-                              .update({
+                          FirebaseFirestore.instance.collection("Messages/${widget.EmailR}/Messages").doc(widget.data.email).update({
                             'messageText': "",
                             'time': Timestamp.now().toDate(),
                           });
@@ -619,16 +554,14 @@ class _MessageScreenState extends State<MessageScreen> {
                           QueryDocumentSnapshot x = snapshot.data!.docs[index];
                           return GestureDetector(
                             onTap: () {
-                              if ((x['messageType'] == 'groupMessage' ||
-                                  x['messageType'] == 'userMessage')) {
+                              if ((x['messageType'] == 'groupMessage' || x['messageType'] == 'userMessage')) {
                                 setState(() {
                                   if (set.contains(x.id)) {
                                     if (x['email'] != widget.data.email) {
                                       isDelete.value--;
                                     }
                                     set.remove(x.id);
-                                  } else if (!set.contains(x.id) &&
-                                      set.isNotEmpty) {
+                                  } else if (!set.contains(x.id) && set.isNotEmpty) {
                                     if (x['email'] != widget.data.email) {
                                       isDelete.value++;
                                     }
@@ -638,8 +571,7 @@ class _MessageScreenState extends State<MessageScreen> {
                               }
                             },
                             onLongPress: () {
-                              if ((x['messageType'] == 'groupMessage' ||
-                                  x['messageType'] == 'userMessage')) {
+                              if ((x['messageType'] == 'groupMessage' || x['messageType'] == 'userMessage')) {
                                 copy.value = x['message'];
                                 setState(() {
                                   if (!set.contains(x.id)) {
@@ -658,17 +590,13 @@ class _MessageScreenState extends State<MessageScreen> {
                             },
                             child: Container(
                               margin: const EdgeInsets.only(top: 5, bottom: 5),
-                              color: set.contains(x.id)
-                                  ? Colors.indigo[100]
-                                  : Colors.white,
+                              color: set.contains(x.id) ? Colors.indigo[100] : Colors.white,
                               child: Message(
                                 text: x['message'],
                                 name: x['name'],
                                 messageType: x['messageType'],
                                 isCurrentUser: x['email'] == widget.data.email,
-                                time: DateFormat('hh:mm a')
-                                    .format(x['time'].toDate())
-                                    .toString(),
+                                time: DateFormat('hh:mm a').format(x['time'].toDate()).toString(),
                               ),
                             ),
                           );
@@ -703,10 +631,8 @@ class _MessageScreenState extends State<MessageScreen> {
                         ),
                         child: GestureDetector(
                           onTap: () {
-                            scrollController.animateTo(
-                                scrollController.position.maxScrollExtent,
-                                duration: const Duration(milliseconds: 1),
-                                curve: Curves.easeInOut);
+                            scrollController.animateTo(scrollController.position.maxScrollExtent,
+                                duration: const Duration(milliseconds: 1), curve: Curves.easeInOut);
                           },
                           child: const Icon(
                             Icons.add,
@@ -723,9 +649,7 @@ class _MessageScreenState extends State<MessageScreen> {
                           enableInteractiveSelection: true,
                           controller: MessageScreen.myController,
                           decoration: const InputDecoration(
-                              hintText: "Write message...",
-                              hintStyle: TextStyle(color: Colors.black54),
-                              border: InputBorder.none),
+                              hintText: "Write message...", hintStyle: TextStyle(color: Colors.black54), border: InputBorder.none),
                         ),
                       ),
                       const SizedBox(
@@ -746,40 +670,49 @@ class _MessageScreenState extends State<MessageScreen> {
                               };
 
                               // new message to group
-                              FirebaseFirestore.instance
-                                  .collection(
-                                      "GroupMessages/${widget.groupName}/Messages")
-                                  .add(firebaseData);
+                              FirebaseFirestore.instance.collection("GroupMessages/${widget.groupName}/Messages").add(firebaseData);
 
                               // todo notification to all users
-                              // FirebaseFirestore.instance
-                              //     .doc("GroupMessages/$groupName")
-                              //     .get()
-                              //     .then((value) {
-                              //   Map group = value.data() as Map;
-                              //   if (group.containsKey("users")) {
-                              //     group["users"].forEach((user) {
-                              //       if (user != data.email) {
-                              //         FirebaseFirestore.instance
-                              //             .collection("Student_Detail")
-                              //             .where("Email", isEqualTo: user)
-                              //             .get()
-                              //             .then((userdocs) {
-                              //           if (userdocs.docs[0]
-                              //               .data()
-                              //               .containsKey("Token")) {
-                              //             NotificationAPI.postNotification(
-                              //                 title: groupName,
-                              //                 message:
-                              //                 "  ${data.name["First"].toString().capitalize()}: ${myController.text}",
-                              //                 receiver: userdocs.docs[0]
-                              //                 ["Token"]);
-                              //           }
-                              //         });
-                              //       }
-                              //     });
-                              //   }
-                              // });
+                              FirebaseFirestore.instance.doc("GroupMessages/${widget.groupName}").get().then((value) {
+                                Map group = (value.data() as Map);
+                                if (group.containsKey("users")) {
+                                  group["users"].forEach((user) {
+                                    if (user != widget.data.email) {
+                                      FirebaseFirestore.instance
+                                          .collection("Student_Detail")
+                                          .where("Email", isEqualTo: user)
+                                          .get()
+                                          .then((userdocs) async {
+                                        if (userdocs.docs.isNotEmpty && userdocs.docs[0].data().containsKey("Token")) {
+                                          NotificationAPI.postNotification(
+                                              title: widget.groupName,
+                                              message:
+                                                  "  ${widget.data.name["First"].toString().capitalize()}: ${MessageScreen.myController.text}",
+                                              receiver: userdocs.docs[0]["Token"]);
+                                        } else {
+                                          String token = await FirebaseFirestore.instance
+                                              .doc("Faculty_Detail/${widget.EmailR}")
+                                              .get()
+                                              .then((value) {
+                                            Map user = value.data() as Map;
+                                            if (user.containsKey("Token")) {
+                                              return user["Token"];
+                                            }
+                                            return '';
+                                          });
+                                          if (token.isNotEmpty) {
+                                            NotificationAPI.postNotification(
+                                                title: widget.groupName,
+                                                message:
+                                                    "  ${widget.data.name["First"].toString().capitalize()}: ${MessageScreen.myController.text}",
+                                                receiver: token);
+                                          }
+                                        }
+                                      });
+                                    }
+                                  });
+                                }
+                              });
                               MessageScreen.myController.clear();
                             } else {
                               // for user message
@@ -794,40 +727,48 @@ class _MessageScreenState extends State<MessageScreen> {
 
                               // sender user
                               FirebaseFirestore.instance
-                                  .collection(
-                                      "Messages/${widget.data.email}/Messages/${widget.EmailR}/Messages")
+                                  .collection("Messages/${widget.data.email}/Messages/${widget.EmailR}/Messages")
                                   .add(firebaseUserData)
                                   .then((value) => {
                                         // receiver user
                                         FirebaseFirestore.instance
-                                            .collection(
-                                                "Messages/${widget.EmailR}/Messages/${widget.data.email}/Messages")
+                                            .collection("Messages/${widget.EmailR}/Messages/${widget.data.email}/Messages")
                                             .doc(value.id)
                                             .set(firebaseUserData)
                                       });
 
                               // todo notification to receiver
-                              // String receiver = await FirebaseFirestore
-                              //     .instance
-                              //     .doc("Student_Detail/$EmailR")
-                              //     .get()
-                              //     .then((value) {
-                              //   {
-                              //     Map user = value.data() as Map;
-                              //     if (user.containsKey("Token")) {
-                              //       return user["Token"];
-                              //     }
-                              //     return '';
-                              //   }
-                              // });
-                              //
-                              // receiver.isNotEmpty
-                              //     ? NotificationAPI.postNotification(
-                              //     title:
-                              //     "${data.name['First'].toString().capitalize()} ${data.name['Last'].toString().capitalize()}",
-                              //     message: myController.text,
-                              //     receiver: receiver)
-                              //     : null;
+                              print("a" + widget.EmailR);
+                              String receiver = await FirebaseFirestore.instance
+                                  .collection("Student_Detail")
+                                  .where("Email", isEqualTo: widget.EmailR)
+                                  .limit(1)
+                                  .get()
+                                  .then((value) async {
+                                if (value.docs.isEmpty) {
+                                  return await FirebaseFirestore.instance.doc("Faculty_Detail/${widget.EmailR}").get().then((value) {
+                                    Map user = value.data() as Map;
+                                    if (user.containsKey("Token")) {
+                                      return user["Token"];
+                                    }
+                                    return '';
+                                  });
+                                } else {
+                                  Map user = value.docs[0].data();
+                                  if (user.containsKey("Token")) {
+                                    return user["Token"];
+                                  }
+                                  return '';
+                                }
+                              });
+
+                              receiver.isNotEmpty
+                                  ? NotificationAPI.postNotification(
+                                      title:
+                                          "${widget.data.name['First'].toString().capitalize()} ${widget.data.name['Last'].toString().capitalize()}",
+                                      message: MessageScreen.myController.text,
+                                      receiver: receiver)
+                                  : null;
                             }
                           }
                           MessageScreen.myController.clear();

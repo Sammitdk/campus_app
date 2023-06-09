@@ -2,7 +2,6 @@ import 'package:campus_subsystem/password_reset.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
-import 'package:provider/provider.dart';
 import '../firebase/auth.dart';
 
 class StudentLogin extends StatefulWidget {
@@ -125,8 +124,8 @@ class _StudentLoginState extends State<StudentLogin> {
                                     style: TextStyle(fontSize: 17),
                                   ),
                                   onPressed: () async {
+                                    setState(() => isClicked = true);
                                     if (formKey.currentState!.validate()) {
-                                      setState(() => isClicked = true);
                                       await Auth()
                                           .signIn(
                                         username: emailController.text.trim(),
@@ -164,26 +163,24 @@ class _StudentLoginState extends State<StudentLogin> {
                                         if (value != null && value) {
                                           Navigator.of(context).pop();
                                         } else {
-                                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                              content: Text(
-                                            "Don't use Faculty Login in Student section.",
-                                            maxLines: 2,
-                                          )));
+                                          if (value != null && !value) {
+                                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                                content: Text(
+                                              "Don't use Faculty Login in Student section.",
+                                              maxLines: 2,
+                                            )));
+                                          }
                                         }
                                       });
-                                      setState(() => isClicked = false);
                                     }
+                                    setState(() => isClicked = false);
                                   })),
                       Container(
-                          height: 50,
+                          height: 70,
                           padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                          child: ElevatedButton(
-                              style: ButtonStyle(
-                                elevation: MaterialStateProperty.all(5),
-                                backgroundColor: MaterialStateColor.resolveWith((states) => Colors.indigo.shade300),
-                                shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))),
-                              ),
-                              child: const Text(
+                          child: FloatingActionButton.extended(
+                              backgroundColor: Colors.indigo[300],
+                              label: const Text(
                                 'Reset Password',
                                 style: TextStyle(fontSize: 17, color: Colors.white),
                               ),

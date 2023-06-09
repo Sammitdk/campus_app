@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
+import 'package:campus_subsystem/firebase/notification.dart';
 import 'package:campus_subsystem/redux/reducer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
@@ -64,7 +65,7 @@ class _FacultyResultAddState extends State<FacultyResultAdd> {
                               .doc("Results/$selectedsub/${namecontroller.text}")
                               .set(temp, SetOptions(merge: true))
                               .onError((error, stackTrace) => print("$error   $stackTrace"));
-                          addForStudents(branchyear, namecontroller.text);
+                          addForStudents(branchyear);
                         }
                       }
 
@@ -262,10 +263,7 @@ class _FacultyResultAddState extends State<FacultyResultAdd> {
                                                 }
                                               }
 
-                                              // todo show to user
                                               setState(() => filename = result.files.single.name);
-
-                                              // todo add to firebase
                                             } else {
                                               ScaffoldMessenger.of(context).showSnackBar(
                                                   const SnackBar(content: Text("More or less than 2 columns present.\nSee HELP")));
@@ -646,15 +644,24 @@ class _FacultyResultAddState extends State<FacultyResultAdd> {
   //           ));
   // }
 
-  void addForStudents(CollectionReference reference, name) async {
+  void addForStudents(CollectionReference reference) async {
     print(marks);
 
     reference.doc("Roll_No").get().then((docsnap) {
-      (docsnap.data()! as Map<String, dynamic>).forEach((roll, ref) {
+      (docsnap.data()! as Map<String, DocumentReference>).forEach((roll, DocumentReference ref) {
+        //todo notification
+        ref.get().then((snap) {
+          (snap.data()! as Map<String, dynamic>).containsKey("Token")
+              ? NotificationAPI.postNotification(
+                  title: "Result",
+                  message: "Result of ${namecontroller.text.trim()} for subject $selectedsub is Uploaded",
+                  receiver: (snap.data()! as Map<String, dynamic>)['Token'])
+              : null;
+        }).onError((error, stackTrace) => null);
         marks.containsKey(int.parse(roll))
             ? ref.collection("Result").doc(selectedsub).set({
-                namecontroller.text: {"mark": marks[int.parse(roll)], "total": total, 'time': DateTime.now()},
-              }, SetOptions(merge: true))
+                namecontroller.text.trim(): {"mark": marks[int.parse(roll)], "total": total, 'time': DateTime.now()},
+              }, SetOptions(merge: true)).onError((error, stackTrace) => null)
             : null;
       });
     });

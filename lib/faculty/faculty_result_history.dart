@@ -29,7 +29,7 @@ class _FacultyResultHistoryState extends State<FacultyResultHistory> {
             appBar: AppBar(
               centerTitle: true,
               title: const Text(
-                "Results",
+                "History",
                 style: TextStyle(fontFamily: 'Narrow', fontSize: 30),
                 textAlign: TextAlign.center,
               ),

@@ -19,6 +19,13 @@ class _StudentSubResultState extends State<StudentSubResult> {
         converter: (store) => store.state,
         builder: (context, state) {
           return Scaffold(
+            appBar: AppBar(
+              title: Text(
+                widget.subject,
+                style: TextStyle(overflow: TextOverflow.ellipsis),
+              ),
+              backgroundColor: Colors.indigo[300],
+            ),
             body: FutureBuilder(
               future: FirebaseFirestore.instance.doc("Student_Detail/${state.prn}/Result/${widget.subject}").get(),
               builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snap) {
