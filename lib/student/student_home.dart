@@ -2,7 +2,7 @@ import 'package:campus_subsystem/main.dart';
 import 'package:campus_subsystem/student/student_attendance.dart';
 import 'package:campus_subsystem/student/student_event.dart';
 import 'package:campus_subsystem/student/student_notes.dart';
-import 'package:campus_subsystem/student/student_reault.dart';
+import 'package:campus_subsystem/student/student_result.dart';
 import 'package:campus_subsystem/student/student_syllabus.dart';
 import 'package:campus_subsystem/student/student_timetable.dart';
 import 'package:flutter/material.dart';

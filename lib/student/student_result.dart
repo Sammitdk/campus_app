@@ -40,16 +40,14 @@ class _StudentResultState extends State<StudentResult> {
           textAlign: TextAlign.center,
         ),
         backgroundColor: Colors.indigo[300],
-        actions: [
-          FloatingActionButton.extended(
-            elevation: 1,
-            heroTag: "tag",
-            foregroundColor: Colors.indigo[200],
-            backgroundColor: Colors.black,
-            onPressed: () => launchBrowser(),
-            label: const Text("University Result"),
-          )
-        ],
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        elevation: 1,
+        heroTag: "tag",
+        foregroundColor: Colors.white,
+        backgroundColor: Colors.indigo[300],
+        onPressed: () => launchBrowser(),
+        label: const Text("University Result"),
       ),
       body: StoreConnector<AppState, AppState>(
           converter: (store) => store.state,
