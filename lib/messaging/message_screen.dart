@@ -737,7 +737,6 @@ class _MessageScreenState extends State<MessageScreen> {
                                             .set(firebaseUserData)
                                       });
 
-                              // todo notification to receiver
                               String receiver = await FirebaseFirestore.instance
                                   .collection("Student_Detail")
                                   .where("Email", isEqualTo: widget.EmailR)

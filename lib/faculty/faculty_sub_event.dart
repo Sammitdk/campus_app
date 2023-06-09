@@ -210,6 +210,7 @@ class _FacultySubEventState extends State<FacultySubEvent> {
                               .doc(date)
                               .set({'Title': title.text, 'Description': description.text, 'Date': date, 'urlEvent': url});
                           sendNotificationToAll();
+                          Navigator.pop(context);
                         }
                       }
                     },
