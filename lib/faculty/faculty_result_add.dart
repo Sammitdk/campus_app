@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 import 'package:campus_subsystem/firebase/notification.dart';
 import 'package:campus_subsystem/redux/reducer.dart';
@@ -50,22 +49,26 @@ class _FacultyResultAddState extends State<FacultyResultAdd> {
                     backgroundColor: Colors.indigo[200],
                     foregroundColor: Colors.black,
                     onPressed: () async {
-                     
                       setState(() => clicked = true);
                       if (fkey.currentState!.validate()) {
                         // marks['time'] = DateTime.now();
-                       
-                        Map<String, dynamic> temp = marks.map((key, value) => MapEntry(key.toString(), value));
-                        temp['total'] = total = double.parse(markscontroller.text);
+
+                        Map<String, dynamic> temp = marks.map(
+                            (key, value) => MapEntry(key.toString(), value));
+                        temp['total'] =
+                            total = double.parse(markscontroller.text);
                         temp['time'] = DateTime.now();
                         if (marks.isNotEmpty) {
-                          CollectionReference branchyear = FirebaseFirestore.instance
-                              .collection("/College/${state.subject[selectedsub]['branch']}/${state.subject[selectedsub]['year']}");
+                          CollectionReference branchyear =
+                              FirebaseFirestore.instance.collection(
+                                  "/College/${state.subject[selectedsub]['branch']}/${state.subject[selectedsub]['year']}");
                           branchyear
-                              .doc("Results/$selectedsub/${namecontroller.text}")
+                              .doc(
+                                  "Results/$selectedsub/${namecontroller.text}")
                               .set(temp, SetOptions(merge: true))
                               .onError((error, stackTrace) => null);
                           addForStudents(branchyear);
+                          Navigator.pop(context);
                         }
                       }
 
@@ -77,7 +80,11 @@ class _FacultyResultAddState extends State<FacultyResultAdd> {
                     ),
                     label: const Text(
                       "Submit",
-                      style: TextStyle(fontFamily: 'MuliBold', fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          fontFamily: 'MuliBold',
+                          fontSize: 20,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold),
                     ),
                   ),
             appBar: AppBar(
@@ -108,7 +115,8 @@ class _FacultyResultAddState extends State<FacultyResultAdd> {
                               const Expanded(
                                   child: Text(
                                 "Test",
-                                style: TextStyle(fontSize: 20, color: Colors.white),
+                                style: TextStyle(
+                                    fontSize: 20, color: Colors.white),
                                 textAlign: TextAlign.center,
                               )),
                               Expanded(
@@ -125,11 +133,18 @@ class _FacultyResultAddState extends State<FacultyResultAdd> {
                                     },
                                     decoration: InputDecoration(
                                       // focusColor: Colors.black,
-                                      errorStyle: const TextStyle(color: Colors.white),
-                                      floatingLabelBehavior: FloatingLabelBehavior.never,
-                                      focusedBorder:
-                                          OutlineInputBorder(borderRadius: BorderRadius.circular(20), borderSide: BorderSide.none),
-                                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(20), borderSide: BorderSide.none),
+                                      errorStyle:
+                                          const TextStyle(color: Colors.white),
+                                      floatingLabelBehavior:
+                                          FloatingLabelBehavior.never,
+                                      focusedBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                          borderSide: BorderSide.none),
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                          borderSide: BorderSide.none),
                                       filled: true,
                                       fillColor: Colors.white,
                                       labelText: 'Name',
@@ -145,19 +160,24 @@ class _FacultyResultAddState extends State<FacultyResultAdd> {
                               const Expanded(
                                   child: Text(
                                 "Subject",
-                                style: TextStyle(fontSize: 20, color: Colors.white),
+                                style: TextStyle(
+                                    fontSize: 20, color: Colors.white),
                                 textAlign: TextAlign.center,
                               )),
                               Expanded(
                                 flex: 3,
                                 child: Container(
-                                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.white),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20),
+                                      color: Colors.white),
                                   margin: const EdgeInsets.all(10),
                                   child: ButtonTheme(
                                     alignedDropdown: true,
                                     child: DropdownButtonFormField<String>(
-                                      decoration:
-                                          const InputDecoration(border: InputBorder.none, errorStyle: TextStyle(color: Colors.white)),
+                                      decoration: const InputDecoration(
+                                          border: InputBorder.none,
+                                          errorStyle:
+                                              TextStyle(color: Colors.white)),
                                       validator: (value) {
                                         if (value == null || value.isEmpty) {
                                           return 'Select Subject.';
@@ -168,18 +188,25 @@ class _FacultyResultAddState extends State<FacultyResultAdd> {
                                         fontSize: 20,
                                         color: Colors.indigo[300],
                                       ),
-                                      icon: const Icon(Icons.arrow_drop_down_rounded),
+                                      icon: const Icon(
+                                          Icons.arrow_drop_down_rounded),
                                       iconEnabledColor: Colors.green,
                                       alignment: AlignmentDirectional.center,
-                                      value: selectedsub == "" ? selectedsub = state.subject.keys.elementAt(0) : selectedsub,
+                                      value: selectedsub == ""
+                                          ? selectedsub =
+                                              state.subject.keys.elementAt(0)
+                                          : selectedsub,
                                       items: state.subject.keys
-                                          .map<DropdownMenuItem<String>>((value) => DropdownMenuItem<String>(
-                                                value: value,
-                                                child: Text(
-                                                  value,
-                                                  textAlign: TextAlign.center,
-                                                ),
-                                              ))
+                                          .map<DropdownMenuItem<String>>(
+                                              (value) =>
+                                                  DropdownMenuItem<String>(
+                                                    value: value,
+                                                    child: Text(
+                                                      value,
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                    ),
+                                                  ))
                                           .toList(),
                                       onChanged: (newvalue) {
                                         if (newvalue != selectedsub) {
@@ -202,7 +229,8 @@ class _FacultyResultAddState extends State<FacultyResultAdd> {
                                   flex: 3,
                                   child: Text(
                                     "Marks",
-                                    style: TextStyle(fontSize: 20, color: Colors.white),
+                                    style: TextStyle(
+                                        fontSize: 20, color: Colors.white),
                                     textAlign: TextAlign.center,
                                   )),
                               Expanded(
@@ -213,7 +241,9 @@ class _FacultyResultAddState extends State<FacultyResultAdd> {
                                     // style: const TextStyle(fontSize: 23),
                                     keyboardType: TextInputType.number,
                                     controller: markscontroller,
-                                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.digitsOnly
+                                    ],
                                     validator: (name) {
                                       if (name == null || name.isEmpty) {
                                         return '* Total Marks';
@@ -221,12 +251,19 @@ class _FacultyResultAddState extends State<FacultyResultAdd> {
                                       return null;
                                     },
                                     decoration: InputDecoration(
-                                      errorStyle: const TextStyle(color: Colors.white),
+                                      errorStyle:
+                                          const TextStyle(color: Colors.white),
                                       // focusColor: Colors.black,
-                                      floatingLabelBehavior: FloatingLabelBehavior.never,
-                                      focusedBorder:
-                                          OutlineInputBorder(borderRadius: BorderRadius.circular(20), borderSide: BorderSide.none),
-                                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(20), borderSide: BorderSide.none),
+                                      floatingLabelBehavior:
+                                          FloatingLabelBehavior.never,
+                                      focusedBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                          borderSide: BorderSide.none),
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                          borderSide: BorderSide.none),
                                       filled: true,
                                       fillColor: Colors.white,
                                       labelText: 'Total',
@@ -245,51 +282,80 @@ class _FacultyResultAddState extends State<FacultyResultAdd> {
                                       FilePicker.platform.pickFiles(
                                           type: FileType.custom,
                                           allowMultiple: false,
-                                          allowedExtensions: ["xlsx", "xls", "xlsm"]).then((result) {
+                                          allowedExtensions: [
+                                            "xlsx",
+                                            "xls",
+                                            "xlsm"
+                                          ]).then((result) {
                                         if (result != null) {
                                           marks.clear();
                                           filename = '';
-                                          File file = File(result.files.single.path.toString());
-                                         
-                                          var ex = Excel.decodeBytes(file.readAsBytesSync().toList());
+                                          File file = File(result
+                                              .files.single.path
+                                              .toString());
+
+                                          var ex = Excel.decodeBytes(
+                                              file.readAsBytesSync().toList());
                                           if (ex.tables.isNotEmpty) {
-                                            String sheet = ex.tables.keys.single;
-                                            if (ex.tables[sheet]!.maxCols == 2) {
-                                              for (var element in ex.tables[sheet]!.rows) {
-                                                int? key = int.tryParse(element[0]!.value.toString());
-                                                double? value = double.tryParse(element[1]!.value.toString());
-                                                if (key != null && value != null) {
+                                            String sheet =
+                                                ex.tables.keys.single;
+                                            if (ex.tables[sheet]!.maxCols ==
+                                                2) {
+                                              for (var element
+                                                  in ex.tables[sheet]!.rows) {
+                                                int? key = int.tryParse(
+                                                    element[0]!
+                                                        .value
+                                                        .toString());
+                                                double? value = double.tryParse(
+                                                    element[1]!
+                                                        .value
+                                                        .toString());
+                                                if (key != null &&
+                                                    value != null) {
                                                   marks[key] = value;
                                                 }
                                               }
 
-                                              setState(() => filename = result.files.single.name);
+                                              setState(() => filename =
+                                                  result.files.single.name);
                                             } else {
-                                              ScaffoldMessenger.of(context).showSnackBar(
-                                                  const SnackBar(content: Text("More or less than 2 columns present.\nSee HELP")));
-                                             
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(const SnackBar(
+                                                      content: Text(
+                                                          "More or less than 2 columns present.\nSee HELP")));
                                             }
                                           } else {
                                             ScaffoldMessenger.of(context)
-                                                .showSnackBar(const SnackBar(content: Text("No table found")));
-                                           
+                                                .showSnackBar(const SnackBar(
+                                                    content: Text(
+                                                        "No table found")));
                                           }
                                         } else {
                                           // User canceled the picker
                                           ScaffoldMessenger.of(context)
-                                              .showSnackBar(const SnackBar(content: Text("File not selected")));
-                                         
+                                              .showSnackBar(const SnackBar(
+                                                  content: Text(
+                                                      "File not selected")));
                                         }
                                         setState(() {});
                                       });
                                     },
                                     icon: Icon(
-                                      filename.isNotEmpty ? Icons.done : Icons.add,
-                                      color: filename.isNotEmpty ? Colors.green[300] : Colors.black,
+                                      filename.isNotEmpty
+                                          ? Icons.done
+                                          : Icons.add,
+                                      color: filename.isNotEmpty
+                                          ? Colors.green[300]
+                                          : Colors.black,
                                     ),
                                     label: Text(
-                                      filename.isNotEmpty ? filename : "Add Excel File",
-                                      style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                                      filename.isNotEmpty
+                                          ? filename
+                                          : "Add Excel File",
+                                      style: const TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold),
                                     ),
                                     backgroundColor: Colors.white,
                                   ),
@@ -322,12 +388,16 @@ class _FacultyResultAddState extends State<FacultyResultAdd> {
                     itemBuilder: (context, index) {
                       List temp = marks.keys.toList();
                       temp.sort();
-                      int key = index == marks.keys.length ? -1 : temp.elementAt(index);
+                      int key = index == marks.keys.length
+                          ? -1
+                          : temp.elementAt(index);
                       // int prev = marks[index]!;
                       if (key == -1) {
                         int? r;
                         return Container(
-                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: Colors.indigo[200]),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(15),
+                              color: Colors.indigo[200]),
                           margin: const EdgeInsets.all(10),
                           child: Row(
                             children: [
@@ -339,31 +409,43 @@ class _FacultyResultAddState extends State<FacultyResultAdd> {
                                   child: TextFormField(
                                     textAlignVertical: TextAlignVertical.center,
                                     textAlign: TextAlign.center,
-                                    keyboardType: const TextInputType.numberWithOptions(decimal: false),
-                                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                                    keyboardType:
+                                        const TextInputType.numberWithOptions(
+                                            decimal: false),
+                                    autovalidateMode:
+                                        AutovalidateMode.onUserInteraction,
                                     validator: (key) {
                                       if (key == null || key.isEmpty) {
                                         return "Empty.";
-                                      } else if (marks.containsKey(int.parse(key))) {
+                                      } else if (marks
+                                          .containsKey(int.parse(key))) {
                                         return "Exist.";
                                       }
                                       return null;
                                     },
-                                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.digitsOnly
+                                    ],
                                     decoration: InputDecoration(
                                         // focusColor: Colors.black,
-                                        errorStyle: const TextStyle(fontSize: 10, color: Colors.white),
-                                        floatingLabelBehavior: FloatingLabelBehavior.never,
-                                        focusedBorder:
-                                            OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
-                                        border:
-                                            OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
+                                        errorStyle: const TextStyle(
+                                            fontSize: 10, color: Colors.white),
+                                        floatingLabelBehavior:
+                                            FloatingLabelBehavior.never,
+                                        focusedBorder: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            borderSide: BorderSide.none),
+                                        border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            borderSide: BorderSide.none),
                                         filled: true,
                                         fillColor: Colors.white,
                                         labelText: 'Roll',
-                                        labelStyle: const TextStyle(fontSize: 15)),
+                                        labelStyle:
+                                            const TextStyle(fontSize: 15)),
                                     onChanged: (value) {
-                                     
                                       if (value.isNotEmpty) {
                                         r = int.parse(value);
                                       } else {
@@ -394,7 +476,9 @@ class _FacultyResultAddState extends State<FacultyResultAdd> {
                         return Stack(
                           children: [
                             Container(
-                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: Colors.indigo[200]),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15),
+                                  color: Colors.indigo[200]),
                               margin: const EdgeInsets.all(10),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -404,7 +488,9 @@ class _FacultyResultAddState extends State<FacultyResultAdd> {
                                       child: Text(
                                     key.toString(),
                                     textAlign: TextAlign.center,
-                                    style: const TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
+                                    style: const TextStyle(
+                                        fontSize: 23,
+                                        fontWeight: FontWeight.bold),
                                   )),
 
                                   // marks textfield
@@ -414,37 +500,54 @@ class _FacultyResultAddState extends State<FacultyResultAdd> {
                                       margin: const EdgeInsets.all(10),
                                       // decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white),
                                       child: TextFormField(
-                                        textAlignVertical: TextAlignVertical.center,
+                                        textAlignVertical:
+                                            TextAlignVertical.center,
                                         textAlign: TextAlign.center,
-                                        keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                                        controller: TextEditingController(text: marks[key].toString()),
+                                        keyboardType: const TextInputType
+                                            .numberWithOptions(decimal: true),
+                                        controller: TextEditingController(
+                                            text: marks[key].toString()),
                                         autofocus: false,
-                                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                                        inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*$'))],
+                                        autovalidateMode:
+                                            AutovalidateMode.onUserInteraction,
+                                        inputFormatters: [
+                                          FilteringTextInputFormatter.allow(
+                                              RegExp(r'^\d*\.?\d*$'))
+                                        ],
                                         validator: (key) {
                                           // key = key?.trim();
                                           if (key == null || key.isEmpty) {
                                             return "Empty";
-                                          } else if (key.startsWith('.') || key.endsWith('.')) {
+                                          } else if (key.startsWith('.') ||
+                                              key.endsWith('.')) {
                                             return "Invalid";
                                           }
                                           return null;
                                         },
                                         decoration: InputDecoration(
                                           // focusColor: Colors.black,
-                                          floatingLabelBehavior: FloatingLabelBehavior.never,
-                                          focusedBorder:
-                                              OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
-                                          border:
-                                              OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
+                                          floatingLabelBehavior:
+                                              FloatingLabelBehavior.never,
+                                          focusedBorder: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              borderSide: BorderSide.none),
+                                          border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              borderSide: BorderSide.none),
                                           filled: true,
                                           fillColor: Colors.white,
-                                          errorStyle: const TextStyle(fontSize: 10, color: Colors.white),
+                                          errorStyle: const TextStyle(
+                                              fontSize: 10,
+                                              color: Colors.white),
                                           // labelText: 'Name',
                                         ),
                                         onChanged: (value) {
                                           value = value.trim();
-                                          if (value.isNotEmpty && !value.endsWith('.') && !value.startsWith('.')) {
+                                          if (value.isNotEmpty &&
+                                              !value.endsWith('.') &&
+                                              !value.startsWith('.')) {
                                             marks[key] = double.parse(value);
                                           }
                                         },
@@ -477,7 +580,9 @@ class _FacultyResultAddState extends State<FacultyResultAdd> {
                         );
                       }
                     },
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3, childAspectRatio: 1.3),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 3, childAspectRatio: 1.3),
                   )
                 ],
               ),
@@ -490,7 +595,8 @@ class _FacultyResultAddState extends State<FacultyResultAdd> {
     showDialog(
         context: context,
         builder: (_) => AlertDialog(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30)),
               alignment: Alignment.center,
               title: const Text(
                 "Help",
@@ -513,155 +619,37 @@ class _FacultyResultAddState extends State<FacultyResultAdd> {
               actions: [
                 ElevatedButton(
                     style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(Colors.indigo[300]),
-                        shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)))),
+                        backgroundColor:
+                            MaterialStateProperty.all(Colors.indigo[300]),
+                        shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(50)))),
                     onPressed: () => Navigator.of(context).pop(),
                     child: const Text("OK"))
               ],
             ));
   }
 
-  // showDialogAddNew() {
-  //   // Map<int,double> record = {};
-  //   int? roll;
-  //   double? mark;
-  //   final rec = GlobalKey<FormState>();
-  //   showDialog(
-  //       context: context,
-  //       builder: (_) => AlertDialog(
-  //             backgroundColor: Colors.indigo[300],
-  //             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-  //             alignment: Alignment.center,
-  //             title: const Text(
-  //               "Add Record",
-  //               style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-  //             ),
-  //             content: Padding(
-  //               padding: const EdgeInsets.all(8.0),
-  //               child: Form(
-  //                 key: rec,
-  //                 child: Row(
-  //                   mainAxisAlignment: MainAxisAlignment.center,
-  //                   crossAxisAlignment: CrossAxisAlignment.center,
-  //                   children: [
-  //                     Expanded(
-  //                       flex: 3,
-  //                       child: Container(
-  //                         margin: const EdgeInsets.all(10),
-  //                         // decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white),
-  //                         child: TextFormField(
-  //                           textAlignVertical: TextAlignVertical.center,
-  //                           textAlign: TextAlign.center,
-  //                           keyboardType: TextInputType.number,
-  //                           // initialValue: marks[key].toString(),
-  //                           decoration: InputDecoration(
-  //                             // focusColor: Colors.black,
-  //                             errorStyle: const TextStyle(color: Colors.white),
-  //                             floatingLabelBehavior: FloatingLabelBehavior.never,
-  //                             focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
-  //                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
-  //                             filled: true,
-  //                             fillColor: Colors.white,
-  //                             labelText: 'Roll',
-  //                           ),
-  //                           validator: (key) {
-  //                             if (key == null || key.isEmpty) {
-  //                               return "Add roll";
-  //                             }
-  //                             return null;
-  //                           },
-  //                           onChanged: (key) {
-  //                             // marks[key] = double.parse(value);
-  //                             roll = int.parse(key);
-  //                             // todo
-  //                           },
-  //                         ),
-  //                       ),
-  //                     ),
-  //                     Expanded(
-  //                       flex: 3,
-  //                       child: Container(
-  //                         margin: const EdgeInsets.all(10),
-  //                         // decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white),
-  //                         child: TextFormField(
-  //                           textAlignVertical: TextAlignVertical.center,
-  //                           textAlign: TextAlign.center,
-  //                           keyboardType: TextInputType.number,
-  //                           // initialValue: marks[key].toString(),
-  //                           decoration: InputDecoration(
-  //                             // focusColor: Colors.black,
-  //                             errorStyle: const TextStyle(color: Colors.white),
-  //                             floatingLabelBehavior: FloatingLabelBehavior.never,
-  //                             focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
-  //                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
-  //                             filled: true,
-  //                             fillColor: Colors.white,
-  //                             labelText: 'Mark',
-  //                           ),
-  //                           validator: (key) {
-  //                             if (key == null || key.isEmpty) {
-  //                               return "Add mark";
-  //                             }
-  //                             return null;
-  //                           },
-  //                           onChanged: (value) {
-  //                             // todo
-  //                             mark = double.parse(value);
-  //                             // marks[key] = double.parse(value);
-  //                           },
-  //                         ),
-  //                       ),
-  //                     ),
-  //                   ],
-  //                 ),
-  //               ),
-  //             ),
-  //             actions: [
-  //               ElevatedButton(
-  //                   style: ButtonStyle(
-  //                       backgroundColor: MaterialStateProperty.all(Colors.white),
-  //                       shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)))),
-  //                   onPressed: () => Navigator.of(context).pop(),
-  //                   child: Text("Cancel", style: TextStyle(color: Colors.indigo[300]))),
-  //               ElevatedButton(
-  //                   style: ButtonStyle(
-  //                       backgroundColor: MaterialStateProperty.all(Colors.white),
-  //                       shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)))),
-  //                   onPressed: () {
-  //                     // todo
-  //                     if (rec.currentState!.validate()) {
-  //                       marks[roll!] = mark!;
-  //                       setState(() {
-  //                         Navigator.of(context).pop();
-  //                       });
-  //                     }
-  //                   },
-  //                   child: Text(
-  //                     "Add",
-  //                     style: TextStyle(color: Colors.indigo[300]),
-  //                   ))
-  //             ],
-  //           ));
-  // }
-
   void addForStudents(CollectionReference reference) async {
-   
-
     reference.doc("Roll_No").get().then((docsnap) {
-      (docsnap.data()! as Map<String, DocumentReference>).forEach((roll, DocumentReference ref) {
+      (docsnap.data()! as Map<String, dynamic>).forEach((roll, ref) {
         //todo notification
         ref.get().then((snap) {
           (snap.data()! as Map<String, dynamic>).containsKey("Token")
               ? NotificationAPI.postNotification(
                   title: "Result",
-                  message: "Result of ${namecontroller.text.trim()} for subject $selectedsub is Uploaded",
+                  message:
+                      "Result of ${namecontroller.text.trim()} for subject $selectedsub is Uploaded",
                   receiver: (snap.data()! as Map<String, dynamic>)['Token'])
               : null;
-        }).onError((error, stackTrace) => null);
+        });
         marks.containsKey(int.parse(roll))
             ? ref.collection("Result").doc(selectedsub).set({
-                namecontroller.text.trim(): {"mark": marks[int.parse(roll)], "total": total, 'time': DateTime.now()},
-              }, SetOptions(merge: true)).onError((error, stackTrace) => null)
+                namecontroller.text.trim(): {
+                  "mark": marks[int.parse(roll)],
+                  "total": total,
+                  'time': DateTime.now()
+                },
+              }, SetOptions(merge: true))
             : null;
       });
     });

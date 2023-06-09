@@ -53,7 +53,7 @@ class _StudentResultState extends State<StudentResult> {
           converter: (store) => store.state,
           builder: (context, state) {
             return StreamBuilder(
-                stream: inst.collection("Student_Detail/${state.prn}/Result").orderBy('time').snapshots(),
+                stream: inst.collection("Student_Detail/${state.prn}/Result").orderBy('UT.time').snapshots(),
                 builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> subjects) {
                   if (subjects.connectionState != ConnectionState.waiting) {
                     if (subjects.hasData && subjects.data!.docs.isNotEmpty) {

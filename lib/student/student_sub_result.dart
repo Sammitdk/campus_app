@@ -22,7 +22,7 @@ class _StudentSubResultState extends State<StudentSubResult> {
             appBar: AppBar(
               title: Text(
                 widget.subject,
-                style: TextStyle(overflow: TextOverflow.ellipsis),
+                style: const TextStyle(overflow: TextOverflow.ellipsis),
               ),
               backgroundColor: Colors.indigo[300],
             ),
@@ -58,7 +58,7 @@ class _StudentSubResultState extends State<StudentSubResult> {
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 18,
-                                          color: tests[key] ? Colors.green[800] : Colors.red)),
+                                          color: (tests[key]['mark']*100)/tests[key]['total'] > 35 ? Colors.green[800] : Colors.red)),
                                 ),
                               ],
                             ),

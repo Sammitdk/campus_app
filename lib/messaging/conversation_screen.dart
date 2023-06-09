@@ -126,33 +126,6 @@ class _ConversationScreenState extends State<ConversationScreen> {
                                           )));
                             }),
                       )
-                      // Positioned(
-                      //   bottom: 10,
-                      //   left: 0,
-                      //   right: 0,
-                      //   child: Padding(
-                      //     padding:
-                      //         const EdgeInsets.only(top: 16, left: 16, right: 16),
-                      //     child: TextField(
-                      //       decoration: InputDecoration(
-                      //         hintText: "Search...",
-                      //         hintStyle: TextStyle(color: Colors.grey.shade600),
-                      //         prefixIcon: Icon(
-                      //           Icons.search,
-                      //           color: Colors.grey.shade600,
-                      //           size: 20,
-                      //         ),
-                      //         filled: true,
-                      //         fillColor: Colors.grey.shade100,
-                      //         contentPadding: const EdgeInsets.all(8),
-                      //         enabledBorder: OutlineInputBorder(
-                      //             borderRadius: BorderRadius.circular(20),
-                      //             borderSide:
-                      //                 BorderSide(color: Colors.grey.shade100)),
-                      //       ),
-                      //     ),
-                      //   ),
-                      // ),
                     ],
                   ),
                   Stack(
@@ -213,33 +186,6 @@ class _ConversationScreenState extends State<ConversationScreen> {
                                           )));
                             }),
                       )
-                      // Positioned(
-                      //   bottom: 10,
-                      //   left: 0,
-                      //   right: 0,
-                      //   child: Padding(
-                      //     padding:
-                      //         const EdgeInsets.only(top: 16, left: 16, right: 16),
-                      //     child: TextField(
-                      //       decoration: InputDecoration(
-                      //         hintText: "Search...",
-                      //         hintStyle: TextStyle(color: Colors.grey.shade600),
-                      //         prefixIcon: Icon(
-                      //           Icons.search,
-                      //           color: Colors.grey.shade600,
-                      //           size: 20,
-                      //         ),
-                      //         filled: true,
-                      //         fillColor: Colors.grey.shade100,
-                      //         contentPadding: const EdgeInsets.all(8),
-                      //         enabledBorder: OutlineInputBorder(
-                      //             borderRadius: BorderRadius.circular(20),
-                      //             borderSide:
-                      //                 BorderSide(color: Colors.grey.shade100)),
-                      //       ),
-                      //     ),
-                      //   ),
-                      // ),
                     ],
                   ),
                 ],

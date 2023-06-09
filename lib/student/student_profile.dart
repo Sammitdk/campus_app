@@ -414,7 +414,6 @@ class StudentProfile extends HookWidget {
             child: const Icon(Icons.logout),
             label: 'Log Out',
             onTap: () {
-              // todo internet connection check before delete(Token)
               try {
                 // remove student device token
                 FirebaseFirestore.instance.doc("Student_Detail/${state.prn}").update({"Token": FieldValue.delete()}).then((value) {
