@@ -738,7 +738,6 @@ class _MessageScreenState extends State<MessageScreen> {
                                       });
 
                               // todo notification to receiver
-                              print("a" + widget.EmailR);
                               String receiver = await FirebaseFirestore.instance
                                   .collection("Student_Detail")
                                   .where("Email", isEqualTo: widget.EmailR)
@@ -761,14 +760,13 @@ class _MessageScreenState extends State<MessageScreen> {
                                   return '';
                                 }
                               });
-
-                              receiver.isNotEmpty
-                                  ? NotificationAPI.postNotification(
-                                      title:
-                                          "${widget.data.name['First'].toString().capitalize()} ${widget.data.name['Last'].toString().capitalize()}",
-                                      message: MessageScreen.myController.text,
-                                      receiver: receiver)
-                                  : null;
+                              if(receiver.isNotEmpty){
+                                NotificationAPI.postNotification(
+                                    title:
+                                    "${widget.data.name['First'].toString().capitalize()} ${widget.data.name['Last'].toString().capitalize()}",
+                                    message: MessageScreen.myController.text,
+                                    receiver: receiver);
+                              }
                             }
                           }
                           MessageScreen.myController.clear();

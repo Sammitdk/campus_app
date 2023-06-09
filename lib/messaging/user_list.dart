@@ -120,7 +120,7 @@ class User extends StatelessWidget {
                   FirebaseFirestore.instance.collection("Messages/${storeData.email}/Messages").doc(EmailR).get().then((value) => {
                         if (value.exists)
                           {
-                            print(imageUrl),
+                           
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(

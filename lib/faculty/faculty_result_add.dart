@@ -50,11 +50,11 @@ class _FacultyResultAddState extends State<FacultyResultAdd> {
                     backgroundColor: Colors.indigo[200],
                     foregroundColor: Colors.black,
                     onPressed: () async {
-                      print(marks);
+                     
                       setState(() => clicked = true);
                       if (fkey.currentState!.validate()) {
                         // marks['time'] = DateTime.now();
-                        print("valid");
+                       
                         Map<String, dynamic> temp = marks.map((key, value) => MapEntry(key.toString(), value));
                         temp['total'] = total = double.parse(markscontroller.text);
                         temp['time'] = DateTime.now();
@@ -64,7 +64,7 @@ class _FacultyResultAddState extends State<FacultyResultAdd> {
                           branchyear
                               .doc("Results/$selectedsub/${namecontroller.text}")
                               .set(temp, SetOptions(merge: true))
-                              .onError((error, stackTrace) => print("$error   $stackTrace"));
+                              .onError((error, stackTrace) => null);
                           addForStudents(branchyear);
                         }
                       }
@@ -250,7 +250,7 @@ class _FacultyResultAddState extends State<FacultyResultAdd> {
                                           marks.clear();
                                           filename = '';
                                           File file = File(result.files.single.path.toString());
-                                          print(file.readAsBytesSync().toList().runtimeType.toString());
+                                         
                                           var ex = Excel.decodeBytes(file.readAsBytesSync().toList());
                                           if (ex.tables.isNotEmpty) {
                                             String sheet = ex.tables.keys.single;
@@ -267,18 +267,18 @@ class _FacultyResultAddState extends State<FacultyResultAdd> {
                                             } else {
                                               ScaffoldMessenger.of(context).showSnackBar(
                                                   const SnackBar(content: Text("More or less than 2 columns present.\nSee HELP")));
-                                              print("Columns more or less");
+                                             
                                             }
                                           } else {
                                             ScaffoldMessenger.of(context)
                                                 .showSnackBar(const SnackBar(content: Text("No table found")));
-                                            print("not table");
+                                           
                                           }
                                         } else {
                                           // User canceled the picker
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(const SnackBar(content: Text("File not selected")));
-                                          print("file not selected");
+                                         
                                         }
                                         setState(() {});
                                       });
@@ -363,7 +363,7 @@ class _FacultyResultAddState extends State<FacultyResultAdd> {
                                         labelText: 'Roll',
                                         labelStyle: const TextStyle(fontSize: 15)),
                                     onChanged: (value) {
-                                      print(value);
+                                     
                                       if (value.isNotEmpty) {
                                         r = int.parse(value);
                                       } else {
@@ -645,7 +645,7 @@ class _FacultyResultAddState extends State<FacultyResultAdd> {
   // }
 
   void addForStudents(CollectionReference reference) async {
-    print(marks);
+   
 
     reference.doc("Roll_No").get().then((docsnap) {
       (docsnap.data()! as Map<String, DocumentReference>).forEach((roll, DocumentReference ref) {

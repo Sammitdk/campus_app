@@ -40,11 +40,13 @@ class _NoInternetState extends State<NoInternet> {
               onPressed: () async {
                 setState(() => clicked = true);
                 if (await InternetConnectionChecker().connectionStatus.then((value) => value == InternetConnectionStatus.connected)) {
-                  // todo restart app
+                  setState(() => clicked = false);
+                  Navigator.pushReplacementNamed(context, "/");
+                }else{
                   ScaffoldMessenger.of(context)
-                      .showSnackBar(const SnackBar(content: Text("Internet Connection is Back.\nPlease Restart the app")));
+                      .showSnackBar(const SnackBar(content: Text("No Internet")));
+                  setState(() => clicked = false);
                 }
-                setState(() => clicked = false);
               },
               label: const Text("Check Connection")),
       body: Column(

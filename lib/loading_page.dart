@@ -27,7 +27,7 @@ class _LoadingPageState extends State<LoadingPage> {
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (auth.currentUser?.email != null) {
-        // print(Provider.of<Auth>(context, listen: false).getUserType());
+        //
         FirebaseFirestore.instance
             .collection("Student_Detail")
             .where('Email', isEqualTo: auth.currentUser?.email)
@@ -37,12 +37,10 @@ class _LoadingPageState extends State<LoadingPage> {
             .then((value) async {
           if (value.count == 1) {
             await FetchData().fetchStudentData(auth.currentUser?.email).onError((error, stackTrace) {
-              print("$error   $stackTrace");
               return null;
             });
           } else {
             await FetchData().fetchFacultyData(auth.currentUser?.email).onError((error, stackTrace) {
-              print("$error   $stackTrace");
               return null;
             });
           }

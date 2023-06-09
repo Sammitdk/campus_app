@@ -49,16 +49,13 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
               backgroundColor: Colors.indigo[200],
               foregroundColor: Colors.black,
               onPressed: () async {
-                print("hello:::::::: ${records.length} $records");
                 setState(() => clicked = true);
                 if (fkey.currentState!.validate()) {
                   if (records.isNotEmpty) {
                     if (await showDialogConfirmation()) {
                       FirebaseFirestore inst = FirebaseFirestore.instance;
-                      print("valid");
                       records.forEach((key, value) {
                         value.addAll({'Branch': branch.trim(), 'imgUrl': ''});
-                        print(key + value.toString());
                         inst
                             .collection("Faculty_Detail")
                             .doc(key)
@@ -66,7 +63,6 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
                       });
                       records.clear();
                       filename = '';
-                      print(records);
                     }
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -187,11 +183,6 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
                                   filename = '';
                                   File file =
                                       File(result.files.single.path.toString());
-                                  print(file
-                                      .readAsBytesSync()
-                                      .toList()
-                                      .runtimeType
-                                      .toString());
                                   var ex = Excel.decodeBytes(
                                       file.readAsBytesSync().toList());
                                   if (ex.tables.isNotEmpty) {
@@ -286,7 +277,6 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
                                           }
                                         }
                                       }
-                                      print(records);
                                       setState(() =>
                                           filename = result.files.single.name);
                                     } else {
@@ -294,20 +284,17 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
                                           .showSnackBar(const SnackBar(
                                               content: Text(
                                                   "More or less than 5 columns present.\nSee HELP")));
-                                      print("Columns more or less");
                                     }
                                   } else {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                         const SnackBar(
                                             content: Text("No table found")));
-                                    print("not table");
                                   }
                                 } else {
                                   // User canceled the picker
                                   ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
                                           content: Text("File not selected")));
-                                  print("file not selected");
                                 }
                                 setState(() {});
                               });
@@ -385,7 +372,7 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
                               onPressed: () async {
                                 if (fkey.currentState!.validate()) {
                                   await showDialogAddFaculty();
-                                  print(records);
+                                 
                                   setState(() {});
                                 }
                               },
@@ -453,7 +440,7 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
                                           onPressed: () async {
                                             if (await showDialogAddNewSubject(
                                                 temp[index])) {
-                                              print(records[temp[index]]);
+                                             
                                               setState(() {});
                                             }
                                           },
@@ -487,7 +474,7 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
                                 ),
                                 onPressed: () => setState(() {
                                   records.remove(temp[index]);
-                                  print(records);
+                                 
                                 }),
                               ),
                             ),
@@ -743,7 +730,7 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
                             "Year": selectedyear.toString()
                           };
 
-                          print(records[name]);
+                         
                           setState(() {
                             Navigator.of(context).pop(true);
                           });

@@ -103,7 +103,7 @@ class _StudentResultState extends State<StudentResult> {
                             }),
                       );
                     } else {
-                      print(subjects.data!.docs);
+                     
                       return const Center(
                         child: Text(
                           'Records Not Added.',

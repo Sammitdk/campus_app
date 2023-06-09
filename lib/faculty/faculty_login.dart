@@ -135,7 +135,7 @@ class _FacultyLoginState extends State<FacultyLogin> {
                                     isStudent: false,
                                   )
                                       .onError((FirebaseException e, stackTrace) async {
-                                    print(e.code);
+                                   
                                     if (e.code == 'user-not-found') {
                                       return await Auth()
                                           .createUser(
@@ -144,7 +144,7 @@ class _FacultyLoginState extends State<FacultyLogin> {
                                         isStudent: false,
                                       )
                                           .onError((FirebaseException error, stackTrace) {
-                                        print("mmmmmmmm${error.code}");
+                                       
                                         return null;
                                       }).then((value) => true);
                                       // ScaffoldMessenger.of(context)

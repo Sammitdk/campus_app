@@ -204,7 +204,7 @@ class _GroupInfoState extends State<GroupInfo> {
                   child: ElevatedButton(
                     style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.green[400])),
                     onPressed: () {
-                      print(widget.data.email);
+                     
                       if (admins.contains(widget.data.email)) {
                         Navigator.push(
                             context,
