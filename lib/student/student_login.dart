@@ -133,9 +133,7 @@ class _StudentLoginState extends State<StudentLogin> {
                                         isStudent: true,
                                       )
                                           .onError((FirebaseException e, stackTrace) async {
-                                        print(e);
                                         if (e.code == 'user-not-found') {
-                                          print("askalsad");
                                           return await Auth()
                                               .createUser(
                                             username: emailController.text.trim(),
@@ -143,7 +141,6 @@ class _StudentLoginState extends State<StudentLogin> {
                                             isStudent: true,
                                           )
                                               .onError((FirebaseException error, stackTrace) {
-                                            print("mmmmmmmm${error.code}");
                                             return null;
                                           }).then((value) => true);
                                           // ScaffoldMessenger.of(context)
@@ -151,11 +148,14 @@ class _StudentLoginState extends State<StudentLogin> {
                                         } else if (e.code == 'wrong-password') {
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(const SnackBar(content: Text("Incorrect Password.")));
+                                          setState(() => isClicked = false);
                                         } else if (e.code == 'network-request-failed') {
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(const SnackBar(content: Text("Check Internet Connection.")));
+                                          setState(() => isClicked = false);
                                         } else {
                                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.code.toString())));
+                                          setState(() => isClicked = false);
                                         }
                                         return null;
                                         // return false;

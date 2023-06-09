@@ -59,7 +59,7 @@ class _FacultyAttendanceOptionState extends State<FacultyAttendanceOption> {
       }
       return value;
     });
-    print("$selectedtime  $selecteddate");
+   
     if (selecteddate != null && selectedtime != null) {
       time = selectedtime!;
       date = selecteddate;
@@ -86,9 +86,9 @@ class _FacultyAttendanceOptionState extends State<FacultyAttendanceOption> {
       body: StoreConnector<AppState, AppState>(
           converter: (store) => store.state,
           builder: (_, state) {
-            // print(state.subject.keys);
+            //
             subjects = state.subject.keys.toList();
-            // print(subjects);
+            //
             return Form(
               key: fkey,
               child: Padding(
@@ -167,7 +167,7 @@ class _FacultyAttendanceOptionState extends State<FacultyAttendanceOption> {
                                             ))
                                         .toList(),
                                     onChanged: (newvalue) {
-                                      print(newvalue);
+                                     
                                       if (newvalue != selectedsub) {
                                         setState(() {
                                           selectedsub = newvalue!;
@@ -206,7 +206,7 @@ class _FacultyAttendanceOptionState extends State<FacultyAttendanceOption> {
                             backgroundColor: Colors.indigo[300],
                             onPressed: () {
                               if (fkey.currentState!.validate()) {
-                                print("qqqqqqqqq${state.subject}");
+                               
                                 (date.isNotEmpty)
                                     ? Navigator.of(context).push(MaterialPageRoute(
                                         builder: (_) => FacultyAttendance(

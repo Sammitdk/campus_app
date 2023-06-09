@@ -53,13 +53,13 @@ class _StudentRecordAddState extends State<StudentRecordAdd> {
               backgroundColor: Colors.indigo[200],
               foregroundColor: Colors.black,
               onPressed: () async {
-                print("hello:::::::: ${records.length} $records");
+               
                 setState(() => clicked = true);
                 if (fkey.currentState!.validate()) {
                   if (records.isNotEmpty) {
                     if (await showDialogConfirmation()) {
                       FirebaseFirestore inst = FirebaseFirestore.instance;
-                      print("valid");
+                     
                       DocumentReference branchref =
                           inst.collection("College").doc(branch);
                       await branchref.set({'exist': true});
@@ -82,12 +82,12 @@ class _StudentRecordAddState extends State<StudentRecordAdd> {
                           "Branch": branch.trim(),
                           'imgUrl': ''
                         });
-                        print(key + value.toString());
+                       
                         inst
                             .collection("Student_Detail")
                             .doc(key)
                             .set(value, SetOptions(merge: true));
-                        print(branch + selectedyear);
+                       
                         branchref.collection(selectedyear).doc("Roll_No").set({
                           value["Roll_No"]:
                               inst.doc("Student_Detail/${value['PRN']}")
@@ -95,7 +95,7 @@ class _StudentRecordAddState extends State<StudentRecordAdd> {
                       });
                       records.clear();
                       filename = '';
-                      print(records);
+                     
                     }
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -1093,7 +1093,7 @@ class _StudentRecordAddState extends State<StudentRecordAdd> {
                           record["DOB"] = date;
                           records[record["PRN"]] = record;
 
-                          print(records);
+                         
                           setState(() {
                             Navigator.of(context).pop();
                           });

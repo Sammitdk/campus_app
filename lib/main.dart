@@ -35,7 +35,6 @@ void main() async {
     statusBarIconBrightness: Brightness.dark,
   ));
   if (await Permission.notification.status.isDenied) {
-    print("asasa");
     Permission.notification.request();
   }
 

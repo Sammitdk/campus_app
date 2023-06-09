@@ -9,7 +9,8 @@ class FacultyAttendanceHistory extends StatefulWidget {
   const FacultyAttendanceHistory({Key? key}) : super(key: key);
 
   @override
-  State<FacultyAttendanceHistory> createState() => _FacultyAttendanceHistoryState();
+  State<FacultyAttendanceHistory> createState() =>
+      _FacultyAttendanceHistoryState();
 }
 
 class _FacultyAttendanceHistoryState extends State<FacultyAttendanceHistory> {
@@ -21,7 +22,8 @@ class _FacultyAttendanceHistoryState extends State<FacultyAttendanceHistory> {
 
   Future<void> getDateAndAttendance(Map<String, dynamic> subject) async {
     QuerySnapshot attendanceSnap = await FirebaseFirestore.instance
-        .collection("College/${subject['branch']}/${subject['year']}/Attendance/$selectedsubject")
+        .collection(
+            "College/${subject['branch']}/${subject['year']}/Attendance/$selectedsubject")
         .orderBy('time', descending: true)
         .get();
     // await subject[0].collection(selectedsubject).get();
@@ -76,38 +78,51 @@ class _FacultyAttendanceHistoryState extends State<FacultyAttendanceHistory> {
                           const Expanded(
                               child: Text(
                             "Subject",
-                            style: TextStyle(fontSize: 25, color: Colors.white, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                                fontSize: 25,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
                             textAlign: TextAlign.center,
                           )),
                           Expanded(
                             flex: 3,
                             child: Container(
-                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: Colors.white),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15),
+                                  color: Colors.white),
                               margin: const EdgeInsets.all(20),
                               child: ButtonTheme(
                                 alignedDropdown: true,
                                 child: DropdownButtonHideUnderline(
                                   child: DropdownButton<String>(
                                     hint: const Text('Select.'),
-                                    style: TextStyle(fontSize: 20, color: Colors.indigo[300], overflow: TextOverflow.ellipsis),
-                                    icon: const Icon(Icons.arrow_drop_down_rounded),
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        color: Colors.indigo[300],
+                                        overflow: TextOverflow.ellipsis),
+                                    icon: const Icon(
+                                        Icons.arrow_drop_down_rounded),
                                     // iconSize: 40,
                                     elevation: 0,
-                                    value: selectedsubject.isEmpty ? null : selectedsubject,
+                                    value: selectedsubject.isEmpty
+                                        ? null
+                                        : selectedsubject,
                                     iconEnabledColor: Colors.green,
                                     // alignment: AlignmentDirectional.center,
                                     items: state.subject.keys
-                                        .map<DropdownMenuItem<String>>((value) => DropdownMenuItem<String>(
-                                              value: value,
-                                              child: Text(value),
-                                            ))
+                                        .map<DropdownMenuItem<String>>(
+                                            (value) => DropdownMenuItem<String>(
+                                                  value: value,
+                                                  child: Text(value),
+                                                ))
                                         .toList(),
                                     onChanged: (String? value) async {
                                       if (value != selectedsubject) {
                                         rolls = [];
                                         selecteddate = '';
                                         selectedsubject = value!;
-                                        await getDateAndAttendance(state.subject[selectedsubject]);
+                                        await getDateAndAttendance(
+                                            state.subject[selectedsubject]);
                                         setState(() {});
                                       }
                                     },
@@ -125,25 +140,36 @@ class _FacultyAttendanceHistoryState extends State<FacultyAttendanceHistory> {
                           const Expanded(
                               child: Text(
                             "Date",
-                            style: TextStyle(fontSize: 25, color: Colors.white, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                                fontSize: 25,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
                             textAlign: TextAlign.center,
                           )),
                           Expanded(
                             flex: 3,
                             child: Container(
-                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: Colors.white),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15),
+                                  color: Colors.white),
                               margin: const EdgeInsets.all(20),
                               child: ButtonTheme(
                                 alignedDropdown: true,
                                 child: DropdownButtonHideUnderline(
                                   child: DropdownButton(
                                       elevation: 0,
-                                      style: TextStyle(fontSize: 20, color: Colors.indigo[200], overflow: TextOverflow.ellipsis),
-                                      icon: const Icon(Icons.arrow_drop_down_rounded),
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          color: Colors.indigo[200],
+                                          overflow: TextOverflow.ellipsis),
+                                      icon: const Icon(
+                                          Icons.arrow_drop_down_rounded),
                                       // iconSize: 40,
                                       iconEnabledColor: Colors.green,
                                       iconDisabledColor: Colors.red,
-                                      value: selectedsubject.isNotEmpty ? selecteddate : null,
+                                      value: selectedsubject.isNotEmpty
+                                          ? selecteddate
+                                          : null,
                                       // alignment: AlignmentDirectional.center,
                                       hint: Text(selectedsubject.isNotEmpty
                                           ? dates.isNotEmpty
@@ -151,27 +177,33 @@ class _FacultyAttendanceHistoryState extends State<FacultyAttendanceHistory> {
                                               : "No Records added."
                                           : "Select."),
                                       items: dates.isNotEmpty
-                                          ? dates.map<DropdownMenuItem<String>>((value) {
+                                          ? dates.map<DropdownMenuItem<String>>(
+                                              (value) {
                                               return DropdownMenuItem<String>(
                                                 value: value.toString(),
                                                 child: Text(
-                                                    DateFormat('dd  MMM  yyyy hh:mm')
-                                                        .format(DateFormat('dd-MM-yyyy-hh-mm').parse(value)),
+                                                    DateFormat(
+                                                            'dd  MMM  yyyy hh:mm')
+                                                        .format(DateFormat(
+                                                                'dd-MM-yyyy-hh-mm')
+                                                            .parse(value)),
                                                     style: const TextStyle(
                                                       fontSize: 20,
                                                     ),
-                                                    textAlign: TextAlign.center),
+                                                    textAlign:
+                                                        TextAlign.center),
                                               );
                                             }).toList()
                                           : null,
                                       onChanged: selectedsubject.isNotEmpty
-                                          ? ((String? value) => value != selecteddate
-                                              ? setState(() {
-                                                  selecteddate = value!;
-                                                  rolls = getRolls();
-                                                  rolls.sort();
-                                                })
-                                              : null)
+                                          ? ((String? value) =>
+                                              value != selecteddate
+                                                  ? setState(() {
+                                                      selecteddate = value!;
+                                                      rolls = getRolls();
+                                                      rolls.sort();
+                                                    })
+                                                  : null)
                                           : null),
                                 ),
                               ),
@@ -189,7 +221,10 @@ class _FacultyAttendanceHistoryState extends State<FacultyAttendanceHistory> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Expanded(
-                            child: Text(DateFormat('dd  MMM  yyyy hh:mm').format(DateFormat('dd-MM-yyyy-hh-mm').parse(selecteddate)),
+                            child: Text(
+                                DateFormat('dd  MMM  yyyy hh:mm').format(
+                                    DateFormat('dd-MM-yyyy-hh-mm')
+                                        .parse(selecteddate)),
                                 style: const TextStyle(
                                   fontSize: 20,
                                 ),
@@ -208,10 +243,13 @@ class _FacultyAttendanceHistoryState extends State<FacultyAttendanceHistory> {
 
                 // attendance grid
                 Expanded(
-                  child: attendance.isNotEmpty && selecteddate.isNotEmpty && attendance[selecteddate].isNotEmpty
+                  child: attendance.isNotEmpty &&
+                          selecteddate.isNotEmpty &&
+                          attendance[selecteddate].isNotEmpty
                       ? GridView.builder(
                           scrollDirection: Axis.vertical,
-                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 6,
                           ),
                           itemCount: rolls.length,
@@ -221,9 +259,12 @@ class _FacultyAttendanceHistoryState extends State<FacultyAttendanceHistory> {
                               child: Container(
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
-                                  color: attendance[selecteddate][rolls[index]] ? Colors.green[200] : Colors.red[200],
+                                  color: attendance[selecteddate][rolls[index]]
+                                      ? Colors.green[200]
+                                      : Colors.red[200],
                                 ),
-                                child: Center(child: Text(rolls[index].toString())),
+                                child: Center(
+                                    child: Text(rolls[index].toString())),
                               ),
                             );
                           },
@@ -242,7 +283,8 @@ class _FacultyAttendanceHistoryState extends State<FacultyAttendanceHistory> {
     showDialog(
         context: context,
         builder: (_) => AlertDialog(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30)),
               alignment: Alignment.center,
               title: const Text(
                 "Delete",
@@ -254,12 +296,16 @@ class _FacultyAttendanceHistoryState extends State<FacultyAttendanceHistory> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(margin: const EdgeInsets.all(5), child: const Text("Do you want to delete Test Result of ")),
+                    Container(
+                        margin: const EdgeInsets.all(5),
+                        child: const Text(
+                            "Do you want to delete Test Result of ")),
                     Container(
                         margin: const EdgeInsets.all(5),
                         child: Text(
                           "$selecteddate ?",
-                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 20),
                         ))
                   ],
                 ),
@@ -267,16 +313,19 @@ class _FacultyAttendanceHistoryState extends State<FacultyAttendanceHistory> {
               actions: [
                 ElevatedButton(
                     style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(Colors.indigo[300]),
-                        shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)))),
+                        backgroundColor:
+                            MaterialStateProperty.all(Colors.indigo[300]),
+                        shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(50)))),
                     onPressed: () async {
                       Navigator.of(context).pop();
                       CollectionReference ref = FirebaseFirestore.instance
-                          .collection("College/${subject[selectedsubject]['branch']}/${subject[selectedsubject]['year']}");
+                          .collection(
+                              "College/${subject[selectedsubject]['branch']}/${subject[selectedsubject]['year']}");
                       ref
                           .doc("Attendance/$selectedsubject/$selecteddate")
                           .delete()
-                          .onError((error, stackTrace) => print("$error   $stackTrace"))
+                          .onError((error, stackTrace) => null)
                           .then((_) {
                         setState(() {
                           selectedsubject = '';
@@ -292,8 +341,10 @@ class _FacultyAttendanceHistoryState extends State<FacultyAttendanceHistory> {
                     child: const Text("Yes")),
                 ElevatedButton(
                     style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(Colors.indigo[300]),
-                        shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)))),
+                        backgroundColor:
+                            MaterialStateProperty.all(Colors.indigo[300]),
+                        shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(50)))),
                     onPressed: () => Navigator.of(context).pop(),
                     child: const Text("No"))
               ],
@@ -304,8 +355,10 @@ class _FacultyAttendanceHistoryState extends State<FacultyAttendanceHistory> {
     deptyear.doc("Roll_No").get().then((docsnap) {
       (docsnap.data()! as Map<String, dynamic>).forEach((roll, ref) {
         try {
-          print(" wwwwwwwww $selecteddate");
-          ref.collection('Attendance').doc(selectedsubject).update({selecteddate: FieldValue.delete()});
+          ref
+              .collection('Attendance')
+              .doc(selectedsubject)
+              .update({selecteddate: FieldValue.delete()});
         } on FirebaseException {}
       });
     });

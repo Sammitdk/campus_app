@@ -21,13 +21,10 @@ class StudentProfile extends HookWidget {
 
   Map<String, double> getChartValues(AsyncSnapshot data) {
     Map<String, double> chartvalue = {"Absent": 0};
-    // print(data.data!.docs.toList());
     data.data!.docs.forEach((element) {
-      // print(element.data());
       if (subjectList.contains(element.id)) {
         chartvalue[element.id] = 0;
         element.data().forEach((key, value) {
-          // print("$key  $value");
           if (value) {
             chartvalue[element.id] = chartvalue[element.id]! + 1;
           } else {
@@ -36,7 +33,6 @@ class StudentProfile extends HookWidget {
         });
       }
     });
-    // print(chartvalue);
     return chartvalue;
   }
 

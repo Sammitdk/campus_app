@@ -98,7 +98,7 @@ class _FacultyResultHistoryState extends State<FacultyResultHistory> {
                                           selectedtest = '';
                                           selectedsubject = value!;
                                           await getResult(state.subject[selectedsubject]);
-                                          print(result);
+                                         
                                           setState(() {});
                                         }
                                       },
@@ -327,7 +327,7 @@ class _FacultyResultHistoryState extends State<FacultyResultHistory> {
                       ref
                           .doc("Results/$selectedsubject/$selectedtest")
                           .delete()
-                          .onError((error, stackTrace) => print("$error   $stackTrace"))
+                          .onError((error, stackTrace) => null)
                           .then((_) {
                         deleteForEveryStudent(ref);
                         setState(() {

@@ -26,7 +26,7 @@ class Auth extends ChangeNotifier {
     bool? success;
     try {
       success = await fetch.getUserType(username);
-      print('eeeeeeeeeee $success $isStudent');
+     
       if (success != null) {
         if (isStudent == success) {
           await FirebaseAuth.instance
@@ -35,15 +35,15 @@ class Auth extends ChangeNotifier {
             //we got user
             _user = result.user;
             // _isStudent = success;
-            print(result.user);
+           
             if (success!) {
               await fetch.fetchStudentData(username).onError((error, stackTrace) {
-                print(" ooooooooooooooooo $error  $stackTrace");
+               
                 // return false;
               });
             } else {
               await fetch.fetchFacultyData(username).onError((error, stackTrace) {
-                print(" iiiiiiiiiiiiiiiii $error  $stackTrace");
+               
                 // return false;
               });
             }
@@ -67,7 +67,6 @@ class Auth extends ChangeNotifier {
         notifyListeners();
       });
     } catch (e) {
-      print(e);
       // return null;
     }
     // return null;
@@ -86,7 +85,7 @@ class Auth extends ChangeNotifier {
     bool? success;
     try {
       success = await fetch.getUserType(username);
-      print('eeeeeeeeeee $success $isStudent');
+     
       if (success != null) {
         if (isStudent == success) {
           await FirebaseAuth.instance
@@ -95,15 +94,15 @@ class Auth extends ChangeNotifier {
             //we got user
             _user = result.user;
             // _isStudent = success;
-            print(result.user);
+           
             if (success!) {
               await fetch.fetchStudentData(username).onError((error, stackTrace) {
-                print(" ooooooooooooooooo $error  $stackTrace");
+               
                 // return false;
               });
             } else {
               await fetch.fetchFacultyData(username).onError((error, stackTrace) {
-                print(" iiiiiiiiiiiiiiiii $error  $stackTrace");
+               
                 // return false;
               });
             }
