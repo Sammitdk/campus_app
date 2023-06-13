@@ -7,7 +7,6 @@ import 'package:campus_subsystem/student/student_syllabus.dart';
 import 'package:campus_subsystem/student/student_timetable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 import '../redux/reducer.dart';
 
 class StudentHome extends StatefulWidget {
@@ -188,7 +187,7 @@ class _StudentHomeState extends State<StudentHome> {
                       )),
                       Expanded(
                           child: InkWell(
-                        onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => StudentResult())),
+                        onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const StudentResult())),
                         child: Card(
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                           elevation: 5,

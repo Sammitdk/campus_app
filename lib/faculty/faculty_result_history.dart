@@ -98,7 +98,7 @@ class _FacultyResultHistoryState extends State<FacultyResultHistory> {
                                           selectedtest = '';
                                           selectedsubject = value!;
                                           await getResult(state.subject[selectedsubject]);
-                                         
+
                                           setState(() {});
                                         }
                                       },
@@ -322,13 +322,9 @@ class _FacultyResultHistoryState extends State<FacultyResultHistory> {
                         shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)))),
                     onPressed: () async {
                       Navigator.of(context).pop();
-                      CollectionReference ref = await FirebaseFirestore.instance
+                      CollectionReference ref = FirebaseFirestore.instance
                           .collection("College/${subject[selectedsubject]['branch']}/${subject[selectedsubject]['year']}");
-                      ref
-                          .doc("Results/$selectedsubject/$selectedtest")
-                          .delete()
-                          .onError((error, stackTrace) => null)
-                          .then((_) {
+                      ref.doc("Results/$selectedsubject/$selectedtest").delete().onError((error, stackTrace) => null).then((_) {
                         deleteForEveryStudent(ref);
                         setState(() {
                           // selectedsubject = '';
@@ -356,7 +352,7 @@ class _FacultyResultHistoryState extends State<FacultyResultHistory> {
       (docsnap.data()! as Map<String, dynamic>).forEach((roll, ref) {
         try {
           ref.collection('Result').doc(selectedsubject).update({selectedtest: FieldValue.delete()});
-        } on FirebaseException catch (e) {}
+        } on FirebaseException {}
       });
     });
   }

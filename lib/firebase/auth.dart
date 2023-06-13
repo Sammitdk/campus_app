@@ -26,7 +26,7 @@ class Auth extends ChangeNotifier {
     bool? success;
     try {
       success = await fetch.getUserType(username);
-     
+
       if (success != null) {
         if (isStudent == success) {
           await FirebaseAuth.instance
@@ -35,25 +35,24 @@ class Auth extends ChangeNotifier {
             //we got user
             _user = result.user;
             // _isStudent = success;
-           
+
             if (success!) {
               await fetch.fetchStudentData(username).onError((error, stackTrace) {
-               
                 // return false;
               });
             } else {
               await fetch.fetchFacultyData(username).onError((error, stackTrace) {
-               
                 // return false;
               });
             }
           });
+          return true;
         } else {
           return false;
         }
       }
       notifyListeners();
-      return true;
+      return null;
       // return _userFromCredUser(user);
     } on FirebaseAuthException {
       rethrow;
@@ -85,7 +84,7 @@ class Auth extends ChangeNotifier {
     bool? success;
     try {
       success = await fetch.getUserType(username);
-     
+
       if (success != null) {
         if (isStudent == success) {
           await FirebaseAuth.instance
@@ -94,23 +93,22 @@ class Auth extends ChangeNotifier {
             //we got user
             _user = result.user;
             // _isStudent = success;
-           
+
             if (success!) {
               await fetch.fetchStudentData(username).onError((error, stackTrace) {
-               
                 // return false;
               });
             } else {
               await fetch.fetchFacultyData(username).onError((error, stackTrace) {
-               
                 // return false;
               });
             }
+            return true;
           });
         }
       }
       notifyListeners();
-      return true;
+      return null;
       // return _userFromCredUser(user);
     } on FirebaseAuthException {
       rethrow;

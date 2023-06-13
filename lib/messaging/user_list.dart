@@ -93,9 +93,6 @@ class User extends StatelessWidget {
         storeData.email != EmailR
             ? IconButton(
                 onPressed: () {
-                  try {
-                    // todo
-                  } catch (e) {}
                   final data = {
                     'groupName': name['First'],
                     'imgUrl': imageUrl,
@@ -120,7 +117,6 @@ class User extends StatelessWidget {
                   FirebaseFirestore.instance.collection("Messages/${storeData.email}/Messages").doc(EmailR).get().then((value) => {
                         if (value.exists)
                           {
-                           
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(

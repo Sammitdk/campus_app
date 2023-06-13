@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:campus_subsystem/messaging/conversation_screen.dart';
 import 'package:campus_subsystem/redux/store.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -53,7 +52,7 @@ void main() async {
         debugShowCheckedModeBanner: false,
         initialRoute: '/',
         routes: {
-          '/': (context) => LoadingPage(),
+          '/': (context) => const LoadingPage(),
           'main': (context) => const Main(),
           'chat_screen': (context) => const ConversationScreen()
         },
@@ -151,7 +150,7 @@ class _MainState extends State<Main> with WidgetsBindingObserver {
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((event) {
-      Navigator.of(context).pushNamed("chat_screen");
+      Navigator.of(context).pushNamed("/");
     });
   }
 

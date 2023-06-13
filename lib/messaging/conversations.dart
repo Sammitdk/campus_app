@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:campus_subsystem/main.dart';
-import 'package:campus_subsystem/messaging/read_message-fetch.dart';
+import 'package:campus_subsystem/messaging/read_message_fetch.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -42,11 +42,9 @@ class ConversationList extends HookWidget {
     var countState = useState(count);
 
     if (isGroup) {
-      getMessageReads(store.state, name, isGroup)
-          .then((value) => {countState.value = value});
+      getMessageReads(store.state, name, isGroup).then((value) => {countState.value = value});
     } else {
-      getMessageReads(store.state, EmailR, false)
-          .then((value) => {countState.value = value});
+      getMessageReads(store.state, EmailR, false).then((value) => {countState.value = value});
     }
     return StoreConnector<AppState, AppState>(
         converter: (store) => store.state,
@@ -55,10 +53,7 @@ class ConversationList extends HookWidget {
             onTap: () {
               countState.value = 0;
               if (isGroup) {
-                FirebaseFirestore.instance
-                    .collection("GroupMessages")
-                    .doc(name)
-                    .update({"isMessageRead": true});
+                FirebaseFirestore.instance.collection("GroupMessages").doc(name).update({"isMessageRead": true});
                 Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -71,14 +66,8 @@ class ConversationList extends HookWidget {
                               data: data,
                             )));
               } else {
-                FirebaseFirestore.instance
-                    .collection("Messages/${data.email}/Messages")
-                    .doc(EmailR)
-                    .update({"isMessageRead": true});
-                FirebaseFirestore.instance
-                    .collection("Messages/$EmailR/Messages")
-                    .doc(data.email)
-                    .update({"isMessageRead": true});
+                FirebaseFirestore.instance.collection("Messages/${data.email}/Messages").doc(EmailR).update({"isMessageRead": true});
+                FirebaseFirestore.instance.collection("Messages/$EmailR/Messages").doc(data.email).update({"isMessageRead": true});
                 Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -93,8 +82,7 @@ class ConversationList extends HookWidget {
             },
             child: IgnorePointer(
               child: Container(
-                padding: const EdgeInsets.only(
-                    left: 16, right: 16, top: 10, bottom: 10),
+                padding: const EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 10),
                 child: Row(
                   children: <Widget>[
                     Expanded(
@@ -109,14 +97,11 @@ class ConversationList extends HookWidget {
                               );
                             },
                             placeholder: (context, url) => const CircleAvatar(
-                              backgroundImage:
-                                  AssetImage("assets/images/profile.gif"),
+                              backgroundImage: AssetImage("assets/images/profile.gif"),
                               maxRadius: 30,
                             ),
-                            errorWidget: (context, url, error) =>
-                            const CircleAvatar(
-                              backgroundImage:
-                              AssetImage("assets/images/profile.gif"),
+                            errorWidget: (context, url, error) => const CircleAvatar(
+                              backgroundImage: AssetImage("assets/images/profile.gif"),
                               maxRadius: 30,
                             ),
                             fit: BoxFit.cover,
@@ -145,9 +130,7 @@ class ConversationList extends HookWidget {
                                               style: TextStyle(
                                                   fontSize: 13,
                                                   color: Colors.grey.shade600,
-                                                  fontWeight: isMessageRead
-                                                      ? FontWeight.bold
-                                                      : FontWeight.normal),
+                                                  fontWeight: isMessageRead ? FontWeight.bold : FontWeight.normal),
                                             )
                                           : const SizedBox(),
                                       messageText.length >= 10
@@ -156,18 +139,14 @@ class ConversationList extends HookWidget {
                                               style: TextStyle(
                                                   fontSize: 15,
                                                   color: Colors.grey.shade600,
-                                                  fontWeight: !isMessageRead
-                                                      ? FontWeight.bold
-                                                      : FontWeight.normal),
+                                                  fontWeight: !isMessageRead ? FontWeight.bold : FontWeight.normal),
                                             )
                                           : Text(
                                               messageText,
                                               style: TextStyle(
                                                   fontSize: 15,
                                                   color: Colors.grey.shade600,
-                                                  fontWeight: !isMessageRead
-                                                      ? FontWeight.bold
-                                                      : FontWeight.normal),
+                                                  fontWeight: !isMessageRead ? FontWeight.bold : FontWeight.normal),
                                             ),
                                     ],
                                   ),
@@ -184,11 +163,7 @@ class ConversationList extends HookWidget {
                           padding: const EdgeInsets.only(top: 3, bottom: 10),
                           child: Text(
                             time,
-                            style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: !isMessageRead
-                                    ? FontWeight.bold
-                                    : FontWeight.normal),
+                            style: TextStyle(fontSize: 12, fontWeight: !isMessageRead ? FontWeight.bold : FontWeight.normal),
                           ),
                         ),
                         countState.value == 0
@@ -196,13 +171,9 @@ class ConversationList extends HookWidget {
                             : Container(
                                 height: 20,
                                 width: 20,
-                                decoration: BoxDecoration(
-                                    color: Colors.green[400],
-                                    shape: BoxShape.circle),
+                                decoration: BoxDecoration(color: Colors.green[400], shape: BoxShape.circle),
                                 child: Text(countState.value.toString(),
-                                    textAlign: TextAlign.center,
-                                    style:
-                                        const TextStyle(color: Colors.white)),
+                                    textAlign: TextAlign.center, style: const TextStyle(color: Colors.white)),
                               ),
                       ],
                     ),
