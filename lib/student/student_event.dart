@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import '../components/Event.dart';
+import '../components/event.dart';
 import '../redux/reducer.dart';
 
 class StudentEvent extends StatefulWidget {

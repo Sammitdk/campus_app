@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
-import 'package:provider/provider.dart';
 import '../firebase/auth.dart';
 import '../password_reset.dart';
 
@@ -76,10 +76,12 @@ class _FacultyLoginState extends State<FacultyLogin> {
                         padding: const EdgeInsets.only(left: 40, right: 40, bottom: 20),
                         child: TextFormField(
                           controller: emailController,
+                          inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[a-z]|[A-Z]|[0-9]|\.|@'))],
                           validator: (name) {
                             if (name == null || name.isEmpty) {
                               return 'Enter Email Address';
                             }
+                            return null;
                           },
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(),
@@ -95,6 +97,7 @@ class _FacultyLoginState extends State<FacultyLogin> {
                             if (pswd == null || pswd.isEmpty) {
                               return 'Enter Password';
                             }
+                            return null;
                           },
                           controller: passwordController,
                           decoration: InputDecoration(
@@ -135,7 +138,6 @@ class _FacultyLoginState extends State<FacultyLogin> {
                                     isStudent: false,
                                   )
                                       .onError((FirebaseException e, stackTrace) async {
-                                   
                                     if (e.code == 'user-not-found') {
                                       return await Auth()
                                           .createUser(
@@ -144,9 +146,8 @@ class _FacultyLoginState extends State<FacultyLogin> {
                                         isStudent: false,
                                       )
                                           .onError((FirebaseException error, stackTrace) {
-                                       
                                         return null;
-                                      }).then((value) => true);
+                                      }).then((value) => value);
                                       // ScaffoldMessenger.of(context)
                                       //     .showSnackBar(const SnackBar(content: Text("Invalid Email Address.")));
                                     } else if (e.code == 'wrong-password') {
@@ -167,6 +168,12 @@ class _FacultyLoginState extends State<FacultyLogin> {
                                         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                                             content: Text(
                                           "Don't use Student Login in Faculty section.",
+                                          maxLines: 2,
+                                        )));
+                                      } else {
+                                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                            content: Text(
+                                          "User not found",
                                           maxLines: 2,
                                         )));
                                       }

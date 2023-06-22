@@ -57,8 +57,9 @@ class FetchData extends ChangeNotifier {
         await firestoreinst
             .doc("Student_Detail/${value.docs[0]['PRN']}")
             .set({"Token": "${await FirebaseMessaging.instance.getToken()}"}, SetOptions(merge: true));
+
         store.dispatch(FetchData(
-            email: email,
+            email: value.docs[0]['Email'],
             prn: value.docs[0]['PRN'],
             roll_No: value.docs[0]['Roll_No'],
             address: value.docs[0]['Address'],
@@ -70,7 +71,7 @@ class FetchData extends ChangeNotifier {
             isStudent: true,
             branch: value.docs[0]["Branch"],
             imgUrl: value.docs[0].data().containsKey("imgUrl") ? value.docs[0]["imgUrl"] : null));
-      });
+      }).onError((error, stackTrace) {});
       // notifyListeners();
     } on FirebaseException {
       rethrow;
@@ -90,7 +91,7 @@ class FetchData extends ChangeNotifier {
             isStudent: false,
             imgUrl: value.docs[0].data().containsKey("imgUrl") ? value.docs[0]["imgUrl"] : null,
             subject: value.docs[0]["Subjects"]));
-      });
+      }).onError((error, stackTrace) {});
     } on FirebaseException {
       rethrow;
     }

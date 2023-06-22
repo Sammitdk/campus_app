@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:campus_subsystem/main.dart';
 import 'package:campus_subsystem/messaging/group_info.dart';
-import 'package:campus_subsystem/messaging/read_message-fetch.dart';
+import 'package:campus_subsystem/messaging/read_message_fetch.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -759,10 +759,10 @@ class _MessageScreenState extends State<MessageScreen> {
                                   return '';
                                 }
                               });
-                              if(receiver.isNotEmpty){
+                              if (receiver.isNotEmpty) {
                                 NotificationAPI.postNotification(
                                     title:
-                                    "${widget.data.name['First'].toString().capitalize()} ${widget.data.name['Last'].toString().capitalize()}",
+                                        "${widget.data.name['First'].toString().capitalize()} ${widget.data.name['Last'].toString().capitalize()}",
                                     message: MessageScreen.myController.text,
                                     receiver: receiver);
                               }

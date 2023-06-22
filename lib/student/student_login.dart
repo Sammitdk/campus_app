@@ -1,6 +1,7 @@
 import 'package:campus_subsystem/password_reset.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import '../firebase/auth.dart';
 
@@ -70,10 +71,12 @@ class _StudentLoginState extends State<StudentLogin> {
                         padding: const EdgeInsets.only(left: 40, right: 40, bottom: 20),
                         child: TextFormField(
                           controller: emailController,
+                          inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[a-z]|[A-Z]|[0-9]|\.|@'))],
                           validator: (name) {
                             if (name == null || name.isEmpty) {
                               return 'Enter Email Address';
                             }
+                            return null;
                           },
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(),
@@ -142,7 +145,7 @@ class _StudentLoginState extends State<StudentLogin> {
                                           )
                                               .onError((FirebaseException error, stackTrace) {
                                             return null;
-                                          }).then((value) => true);
+                                          }).then((value) => value);
                                           // ScaffoldMessenger.of(context)
                                           //     .showSnackBar(const SnackBar(content: Text("Invalid Email Address.")));
                                         } else if (e.code == 'wrong-password') {
@@ -167,6 +170,12 @@ class _StudentLoginState extends State<StudentLogin> {
                                             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                                                 content: Text(
                                               "Don't use Faculty Login in Student section.",
+                                              maxLines: 2,
+                                            )));
+                                          } else {
+                                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                                content: Text(
+                                              "User not found",
                                               maxLines: 2,
                                             )));
                                           }

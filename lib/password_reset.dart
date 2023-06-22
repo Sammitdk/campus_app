@@ -37,6 +37,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                   if (email == null || email.isEmpty) {
                     return 'Enter Email';
                   }
+                  return null;
                 },
               ),
             ),

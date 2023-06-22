@@ -56,17 +56,13 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
                       FirebaseFirestore inst = FirebaseFirestore.instance;
                       records.forEach((key, value) {
                         value.addAll({'Branch': branch.trim(), 'imgUrl': ''});
-                        inst
-                            .collection("Faculty_Detail")
-                            .doc(key)
-                            .set(value, SetOptions(merge: true));
+                        inst.collection("Faculty_Detail").doc(key).set(value, SetOptions(merge: true));
                       });
                       records.clear();
                       filename = '';
                     }
                   } else {
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        content: Text("No Records found to Upload")));
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("No Records found to Upload")));
                   }
                 }
 
@@ -78,11 +74,7 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
               ),
               label: const Text(
                 "Submit",
-                style: TextStyle(
-                    fontFamily: 'MuliBold',
-                    fontSize: 20,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold),
+                style: TextStyle(fontFamily: 'MuliBold', fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
               ),
             ),
       appBar: AppBar(
@@ -119,34 +111,22 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
                         Expanded(
                           flex: 3,
                           child: Container(
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(18),
-                                color: Colors.white),
+                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(18), color: Colors.white),
                             margin: const EdgeInsets.all(20),
                             child: ButtonTheme(
                               alignedDropdown: true,
                               child: DropdownButtonHideUnderline(
                                 child: DropdownButton<String>(
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      color: Colors.indigo[300],
-                                      overflow: TextOverflow.ellipsis),
-                                  icon:
-                                      const Icon(Icons.arrow_drop_down_rounded),
+                                  style: TextStyle(fontSize: 20, color: Colors.indigo[300], overflow: TextOverflow.ellipsis),
+                                  icon: const Icon(Icons.arrow_drop_down_rounded),
                                   iconEnabledColor: Colors.green,
                                   alignment: AlignmentDirectional.center,
                                   value: branch,
-                                  items: <String>[
-                                    'CSE',
-                                    'CIVIL',
-                                    'DATA_SCIENCE',
-                                    'MECHANICAL'
-                                  ]
-                                      .map<DropdownMenuItem<String>>(
-                                          (value) => DropdownMenuItem<String>(
-                                                value: value,
-                                                child: Text(value),
-                                              ))
+                                  items: <String>['CSE', 'CIVIL', 'DATA_SCIENCE', 'MECHANICAL']
+                                      .map<DropdownMenuItem<String>>((value) => DropdownMenuItem<String>(
+                                            value: value,
+                                            child: Text(value),
+                                          ))
                                       .toList(),
                                   onChanged: (newvalue) {
                                     setState(() {
@@ -174,47 +154,26 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
                               FilePicker.platform.pickFiles(
                                   type: FileType.custom,
                                   allowMultiple: false,
-                                  allowedExtensions: [
-                                    "xlsx",
-                                    "xls",
-                                    "xlsm"
-                                  ]).then((result) {
+                                  allowedExtensions: ["xlsx", "xls", "xlsm"]).then((result) {
                                 if (result != null) {
                                   filename = '';
-                                  File file =
-                                      File(result.files.single.path.toString());
-                                  var ex = Excel.decodeBytes(
-                                      file.readAsBytesSync().toList());
+                                  File file = File(result.files.single.path.toString());
+                                  var ex = Excel.decodeBytes(file.readAsBytesSync().toList());
                                   if (ex.tables.isNotEmpty) {
                                     String sheet = ex.tables.keys.single;
                                     if (ex.tables[sheet]!.maxCols == 5) {
                                       for (var row in ex.tables[sheet]!.rows) {
                                         if (count == 0) {
-                                          for (int i = 0;
-                                              i < ex.tables[sheet]!.maxCols;
-                                              i++) {
-                                            if (RegExp('.*email.*', caseSensitive: false)
-                                                .hasMatch(
-                                                    row[i]!.value.toString())) {
+                                          for (int i = 0; i < ex.tables[sheet]!.maxCols; i++) {
+                                            if (RegExp('.*email.*', caseSensitive: false).hasMatch(row[i]!.value.toString())) {
                                               m['Email'] = i;
-                                            } else if (RegExp('.*first.*',
-                                                    caseSensitive: false)
-                                                .hasMatch(
-                                                    row[i]!.value.toString())) {
+                                            } else if (RegExp('.*first.*', caseSensitive: false).hasMatch(row[i]!.value.toString())) {
                                               m['First'] = i;
-                                            } else if (RegExp('.*middle.*',
-                                                    caseSensitive: false)
-                                                .hasMatch(
-                                                    row[i]!.value.toString())) {
+                                            } else if (RegExp('.*middle.*', caseSensitive: false).hasMatch(row[i]!.value.toString())) {
                                               m['Middle'] = i;
-                                            } else if (RegExp('.*last.*',
-                                                    caseSensitive: false)
-                                                .hasMatch(
-                                                    row[i]!.value.toString())) {
+                                            } else if (RegExp('.*last.*', caseSensitive: false).hasMatch(row[i]!.value.toString())) {
                                               m['Last'] = i;
-                                            } else if (RegExp(
-                                                    '.*mob.*|.*phone.*|.*whatsapp.*|',
-                                                    caseSensitive: false)
+                                            } else if (RegExp('.*mob.*|.*phone.*|.*whatsapp.*|', caseSensitive: false)
                                                 .hasMatch(row[i]!.value.toString())) {
                                               m['Mobile'] = i;
                                             }
@@ -222,94 +181,51 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
 
                                           count += 1;
                                         } else {
-                                          Map<String, dynamic> facultyDetail =
-                                              {};
-                                          if (row[m['Mobile']!]
-                                                      ?.value
-                                                      .toString() !=
-                                                  null &&
-                                              row[
-                                                          m['First']!]
-                                                      ?.value
-                                                      .toString() !=
-                                                  null &&
-                                              row[m['Middle']!]
-                                                      ?.value
-                                                      .toString() !=
-                                                  null &&
-                                              row[m['Last']!]
-                                                      ?.value
-                                                      .toString() !=
-                                                  null &&
-                                              row[m['Email']!]
-                                                      ?.value
-                                                      .toString() !=
-                                                  null) {
-                                            String? mobile = row[m['Mobile']!]!
-                                                .value
-                                                .toString();
-                                            String? fName = row[m['First']!]!
-                                                .value
-                                                .toString();
-                                            String? mName = row[m['Middle']!]
-                                                ?.value
-                                                .toString();
-                                            String? lName = row[m['Last']!]!
-                                                .value
-                                                .toString();
+                                          Map<String, dynamic> facultyDetail = {};
+                                          if (row[m['Mobile']!]?.value.toString() != null &&
+                                              row[m['First']!]?.value.toString() != null &&
+                                              row[m['Middle']!]?.value.toString() != null &&
+                                              row[m['Last']!]?.value.toString() != null &&
+                                              row[m['Email']!]?.value.toString() != null) {
+                                            String? mobile = row[m['Mobile']!]!.value.toString();
+                                            String? fName = row[m['First']!]!.value.toString();
+                                            String? mName = row[m['Middle']!]?.value.toString();
+                                            String? lName = row[m['Last']!]!.value.toString();
 
-                                            String? email = row[m['Email']!]
-                                                ?.value
-                                                .toString();
+                                            String? email = row[m['Email']!]?.value.toString();
 
                                             facultyDetail["Mobile"] = mobile;
 
-                                            facultyDetail["Name"] = {
-                                              "First": fName,
-                                              "Middle": mName,
-                                              "Last": lName
-                                            };
+                                            facultyDetail["Name"] = {"First": fName, "Middle": mName, "Last": lName};
 
                                             facultyDetail["Email"] = email;
 
-                                            records[facultyDetail['Email']] =
-                                                facultyDetail;
+                                            records[facultyDetail['Email']] = facultyDetail;
                                           }
                                         }
                                       }
-                                      setState(() =>
-                                          filename = result.files.single.name);
+                                      setState(() => filename = result.files.single.name);
                                     } else {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(const SnackBar(
-                                              content: Text(
-                                                  "More or less than 5 columns present.\nSee HELP")));
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                          const SnackBar(content: Text("More or less than 5 columns present.\nSee HELP")));
                                     }
                                   } else {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(
-                                            content: Text("No table found")));
+                                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("No table found")));
                                   }
                                 } else {
                                   // User canceled the picker
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                          content: Text("File not selected")));
+                                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("File not selected")));
                                 }
                                 setState(() {});
                               });
                             },
                             icon: Icon(
                               filename.isNotEmpty ? Icons.done : Icons.add,
-                              color: filename.isNotEmpty
-                                  ? Colors.green[300]
-                                  : Colors.black,
+                              color: filename.isNotEmpty ? Colors.green[300] : Colors.black,
                             ),
                             label: Text(
                               filename.isNotEmpty ? filename : "Add Excel File",
-                              style: const TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold),
+                              style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
                             ),
                             backgroundColor: Colors.white,
                           ),
@@ -332,18 +248,14 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
             ),
             Card(
               shadowColor: Colors.indigo[300],
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15)),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
               elevation: 10,
               margin: const EdgeInsets.all(10),
               child: Column(
                 children: [
                   Text(
                     "Records : ${records.length}",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.indigo[300],
-                        fontSize: 20),
+                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.indigo[300], fontSize: 20),
                   ),
                   const SizedBox(
                     height: 10,
@@ -357,11 +269,8 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
                       temp.sort();
 
                       if (index == records.length) {
-                        int? r;
                         return Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
-                              color: Colors.indigo[200]),
+                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: Colors.indigo[200]),
                           margin: const EdgeInsets.all(10),
                           child: Center(
                             child: IconButton(
@@ -372,7 +281,7 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
                               onPressed: () async {
                                 if (fkey.currentState!.validate()) {
                                   await showDialogAddFaculty();
-                                 
+
                                   setState(() {});
                                 }
                               },
@@ -384,33 +293,26 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
                           children: [
                             InkWell(
                               child: Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(15),
-                                    color: Colors.indigo[200]),
+                                decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: Colors.indigo[200]),
                                 margin: const EdgeInsets.all(10),
                                 padding: const EdgeInsets.all(10),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
                                       children: [
                                         Expanded(
                                           flex: 1,
                                           child: Text(
                                             "${records[temp[index]]["Email"].toString()} :",
-                                            style: const TextStyle(
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.bold),
+                                            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                                           ),
                                         ),
                                         Expanded(
                                           flex: 1,
                                           child: Text(
-                                            getName(records[temp[index]]
-                                                    ["Name"])
-                                                .toString(),
+                                            getName(records[temp[index]]["Name"]).toString(),
                                             maxLines: 3,
                                             // overflow: TextOverflow.ellipsis,
 
@@ -438,9 +340,7 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
                                             ),
                                           ),
                                           onPressed: () async {
-                                            if (await showDialogAddNewSubject(
-                                                temp[index])) {
-                                             
+                                            if (await showDialogAddNewSubject(temp[index])) {
                                               setState(() {});
                                             }
                                           },
@@ -448,8 +348,7 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
                                       ],
                                     ),
                                     records[temp[index]].containsKey('Subjects')
-                                        ? Text(
-                                            "${records[temp[index]]['Subjects'].keys.toList().join(',')}")
+                                        ? Text("${records[temp[index]]['Subjects'].keys.toList().join(',')}")
                                         : Container()
                                   ],
                                 ),
@@ -474,7 +373,6 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
                                 ),
                                 onPressed: () => setState(() {
                                   records.remove(temp[index]);
-                                 
                                 }),
                               ),
                             ),
@@ -496,8 +394,7 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
     showDialog(
         context: context,
         builder: (_) => AlertDialog(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30)),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
               alignment: Alignment.center,
               title: const Text(
                 "Help",
@@ -520,10 +417,8 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
               actions: [
                 ElevatedButton(
                     style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all(Colors.indigo[300]),
-                        shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(50)))),
+                        backgroundColor: MaterialStateProperty.all(Colors.indigo[300]),
+                        shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)))),
                     onPressed: () => Navigator.of(context).pop(),
                     child: const Text("OK"))
               ],
@@ -534,8 +429,7 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
     showDialog(
         context: context,
         builder: (_) => AlertDialog(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30)),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
               alignment: Alignment.center,
               title: Text(
                 records[name].keys.elementAt(0).toString(),
@@ -559,10 +453,8 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
               actions: [
                 ElevatedButton(
                     style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all(Colors.indigo[300]),
-                        shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(50)))),
+                        backgroundColor: MaterialStateProperty.all(Colors.indigo[300]),
+                        shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)))),
                     onPressed: () => Navigator.of(context).pop(),
                     child: const Text("OK")),
               ],
@@ -589,13 +481,11 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
         builder: (_) => StatefulBuilder(builder: (context, setState) {
               return AlertDialog(
                 backgroundColor: Colors.indigo[300],
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30)),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
                 alignment: Alignment.center,
                 title: const Text(
                   "Add Subject",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold, color: Colors.white),
+                  style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
                 ),
                 content: SingleChildScrollView(
                   scrollDirection: Axis.vertical,
@@ -612,16 +502,11 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
                               textAlignVertical: TextAlignVertical.center,
                               textAlign: TextAlign.center,
                               decoration: InputDecoration(
-                                errorStyle:
-                                    const TextStyle(color: Colors.white),
-                                floatingLabelBehavior:
-                                    FloatingLabelBehavior.never,
-                                focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                    borderSide: BorderSide.none),
-                                border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                    borderSide: BorderSide.none),
+                                errorStyle: const TextStyle(color: Colors.white),
+                                floatingLabelBehavior: FloatingLabelBehavior.never,
+                                focusedBorder:
+                                    OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
+                                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
                                 filled: true,
                                 fillColor: Colors.white,
                                 labelText: 'Subject',
@@ -642,8 +527,7 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
                                 borderRadius: BorderRadius.circular(20),
                               ),
                               child: Padding(
-                                padding:
-                                    const EdgeInsets.only(left: 15, right: 10),
+                                padding: const EdgeInsets.only(left: 15, right: 10),
                                 child: DropdownButtonFormField<String?>(
                                   hint: const Text("Select Year"),
                                   isExpanded: true,
@@ -674,8 +558,7 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
                                 borderRadius: BorderRadius.circular(20),
                               ),
                               child: Padding(
-                                padding:
-                                    const EdgeInsets.only(left: 15, right: 10),
+                                padding: const EdgeInsets.only(left: 15, right: 10),
                                 child: DropdownButtonFormField<String?>(
                                     hint: const Text("Select Sem"),
                                     isExpanded: true,
@@ -704,33 +587,24 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
                 actions: [
                   ElevatedButton(
                       style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all(Colors.white),
-                          shape: MaterialStateProperty.all(
-                              RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(50)))),
+                          backgroundColor: MaterialStateProperty.all(Colors.white),
+                          shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)))),
                       onPressed: () => Navigator.of(context).pop(false),
-                      child: Text("Cancel",
-                          style: TextStyle(color: Colors.indigo[300]))),
+                      child: Text("Cancel", style: TextStyle(color: Colors.indigo[300]))),
                   ElevatedButton(
                       style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all(Colors.white),
-                          shape: MaterialStateProperty.all(
-                              RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(50)))),
+                          backgroundColor: MaterialStateProperty.all(Colors.white),
+                          shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)))),
                       onPressed: () {
                         if (rec.currentState!.validate()) {
                           if (!records[name].containsKey('Subjects')) {
                             records[name]['Subjects'] = {};
                           }
-                          records[name]['Subjects']
-                              [subjectNamecontroller.text.toString().trim()] = {
+                          records[name]['Subjects'][subjectNamecontroller.text.toString().trim()] = {
                             "Branch": branch.toString().trim(),
                             "Year": selectedyear.toString()
                           };
 
-                         
                           setState(() {
                             Navigator.of(context).pop(true);
                           });
@@ -745,24 +619,22 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
             })).then((value) => value != null && value ? true : false);
   }
 
+  final rec = GlobalKey<FormState>();
+  TextEditingController firstcontroller = TextEditingController();
+  TextEditingController lastcontroller = TextEditingController();
+  TextEditingController middlecontroller = TextEditingController();
+  TextEditingController mobilecontroller = TextEditingController();
+  TextEditingController emailcontroller = TextEditingController();
   showDialogAddFaculty() {
-    final rec = GlobalKey<FormState>();
-    TextEditingController firstcontroller = TextEditingController();
-    TextEditingController lastcontroller = TextEditingController();
-    TextEditingController middlecontroller = TextEditingController();
-    TextEditingController mobilecontroller = TextEditingController();
-    TextEditingController emailcontroller = TextEditingController();
     showDialog(
         context: context,
         builder: (_) => AlertDialog(
               backgroundColor: Colors.indigo[300],
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30)),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
               alignment: Alignment.center,
               title: const Text(
                 "Add Record",
-                style:
-                    TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
               ),
               content: SingleChildScrollView(
                 scrollDirection: Axis.vertical,
@@ -778,17 +650,13 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
                             controller: firstcontroller,
                             textAlignVertical: TextAlignVertical.center,
                             textAlign: TextAlign.center,
-                            keyboardType: TextInputType.text,
+                            inputFormatters: [FilteringTextInputFormatter.allow(RegExp('[a-z]|[A-Z]'))],
+                            keyboardType: TextInputType.name,
                             decoration: InputDecoration(
                               errorStyle: const TextStyle(color: Colors.white),
-                              floatingLabelBehavior:
-                                  FloatingLabelBehavior.never,
-                              focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide.none),
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide.none),
+                              floatingLabelBehavior: FloatingLabelBehavior.never,
+                              focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
+                              border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
                               filled: true,
                               fillColor: Colors.white,
                               labelText: 'First Name',
@@ -807,17 +675,14 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
                             controller: middlecontroller,
                             textAlignVertical: TextAlignVertical.center,
                             textAlign: TextAlign.center,
-                            keyboardType: TextInputType.text,
+                            inputFormatters: [FilteringTextInputFormatter.allow(RegExp('[a-z]|[A-Z]'))],
+                            keyboardType: TextInputType.name,
+                            // keyboardType: TextInputType.name,
                             decoration: InputDecoration(
                               errorStyle: const TextStyle(color: Colors.white),
-                              floatingLabelBehavior:
-                                  FloatingLabelBehavior.never,
-                              focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide.none),
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide.none),
+                              floatingLabelBehavior: FloatingLabelBehavior.never,
+                              focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
+                              border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
                               filled: true,
                               fillColor: Colors.white,
                               labelText: 'Middle Name',
@@ -836,17 +701,13 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
                             controller: lastcontroller,
                             textAlignVertical: TextAlignVertical.center,
                             textAlign: TextAlign.center,
-                            keyboardType: TextInputType.text,
+                            inputFormatters: [FilteringTextInputFormatter.allow(RegExp('[a-z]|[A-Z]'))],
+                            keyboardType: TextInputType.name,
                             decoration: InputDecoration(
                               errorStyle: const TextStyle(color: Colors.white),
-                              floatingLabelBehavior:
-                                  FloatingLabelBehavior.never,
-                              focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide.none),
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide.none),
+                              floatingLabelBehavior: FloatingLabelBehavior.never,
+                              focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
+                              border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
                               filled: true,
                               fillColor: Colors.white,
                               labelText: 'Last Name',
@@ -865,30 +726,24 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
                             controller: emailcontroller,
                             textAlignVertical: TextAlignVertical.center,
                             textAlign: TextAlign.center,
+                            inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[a-z]|[A-Z]|[0-9]|\.|@'))],
                             keyboardType: TextInputType.emailAddress,
                             decoration: InputDecoration(
                               errorStyle: const TextStyle(color: Colors.white),
-                              floatingLabelBehavior:
-                                  FloatingLabelBehavior.never,
-                              focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide.none),
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide.none),
+                              floatingLabelBehavior: FloatingLabelBehavior.never,
+                              focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
+                              border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
                               filled: true,
                               fillColor: Colors.white,
                               labelText: 'Email',
                             ),
                             validator: (key) {
                               if (key != null && key.isNotEmpty) {
-                                if (key.length < 7 &&
-                                    !key.startsWith('@') &&
-                                    !key.contains('@') &&
-                                    !key.endsWith('.com')) {
-                                  return 'Enter a Valid Email Address';
-                                } else {
+                                int at = key.indexOf('@'), dot = key.indexOf('.');
+                                if (at > 1 && dot < key.length - 2 && at < dot - 2) {
                                   return null;
+                                } else {
+                                  return 'Enter Valid Email Address';
                                 }
                               } else {
                                 return 'Enter Email';
@@ -903,19 +758,12 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
                             textAlignVertical: TextAlignVertical.center,
                             textAlign: TextAlign.center,
                             keyboardType: TextInputType.number,
-                            inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly
-                            ],
+                            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                             decoration: InputDecoration(
                               errorStyle: const TextStyle(color: Colors.white),
-                              floatingLabelBehavior:
-                                  FloatingLabelBehavior.never,
-                              focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide.none),
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide.none),
+                              floatingLabelBehavior: FloatingLabelBehavior.never,
+                              focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
+                              border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
                               filled: true,
                               fillColor: Colors.white,
                               labelText: 'Mobile',
@@ -923,6 +771,10 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
                             validator: (key) {
                               if (key == null || key.isEmpty) {
                                 return "Enter Mobile number";
+                              } else {
+                                if (key.length != 10) {
+                                  return 'Enter Valid Mobile Number';
+                                }
                               }
                               return null;
                             },
@@ -936,29 +788,21 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
               actions: [
                 ElevatedButton(
                     style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all(Colors.white),
-                        shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(50)))),
+                        backgroundColor: MaterialStateProperty.all(Colors.white),
+                        shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)))),
                     onPressed: () => Navigator.of(context).pop(),
-                    child: Text("Cancel",
-                        style: TextStyle(color: Colors.indigo[300]))),
+                    child: Text("Cancel", style: TextStyle(color: Colors.indigo[300]))),
                 ElevatedButton(
                     style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all(Colors.white),
-                        shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(50)))),
+                        backgroundColor: MaterialStateProperty.all(Colors.white),
+                        shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)))),
                     onPressed: () {
                       if (rec.currentState!.validate()) {
                         if (!records.containsKey(emailcontroller.text.trim())) {
-                          records[emailcontroller.text.trim()] =
-                              <String, dynamic>{};
+                          records[emailcontroller.text.trim()] = <String, dynamic>{};
                         }
-                        records[emailcontroller.text.trim()]["Email"] =
-                            emailcontroller.text.trim();
-                        records[emailcontroller.text.trim()]["Mobile"] =
-                            mobilecontroller.text.trim();
+                        records[emailcontroller.text.trim()]["Email"] = emailcontroller.text.trim();
+                        records[emailcontroller.text.trim()]["Mobile"] = mobilecontroller.text.trim();
                         records[emailcontroller.text.trim()]["Name"] = {
                           "First": firstcontroller.text.toString().trim(),
                           "Middle": middlecontroller.text.toString().trim(),
@@ -982,8 +826,7 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
     return await showDialog<bool>(
         context: context,
         builder: (context) => AlertDialog(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30)),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
               alignment: Alignment.center,
               title: const Text(
                 "Confirm",
@@ -995,27 +838,21 @@ class _FacultyRecordsAddState extends State<FacultyRecordsAdd> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                        margin: const EdgeInsets.all(5),
-                        child: const Text("Do you want to add to Database.")),
+                    Container(margin: const EdgeInsets.all(5), child: const Text("Do you want to add to Database.")),
                   ],
                 ),
               ),
               actions: [
                 ElevatedButton(
                     style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all(Colors.indigo[300]),
-                        shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(50)))),
+                        backgroundColor: MaterialStateProperty.all(Colors.indigo[300]),
+                        shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)))),
                     onPressed: () => Navigator.of(context).pop<bool>(true),
                     child: const Text("Yes")),
                 ElevatedButton(
                     style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all(Colors.indigo[300]),
-                        shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(50)))),
+                        backgroundColor: MaterialStateProperty.all(Colors.indigo[300]),
+                        shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)))),
                     onPressed: () => Navigator.of(context).pop(false),
                     child: const Text("No"))
               ],

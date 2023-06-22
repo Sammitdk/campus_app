@@ -1,20 +1,13 @@
 import 'dart:async';
-import 'package:campus_subsystem/firebase/auth.dart';
-import 'package:campus_subsystem/firebase/wrapper.dart';
 import 'package:campus_subsystem/redux/actions/fetchUserData.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:provider/provider.dart';
-
-import 'firebase_options.dart';
 
 class LoadingPage extends StatefulWidget {
   // final String? email;
 
-  LoadingPage({Key? key}) : super(key: key);
+  const LoadingPage({Key? key}) : super(key: key);
 
   @override
   State<LoadingPage> createState() => _LoadingPageState();
