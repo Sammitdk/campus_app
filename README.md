@@ -24,4 +24,4 @@
   This app is acadmic project that has developed by 
   
   - https://github.com/Sammitdk
-  - https://github.com/RajPatil002
+  - https://github.com/RajPatil25
