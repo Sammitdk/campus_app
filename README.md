@@ -16,7 +16,7 @@
     - View syllabus
     - View notes
     - View result
- '''
+   
  ## About
   
   This app created using flutter / dart and firebase.
