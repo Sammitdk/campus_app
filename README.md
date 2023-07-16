@@ -3,7 +3,6 @@
  I have developed an Campus App for my academic project. This app can notify students of their acadmic activities.
  There are many features in application like 
  
- '''
   * In faculty
     - Mark attendance
     - View Teacher Timetable
@@ -17,11 +16,11 @@
     - View syllabus
     - View notes
     - View result
- '''
+   
  ## About
   
   This app created using flutter / dart and firebase.
   This app is acadmic project that has developed by 
   
   - https://github.com/Sammitdk
-  - https://github.com/RajPatil002
+  - https://github.com/RajPatil25
